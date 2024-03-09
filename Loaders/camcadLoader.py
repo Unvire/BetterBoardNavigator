@@ -7,6 +7,8 @@ class CamCadLoader:
     def loadFile(self):
         fileLines = self._getFileLines()
         self._getSectionsLinesBeginEnd(fileLines)
+
+        return self.boardData
     
     def _getFileLines(self) -> list[str]:
         with open(self.filePath, 'r') as file:
