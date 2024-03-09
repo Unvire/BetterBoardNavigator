@@ -1,14 +1,17 @@
 class CamCadLoader:
-    def __init__(self, filePath:str):
-        self.filePath = filePath
+    def __init__(self):
         self.boardData = {}
         self.sectionsLineNumbers = {'BOARDINFO':[], 'PARTLIST':[], 'PNDATA':[], 'NETLIST':[], 'PAD':[], 'PACKAGES':[], 'BOARDOUTLINE':[]}
 
-    def loadFile(self):
+    def loadFile(self, filePath):
+        self.loadFile(filePath)
         fileLines = self._getFileLines()
         self._getSectionsLinesBeginEnd(fileLines)
 
         return self.boardData
+
+    def setFilePath(self, filePath:str):
+        self.filePath = filePath
     
     def _getFileLines(self) -> list[str]:
         with open(self.filePath, 'r') as file:
