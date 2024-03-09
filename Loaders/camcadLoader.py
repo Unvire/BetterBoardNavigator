@@ -3,7 +3,8 @@ class CamCadLoader:
         self.filePath = filePath
         self.boardData = {}
         self.sectionsLineNumbers = {'BOARDINFO':[], 'PARTLIST':[], 'PNDATA':[], 'NETLIST':[], 'PAD':[], 'PACKAGES':[], 'BOARDOUTLINE':[]}
-        
+
+    def loadFile(self):
         fileLines = self._getFileLines()
         self._getSectionsLinesBeginEnd(fileLines)
     
@@ -22,4 +23,3 @@ class CamCadLoader:
 
 if __name__ == '__main__':
     loader = CamCadLoader(r'C:\Users\krzys\Documents\GitHub\boardNavigator\Schematic\lvm Core.cad')
-    print(loader.sectionsLineNumbers)
