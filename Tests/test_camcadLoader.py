@@ -1,5 +1,6 @@
 import pytest
 from Loaders.camcadLoader import CamCadLoader
+import point
 
 @pytest.fixture
 def exampleFileLines():
@@ -66,3 +67,12 @@ def test__calculateRange(exampleFileLines):
     assert range(34, 38) == instance._calculateRange('PAD')
     assert range(26, 32) == instance._calculateRange('PACKAGES')
     assert range(40, 42) == instance._calculateRange('BOARDOUTLINE')
+
+def test__getBoardDimensions(exampleFileLines):
+    instance = CamCadLoader()
+    instance._getSectionsLinesBeginEnd(exampleFileLines)
+    instance._getBoardDimensions(exampleFileLines)
+    minPoint = point.Point(-0.081, -4.216)
+    maxPoint = point.Point(3.857, 0.081)
+    assert instance.boardData['AREA'][0] == minPoint
+    assert instance.boardData['AREA'][1] == maxPoint
