@@ -50,9 +50,19 @@ def exampleFileLines():
         ]
     return fileLinesMock
 
-def test__getSectionsLinesBeginEnd(exampleFileLines, printer):
+def test__getSectionsLinesBeginEnd(exampleFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(exampleFileLines)
-    printer(instance.sectionsLineNumbers)
     expected = {'BOARDINFO':[0, 2], 'PARTLIST':[4, 9], 'PNDATA':[20, 24], 'NETLIST':[11, 18], 'PAD':[34, 38], 'PACKAGES':[26, 32], 'BOARDOUTLINE':[40, 42]}
     assert expected == instance.sectionsLineNumbers
+
+def test__calculateRange(exampleFileLines):
+    instance = CamCadLoader()
+    instance._getSectionsLinesBeginEnd(exampleFileLines)
+    assert range(0, 2) == instance._calculateRange('BOARDINFO')
+    assert range(4, 9) == instance._calculateRange('PARTLIST')
+    assert range(20, 24) == instance._calculateRange('PNDATA')
+    assert range(11, 18) == instance._calculateRange('NETLIST')
+    assert range(34, 38) == instance._calculateRange('PAD')
+    assert range(26, 32) == instance._calculateRange('PACKAGES')
+    assert range(40, 42) == instance._calculateRange('BOARDOUTLINE')
