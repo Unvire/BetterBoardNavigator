@@ -29,15 +29,7 @@ class CamCadLoader:
                 self.sectionsLineNumbers[sectionName].append(i)
     
     def _getBoardDimensions(self, fileLines:list[str]):
-        regexPattern = '(-?\d+\.\d+)(\s,-?\d+\.\d+){3}' # match all four coords
-        boardInfoRange = self._calculateRange('BOARDINFO')
-        for i in boardInfoRange:
-            coords = re.search(regexPattern, fileLines[i])
-            if coords:
-                xMin, yMin, xMax, yMax = [float(coord) for coord in coords.group(0).split(',')]
-                minPoint = point.Point(xMin, yMin)
-                maxPoint = point.Point(xMax, yMax)
-                self.boardData['AREA'] = (minPoint, maxPoint)
+        pass
 
     
     def _calculateRange(self, sectionName:str) -> range:
