@@ -30,13 +30,42 @@ class CamCadLoader:
     
     def _getBoardDimensions(self, fileLines:list[str]):
         boardOutlineRange = self._calculateRange('BOARDOUTLINE')
+        minXminYPoint = geometryObjects.Point(float('Inf'), float('Inf'))
+        maxXmaxYPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
         for i in boardOutlineRange:
             if ',' in fileLines[i]:
                 _, xStart, yStart, xEnd, yEnd = fileLines[i].split(',')
-                startPoint = geometryObjects.Point(float(xStart), float(yStart))                
+                startPoint = geometryObjects.Point(float(xStart), float(yStart))              
                 endPoint = geometryObjects.Point(float(xEnd), float(yEnd))
-                self.boardData['SHAPE'].append(geometryObjects.Line(startPoint, endPoint))
 
+                self.boardData['SHAPE'].append(geometryObjects.Line(startPoint, endPoint))
+                minXminYPoint, maxXmaxYPoint = self._minMaxXY(minXminYPoint, maxXmaxYPoint, startPoint)       
+                minXminYPoint, maxXmaxYPoint = self._minMaxXY(minXminYPoint, maxXmaxYPoint, endPoint)
+        self.boardData['AREA'] = [minXminYPoint, maxXmaxYPoint]
+
+    def _minMaxXY(self, currentMinPoint:geometryObjects.Point, currentMaxPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> (geometryObjects.Point, geometryObjects.Point):
+        currentMinPoint = self._minXY(currentMinPoint, checkedPoint)
+        currentMaxPoint = self._maxXY(currentMaxPoint, checkedPoint)
+        return currentMinPoint, currentMaxPoint
+
+
+    def _minXY(self, currentMinPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> geometryObjects.Point:
+        currentX, currentY = currentMinPoint.x, currentMinPoint.y
+        checkedX, checkedY = checkedPoint.x, checkedPoint.y
+        minX = min(currentX, checkedX)        
+        minY = min(currentY, checkedY)
+        currentMinPoint.setX(minX)
+        currentMinPoint.setX(minY)
+        return currentMinPoint
+    
+    def _maxXY(self, currentMaxPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> geometryObjects.Point:
+        currentX, currentY = currentMaxPoint.x, currentMaxPoint.y
+        checkedX, checkedY = checkedPoint.x, checkedPoint.y
+        minX = max(currentX, checkedX)        
+        minY = max(currentY, checkedY)
+        currentMaxPoint.setX(minX)
+        currentMaxPoint.setX(minY)
+        return currentMaxPoint
     
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
