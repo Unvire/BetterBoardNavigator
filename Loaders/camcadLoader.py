@@ -39,17 +39,17 @@ class CamCadLoader:
                 endPoint = geometryObjects.Point(float(xEnd), float(yEnd))
 
                 self.boardData['SHAPE'].append(geometryObjects.Line(startPoint, endPoint))
-                minXminYPoint, maxXmaxYPoint = self._minMaxXY(minXminYPoint, maxXmaxYPoint, startPoint)       
-                minXminYPoint, maxXmaxYPoint = self._minMaxXY(minXminYPoint, maxXmaxYPoint, endPoint)
+                minXminYPoint, maxXmaxYPoint = self._minMaxXYCoords(minXminYPoint, maxXmaxYPoint, startPoint)       
+                minXminYPoint, maxXmaxYPoint = self._minMaxXYCoords(minXminYPoint, maxXmaxYPoint, endPoint)
         self.boardData['AREA'] = [minXminYPoint, maxXmaxYPoint]
 
-    def _minMaxXY(self, currentMinPoint:geometryObjects.Point, currentMaxPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> (geometryObjects.Point, geometryObjects.Point):
-        currentMinPoint = self._minXY(currentMinPoint, checkedPoint)
-        currentMaxPoint = self._maxXY(currentMaxPoint, checkedPoint)
+    def _minMaxXYCoords(self, currentMinPoint:geometryObjects.Point, currentMaxPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> (geometryObjects.Point, geometryObjects.Point):
+        currentMinPoint = self._minXYCoords(currentMinPoint, checkedPoint)
+        currentMaxPoint = self._maxXYCoords(currentMaxPoint, checkedPoint)
         return currentMinPoint, currentMaxPoint
 
 
-    def _minXY(self, currentMinPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> geometryObjects.Point:
+    def _minXYCoords(self, currentMinPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> geometryObjects.Point:
         currentX, currentY = currentMinPoint.x, currentMinPoint.y
         checkedX, checkedY = checkedPoint.x, checkedPoint.y
         minX = min(currentX, checkedX)        
@@ -58,7 +58,7 @@ class CamCadLoader:
         currentMinPoint.setX(minY)
         return currentMinPoint
     
-    def _maxXY(self, currentMaxPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> geometryObjects.Point:
+    def _maxXYCoords(self, currentMaxPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> geometryObjects.Point:
         currentX, currentY = currentMaxPoint.x, currentMaxPoint.y
         checkedX, checkedY = checkedPoint.x, checkedPoint.y
         minX = max(currentX, checkedX)        
