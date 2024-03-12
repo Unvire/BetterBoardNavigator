@@ -13,6 +13,9 @@ class Line:
     def __init__(self, startPoint:Point, endPoint:Point):
         self.startPoint = startPoint
         self.endPoint = endPoint
+    
+    def __str__(self):
+        return f'Line: point1=({self.startPoint}), point2=({self.endPoint})'
 
 if __name__ == '__main__':
     A = Point(0, 0)
