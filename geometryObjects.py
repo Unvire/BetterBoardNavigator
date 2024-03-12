@@ -9,6 +9,11 @@ class Point:
     def __eq__(self, point:'Point'):
         return self.x == point.x and self.y == point.y
 
+class Line:
+    def __init__(self, startPoint:Point, endPoint:Point):
+        self.startPoint = startPoint
+        self.endPoint = endPoint
+
 if __name__ == '__main__':
     A = Point(0, 0)
     print(A)

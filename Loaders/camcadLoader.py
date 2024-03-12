@@ -29,7 +29,11 @@ class CamCadLoader:
                 self.sectionsLineNumbers[sectionName].append(i)
     
     def _getBoardDimensions(self, fileLines:list[str]):
-        pass
+        boardOutlineRange = self._calculateRange('BOARDOUTLINE')
+        for i in boardOutlineRange:
+            if ',' in fileLines[i]:
+                _, xStart, yStart, xEnd, yEnd = fileLines[i].split(',')
+
 
     
     def _calculateRange(self, sectionName:str) -> range:
