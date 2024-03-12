@@ -19,7 +19,7 @@ class Line:
     
     def __eq__(self, line:'Line'):
         result1 = self.startPoint == line.startPoint and self.endPoint == line.endPoint
-        result2 = self.startPoint == line.endPoint and self.endPoint == line.startPointPoint
+        result2 = self.startPoint == line.endPoint and self.endPoint == line.startPoint
         return result1 or result2
 
 if __name__ == '__main__':
