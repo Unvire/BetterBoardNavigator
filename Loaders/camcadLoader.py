@@ -3,7 +3,7 @@ import geometryObjects
 
 class CamCadLoader:
     def __init__(self):
-        self.boardData = {}
+        self.boardData = {'SHAPE':[]}
         self.sectionsLineNumbers = {'BOARDINFO':[], 'PARTLIST':[], 'PNDATA':[], 'NETLIST':[], 'PAD':[], 'PACKAGES':[], 'BOARDOUTLINE':[]}
 
     def loadFile(self, filePath):
@@ -33,7 +33,9 @@ class CamCadLoader:
         for i in boardOutlineRange:
             if ',' in fileLines[i]:
                 _, xStart, yStart, xEnd, yEnd = fileLines[i].split(',')
-
+                startPoint = geometryObjects.Point(float(xStart), float(yStart))                
+                endPoint = geometryObjects.Point(float(xEnd), float(yEnd))
+                self.boardData['SHAPE'].append(geometryObjects.Line(startPoint, endPoint))
 
     
     def _calculateRange(self, sectionName:str) -> range:
