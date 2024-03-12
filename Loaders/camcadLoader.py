@@ -1,5 +1,5 @@
 import re
-import point
+import geometryObjects
 
 class CamCadLoader:
     def __init__(self):
