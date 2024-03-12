@@ -16,6 +16,11 @@ class Line:
     
     def __str__(self):
         return f'Line: point1=({self.startPoint}), point2=({self.endPoint})'
+    
+    def __eq__(self, line:'Line'):
+        result1 = self.startPoint == line.startPoint and self.endPoint == line.endPoint
+        result2 = self.startPoint == line.endPoint and self.endPoint == line.startPointPoint
+        return result1 or result2
 
 if __name__ == '__main__':
     A = Point(0, 0)
