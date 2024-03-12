@@ -8,6 +8,12 @@ class Point:
 
     def __eq__(self, point:'Point'):
         return self.x == point.x and self.y == point.y
+    
+    def setX(self, x:float):
+        self.x = x
+    
+    def setY(self, y:float):
+        self.y = y
 
 class Line:
     def __init__(self, startPoint:Point, endPoint:Point):
