@@ -34,9 +34,9 @@ class Point:
     def maxXYCoords(currentMaxPoint:'Point', checkedPoint:'Point') -> 'Point':
         currentX, currentY = currentMaxPoint.x, currentMaxPoint.y
         checkedX, checkedY = checkedPoint.x, checkedPoint.y
-        minX = max(currentX, checkedX)        
-        minY = max(currentY, checkedY)
-        maxPoint = Point(minX, minY)
+        maxX = max(currentX, checkedX)        
+        maxY = max(currentY, checkedY)
+        maxPoint = Point(maxX, maxY)
         return currentMaxPoint
 
 class Line:
