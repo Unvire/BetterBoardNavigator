@@ -17,9 +17,7 @@ class Point:
 
     @staticmethod
     def minXY_maxXYCoords(currentMinPoint:'Point', currentMaxPoint:'Point', checkedPoint:'Point') -> ('Point', 'Point'):
-        currentMinPoint = Point.minXYCoords(currentMinPoint, checkedPoint)
-        currentMaxPoint = Point.minXYCoords(currentMaxPoint, checkedPoint)
-        return currentMinPoint, currentMaxPoint
+        return Point.minXYCoords(currentMinPoint, checkedPoint), Point.maxXYCoords(currentMaxPoint, checkedPoint)
 
     @staticmethod
     def minXYCoords(currentMinPoint:'Point', checkedPoint:'Point') -> 'Point':
