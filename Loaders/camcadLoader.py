@@ -30,8 +30,8 @@ class CamCadLoader:
     
     def _getBoardDimensions(self, fileLines:list[str]):
         boardOutlineRange = self._calculateRange('BOARDOUTLINE')
-        minXminYPoint = geometryObjects.Point(float('Inf'), float('Inf'))
-        maxXmaxYPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+        bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
+        topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
         for i in boardOutlineRange:
             if ',' in fileLines[i]:
                 _, xStart, yStart, xEnd, yEnd = fileLines[i].split(',')
@@ -39,9 +39,9 @@ class CamCadLoader:
                 endPoint = geometryObjects.Point(float(xEnd), float(yEnd))
 
                 self.boardData['SHAPE'].append(geometryObjects.Line(startPoint, endPoint))
-                minXminYPoint, maxXmaxYPoint = geometryObjects.Point.minXY_maxXYCoords(minXminYPoint, maxXmaxYPoint, startPoint)       
-                minXminYPoint, maxXmaxYPoint = geometryObjects.Point.minXY_maxXYCoords(minXminYPoint, maxXmaxYPoint, endPoint)
-        self.boardData['AREA'] = [minXminYPoint, maxXmaxYPoint]
+                bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, startPoint)       
+                bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, endPoint)
+        self.boardData['AREA'] = [bottomLeftPoint, topRightPoint]
     
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
