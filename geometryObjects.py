@@ -27,8 +27,7 @@ class Point:
         checkedX, checkedY = checkedPoint.x, checkedPoint.y
         minX = min(currentX, checkedX)        
         minY = min(currentY, checkedY)
-        minPoint = Point(minX, minY)
-        return minPoint
+        return Point(minX, minY)
     
     @staticmethod
     def maxXYCoords(currentMaxPoint:'Point', checkedPoint:'Point') -> 'Point':
@@ -36,8 +35,7 @@ class Point:
         checkedX, checkedY = checkedPoint.x, checkedPoint.y
         maxX = max(currentX, checkedX)        
         maxY = max(currentY, checkedY)
-        maxPoint = Point(maxX, maxY)
-        return maxPoint
+        return Point(maxX, maxY)
 
 class Line:
     def __init__(self, startPoint:Point, endPoint:Point):
