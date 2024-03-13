@@ -80,3 +80,7 @@ def test__getBoardDimensions(exampleFileLines):
     assert line1 == instance.boardData['SHAPE'][0]
     assert line2 == instance.boardData['SHAPE'][1]    
     assert line3 == instance.boardData['SHAPE'][2]
+    bottomLeftPoint = geometryObjects.Point(2.238, -0.386)
+    topRightPoint = geometryObjects.Point(4.028, -0.177)
+    assert bottomLeftPoint == instance.boardData['AREA'][0]
+    assert topRightPoint == instance.boardData['AREA'][1]
