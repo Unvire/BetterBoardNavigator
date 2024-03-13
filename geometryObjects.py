@@ -37,7 +37,7 @@ class Point:
         maxX = max(currentX, checkedX)        
         maxY = max(currentY, checkedY)
         maxPoint = Point(maxX, maxY)
-        return currentMaxPoint
+        return maxPoint
 
 class Line:
     def __init__(self, startPoint:Point, endPoint:Point):
