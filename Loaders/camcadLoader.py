@@ -39,33 +39,9 @@ class CamCadLoader:
                 endPoint = geometryObjects.Point(float(xEnd), float(yEnd))
 
                 self.boardData['SHAPE'].append(geometryObjects.Line(startPoint, endPoint))
-                minXminYPoint, maxXmaxYPoint = self._minMaxXYCoords(minXminYPoint, maxXmaxYPoint, startPoint)       
-                minXminYPoint, maxXmaxYPoint = self._minMaxXYCoords(minXminYPoint, maxXmaxYPoint, endPoint)
+                minXminYPoint, maxXmaxYPoint = geometryObjects.Point.minXY_maxXYCoords(minXminYPoint, maxXmaxYPoint, startPoint)       
+                minXminYPoint, maxXmaxYPoint = geometryObjects.Point.minXY_maxXYCoords(minXminYPoint, maxXmaxYPoint, endPoint)
         self.boardData['AREA'] = [minXminYPoint, maxXmaxYPoint]
-
-    def _minMaxXYCoords(self, currentMinPoint:geometryObjects.Point, currentMaxPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> (geometryObjects.Point, geometryObjects.Point):
-        currentMinPoint = self._minXYCoords(currentMinPoint, checkedPoint)
-        currentMaxPoint = self._maxXYCoords(currentMaxPoint, checkedPoint)
-        return currentMinPoint, currentMaxPoint
-
-
-    def _minXYCoords(self, currentMinPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> geometryObjects.Point:
-        currentX, currentY = currentMinPoint.x, currentMinPoint.y
-        checkedX, checkedY = checkedPoint.x, checkedPoint.y
-        minX = min(currentX, checkedX)        
-        minY = min(currentY, checkedY)
-        currentMinPoint.setX(minX)
-        currentMinPoint.setX(minY)
-        return currentMinPoint
-    
-    def _maxXYCoords(self, currentMaxPoint:geometryObjects.Point, checkedPoint:geometryObjects.Point) -> geometryObjects.Point:
-        currentX, currentY = currentMaxPoint.x, currentMaxPoint.y
-        checkedX, checkedY = checkedPoint.x, checkedPoint.y
-        minX = max(currentX, checkedX)        
-        minY = max(currentY, checkedY)
-        currentMaxPoint.setX(minX)
-        currentMaxPoint.setX(minY)
-        return currentMaxPoint
     
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])

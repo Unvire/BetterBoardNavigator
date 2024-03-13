@@ -15,6 +15,32 @@ class Point:
     def setY(self, y:float):
         self.y = y
 
+    @staticmethod
+    def minXY_maxXYCoords(currentMinPoint:'Point', currentMaxPoint:'Point', checkedPoint:'Point') -> ('Point', 'Point'):
+        currentMinPoint = Point.minXYCoords(currentMinPoint, checkedPoint)
+        currentMaxPoint = Point.minXYCoords(currentMaxPoint, checkedPoint)
+        return currentMinPoint, currentMaxPoint
+
+    @staticmethod
+    def minXYCoords(currentMinPoint:'Point', checkedPoint:'Point') -> 'Point':
+        currentX, currentY = currentMinPoint.x, currentMinPoint.y
+        checkedX, checkedY = checkedPoint.x, checkedPoint.y
+        minX = min(currentX, checkedX)        
+        minY = min(currentY, checkedY)
+        currentMinPoint.setX(minX)
+        currentMinPoint.setX(minY)
+        return currentMinPoint
+    
+    @staticmethod
+    def maxXYCoords(currentMaxPoint:'Point', checkedPoint:'Point') -> 'Point':
+        currentX, currentY = currentMaxPoint.x, currentMaxPoint.y
+        checkedX, checkedY = checkedPoint.x, checkedPoint.y
+        minX = max(currentX, checkedX)        
+        minY = max(currentY, checkedY)
+        currentMaxPoint.setX(minX)
+        currentMaxPoint.setX(minY)
+        return currentMaxPoint
+
 class Line:
     def __init__(self, startPoint:Point, endPoint:Point):
         self.startPoint = startPoint
