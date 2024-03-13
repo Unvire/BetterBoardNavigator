@@ -8,6 +8,21 @@ def test_PointRqual():
     assert pointA != pointB
     assert pointB == pointC
 
+def test__minXY():
+    minPoint = geometryObjects.Point(float('Inf'), float('Inf'))
+    point1 = geometryObjects.Point(float(-10), float(23)) 
+    minPoint = geometryObjects.Point.minXYCoords(minPoint, point1)
+    print(minPoint)
+    assert minPoint == geometryObjects.Point(float(-10), float(23))
+
+    point2 = geometryObjects.Point(float(23), float(-10))
+    minPoint = geometryObjects.Point.minXYCoords(minPoint, point2)
+    assert minPoint == geometryObjects.Point(float(-10), float(-10))
+
+    point3 = geometryObjects.Point(float(2), float(1.79))
+    minPoint = geometryObjects.Point.minXYCoords(minPoint, point3)
+    assert minPoint == geometryObjects.Point(float(-10), float(-10))
+
 def test_PointRepr():
     pointB = geometryObjects.Point(1.2, 1.2)
     repr = pointB.__str__()
