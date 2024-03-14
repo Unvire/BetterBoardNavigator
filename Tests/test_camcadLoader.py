@@ -53,6 +53,20 @@ def exampleFileLines():
         ]
     return fileLinesMock
 
+@pytest.fixture
+def netlistFileLines():
+    fileLinesMock = [
+        ':NETLIST\n',
+        '0 ,NetC41_1 ,TP100 ,1 ,785.190 ,348.564 ,A,222\n',
+        '22 ,NetC47_2 ,C47 ,2 ,770.839 ,342.902 ,B,276\n',
+        '28 ,NetC47_1 ,C47 ,1 ,771.855 ,342.902 ,B,276\n',
+        ':ENDNETLIST\n',
+        ':PARTLIST\n',        
+        ';0 ,TP100 ,PNxx , , ,M,0\n',        
+        ';0 ,C47 ,PNxx , , ,M,0\n',
+        ':ENDPARTLIST\n', 
+    ]
+
 def test__getSectionsLinesBeginEnd(exampleFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(exampleFileLines)
