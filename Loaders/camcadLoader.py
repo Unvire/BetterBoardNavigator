@@ -4,7 +4,7 @@ import component
 
 class CamCadLoader:
     def __init__(self):
-        self.boardData = {'SHAPE':[]}
+        self.boardData = {'SHAPE':[], 'COMPONENTS':{}}
         self.sectionsLineNumbers = {'BOARDINFO':[], 'PARTLIST':[], 'PNDATA':[], 'NETLIST':[], 'PAD':[], 'PACKAGES':[], 'BOARDOUTLINE':[]}
 
     def loadFile(self, filePath):
@@ -50,7 +50,12 @@ class CamCadLoader:
             if ',' in fileLines[i]:
                 _, name, packageName, x, y, side, angle = fileLines[i].split(',')
                 newComponent = component.Component(name)
-                
+                newComponent.setPackage(packageName)
+                if x and y:
+                    center = geometryObjects.Point(float(x), float(y))
+                    newComponent.setCoords(center)
+                newComponent.setAngle(angle)
+                self.boardData['COMPONENTS'][name] = newComponent
 
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
