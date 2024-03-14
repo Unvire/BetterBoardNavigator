@@ -1,9 +1,9 @@
 import re
-import point
+import geometryObjects
 
 class CamCadLoader:
     def __init__(self):
-        self.boardData = {}
+        self.boardData = {'SHAPE':[]}
         self.sectionsLineNumbers = {'BOARDINFO':[], 'PARTLIST':[], 'PNDATA':[], 'NETLIST':[], 'PAD':[], 'PACKAGES':[], 'BOARDOUTLINE':[]}
 
     def loadFile(self, filePath):
@@ -29,16 +29,19 @@ class CamCadLoader:
                 self.sectionsLineNumbers[sectionName].append(i)
     
     def _getBoardDimensions(self, fileLines:list[str]):
-        regexPattern = '(-?\d+\.\d+)(\s,-?\d+\.\d+){3}' # match all four coords
-        boardInfoRange = self._calculateRange('BOARDINFO')
-        for i in boardInfoRange:
-            coords = re.search(regexPattern, fileLines[i])
-            if coords:
-                xMin, yMin, xMax, yMax = [float(coord) for coord in coords.group(0).split(',')]
-                minPoint = point.Point(xMin, yMin)
-                maxPoint = point.Point(xMax, yMax)
-                self.boardData['AREA'] = (minPoint, maxPoint)
+        boardOutlineRange = self._calculateRange('BOARDOUTLINE')
+        bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
+        topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+        for i in boardOutlineRange:
+            if ',' in fileLines[i]:
+                _, xStart, yStart, xEnd, yEnd = fileLines[i].split(',')
+                startPoint = geometryObjects.Point(float(xStart), float(yStart))              
+                endPoint = geometryObjects.Point(float(xEnd), float(yEnd))
 
+                self.boardData['SHAPE'].append(geometryObjects.Line(startPoint, endPoint))
+                bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, startPoint)       
+                bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, endPoint)
+        self.boardData['AREA'] = [bottomLeftPoint, topRightPoint]
     
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])

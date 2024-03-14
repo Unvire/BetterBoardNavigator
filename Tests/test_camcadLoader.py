@@ -1,6 +1,6 @@
 import pytest
 from Loaders.camcadLoader import CamCadLoader
-import point
+import geometryObjects
 
 @pytest.fixture
 def exampleFileLines():
@@ -46,7 +46,9 @@ def exampleFileLines():
         ':ENDPAD\n',
         '\n',
         ':BOARDOUTLINE\n',
-        '19, 2.238, -0.366, 2.238, -0.177\n',
+        '1, 2.238, -0.366, 2.238, -0.177\n',
+        '2, 4.028, -0.386, 4.028, -0.287\n',
+        '3, 4.028, -0.287, 3.938, -0.287\n',
         ':ENDBOARDOUTLINE\n'
         ]
     return fileLinesMock
@@ -54,7 +56,7 @@ def exampleFileLines():
 def test__getSectionsLinesBeginEnd(exampleFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(exampleFileLines)
-    expected = {'BOARDINFO':[0, 2], 'PARTLIST':[4, 9], 'PNDATA':[20, 24], 'NETLIST':[11, 18], 'PAD':[34, 38], 'PACKAGES':[26, 32], 'BOARDOUTLINE':[40, 42]}
+    expected = {'BOARDINFO':[0, 2], 'PARTLIST':[4, 9], 'PNDATA':[20, 24], 'NETLIST':[11, 18], 'PAD':[34, 38], 'PACKAGES':[26, 32], 'BOARDOUTLINE':[40, 44]}
     assert expected == instance.sectionsLineNumbers
 
 def test__calculateRange(exampleFileLines):
@@ -66,13 +68,19 @@ def test__calculateRange(exampleFileLines):
     assert range(11, 18) == instance._calculateRange('NETLIST')
     assert range(34, 38) == instance._calculateRange('PAD')
     assert range(26, 32) == instance._calculateRange('PACKAGES')
-    assert range(40, 42) == instance._calculateRange('BOARDOUTLINE')
+    assert range(40, 44) == instance._calculateRange('BOARDOUTLINE')
 
 def test__getBoardDimensions(exampleFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(exampleFileLines)
     instance._getBoardDimensions(exampleFileLines)
-    minPoint = point.Point(-0.081, -4.216)
-    maxPoint = point.Point(3.857, 0.081)
-    assert instance.boardData['AREA'][0] == minPoint
-    assert instance.boardData['AREA'][1] == maxPoint
+    line1 = geometryObjects.Line(geometryObjects.Point(2.238, -0.366), geometryObjects.Point(2.238, -0.177))
+    line2 = geometryObjects.Line(geometryObjects.Point(4.028, -0.386), geometryObjects.Point(4.028, -0.287))
+    line3 = geometryObjects.Line(geometryObjects.Point(4.028, -0.287), geometryObjects.Point(3.938, -0.287))
+    assert line1 == instance.boardData['SHAPE'][0]
+    assert line2 == instance.boardData['SHAPE'][1]    
+    assert line3 == instance.boardData['SHAPE'][2]
+    bottomLeftPoint = geometryObjects.Point(2.238, -0.386)
+    topRightPoint = geometryObjects.Point(4.028, -0.177)
+    assert bottomLeftPoint == instance.boardData['AREA'][0]
+    assert topRightPoint == instance.boardData['AREA'][1]
