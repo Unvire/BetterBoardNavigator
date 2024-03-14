@@ -52,9 +52,6 @@ class CamCadLoader:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
                 _, name, packageName, x, y, side, angle = [parameter.strip() for parameter in line.split(',')]
-                name = name.strip()
-                packageName = packageName.strip()
-                side = side.strip()
 
                 newComponent = component.Component(name)
                 newComponent.setPackage(packageName.strip())
@@ -71,21 +68,19 @@ class CamCadLoader:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
                 _, netName, componentName, pinName , pinX, pinY, _, _ = [parameter.strip() for parameter in line.split(',')]
-                if not self.boardData['NETS'][netName]:
+                if not netName in self.boardData['NETS']:
                     self.boardData['NETS'][netName] = {}
-                if not self.boardData['NETS'][netName][componentName]:
-                    self.boardData['NETS'][netName][componentName] = []
+                if not componentName in self.boardData['NETS'][netName]:
+                    self.boardData['NETS'][netName][componentName] = {'componentInstance':None, 'pins':[]}
                 
                 componentOnNet = self.boardData['COMPONENTS'][componentName]
-                componentName.addPin(pinName, geometryObjects.Point(float(pinX), float(pinY)))
-                self.boardData['NETS'][netName][componentName].append([componentOnNet, pinName])
-                
-
+                componentOnNet.addPin(pinName, geometryObjects.Point(float(pinX), float(pinY)), netName)
+                self.boardData['NETS'][netName][componentName]['componentInstance'] = componentOnNet
+                self.boardData['NETS'][netName][componentName]['pins'].append(pinName)
                 
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
     
-
 
 if __name__ == '__main__':
     filePath = r'C:\Users\krzys\Documents\GitHub\boardNavigator\Schematic\lvm Core.cad'
