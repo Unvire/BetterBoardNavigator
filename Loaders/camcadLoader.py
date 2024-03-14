@@ -4,7 +4,7 @@ import component
 
 class CamCadLoader:
     def __init__(self):
-        self.boardData = {'SHAPE':[], 'COMPONENTS':{}}
+        self.boardData = {'SHAPE':[], 'COMPONENTS':{}, 'NETS':{}}
         self.sectionsLineNumbers = {'BOARDINFO':[], 'PARTLIST':[], 'PNDATA':[], 'NETLIST':[], 'PAD':[], 'PACKAGES':[], 'BOARDOUTLINE':[]}
 
     def loadFile(self, filePath):
@@ -63,7 +63,24 @@ class CamCadLoader:
                 newComponent.setAngle(float(angle))
                 newComponent.setSide(sideDict[side])
                 self.boardData['COMPONENTS'][name] = newComponent
+    
+    def _getNetsfromNETLIST(self, fileLines:list[str]):
+        netlistRange = self._calculateRange('NETLIST')
+        for i in netlistRange:
+            if ',' in fileLines[i]:
+                line = fileLines[i].replace('\n', '')
+                _, netName, componentName, pinName , pinX, pinY, _, _ = [parameter.strip() for parameter in line]
+                if not self.boardData['NETS'][netName]:
+                    self.boardData['NETS'][netName] = {}
+                if not self.boardData['NETS'][netName][componentName]:
+                    self.boardData['NETS'][netName][componentName] = []
+                
+                componentOnNet = self.boardData['COMPONENTS'][componentName]
+                componentName.addPin(pinName, geometryObjects.Point(float(pinX), float(pinY)))
+                self.boardData['NETS'][netName][componentName].append([componentOnNet, pinName])
+                
 
+                
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
     
