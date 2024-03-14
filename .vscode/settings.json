@@ -1,6 +1,6 @@
 {
     "python.testing.pytestArgs": [
-        "Tests", "-s", 
+        "Tests", "-s", "--capture=sys", 
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
