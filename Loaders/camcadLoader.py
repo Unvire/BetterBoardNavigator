@@ -50,7 +50,8 @@ class CamCadLoader:
 
         for i in partlistRange:
             if ',' in fileLines[i]:
-                _, name, packageName, x, y, side, angle = fileLines[i].replace('\n', '').split(',')
+                line = fileLines[i].replace('\n', '')
+                _, name, packageName, x, y, side, angle = [parameter.strip() for parameter in line.split(',')]
                 name = name.strip()
                 packageName = packageName.strip()
                 side = side.strip()
@@ -69,7 +70,7 @@ class CamCadLoader:
         for i in netlistRange:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
-                _, netName, componentName, pinName , pinX, pinY, _, _ = [parameter.strip() for parameter in line]
+                _, netName, componentName, pinName , pinX, pinY, _, _ = [parameter.strip() for parameter in line.split(',')]
                 if not self.boardData['NETS'][netName]:
                     self.boardData['NETS'][netName] = {}
                 if not self.boardData['NETS'][netName][componentName]:
