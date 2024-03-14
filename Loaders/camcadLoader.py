@@ -46,15 +46,22 @@ class CamCadLoader:
     
     def _getComponenentsFromPARTLIST(self, fileLines:list[str]):
         partlistRange = self._calculateRange('PARTLIST')
+        sideDict = {'T':'T', 'P':'T', 'B':'B', 'M':'B'}
+
         for i in partlistRange:
             if ',' in fileLines[i]:
-                _, name, packageName, x, y, side, angle = fileLines[i].split(',')
+                _, name, packageName, x, y, side, angle = fileLines[i].replace('\n', '').split(',')
+                name = name.strip()
+                packageName = packageName.strip()
+                side = side.strip()
+
                 newComponent = component.Component(name)
-                newComponent.setPackage(packageName)
+                newComponent.setPackage(packageName.strip())
                 if x and y:
                     center = geometryObjects.Point(float(x), float(y))
                     newComponent.setCoords(center)
-                newComponent.setAngle(angle)
+                newComponent.setAngle(float(angle))
+                newComponent.setSide(sideDict[side])
                 self.boardData['COMPONENTS'][name] = newComponent
 
     def _calculateRange(self, sectionName:str) -> range:
