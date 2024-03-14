@@ -60,12 +60,15 @@ def netlistFileLines():
         '0 ,NetC41_1 ,TP100 ,1 ,785.190 ,348.564 ,A,222\n',
         '22 ,NetC47_2 ,C47 ,2 ,770.839 ,342.902 ,B,276\n',
         '28 ,NetC47_1 ,C47 ,1 ,771.855 ,342.902 ,B,276\n',
+        '22 ,NetC47_2 ,TP135 ,1 ,769.467 ,341.937 ,A,222\n',
         ':ENDNETLIST\n',
         ':PARTLIST\n',        
         ';0 ,TP100 ,PNxx , , ,M,0\n',        
         ';0 ,C47 ,PNxx , , ,M,0\n',
+        ';0 ,TP135 ,PNxx , , ,M,0\n',
         ':ENDPARTLIST\n', 
     ]
+    return fileLinesMock
 
 def test__getSectionsLinesBeginEnd(exampleFileLines):
     instance = CamCadLoader()
@@ -110,3 +113,30 @@ def test__getComponenentsFromPARTLIST(exampleFileLines):
     assert component1.package == 'PNFID'
     assert component1.side == 'T'
     assert component1.angle == 0
+
+def test__getNetsfromNETLIST(netlistFileLines):
+    instance = CamCadLoader()
+    instance._getSectionsLinesBeginEnd(netlistFileLines)
+    instance._getComponenentsFromPARTLIST(netlistFileLines)    
+    instance._getNetsfromNETLIST(netlistFileLines)
+    
+    ## name of nets
+    assert list(instance.boardData['NETS'].keys()) == ['NetC41_1' , 'NetC47_2', 'NetC47_1']
+
+    ## components in the nets
+    assert 'TP100' in instance.boardData['NETS']['NetC41_1'] 
+    assert 'C47' in instance.boardData['NETS']['NetC47_1'] and 'C47' in instance.boardData['NETS']['NetC47_2']
+    assert 'TP135' in instance.boardData['NETS']['NetC47_2']
+
+    ## proper component mapping
+    assert instance.boardData['NETS']['NetC41_1']['TP100']['componentInstance'] is instance.boardData['COMPONENTS']['TP100']
+    assert instance.boardData['NETS']['NetC41_1']['TP100']['pins'] == ['1']
+    assert instance.boardData['COMPONENTS']['TP100'].pins['1']['netName'] == 'NetC41_1'
+    assert instance.boardData['COMPONENTS']['TP100'].pins['1']['point'] == geometryObjects.Point(785.190 ,348.564)
+
+    assert instance.boardData['NETS']['NetC47_1']['C47']['componentInstance'] is instance.boardData['COMPONENTS']['C47']
+    assert instance.boardData['NETS']['NetC47_1']['C47']['componentInstance'] is instance.boardData['NETS']['NetC47_2']['C47']['componentInstance']
+    assert instance.boardData['COMPONENTS']['C47'].pins['1']['netName'] == 'NetC47_1'
+    assert instance.boardData['COMPONENTS']['C47'].pins['1']['point'] == geometryObjects.Point(771.855 ,342.902)
+    assert instance.boardData['COMPONENTS']['C47'].pins['2']['netName'] == 'NetC47_2'
+    assert instance.boardData['COMPONENTS']['C47'].pins['2']['point'] == geometryObjects.Point(770.839 ,342.902)
