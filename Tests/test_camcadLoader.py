@@ -84,3 +84,15 @@ def test__getBoardDimensions(exampleFileLines):
     topRightPoint = geometryObjects.Point(4.028, -0.177)
     assert bottomLeftPoint == instance.boardData['AREA'][0]
     assert topRightPoint == instance.boardData['AREA'][1]
+
+def test__getComponenentsFromPARTLIST(exampleFileLines):
+    instance = CamCadLoader()
+    instance._getSectionsLinesBeginEnd(exampleFileLines)
+    instance._getComponenentsFromPARTLIST(exampleFileLines)
+    component1 = instance.boardData['COMPONENTS']['FID1']
+    
+    assert component1.name == 'FID1'
+    assert component1.coords == geometryObjects.Point(0.101, -0.109)
+    assert component1.package == 'PNFID'
+    assert component1.side == 'T'
+    assert component1.angle == 0
