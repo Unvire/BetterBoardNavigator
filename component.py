@@ -20,3 +20,6 @@ class Component:
 
     def setAngle(self, angle:float):
         self.angle = angle
+    
+    def setPackage(self, package:str):
+        self.package = package

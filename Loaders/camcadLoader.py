@@ -1,5 +1,6 @@
 import re
 import geometryObjects
+import component
 
 class CamCadLoader:
     def __init__(self):
@@ -43,6 +44,14 @@ class CamCadLoader:
                 bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, endPoint)
         self.boardData['AREA'] = [bottomLeftPoint, topRightPoint]
     
+    def _getComponenentsFromPARTLIST(self, fileLines:list[str]):
+        partlistRange = self._calculateRange('PARTLIST')
+        for i in partlistRange:
+            if ',' in fileLines[i]:
+                _, name, packageName, x, y, side, angle = fileLines[i].split(',')
+                newComponent = component.Component(name)
+                
+
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
     
