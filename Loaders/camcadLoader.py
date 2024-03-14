@@ -4,6 +4,15 @@ import component
 
 class CamCadLoader:
     def __init__(self):
+        '''
+        self.boardData['AREA'] = [bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point] 
+        self.boardData['SHAPE'] = list of geometryObjects.Line and geometryObjects.Arc
+        self.boardData['COMPONENTS'] = dict 'componentName': component.Component instance
+        self.boardData['NETS'] = dict netName:{componentName:{
+                                                'componentInstance': component.Component instance, 
+                                                'pins': list[str]}
+                                                }
+        '''
         self.boardData = {'SHAPE':[], 'COMPONENTS':{}, 'NETS':{}}
         self.sectionsLineNumbers = {'BOARDINFO':[], 'PARTLIST':[], 'PNDATA':[], 'NETLIST':[], 'PAD':[], 'PACKAGES':[], 'BOARDOUTLINE':[]}
 
