@@ -34,6 +34,13 @@ class Point:
         maxX = max(currentX, checkedX)        
         maxY = max(currentY, checkedY)
         return Point(maxX, maxY)
+    
+    @staticmethod
+    def translate(point:'Point', vector:list[float]) -> 'Point':
+        xPoint, yPoint = point.x, point.y
+        x, y = vector
+        return Point(xPoint + x, yPoint  + y)
+
 
 class Line:
     def __init__(self, startPoint:Point, endPoint:Point):
