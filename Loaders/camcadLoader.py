@@ -97,14 +97,7 @@ class CamCadLoader:
                 self.boardData['NETS'][netName][componentName]['pins'].append(pinName)
     
     def _getPackagesfromPACKAGE(self, fileLines:list[str]):
-        packagesRange = self._calculateRange('NETLIST')
-        packagesDict = {}
-        for i in packagesRange:
-            if ',' in fileLines[i]:
-                line = fileLines[i].replace('\n', '')
-                packageName, pinType, sizeX, sizeY, _ = [parameter.strip() for parameter in line.split(',')]
-                sizeX, sizeY  = CamCadLoader.floatOrNone(sizeX), CamCadLoader.floatOrNone(sizeY)
-                packagesDict[packageName] = {'pinType': pinType, 'dimensions':(sizeX, sizeY)}
+        packagesDict = self._getPackagesfromPACKAGE(fileLines)
 
         noPackagesMatch = set()
         for componentName in self.boardData['COMPONENTS']:
@@ -121,6 +114,17 @@ class CamCadLoader:
                     noPackagesMatch.add(componentName)
             else:
                 noPackagesMatch.add(componentName)
+    
+    def _getPackagesfromPACKAGE(self, fileLines:list[str]) -> dict:
+        packagesRange = self._calculateRange('NETLIST')
+        packagesDict = {}
+        for i in packagesRange:
+            if ',' in fileLines[i]:
+                line = fileLines[i].replace('\n', '')
+                packageName, pinType, sizeX, sizeY, _ = [parameter.strip() for parameter in line.split(',')]
+                sizeX, sizeY  = CamCadLoader.floatOrNone(sizeX), CamCadLoader.floatOrNone(sizeY)
+                packagesDict[packageName] = {'pinType': pinType, 'dimensions':(sizeX, sizeY)}
+        return packagesDict
     
     def _addBlankNet(self, netName:str, componentName:str):
         if not netName in self.boardData['NETS']:
