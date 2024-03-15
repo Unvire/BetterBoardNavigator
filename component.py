@@ -7,7 +7,7 @@ class Component:
         self.coords = None
         self.side = None
         self.angle = 0
-        self.package = None
+        self.package = []
         self.packageType = 'SMT'
 
     def addPin(self, pin:str, point:geometryObjects.Point, netName:str):
