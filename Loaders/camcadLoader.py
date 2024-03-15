@@ -61,31 +61,37 @@ class CamCadLoader:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
                 _, name, packageName, x, y, side, angle = [parameter.strip() for parameter in line.split(',')]
-
-                newComponent = component.Component(name)
-                newComponent.setPackage(packageName.strip())
-                if x and y:
-                    center = geometryObjects.Point(float(x), float(y))
-                    newComponent.setCoords(center)
-                newComponent.setAngle(float(angle))
-                newComponent.setSide(sideDict[side])
+                side = sideDict[side]
+                newComponent = self._createComponent(name, packageName, float(x), float(y), float(angle), side)
                 self.boardData['COMPONENTS'][name] = newComponent
     
+    def _createComponent(self, name:str, packageName:str, x:float|None, y:float|None, angle:float, side:str) -> component.Component:
+        newComponent = component.Component(name)
+        newComponent.setPackage(packageName)
+        center = geometryObjects.Point(x, y)
+        newComponent.setCoords(center)
+        newComponent.setAngle(float(angle))
+        newComponent.setSide(side)
+        return newComponent
+
     def _getNetsfromNETLIST(self, fileLines:list[str]):
         netlistRange = self._calculateRange('NETLIST')
         for i in netlistRange:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
                 _, netName, componentName, pinName , pinX, pinY, _, _ = [parameter.strip() for parameter in line.split(',')]
-                if not netName in self.boardData['NETS']:
-                    self.boardData['NETS'][netName] = {}
-                if not componentName in self.boardData['NETS'][netName]:
-                    self.boardData['NETS'][netName][componentName] = {'componentInstance':None, 'pins':[]}
+                self._addBlankNet(netName, componentName)
                 
                 componentOnNet = self.boardData['COMPONENTS'][componentName]
                 componentOnNet.addPin(pinName, geometryObjects.Point(float(pinX), float(pinY)), netName)
                 self.boardData['NETS'][netName][componentName]['componentInstance'] = componentOnNet
                 self.boardData['NETS'][netName][componentName]['pins'].append(pinName)
+    
+    def _addBlankNet(self, netName:str, componentName:str):
+        if not netName in self.boardData['NETS']:
+            self.boardData['NETS'][netName] = {}
+        if not componentName in self.boardData['NETS'][netName]:
+            self.boardData['NETS'][netName][componentName] = {'componentInstance':None, 'pins':[]}
                 
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
