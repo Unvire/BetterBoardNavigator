@@ -106,6 +106,16 @@ class CamCadLoader:
                 sizeX, sizeY  = CamCadLoader.floatOrNone(sizeX), CamCadLoader.floatOrNone(sizeY)
                 packagesDict[packageName] = {'pinType': pinType, 'dimensions':(sizeX, sizeY)}
 
+        noPackagesMatch = set()
+        for componentName in self.boardData['COMPONENTS']:
+            component = self.boardData['COMPONENTS'][componentName]
+            componentPackageName = component.package
+            if componentPackageName in packagesDict:
+                component.setPackageType(packagesDict[componentPackageName]['pinType'])
+                if component.isCoordsValid:
+                    ...#c
+            else:
+                noPackagesMatch.add(componentName)
     
     def _addBlankNet(self, netName:str, componentName:str):
         if not netName in self.boardData['NETS']:
