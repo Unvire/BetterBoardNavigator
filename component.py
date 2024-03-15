@@ -27,3 +27,6 @@ class Component:
     
     def setPackageType(self, packageType:str):
         self.packageType = packageType
+    
+    def isCoordsValid(self):
+        return self.coords.x and self.coords.y
