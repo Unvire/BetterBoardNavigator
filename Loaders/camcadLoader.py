@@ -62,7 +62,7 @@ class CamCadLoader:
                 line = fileLines[i].replace('\n', '')
                 _, name, packageName, x, y, side, angle = [parameter.strip() for parameter in line.split(',')]
                 side = sideDict[side]
-                x, y  = self._floatOrNone(x), self._floatOrNone(y)
+                x, y  = CamCadLoader.floatOrNone(x), CamCadLoader.floatOrNone(y)
                 newComponent = self._createComponent(name, packageName, x, y, float(angle), side)
                 self.boardData['COMPONENTS'][name] = newComponent
     
@@ -74,8 +74,9 @@ class CamCadLoader:
         newComponent.setAngle(float(angle))
         newComponent.setSide(side)
         return newComponent
-
-    def _floatOrNone(self, x:str):
+    
+    @staticmethod
+    def floatOrNone(x:str):
         try:
             x = float(x)
         except ValueError:
