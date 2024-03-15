@@ -30,3 +30,13 @@ class Component:
     
     def isCoordsValid(self):
         return self.coords.x and self.coords.y
+    
+    def calculateCenterFromPins(self):
+        numOfPins = len(self.pins)
+        xSum, ySum = 0, 0
+        for pin in self.pins:
+            pinPoint = self.pins[pin]['point']
+            xSum += pinPoint.x
+            ySum += pinPoint.y
+        center = geometryObjects.Point(xSum / numOfPins, ySum / numOfPins)
+        self.setCoords(center)
