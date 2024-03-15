@@ -113,7 +113,12 @@ class CamCadLoader:
             if componentPackageName in packagesDict:
                 component.setPackageType(packagesDict[componentPackageName]['pinType'])
                 if component.isCoordsValid:
-                    ...#c
+                    sizeX, sizeY = packagesDict[packageName]['dimensions']
+                    packageBottomLeftPoint = geometryObjects.Point.translate(component.coords, (-sizeX / 2, -sizeY / 2))
+                    packageTopRightPoint = geometryObjects.Point.translate(packageBottomLeftPoint, (sizeX, sizeY))
+                    component.setPackage([packageBottomLeftPoint, packageTopRightPoint])
+                else:
+                    noPackagesMatch.add(componentName)
             else:
                 noPackagesMatch.add(componentName)
     
