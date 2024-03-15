@@ -96,24 +96,29 @@ class CamCadLoader:
                 self.boardData['NETS'][netName][componentName]['componentInstance'] = componentOnNet
                 self.boardData['NETS'][netName][componentName]['pins'].append(pinName)
     
-    def _getPackagesfromPACKAGE(self, fileLines:list[str]):
+    def _getPackages(self, fileLines:list[str]):
         packagesDict = self._getPackagesfromPACKAGE(fileLines)
 
-        noPackagesMatch = set()
+        noPackagesMatch = []
         for componentName in self.boardData['COMPONENTS']:
-            component = self.boardData['COMPONENTS'][componentName]
-            componentPackageName = component.package
+            componentInstance = self.boardData['COMPONENTS'][componentName]
+            componentPackageName = componentInstance.package
+
             if componentPackageName in packagesDict:
-                component.setPackageType(packagesDict[componentPackageName]['pinType'])
-                if component.isCoordsValid:
-                    sizeX, sizeY = packagesDict[packageName]['dimensions']
-                    packageBottomLeftPoint = geometryObjects.Point.translate(component.coords, (-sizeX / 2, -sizeY / 2))
-                    packageTopRightPoint = geometryObjects.Point.translate(packageBottomLeftPoint, (sizeX, sizeY))
-                    component.setPackage([packageBottomLeftPoint, packageTopRightPoint])
-                else:
-                    noPackagesMatch.add(componentName)
+                if not componentInstance.isCoordsValid:                    
+                    componentInstance.calculateCenterFromPins()
+                
+                sizeX, sizeY = packagesDict[componentPackageName]['dimensions']
+                packageBottomLeftPoint = geometryObjects.Point.translate(componentInstance.coords, (-sizeX / 2, -sizeY / 2))
+                packageTopRightPoint = geometryObjects.Point.translate(packageBottomLeftPoint, (sizeX, sizeY))
+                
+                componentInstance.setPackage([packageBottomLeftPoint, packageTopRightPoint])                
+                componentInstance.setPackageType(packagesDict[componentPackageName]['pinType'])
             else:
-                noPackagesMatch.add(componentName)
+                noPackagesMatch.append(componentInstance)
+    
+
+        
     
     def _getPackagesfromPACKAGE(self, fileLines:list[str]) -> dict:
         packagesRange = self._calculateRange('NETLIST')
