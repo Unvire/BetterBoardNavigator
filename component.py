@@ -8,6 +8,7 @@ class Component:
         self.side = None
         self.angle = 0
         self.package = None
+        self.packageType = 'SMT'
 
     def addPin(self, pin:str, point:geometryObjects.Point, netName:str):
         self.pins[pin] = {'netName': netName, 'point':point}
@@ -23,3 +24,6 @@ class Component:
     
     def setPackage(self, package:str):
         self.package = package
+    
+    def setPackageType(self, packageType:str):
+        self.packageType = packageType
