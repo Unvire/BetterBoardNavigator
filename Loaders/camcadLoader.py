@@ -62,7 +62,8 @@ class CamCadLoader:
                 line = fileLines[i].replace('\n', '')
                 _, name, packageName, x, y, side, angle = [parameter.strip() for parameter in line.split(',')]
                 side = sideDict[side]
-                newComponent = self._createComponent(name, packageName, float(x), float(y), float(angle), side)
+                x, y  = self._floatOrNone(x), self._floatOrNone(y)
+                newComponent = self._createComponent(name, packageName, x, y, float(angle), side)
                 self.boardData['COMPONENTS'][name] = newComponent
     
     def _createComponent(self, name:str, packageName:str, x:float|None, y:float|None, angle:float, side:str) -> component.Component:
@@ -73,6 +74,13 @@ class CamCadLoader:
         newComponent.setAngle(float(angle))
         newComponent.setSide(side)
         return newComponent
+
+    def _floatOrNone(self, x:str):
+        try:
+            x = float(x)
+        except ValueError:
+            x = None
+        return x
 
     def _getNetsfromNETLIST(self, fileLines:list[str]):
         netlistRange = self._calculateRange('NETLIST')
