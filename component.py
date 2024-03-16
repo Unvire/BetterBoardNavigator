@@ -32,11 +32,13 @@ class Component:
         return bool(self.coords.x and self.coords.y)
     
     def calculateCenterFromPins(self):
-        numOfPins = len(self.pins)
-        xSum, ySum = 0, 0
+        bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
+        topLeftPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
         for pin in self.pins:
             pinPoint = self.pins[pin]['point']
-            xSum += pinPoint.x
-            ySum += pinPoint.y
-        center = geometryObjects.Point(xSum / numOfPins, ySum / numOfPins)
+            bottomLeftPoint, topLeftPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topLeftPoint, pinPoint)
+
+        xCenter = bottomLeftPoint.x + (topLeftPoint.x - bottomLeftPoint.x) / 2
+        yCenter = bottomLeftPoint.y + (topLeftPoint.y - bottomLeftPoint.y) / 2
+        center = geometryObjects.Point(xCenter, yCenter)
         self.setCoords(center)
