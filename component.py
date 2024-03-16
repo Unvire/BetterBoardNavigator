@@ -37,6 +37,12 @@ class Component:
         yCenter = bottomLeftPoint.y + (topRightPoint.y - bottomLeftPoint.y) / 2
         center = geometryObjects.Point(xCenter, yCenter)
         self.setCoords(center)
+    
+    def calculatePackageFromPins(self):
+        bottomLeftPoint, topRightPoint = self.calculateHitBoxFromPins()
+        bottomLeftPoint = geometryObjects.Point.scale(bottomLeftPoint, 0.95)
+        topRightPoint = geometryObjects.Point.scale(topRightPoint, 0.95)
+        self.setPackage(bottomLeftPoint, topRightPoint)
 
     def calculateHitBoxFromPins(self) -> (geometryObjects.Point, geometryObjects.Point):
         bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
@@ -44,6 +50,6 @@ class Component:
         for pin in self.pins:
             pinPoint = self.pins[pin]['point']
             bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, pinPoint)
-        return bottomLeftPoint,topRightPoint
+        return bottomLeftPoint, topRightPoint
 
     
