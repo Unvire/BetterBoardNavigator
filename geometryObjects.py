@@ -1,4 +1,5 @@
 class Point:
+    DECIMAL_POINT_PRECISION = 3
     def __init__(self, x:float|int, y:float|int):
         self.x = x
         self.y = y
@@ -7,7 +8,10 @@ class Point:
         return f'Point x={self.x}, y={self.y}'
 
     def __eq__(self, point:'Point'):
-        return self.x == point.x and self.y == point.y
+        result1 = abs(self.x - point.x) < 1 / Point.DECIMAL_POINT_PRECISION
+        result2 = abs(self.y - point.y) < 1 / Point.DECIMAL_POINT_PRECISION
+        return result1 and result2
+                
     
     def setX(self, x:float):
         self.x = x
@@ -45,7 +49,7 @@ class Point:
     def scale(point:'Point', coefficient:float) -> 'Point':
         xPoint = point.x * coefficient
         yPoint = point.y * coefficient
-        return Point(round(xPoint, 3), round(yPoint, 3))
+        return Point(round(xPoint, Point.DECIMAL_POINT_PRECISION), round(yPoint, Point.DECIMAL_POINT_PRECISION))
 
 
 class Line:
