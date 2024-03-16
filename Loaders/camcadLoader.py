@@ -98,7 +98,22 @@ class CamCadLoader:
     
     def _getPackages(self, fileLines:list[str]):
         packagesDict = self._getPackagesfromPACKAGE(fileLines)
+        componentWithoutpackages = self._matchPackagesToComponents(packagesDict)
 
+        
+    
+    def _getPackagesfromPACKAGE(self, fileLines:list[str]) -> dict:
+        packagesRange = self._calculateRange('NETLIST')
+        packagesDict = {}
+        for i in packagesRange:
+            if ',' in fileLines[i]:
+                line = fileLines[i].replace('\n', '')
+                packageName, pinType, sizeX, sizeY, _ = [parameter.strip() for parameter in line.split(',')]
+                sizeX, sizeY  = CamCadLoader.floatOrNone(sizeX), CamCadLoader.floatOrNone(sizeY)
+                packagesDict[packageName] = {'pinType': pinType, 'dimensions':(sizeX, sizeY)}
+        return packagesDict
+    
+    def _matchPackagesToComponents(self, packagesDict:dict) -> list[str]:
         noPackagesMatch = []
         for componentName in self.boardData['COMPONENTS']:
             componentInstance = self.boardData['COMPONENTS'][componentName]
@@ -116,20 +131,7 @@ class CamCadLoader:
                 componentInstance.setPackageType(packagesDict[componentPackageName]['pinType'])
             else:
                 noPackagesMatch.append(componentInstance)
-    
-
-        
-    
-    def _getPackagesfromPACKAGE(self, fileLines:list[str]) -> dict:
-        packagesRange = self._calculateRange('NETLIST')
-        packagesDict = {}
-        for i in packagesRange:
-            if ',' in fileLines[i]:
-                line = fileLines[i].replace('\n', '')
-                packageName, pinType, sizeX, sizeY, _ = [parameter.strip() for parameter in line.split(',')]
-                sizeX, sizeY  = CamCadLoader.floatOrNone(sizeX), CamCadLoader.floatOrNone(sizeY)
-                packagesDict[packageName] = {'pinType': pinType, 'dimensions':(sizeX, sizeY)}
-        return packagesDict
+        return noPackagesMatch
     
     def _addBlankNet(self, netName:str, componentName:str):
         if not netName in self.boardData['NETS']:
