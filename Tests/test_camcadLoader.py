@@ -76,7 +76,7 @@ def packagesFileLines():
         ':PARTLIST\n',
         '0 ,R40 ,15009285 ,1.020 ,0.878 ,T,180\n',
         '0 ,C10 , ,2.217 ,2.283 ,T,90\n',
-        '0 ,LD1 , , , ,T,270\n',
+        '0 ,LD1 ,15008648 , , ,T,270\n',
         ':ENDPARTLIST\n',
         ':NETLIST\n',
         '7 ,VCC_169 ,R40 ,2 ,1.042 ,0.878 ,T,288\n',
@@ -88,9 +88,11 @@ def packagesFileLines():
         ':ENDNETLIST\n',
         ':PNDATA\n',
         '15009285 ,1 ,15009285 ,15 ,10.0 ,0 ,0 ,R0402_T_0\n',
+        '15008648 ,80 ,15008648 ,2 ,.0 ,0 ,0 ,LED_3MM\n',
         ':ENDPNDATA\n',
         ':PACKAGES\n',
         'R0402_T_0 ,SMD ,0.080 ,0.036 ,0.000\n',
+        'LED_3MM ,TH ,0.178 ,0.078 ,0.000\n',
         ':PACKAGES\n',
     ]
     return fileLinesMock
@@ -185,4 +187,4 @@ def test__getPackages(packagesFileLines):
     assert component2_p1 == geometryObjects.Point(2.102, 2.148) and component2_p2 == geometryObjects.Point(2.110, 2.190)
 
     component3_p1, component3_p2 = instance.boardData['COMPONENTS']['LD1'].package
-    assert component3_p1 == geometryObjects.Point(0.838, 1.834) and component3_p2 == geometryObjects.Point(0.933, 1.929)
+    assert component3_p1 == geometryObjects.Point(0.843, 1.941) and component3_p2 == geometryObjects.Point(1.021, 2.019)
