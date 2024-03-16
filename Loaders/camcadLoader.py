@@ -103,6 +103,8 @@ class CamCadLoader:
         packagesDict = self._getPackagesfromPACKAGE(fileLines)
         componentWithoutpackages = self._matchPackagesToComponents(packagesDict)
         
+        for comp in componentWithoutpackages:
+            comp.calculatePackageFromPins()
         
     
     def _getPackagesfromPACKAGE(self, fileLines:list[str]) -> dict:
