@@ -108,7 +108,7 @@ class CamCadLoader:
         return x        
     
     def _getPackagesfromPACKAGE(self, fileLines:list[str]) -> dict:
-        packagesRange = self._calculateRange('NETLIST')
+        packagesRange = self._calculateRange('PACKAGES')
         packagesDict = {}
         for i in packagesRange:
             if ',' in fileLines[i]:
@@ -148,7 +148,7 @@ class CamCadLoader:
             else:
                 noPackagesMatch.append(componentInstance)
         return noPackagesMatch
-    
+
     def _addBlankNet(self, netName:str, componentName:str):
         if not netName in self.boardData['NETS']:
             self.boardData['NETS'][netName] = {}
