@@ -67,24 +67,7 @@ class CamCadLoader:
                 side = sideDict[side]
                 x, y  = CamCadLoader.floatOrNone(x), CamCadLoader.floatOrNone(y)
                 newComponent = self._createComponent(name, packageName, x, y, float(angle), side)
-                self.boardData['COMPONENTS'][name] = newComponent
-    
-    def _createComponent(self, name:str, packageName:str, x:float|None, y:float|None, angle:float, side:str) -> component.Component:
-        newComponent = component.Component(name)
-        newComponent.setPackageName(packageName)
-        center = geometryObjects.Point(x, y)
-        newComponent.setCoords(center)
-        newComponent.setAngle(float(angle))
-        newComponent.setSide(side)
-        return newComponent
-    
-    @staticmethod
-    def floatOrNone(x:str):
-        try:
-            x = float(x)
-        except ValueError:
-            x = None
-        return x
+                self.boardData['COMPONENTS'][name] = newComponent    
 
     def _getNetsfromNETLIST(self, fileLines:list[str]):
         netlistRange = self._calculateRange('NETLIST')
@@ -105,7 +88,23 @@ class CamCadLoader:
         
         for comp in componentWithoutpackages:
             comp.calculatePackageFromPins()
-        
+    
+    def _createComponent(self, name:str, packageName:str, x:float|None, y:float|None, angle:float, side:str) -> component.Component:
+        newComponent = component.Component(name)
+        newComponent.setPackageName(packageName)
+        center = geometryObjects.Point(x, y)
+        newComponent.setCoords(center)
+        newComponent.setAngle(float(angle))
+        newComponent.setSide(side)
+        return newComponent
+    
+    @staticmethod
+    def floatOrNone(x:str):
+        try:
+            x = float(x)
+        except ValueError:
+            x = None
+        return x        
     
     def _getPackagesfromPACKAGE(self, fileLines:list[str]) -> dict:
         packagesRange = self._calculateRange('NETLIST')
