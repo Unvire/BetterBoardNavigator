@@ -83,16 +83,9 @@ def packagesFileLines():
         '9 ,NET0003 ,R40 ,1 ,0.998 ,0.878 ,T,288\n',
         '33 ,NET0011 ,C10 ,1 ,2.217 ,2.305 ,T,288\n',
         '45 ,GND ,C10 ,2 ,2.217 ,2.261 ,T,288\n',
-        '18 ,VCC_DISPLAY ,LD1 ,A ,0.982 ,1.930 ,A,255\n',
+        '18 ,VCC_DISPLAY ,LD1 ,A ,0.882 ,1.930 ,A,255\n',
         '24 ,N16763429 ,LD1 ,K ,0.982 ,2.030 ,A,255\n',         
         ':ENDNETLIST\n',
-        ':PACKAGES\n',
-        'CN_LUMBERG_3644_3 ,TH ,0.746 ,0.681 ,0.000\n',
-        'CN_LUMBERG_3644_2 ,TH ,0.746 ,0.484 ,0.000\n',
-        'CN_STELVIO_MRT12P5_2_T ,TH ,0.394 ,0.295 ,0.000\n',
-        'CN_EDGE50_3_LUMBERG3575 ,TH ,0.480 ,0.374 ,0.000\n',
-        'CN_EDGE25_6_LUMBERG3517 ,TH ,0.579 ,0.295 ,0.000\n',
-        ':ENDPACKAGES\n',
         ':PNDATA\n',
         '15009285 ,1 ,15009285 ,15 ,10.0 ,0 ,0 ,R0402_T_0\n',
         ':ENDPNDATA\n',
@@ -177,3 +170,19 @@ def test__getNetsfromNETLIST(netlistFileLines):
     assert instance.boardData['COMPONENTS']['C47'].pins['1']['point'] == geometryObjects.Point(771.855 ,342.902)
     assert instance.boardData['COMPONENTS']['C47'].pins['2']['netName'] == 'NetC47_2'
     assert instance.boardData['COMPONENTS']['C47'].pins['2']['point'] == geometryObjects.Point(770.839 ,342.902)
+
+def test__getPackages(packagesFileLines):
+    instance = CamCadLoader()
+    instance._getSectionsLinesBeginEnd(packagesFileLines)
+    instance._getComponenentsFromPARTLIST(packagesFileLines)    
+    instance._getNetsfromNETLIST(packagesFileLines)
+    instance._getPackages(packagesFileLines)
+
+    component1_p1, component1_p2 = instance.boardData['COMPONENTS']['R40'].package
+    assert component1_p1 == geometryObjects.Point(0.98, 0.860) and component1_p2 == geometryObjects.Point(1.060, 0.896)
+
+    component2_p1, component2_p2 = instance.boardData['COMPONENTS']['C10'].package
+    assert component2_p1 == geometryObjects.Point(2.102, 2.148) and component2_p2 == geometryObjects.Point(2.110, 2.190)
+
+    component3_p1, component3_p2 = instance.boardData['COMPONENTS']['LD1'].package
+    assert component3_p1 == geometryObjects.Point(0.838, 1.834) and component3_p2 == geometryObjects.Point(0.933, 1.929)
