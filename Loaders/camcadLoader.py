@@ -1,4 +1,5 @@
-import re
+import sys, os; 
+sys.path.append(os.getcwd())
 import geometryObjects
 import component
 
@@ -52,8 +53,8 @@ class CamCadLoader:
                 endPoint = geometryObjects.Point(float(xEnd), float(yEnd))
 
                 self.boardData['SHAPE'].append(geometryObjects.Line(startPoint, endPoint))
-                bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, startPoint)       
-                bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, endPoint)
+                for point in [startPoint, endPoint]:
+                    bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
         self.boardData['AREA'] = [bottomLeftPoint, topRightPoint]
     
     def _getComponenentsFromPARTLIST(self, fileLines:list[str]):
@@ -147,8 +148,7 @@ class CamCadLoader:
                 width, height = packagesDict[componentpartNumber]['dimensions']
                 x0, y0 = self._calculateMoveVectorFromWidthHeight(width, height, 3)
                 packageBottomLeftPoint = geometryObjects.Point.translate(componentInstance.coords, (x0, y0))
-                packageTopRightPoint = geometryObjects.Point.translate(packageBottomLeftPoint, (width, height))
-                print(componentInstance.name, packageBottomLeftPoint, packageTopRightPoint, componentInstance.coords)
+                packageTopRightPoint = geometryObjects.Point.translate(componentInstance.coords, (-x0, -y0))
 
                 componentInstance.setPackage(packageBottomLeftPoint, packageTopRightPoint)                
                 componentInstance.setPackageType(packagesDict[componentpartNumber]['pinType'])
