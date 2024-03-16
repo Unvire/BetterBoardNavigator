@@ -29,7 +29,7 @@ class Component:
         self.packageType = packageType
     
     def isCoordsValid(self):
-        return self.coords.x and self.coords.y
+        return bool(self.coords.x and self.coords.y)
     
     def calculateCenterFromPins(self):
         numOfPins = len(self.pins)
