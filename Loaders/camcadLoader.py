@@ -75,9 +75,13 @@ class CamCadLoader:
         for i in netlistRange:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
-                _, netName, componentName, pinName , pinX, pinY, _, _ = [parameter.strip() for parameter in line.split(',')]
+                _, netName, componentName, pinName , pinX, pinY, side, _ = [parameter.strip() for parameter in line.split(',')]
                 self._addBlankNet(netName, componentName)
                 
+                if componentName not in self.boardData['COMPONENTS']:
+                    newComponent = self._createComponent(componentName, '', None, None, 0, side)
+                    self.boardData['COMPONENTS'][componentName] = newComponent
+                    
                 componentOnNet = self.boardData['COMPONENTS'][componentName]
                 componentOnNet.addPin(pinName, geometryObjects.Point(float(pinX), float(pinY)), netName)
                 self.boardData['NETS'][netName][componentName]['componentInstance'] = componentOnNet
