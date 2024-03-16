@@ -84,7 +84,8 @@ class CamCadLoader:
     
     def _getPackages(self, fileLines:list[str]):
         packagesDict = self._getPackagesfromPACKAGE(fileLines)
-        componentWithoutpackages = self._matchPackagesToComponents(packagesDict)
+        pnDict = self._getPNDATA(fileLines)
+        componentWithoutpackages = self._matchPackagesToComponents(packagesDict, pnDict)
         
         for comp in componentWithoutpackages:
             comp.calculatePackageFromPins()
@@ -117,11 +118,22 @@ class CamCadLoader:
                 packagesDict[packageName] = {'pinType': pinType, 'dimensions':(sizeX, sizeY)}
         return packagesDict
     
-    def _matchPackagesToComponents(self, packagesDict:dict) -> list[component.Component]:
+    def _getPNDATA(self, fileLines:list[str]) -> dict:
+        pnRange = self._calculateRange('PNDATA')
+        pnDict = {}
+        for i in pnRange:
+            if ',' in fileLines[i]:
+                line = fileLines[i].replace('\n', '')
+                componentPN, _, _, _, _, _, _, packageName = [parameter.strip() for parameter in line.split(',')]
+                pnDict[componentPN] = packageName
+        return pnDict
+
+    
+    def _matchPackagesToComponents(self, packagesDict:dict, pnDict:dict) -> list[component.Component]:
         noPackagesMatch = []
         for componentName in self.boardData['COMPONENTS']:
             componentInstance = self.boardData['COMPONENTS'][componentName]
-            componentPackageName = componentInstance.package
+            componentPackageName = pnDict[componentInstance.packageName]
 
             if componentPackageName in packagesDict:
                 if not componentInstance.isCoordsValid:                    
