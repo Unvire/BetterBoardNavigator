@@ -45,7 +45,7 @@ class Point:
     def scale(point:'Point', coefficient:float) -> 'Point':
         xPoint = point.x * coefficient
         yPoint = point.y * coefficient
-        return Point(round(xPoint, 5), round(yPoint, 5))
+        return Point(round(xPoint, 3), round(yPoint, 3))
 
 
 class Line:
