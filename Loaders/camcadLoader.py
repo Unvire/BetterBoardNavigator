@@ -71,7 +71,7 @@ class CamCadLoader:
     
     def _createComponent(self, name:str, packageName:str, x:float|None, y:float|None, angle:float, side:str) -> component.Component:
         newComponent = component.Component(name)
-        newComponent.setPackage(packageName)
+        newComponent.setPackageName(packageName)
         center = geometryObjects.Point(x, y)
         newComponent.setCoords(center)
         newComponent.setAngle(float(angle))
