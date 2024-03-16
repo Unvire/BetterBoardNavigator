@@ -133,21 +133,26 @@ class CamCadLoader:
         noPackagesMatch = []
         for componentName in self.boardData['COMPONENTS']:
             componentInstance = self.boardData['COMPONENTS'][componentName]
-            componentpartNumber = pnDict[componentInstance.partNumber]
-
+            componentpartNumber = self._componentPartNumber(componentInstance, pnDict)
             if componentpartNumber in packagesDict:
                 if not componentInstance.isCoordsValid:                    
                     componentInstance.calculateCenterFromPins()
                 
                 sizeX, sizeY = packagesDict[componentpartNumber]['dimensions']
-                packageBottomLeftPoint = geometryObjects.Point.translate(componentInstance.coords, (-sizeX / 2, -sizeY / 2))
+                x0, y0 = round(-sizeX / 2, 3), round(-sizeY / 2, 3)
+                packageBottomLeftPoint = geometryObjects.Point.translate(componentInstance.coords, (x0, y0))
                 packageTopRightPoint = geometryObjects.Point.translate(packageBottomLeftPoint, (sizeX, sizeY))
-                
-                componentInstance.setPackage([packageBottomLeftPoint, packageTopRightPoint])                
+                componentInstance.setPackage(packageBottomLeftPoint, packageTopRightPoint)                
                 componentInstance.setPackageType(packagesDict[componentpartNumber]['pinType'])
             else:
                 noPackagesMatch.append(componentInstance)
         return noPackagesMatch
+
+    def _componentPartNumber(self, componentInstance:component.Component, pnDict:dict) -> str:
+        componentPartNumber = componentInstance.partNumber
+        if componentPartNumber in pnDict:
+            return pnDict[componentPartNumber]
+        return ''
 
     def _addBlankNet(self, netName:str, componentName:str):
         if not netName in self.boardData['NETS']:
