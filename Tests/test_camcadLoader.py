@@ -110,7 +110,7 @@ def test__getComponenentsFromPARTLIST(exampleFileLines):
     
     assert component1.name == 'FID1'
     assert component1.coords == geometryObjects.Point(0.101, -0.109)
-    assert component1.package == 'PNFID'
+    assert component1.packageName == 'PNFID'
     assert component1.side == 'T'
     assert component1.angle == 0
 
