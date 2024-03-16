@@ -63,10 +63,10 @@ class CamCadLoader:
         for i in partlistRange:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
-                _, name, packageName, x, y, side, angle = [parameter.strip() for parameter in line.split(',')]
+                _, name, partNumber, x, y, side, angle = [parameter.strip() for parameter in line.split(',')]
                 side = sideDict[side]
                 x, y  = CamCadLoader.floatOrNone(x), CamCadLoader.floatOrNone(y)
-                newComponent = self._createComponent(name, packageName, x, y, float(angle), side)
+                newComponent = self._createComponent(name, partNumber, x, y, float(angle), side)
                 self.boardData['COMPONENTS'][name] = newComponent    
 
     def _getNetsfromNETLIST(self, fileLines:list[str]):
@@ -90,9 +90,9 @@ class CamCadLoader:
         for comp in componentWithoutpackages:
             comp.calculatePackageFromPins()
     
-    def _createComponent(self, name:str, packageName:str, x:float|None, y:float|None, angle:float, side:str) -> component.Component:
+    def _createComponent(self, name:str, partNumber:str, x:float|None, y:float|None, angle:float, side:str) -> component.Component:
         newComponent = component.Component(name)
-        newComponent.setPackageName(packageName)
+        newComponent.setPartNumber(partNumber)
         center = geometryObjects.Point(x, y)
         newComponent.setCoords(center)
         newComponent.setAngle(float(angle))
@@ -113,9 +113,9 @@ class CamCadLoader:
         for i in packagesRange:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
-                packageName, pinType, sizeX, sizeY, _ = [parameter.strip() for parameter in line.split(',')]
+                partNumber, pinType, sizeX, sizeY, _ = [parameter.strip() for parameter in line.split(',')]
                 sizeX, sizeY  = CamCadLoader.floatOrNone(sizeX), CamCadLoader.floatOrNone(sizeY)
-                packagesDict[packageName] = {'pinType': pinType, 'dimensions':(sizeX, sizeY)}
+                packagesDict[partNumber] = {'pinType': pinType, 'dimensions':(sizeX, sizeY)}
         return packagesDict
     
     def _getPNDATA(self, fileLines:list[str]) -> dict:
@@ -124,8 +124,8 @@ class CamCadLoader:
         for i in pnRange:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
-                componentPN, _, _, _, _, _, _, packageName = [parameter.strip() for parameter in line.split(',')]
-                pnDict[componentPN] = packageName
+                componentPN, _, _, _, _, _, _, partNumber = [parameter.strip() for parameter in line.split(',')]
+                pnDict[componentPN] = partNumber
         return pnDict
 
     
@@ -133,18 +133,18 @@ class CamCadLoader:
         noPackagesMatch = []
         for componentName in self.boardData['COMPONENTS']:
             componentInstance = self.boardData['COMPONENTS'][componentName]
-            componentPackageName = pnDict[componentInstance.packageName]
+            componentpartNumber = pnDict[componentInstance.partNumber]
 
-            if componentPackageName in packagesDict:
+            if componentpartNumber in packagesDict:
                 if not componentInstance.isCoordsValid:                    
                     componentInstance.calculateCenterFromPins()
                 
-                sizeX, sizeY = packagesDict[componentPackageName]['dimensions']
+                sizeX, sizeY = packagesDict[componentpartNumber]['dimensions']
                 packageBottomLeftPoint = geometryObjects.Point.translate(componentInstance.coords, (-sizeX / 2, -sizeY / 2))
                 packageTopRightPoint = geometryObjects.Point.translate(packageBottomLeftPoint, (sizeX, sizeY))
                 
                 componentInstance.setPackage([packageBottomLeftPoint, packageTopRightPoint])                
-                componentInstance.setPackageType(packagesDict[componentPackageName]['pinType'])
+                componentInstance.setPackageType(packagesDict[componentpartNumber]['pinType'])
             else:
                 noPackagesMatch.append(componentInstance)
         return noPackagesMatch

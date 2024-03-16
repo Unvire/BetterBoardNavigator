@@ -7,7 +7,7 @@ class Component:
         self.coords = None
         self.side = None
         self.angle = 0
-        self.packageName = None
+        self.partNumber = None
         self.package = []
         self.packageType = 'SMT'
 
@@ -23,8 +23,8 @@ class Component:
     def setAngle(self, angle:float):
         self.angle = angle
 
-    def setPackageName(self, packageName:str):
-        self.packageName = packageName
+    def setPartNumber(self, partNumber:str):
+        self.partNumber = partNumber
     
     def setPackage(self, bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point):
         self.package = [bottomLeftPoint, topRightPoint]

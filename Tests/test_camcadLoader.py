@@ -70,6 +70,39 @@ def netlistFileLines():
     ]
     return fileLinesMock
 
+@pytest.fixture
+def packagesFileLines():
+    fileLinesMock = [
+        ':PARTLIST\n',
+        '0 ,R40 ,15009285 ,1.020 ,0.878 ,T,180\n',
+        '0 ,C10 , ,2.217 ,2.283 ,T,90\n',
+        '0 ,LD1 , , , ,T,270\n',
+        ':ENDPARTLIST\n',
+        ':NETLIST\n',
+        '7 ,VCC_169 ,R40 ,2 ,1.042 ,0.878 ,T,288\n',
+        '9 ,NET0003 ,R40 ,1 ,0.998 ,0.878 ,T,288\n',
+        '33 ,NET0011 ,C10 ,1 ,2.217 ,2.305 ,T,288\n',
+        '45 ,GND ,C10 ,2 ,2.217 ,2.261 ,T,288\n',
+        '18 ,VCC_DISPLAY ,LD1 ,A ,0.982 ,1.930 ,A,255\n',
+        '24 ,N16763429 ,LD1 ,K ,0.982 ,2.030 ,A,255\n',         
+        ':ENDNETLIST\n',
+        ':PACKAGES\n',
+        'CN_LUMBERG_3644_3 ,TH ,0.746 ,0.681 ,0.000\n',
+        'CN_LUMBERG_3644_2 ,TH ,0.746 ,0.484 ,0.000\n',
+        'CN_STELVIO_MRT12P5_2_T ,TH ,0.394 ,0.295 ,0.000\n',
+        'CN_EDGE50_3_LUMBERG3575 ,TH ,0.480 ,0.374 ,0.000\n',
+        'CN_EDGE25_6_LUMBERG3517 ,TH ,0.579 ,0.295 ,0.000\n',
+        ':ENDPACKAGES\n',
+        ':PNDATA\n',
+        '15009285 ,1 ,15009285 ,15 ,10.0 ,0 ,0 ,R0402_T_0\n',
+        ':ENDPNDATA\n',
+        ':PACKAGES\n',
+        'R0402_T_0 ,SMD ,0.080 ,0.036 ,0.000\n',
+        ':PACKAGES\n',
+    ]
+    return fileLinesMock
+
+
 def test__getSectionsLinesBeginEnd(exampleFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(exampleFileLines)
@@ -110,7 +143,7 @@ def test__getComponenentsFromPARTLIST(exampleFileLines):
     
     assert component1.name == 'FID1'
     assert component1.coords == geometryObjects.Point(0.101, -0.109)
-    assert component1.packageName == 'PNFID'
+    assert component1.partNumber == 'PNFID'
     assert component1.side == 'T'
     assert component1.angle == 0
 
