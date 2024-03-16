@@ -40,6 +40,11 @@ class Point:
         xPoint, yPoint = point.x, point.y
         x, y = vector
         return Point(xPoint + x, yPoint  + y)
+    
+    @staticmethod
+    def scale(point:'Point', coefficient:float) -> 'Point':
+        xPoint, yPoint = point.x, point.y
+        return Point(xPoint * coefficient, yPoint * coefficient)
 
 
 class Line:
