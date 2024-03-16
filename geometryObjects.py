@@ -43,7 +43,7 @@ class Point:
     def translate(point:'Point', vector:list[float]) -> 'Point':
         xPoint, yPoint = point.x, point.y
         x, y = vector
-        return Point(xPoint + x, yPoint  + y)
+        return Point(round(xPoint + x, Point.DECIMAL_POINT_PRECISION), round(yPoint  + y, Point.DECIMAL_POINT_PRECISION))
     
     @staticmethod
     def scale(point:'Point', coefficient:float) -> 'Point':
