@@ -47,8 +47,8 @@ class Component:
         bottomLeftPoint = geometryObjects.Point.scale(bottomLeftPoint, 0.95)
         topRightPoint = geometryObjects.Point.scale(topRightPoint, 0.95)
 
-        x1, y1 = bottomLeftPoint.x, bottomLeftPoint.y1
-        x2, y2 = topRightPoint.x, topRightPoint.y1
+        x1, y1 = bottomLeftPoint.x, bottomLeftPoint.y
+        x2, y2 = topRightPoint.x, topRightPoint.y
         if round(x2 - x1, 3) == 0:
             moveDistance = (y2 - y1) * 0.1
             bottomLeftPoint.x = x1 - moveDistance
