@@ -37,8 +37,8 @@ class Component:
     
     def calculateCenterFromPins(self):
         bottomLeftPoint, topRightPoint = self.calculateHitBoxFromPins()
-        xCenter = bottomLeftPoint.x + (topRightPoint.x - bottomLeftPoint.x) / 2
-        yCenter = bottomLeftPoint.y + (topRightPoint.y - bottomLeftPoint.y) / 2
+        xCenter = bottomLeftPoint.x + round((topRightPoint.x - bottomLeftPoint.x) / 2, 3)
+        yCenter = bottomLeftPoint.y + round((topRightPoint.y - bottomLeftPoint.y) / 2, 3)
         center = geometryObjects.Point(xCenter, yCenter)
         self.setCoords(center)
     
@@ -50,11 +50,11 @@ class Component:
         x1, y1 = bottomLeftPoint.x, bottomLeftPoint.y
         x2, y2 = topRightPoint.x, topRightPoint.y
         if round(x2 - x1, 3) == 0:
-            moveDistance = (y2 - y1) * 0.1
+            moveDistance = round((y2 - y1) * 0.1, 3)
             bottomLeftPoint.x = x1 - moveDistance
             topRightPoint.x = x2 + moveDistance
         if round(y2 - y1, 3) == 0:
-            moveDistance = (x2 - x1) * 0.1
+            moveDistance = round((x2 - x1) * 0.1, 3)
             bottomLeftPoint.y = y1 - moveDistance
             topRightPoint.y = y2 + moveDistance
 
