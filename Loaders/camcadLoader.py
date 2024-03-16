@@ -107,15 +107,21 @@ class CamCadLoader:
             x = None
         return x        
     
+    def _addBlankNet(self, netName:str, componentName:str):
+        if not netName in self.boardData['NETS']:
+            self.boardData['NETS'][netName] = {}
+        if not componentName in self.boardData['NETS'][netName]:
+            self.boardData['NETS'][netName][componentName] = {'componentInstance':None, 'pins':[]}
+    
     def _getPackagesfromPACKAGE(self, fileLines:list[str]) -> dict:
         packagesRange = self._calculateRange('PACKAGES')
         packagesDict = {}
         for i in packagesRange:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
-                partNumber, pinType, sizeX, sizeY, _ = [parameter.strip() for parameter in line.split(',')]
-                sizeX, sizeY  = CamCadLoader.floatOrNone(sizeX), CamCadLoader.floatOrNone(sizeY)
-                packagesDict[partNumber] = {'pinType': pinType, 'dimensions':(sizeX, sizeY)}
+                partNumber, pinType, width, height, _ = [parameter.strip() for parameter in line.split(',')]
+                width, height  = CamCadLoader.floatOrNone(width), CamCadLoader.floatOrNone(height)
+                packagesDict[partNumber] = {'pinType': pinType, 'dimensions':(width, height)}
         return packagesDict
     
     def _getPNDATA(self, fileLines:list[str]) -> dict:
@@ -127,21 +133,23 @@ class CamCadLoader:
                 componentPN, _, _, _, _, _, _, partNumber = [parameter.strip() for parameter in line.split(',')]
                 pnDict[componentPN] = partNumber
         return pnDict
-
     
     def _matchPackagesToComponents(self, packagesDict:dict, pnDict:dict) -> list[component.Component]:
         noPackagesMatch = []
         for componentName in self.boardData['COMPONENTS']:
             componentInstance = self.boardData['COMPONENTS'][componentName]
             componentpartNumber = self._componentPartNumber(componentInstance, pnDict)
+
             if componentpartNumber in packagesDict:
-                if not componentInstance.isCoordsValid:                    
-                    componentInstance.calculateCenterFromPins()
+                if not componentInstance.isCoordsValid():   
+                    componentInstance.calculateCenterFromPins() 
                 
-                sizeX, sizeY = packagesDict[componentpartNumber]['dimensions']
-                x0, y0 = round(-sizeX / 2, 3), round(-sizeY / 2, 3)
+                width, height = packagesDict[componentpartNumber]['dimensions']
+                x0, y0 = self._calculateMoveVectorFromWidthHeight(width, height, 3)
                 packageBottomLeftPoint = geometryObjects.Point.translate(componentInstance.coords, (x0, y0))
-                packageTopRightPoint = geometryObjects.Point.translate(packageBottomLeftPoint, (sizeX, sizeY))
+                packageTopRightPoint = geometryObjects.Point.translate(packageBottomLeftPoint, (width, height))
+                print(componentInstance.name, packageBottomLeftPoint, packageTopRightPoint, componentInstance.coords)
+
                 componentInstance.setPackage(packageBottomLeftPoint, packageTopRightPoint)                
                 componentInstance.setPackageType(packagesDict[componentpartNumber]['pinType'])
             else:
@@ -153,13 +161,10 @@ class CamCadLoader:
         if componentPartNumber in pnDict:
             return pnDict[componentPartNumber]
         return ''
+    
+    def _calculateMoveVectorFromWidthHeight(self, width:float, height:float, roundDigits:int) -> (float, float):
+        return round(-width / 2, roundDigits), round(-height / 2, roundDigits)
 
-    def _addBlankNet(self, netName:str, componentName:str):
-        if not netName in self.boardData['NETS']:
-            self.boardData['NETS'][netName] = {}
-        if not componentName in self.boardData['NETS'][netName]:
-            self.boardData['NETS'][netName][componentName] = {'componentInstance':None, 'pins':[]}
-                
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
     
