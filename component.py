@@ -49,11 +49,11 @@ class Component:
 
         x1, y1 = bottomLeftPoint.x, bottomLeftPoint.y1
         x2, y2 = topRightPoint.x, topRightPoint.y1
-        if x2 - x1 == 0:
+        if round(x2 - x1, 3) == 0:
             moveDistance = (y2 - y1) * 0.1
             bottomLeftPoint.x = x1 - moveDistance
             topRightPoint.x = x2 + moveDistance
-        if y2 - y1 == 0:
+        if round(y2 - y1, 3) == 0:
             moveDistance = (x2 - x1) * 0.1
             bottomLeftPoint.y = y1 - moveDistance
             topRightPoint.y = y2 + moveDistance
