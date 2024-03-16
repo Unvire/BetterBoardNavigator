@@ -21,6 +21,9 @@ class CamCadLoader:
         fileLines = self._getFileLines()
         self._getSectionsLinesBeginEnd(fileLines)
         self._getBoardDimensions(fileLines)
+        self._getComponenentsFromPARTLIST(fileLines)
+        self._getNetsfromNETLIST(fileLines)
+        self._getPackages(fileLines)
 
         return self.boardData
 
@@ -99,7 +102,7 @@ class CamCadLoader:
     def _getPackages(self, fileLines:list[str]):
         packagesDict = self._getPackagesfromPACKAGE(fileLines)
         componentWithoutpackages = self._matchPackagesToComponents(packagesDict)
-
+        
         
     
     def _getPackagesfromPACKAGE(self, fileLines:list[str]) -> dict:
@@ -113,7 +116,7 @@ class CamCadLoader:
                 packagesDict[packageName] = {'pinType': pinType, 'dimensions':(sizeX, sizeY)}
         return packagesDict
     
-    def _matchPackagesToComponents(self, packagesDict:dict) -> list[str]:
+    def _matchPackagesToComponents(self, packagesDict:dict) -> list[component.Component]:
         noPackagesMatch = []
         for componentName in self.boardData['COMPONENTS']:
             componentInstance = self.boardData['COMPONENTS'][componentName]
