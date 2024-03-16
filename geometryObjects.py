@@ -8,8 +8,8 @@ class Point:
         return f'Point x={self.x}, y={self.y}'
 
     def __eq__(self, point:'Point'):
-        result1 = abs(self.x - point.x) < 1 / Point.DECIMAL_POINT_PRECISION
-        result2 = abs(self.y - point.y) < 1 / Point.DECIMAL_POINT_PRECISION
+        result1 = round(abs(self.x - point.x), Point.DECIMAL_POINT_PRECISION) <= 10**(-Point.DECIMAL_POINT_PRECISION)
+        result2 = round(abs(self.y - point.y), Point.DECIMAL_POINT_PRECISION) <= 10**(-Point.DECIMAL_POINT_PRECISION)
         return result1 and result2
                 
     

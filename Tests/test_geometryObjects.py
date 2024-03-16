@@ -1,12 +1,16 @@
 import pytest
 import geometryObjects
 
-def test_PointRqual():
+def test_PointEqual():
     pointA = geometryObjects.Point(0, 0)
     pointB = geometryObjects.Point(1.2, 1.2)
-    pointC = geometryObjects.Point(1.2, 1.2)
+    pointC = geometryObjects.Point(1.200, 1.200)
+    pointD = geometryObjects.Point(1.201, 1.199)
+    pointE = geometryObjects.Point(1.202, 1.198)
     assert pointA != pointB
     assert pointB == pointC
+    assert pointC == pointD
+    assert pointC != pointE
 
 def test_minXYCoords():
     minPoint = geometryObjects.Point(float('Inf'), float('Inf'))
