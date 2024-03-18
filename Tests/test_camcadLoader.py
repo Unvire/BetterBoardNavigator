@@ -171,8 +171,9 @@ def test__getPadsFromPAD(netlistFileLines):
 def test__getNetsFromNETLIST(netlistFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(netlistFileLines)
-    instance._getComponenentsFromPARTLIST(netlistFileLines)    
-    instance._getNetsFromNETLIST(netlistFileLines)
+    instance._getComponenentsFromPARTLIST(netlistFileLines)   
+    padsDict = instance._getPadsFromPAD(netlistFileLines)
+    instance._getNetsFromNETLIST(netlistFileLines, padsDict)
     
     ## name of nets
     assert list(instance.boardData['NETS'].keys()) == ['NetC41_1' , 'NetC47_2', 'NetC47_1']
@@ -185,15 +186,18 @@ def test__getNetsFromNETLIST(netlistFileLines):
     ## proper component mapping
     assert instance.boardData['NETS']['NetC41_1']['TP100']['componentInstance'] is instance.boardData['COMPONENTS']['TP100']
     assert instance.boardData['NETS']['NetC41_1']['TP100']['pins'] == ['1']
-    assert instance.boardData['COMPONENTS']['TP100'].pins['1']['netName'] == 'NetC41_1'
-    assert instance.boardData['COMPONENTS']['TP100'].pins['1']['point'] == geometryObjects.Point(785.190 ,348.564)
+    assert instance.boardData['COMPONENTS']['TP100'].pins['1'].net == 'NetC41_1'
+    assert instance.boardData['COMPONENTS']['TP100'].pins['1'].center == geometryObjects.Point(785.190 ,348.564)
+    assert instance.boardData['COMPONENTS']['TP100'].pins['1'].pinArea == [geometryObjects.Point(785.180 ,348.554), geometryObjects.Point(785.200 ,348.574)]
 
     assert instance.boardData['NETS']['NetC47_1']['C47']['componentInstance'] is instance.boardData['COMPONENTS']['C47']
     assert instance.boardData['NETS']['NetC47_1']['C47']['componentInstance'] is instance.boardData['NETS']['NetC47_2']['C47']['componentInstance']
-    assert instance.boardData['COMPONENTS']['C47'].pins['1']['netName'] == 'NetC47_1'
-    assert instance.boardData['COMPONENTS']['C47'].pins['1']['point'] == geometryObjects.Point(771.855 ,342.902)
-    assert instance.boardData['COMPONENTS']['C47'].pins['2']['netName'] == 'NetC47_2'
-    assert instance.boardData['COMPONENTS']['C47'].pins['2']['point'] == geometryObjects.Point(770.839 ,342.902)
+    assert instance.boardData['COMPONENTS']['C47'].pins['1'].net == 'NetC47_1'
+    assert instance.boardData['COMPONENTS']['C47'].pins['1'].center == geometryObjects.Point(771.855 ,342.902)
+    assert instance.boardData['COMPONENTS']['C47'].pins['1'].pinArea == [geometryObjects.Point(771.847 ,342.894), geometryObjects.Point(771.863 ,342.910)]
+    assert instance.boardData['COMPONENTS']['C47'].pins['2'].net == 'NetC47_2'
+    assert instance.boardData['COMPONENTS']['C47'].pins['2'].center == geometryObjects.Point(770.839 ,342.902)
+    assert instance.boardData['COMPONENTS']['C47'].pins['2'].pinArea == [geometryObjects.Point(770.831 ,342.894), geometryObjects.Point(770.847 ,342.910)]
 
 def test__getPackages(packagesFileLines):
     instance = CamCadLoader()
