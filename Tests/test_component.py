@@ -10,10 +10,10 @@ def componentForPinsCalculation():
     pad3 = pin.Pin('3')
     pad4 = pin.Pin('4')
 
-    pad1.setCenter(geometryObjects.Point(-1, -1))
-    pad2.setCenter(geometryObjects.Point(3, 2))
-    pad3.setCenter(geometryObjects.Point(-1, 1))
-    pad4.setCenter(geometryObjects.Point(2, 0))
+    pad1.setCoords(geometryObjects.Point(-1, -1))
+    pad2.setCoords(geometryObjects.Point(3, 2))
+    pad3.setCoords(geometryObjects.Point(-1, 1))
+    pad4.setCoords(geometryObjects.Point(2, 0))
 
     testedComponent.addPin('1', pad1)
     testedComponent.addPin('2', pad2)

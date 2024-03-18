@@ -88,7 +88,7 @@ class CamCadLoader:
                     self.boardData['COMPONENTS'][componentName] = newComponent
                 
                 pad = copy.deepcopy(padsDict[padID])
-                pad.setCenter(geometryObjects.Point(float(pinX), float(pinY)))
+                pad.setCoords(geometryObjects.Point(float(pinX), float(pinY)))
                 pad.calculateArea()
                 pad.setNet(netName)
 
