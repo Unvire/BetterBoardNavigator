@@ -9,6 +9,8 @@ class Pin:
         self.pinArea = []
         self.parentComponent = None
         self.net = None
+        self.width = 0
+        self.height = 0
     
     def setShape(self, shape:str):
         self.shape = shape
@@ -24,3 +26,7 @@ class Pin:
     
     def setNet(self, netName:str):
         self.net = netName
+    
+    def setDimensions(self, width:float, height:float):
+        self.width = width
+        self.height = height
