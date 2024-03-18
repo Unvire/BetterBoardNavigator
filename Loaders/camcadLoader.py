@@ -159,13 +159,12 @@ class CamCadLoader:
     def _matchPackagesToComponents(self, packagesDict:dict, pnDict:dict) -> list[component.Component]:
         noPackagesMatch = []
         for componentName in self.boardData['COMPONENTS']:
-            componentInstance = self.boardData['COMPONENTS'][componentName]
+            componentInstance = self.boardData['COMPONENTS'][componentName]            
+            if not componentInstance.isCoordsValid():   
+                componentInstance.calculateCenterFromPins()
+            
             componentpartNumber = self._componentPartNumber(componentInstance, pnDict)
-
-            if componentpartNumber in packagesDict:
-                if not componentInstance.isCoordsValid():   
-                    componentInstance.calculateCenterFromPins()
-                
+            if componentpartNumber in packagesDict:                
                 width, height = packagesDict[componentpartNumber]['dimensions']
                 x0, y0 = self._calculateMoveVectorFromWidthHeight(width, height, 3)
                 packageBottomLeftPoint = geometryObjects.Point.translate(componentInstance.coords, (x0, y0))
@@ -194,4 +193,4 @@ if __name__ == '__main__':
     filePath = r'C:\Users\krzys\Documents\GitHub\boardNavigator\Schematic\lvm Core.cad'
     loader = CamCadLoader()
     loader.loadFile(filePath)
-    print(loader.boardData['AREA'][0], loader.boardData['AREA'][1])
+    print(loader.boardData['AREA'][0], loader.boardData['AREA'][1])  
