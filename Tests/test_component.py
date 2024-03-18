@@ -1,14 +1,24 @@
 import pytest
-import component
+import component, pin
 import geometryObjects
 
 @pytest.fixture
 def componentForPinsCalculation():
     testedComponent = component.Component('1')
-    testedComponent.addPin('1', geometryObjects.Point(-1, -1), 'net1')
-    testedComponent.addPin('2', geometryObjects.Point(3, 2), 'net1')
-    testedComponent.addPin('3', geometryObjects.Point(-1, 1), 'net1')
-    testedComponent.addPin('4', geometryObjects.Point(2, 0), 'net1')
+    pad1 = pin.Pin('1') 
+    pad2 = pin.Pin('2')
+    pad3 = pin.Pin('3')
+    pad4 = pin.Pin('4')
+
+    pad1.setCenter(geometryObjects.Point(-1, -1))
+    pad2.setCenter(geometryObjects.Point(3, 2))
+    pad3.setCenter(geometryObjects.Point(-1, 1))
+    pad4.setCenter(geometryObjects.Point(2, 0))
+
+    testedComponent.addPin('1', pad1)
+    testedComponent.addPin('2', pad2)
+    testedComponent.addPin('3', pad3)
+    testedComponent.addPin('4', pad4)
     return testedComponent
 
 @pytest.mark.parametrize('input, expected', [((None, None), False), ((2, 3), True), ((None, 2), False)])
