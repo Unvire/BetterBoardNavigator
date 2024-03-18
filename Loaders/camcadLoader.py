@@ -15,7 +15,7 @@ class CamCadLoader:
         self._getBoardDimensions(fileLines)
         self._getComponenentsFromPARTLIST(fileLines)
         padsDict = self._getPadsFromPAD(fileLines)
-        self._getNetsromNETLIST(fileLines, padsDict)
+        self._getNetsFromNETLIST(fileLines, padsDict)
         self._getPackages(fileLines)
 
         return self.boardData
@@ -75,7 +75,7 @@ class CamCadLoader:
                 padsDict[padID] = self._createPin(name, shape, width, height)
         return padsDict
 
-    def _getNetsromNETLIST(self, fileLines:list[str], padsDict:dict):
+    def _getNetsFromNETLIST(self, fileLines:list[str], padsDict:dict):
         netlistRange = self._calculateRange('NETLIST')
         for i in netlistRange:
             if ',' in fileLines[i]:
