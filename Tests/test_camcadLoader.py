@@ -98,6 +98,10 @@ def packagesFileLines():
         'R0402_T_0 ,SMD ,0.080 ,0.036 ,0.000\n',
         'LED_3MM ,TH ,0.178 ,0.078 ,0.000\n',
         ':PACKAGES\n',
+        ':PAD\n',
+        '255 ,AP_r1778 ,CIRCLE ,0.070 ,0.070 ,0.035 ,0.035\n',
+        '288 ,AP_s711 ,RECT ,0.028 ,0.028 ,0.014 ,0.014\n',
+        ':ENDPAD\n',
     ]
     return fileLinesMock
 
@@ -202,8 +206,9 @@ def test__getNetsFromNETLIST(netlistFileLines):
 def test__getPackages(packagesFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(packagesFileLines)
-    instance._getComponenentsFromPARTLIST(packagesFileLines)    
-    instance._getNetsFromNETLIST(packagesFileLines)
+    instance._getComponenentsFromPARTLIST(packagesFileLines)  
+    padsDict = instance._getPadsFromPAD(packagesFileLines)  
+    instance._getNetsFromNETLIST(packagesFileLines, padsDict)
     instance._getPackages(packagesFileLines)
 
     component1_p1, component1_p2 = instance.boardData['COMPONENTS']['R40'].package
