@@ -52,7 +52,7 @@ component = {
 
 pin = {
     name: str
-    shape: str ('RECTANGLE' or 'CIRCLE')
+    shape: str ('RECT' or 'CIRCLE')
     center = geometryObjects.Point
     pinArea = [
         bottomLeftPoint: geometryObjects.Point, 
