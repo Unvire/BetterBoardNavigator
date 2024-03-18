@@ -1,4 +1,4 @@
-import sys, os; 
+import sys, os, copy 
 sys.path.append(os.getcwd())
 import geometryObjects
 import component, pin
@@ -87,7 +87,7 @@ class CamCadLoader:
                     newComponent = self._createComponent(componentName, '', None, None, 0, side)
                     self.boardData['COMPONENTS'][componentName] = newComponent
                 
-                pad = padsDict[padID]
+                pad = copy.deepcopy(padsDict[padID])
                 pad.setCenter(geometryObjects.Point(float(pinX), float(pinY)))
                 pad.calculateArea()
                 pad.setNet(netName)
