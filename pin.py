@@ -16,6 +16,9 @@ class Pin:
     def setCenter(self, centerPoint:geometryObjects.Point):
         self.center = centerPoint
     
+    def getCenter(self) -> geometryObjects.Point:
+        return self.center
+    
     def setPinArea(self, bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point):
         self.pinArea = [bottomLeftPoint, topRightPoint]
     

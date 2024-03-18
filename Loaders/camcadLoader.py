@@ -11,7 +11,6 @@ class CamCadLoader:
         self.boardData['COMPONENTS'] = dict 'componentName': component.Component instance
         self.boardData['NETS'] = dict netName:{componentName:{
                                                 'componentInstance': component.Component instance, 
-                                                'pins': list[str]}
                                                 }
         '''
         self.boardData = {'SHAPE':[], 'COMPONENTS':{}, 'NETS':{}}
@@ -89,15 +88,21 @@ class CamCadLoader:
         for i in netlistRange:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
-                _, netName, componentName, pinName , pinX, pinY, side, _ = [parameter.strip() for parameter in line.split(',')]
+                _, netName, componentName, pinName , pinX, pinY, side, padID = [parameter.strip() for parameter in line.split(',')]
                 self._addBlankNet(netName, componentName)
                 
                 if componentName not in self.boardData['COMPONENTS']:
                     newComponent = self._createComponent(componentName, '', None, None, 0, side)
                     self.boardData['COMPONENTS'][componentName] = newComponent
+                
+                pad = padsDict[padID]
+                pad.setCenter(geometryObjects.Point(float(pinX), float(pinY)))
+                pad.calculateArea()
+                pad.setNet(netName)
 
                 componentOnNet = self.boardData['COMPONENTS'][componentName]
-                componentOnNet.addPin(pinName, geometryObjects.Point(float(pinX), float(pinY)), netName)
+                componentOnNet.addPin(pinName, pad)
+
                 self.boardData['NETS'][netName][componentName]['componentInstance'] = componentOnNet
                 self.boardData['NETS'][netName][componentName]['pins'].append(pinName)
     
