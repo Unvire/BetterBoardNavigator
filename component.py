@@ -11,6 +11,10 @@ class Component:
         self.partNumber = None
         self.componentArea = []
         self.packageType = 'SMT'
+    
+    def __str__(self):
+        remark = f'Component={self.name}, coords={self.coords}, side={self.side}, numOfPins={len(self.pins)}'
+        return remark
 
     def addPin(self, pinName:str, pin:pin.Pin):
         self.pins[pinName] = pin

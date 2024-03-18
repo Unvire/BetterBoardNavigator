@@ -10,6 +10,10 @@ class Pin:
         self.width = 0
         self.height = 0
     
+    def __str__(self):
+        remark = f'Pad shape={self.shape}, coords={self.coords}, dimensions=[{self.width}, {self.height}]'
+        return remark
+    
     def setShape(self, shape:str):
         self.shape = shape
     
