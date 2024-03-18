@@ -66,7 +66,11 @@ def netlistFileLines():
         ';0 ,TP100 ,PNxx , , ,M,0\n',        
         ';0 ,C47 ,PNxx , , ,M,0\n',
         ';0 ,TP135 ,PNxx , , ,M,0\n',
-        ':ENDPARTLIST\n', 
+        ':ENDPARTLIST\n',
+        ':PAD\n',
+        '222 ,AP_ap_smd_r0402+1_1359_2869477608 ,RECT ,0.020 ,0.020 ,0.010 ,0.010\n',
+        '276 ,AP_r400 ,CIRCLE ,0.016 ,0.016 ,0.008 ,0.008\n',
+        ':ENDPAD\n',
     ]
     return fileLinesMock
 
@@ -145,6 +149,24 @@ def test__getComponenentsFromPARTLIST(exampleFileLines):
 @pytest.mark.parametrize('input, expected', [('1', 1.0), (' ', None),('-1.0', -1.0), ('10.123', 10.123), ('0', 0.0), ('1y9897a', None),])
 def test_floatOrNone(input, expected):
     assert CamCadLoader.floatOrNone(input) == expected
+
+def test__getPadsFromPAD(netlistFileLines):
+    instance = CamCadLoader()
+    instance._getSectionsLinesBeginEnd(netlistFileLines)
+    padsDict = instance._getPadsFromPAD(netlistFileLines)
+    assert list(padsDict.keys()) == ['222', '276']
+    
+    pad1 = padsDict['222']
+    assert pad1.name == 'AP_ap_smd_r0402+1_1359_2869477608'
+    assert pad1.shape == 'RECT'
+    assert pad1.width == 0.020
+    assert pad1.height == 0.020
+    
+    pad1 = padsDict['276']
+    assert pad1.name == 'AP_r400'
+    assert pad1.shape == 'CIRCLE'
+    assert pad1.width == 0.016
+    assert pad1.height == 0.016
 
 def test__getNetsFromNETLIST(netlistFileLines):
     instance = CamCadLoader()
