@@ -1,7 +1,7 @@
 import sys, os; 
 sys.path.append(os.getcwd())
 import geometryObjects
-import component
+import component, pin
 
 class CamCadLoader:
     def __init__(self):
@@ -23,7 +23,8 @@ class CamCadLoader:
         self._getSectionsLinesBeginEnd(fileLines)
         self._getBoardDimensions(fileLines)
         self._getComponenentsFromPARTLIST(fileLines)
-        self._getNetsFromNETLIST(fileLines)
+        padsDict = self._getPadsFromPAD(fileLines)
+        self._getNetsromNETLIST(fileLines, padsDict)
         self._getPackages(fileLines)
 
         return self.boardData
@@ -70,7 +71,20 @@ class CamCadLoader:
                 newComponent = self._createComponent(name, partNumber, x, y, float(angle), side)
                 self.boardData['COMPONENTS'][name] = newComponent    
 
-    def _getNetsFromNETLIST(self, fileLines:list[str]):
+    def _getPadsFromPAD(self, fileLines:list[str]) -> dict:
+        padlistRange = self._calculateRange('PAD')
+        
+        padsDict = {}
+        for i in padlistRange:
+            if ',' in fileLines[i]:
+                line = fileLines[i].replace('\n', '')
+                padID, name, shape, width, height, _, _ = [parameter.strip() for parameter in line.split(',')]                
+                width = CamCadLoader.floatOrNone(width)
+                height = CamCadLoader.floatOrNone(height)                
+                padsDict[padID] = self._createPin(name, shape, width, height)
+        return padsDict
+
+    def _getNetsromNETLIST(self, fileLines:list[str], padsDict:dict):
         netlistRange = self._calculateRange('NETLIST')
         for i in netlistRange:
             if ',' in fileLines[i]:
@@ -104,6 +118,12 @@ class CamCadLoader:
         newComponent.setSide(side)
         return newComponent
     
+    def _createPin(self, name:str, shape:str, width:float|None, height:float|None) -> pin.Pin: 
+        newPin = pin.Pin(name)
+        newPin.setShape(shape)
+        newPin.setDimensions(width, height)
+        return newPin
+
     @staticmethod
     def floatOrNone(x:str):
         try:
