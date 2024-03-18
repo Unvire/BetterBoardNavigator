@@ -171,7 +171,7 @@ class CamCadLoader:
                 packageBottomLeftPoint = geometryObjects.Point.translate(componentInstance.coords, (x0, y0))
                 packageTopRightPoint = geometryObjects.Point.translate(componentInstance.coords, (-x0, -y0))
 
-                componentInstance.setPackage(packageBottomLeftPoint, packageTopRightPoint)                
+                componentInstance.setComponentArea(packageBottomLeftPoint, packageTopRightPoint)                
                 componentInstance.setPackageType(packagesDict[componentpartNumber]['pinType'])
             else:
                 noPackagesMatch.append(componentInstance)

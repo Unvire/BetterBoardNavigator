@@ -9,7 +9,7 @@ class Component:
         self.side = None
         self.angle = 0
         self.partNumber = None
-        self.package = []
+        self.componentArea = []
         self.packageType = 'SMT'
 
     def addPin(self, pinName:str, pin:pin.Pin):
@@ -27,8 +27,8 @@ class Component:
     def setPartNumber(self, partNumber:str):
         self.partNumber = partNumber
     
-    def setPackage(self, bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point):
-        self.package = [bottomLeftPoint, topRightPoint]
+    def setComponentArea(self, bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point):
+        self.componentArea = [bottomLeftPoint, topRightPoint]
     
     def setPackageType(self, packageType:str):
         self.packageType = packageType
@@ -59,7 +59,7 @@ class Component:
             bottomLeftPoint.y = y1 - moveDistance
             topRightPoint.y = y2 + moveDistance
 
-        self.setPackage(bottomLeftPoint, topRightPoint)
+        self.setComponentArea(bottomLeftPoint, topRightPoint)
 
     def calculateHitBoxFromPins(self) -> (geometryObjects.Point, geometryObjects.Point):
         bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))

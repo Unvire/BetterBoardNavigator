@@ -40,6 +40,6 @@ def test_calculateCenterFromPins(componentForPinsCalculation):
 
 def test_calculatePackageFromPins(componentForPinsCalculation):
     componentForPinsCalculation.calculatePackageFromPins()
-    point1, point2 = componentForPinsCalculation.package
+    point1, point2 = componentForPinsCalculation.componentArea
     assert point1 == geometryObjects.Point(-0.95, -0.95)
     assert point2 == geometryObjects.Point(2.85, 1.9)
