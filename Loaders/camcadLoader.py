@@ -81,7 +81,7 @@ class CamCadLoader:
                 if componentName not in self.boardData['COMPONENTS']:
                     newComponent = self._createComponent(componentName, '', None, None, 0, side)
                     self.boardData['COMPONENTS'][componentName] = newComponent
-                    
+
                 componentOnNet = self.boardData['COMPONENTS'][componentName]
                 componentOnNet.addPin(pinName, geometryObjects.Point(float(pinX), float(pinY)), netName)
                 self.boardData['NETS'][netName][componentName]['componentInstance'] = componentOnNet
@@ -147,7 +147,7 @@ class CamCadLoader:
 
             if componentpartNumber in packagesDict:
                 if not componentInstance.isCoordsValid():   
-                    componentInstance.calculateCenterFromPins() 
+                    componentInstance.calculateCenterFromPins()
                 
                 width, height = packagesDict[componentpartNumber]['dimensions']
                 x0, y0 = self._calculateMoveVectorFromWidthHeight(width, height, 3)
@@ -177,3 +177,4 @@ if __name__ == '__main__':
     filePath = r'C:\Users\krzys\Documents\GitHub\boardNavigator\Schematic\lvm Core.cad'
     loader = CamCadLoader()
     loader.loadFile(filePath)
+    print(loader.boardData['AREA'][0], loader.boardData['AREA'][1])
