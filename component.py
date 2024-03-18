@@ -1,4 +1,5 @@
 import geometryObjects
+import pin
 
 class Component:
     def __init__(self, name:str):
@@ -11,8 +12,8 @@ class Component:
         self.package = []
         self.packageType = 'SMT'
 
-    def addPin(self, pin:str, point:geometryObjects.Point, netName:str):
-        self.pins[pin] = {'netName': netName, 'point':point}
+    def addPin(self, pinName:str, pin:pin.Pin):
+        self.pins[pinName] = pin
     
     def setCoords(self, point:geometryObjects.Point):
         self.coords = point
