@@ -146,11 +146,11 @@ def test__getComponenentsFromPARTLIST(exampleFileLines):
 def test_floatOrNone(input, expected):
     assert CamCadLoader.floatOrNone(input) == expected
 
-def test__getNetsfromNETLIST(netlistFileLines):
+def test__getNetsFromNETLIST(netlistFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(netlistFileLines)
     instance._getComponenentsFromPARTLIST(netlistFileLines)    
-    instance._getNetsfromNETLIST(netlistFileLines)
+    instance._getNetsFromNETLIST(netlistFileLines)
     
     ## name of nets
     assert list(instance.boardData['NETS'].keys()) == ['NetC41_1' , 'NetC47_2', 'NetC47_1']
@@ -177,7 +177,7 @@ def test__getPackages(packagesFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(packagesFileLines)
     instance._getComponenentsFromPARTLIST(packagesFileLines)    
-    instance._getNetsfromNETLIST(packagesFileLines)
+    instance._getNetsFromNETLIST(packagesFileLines)
     instance._getPackages(packagesFileLines)
 
     component1_p1, component1_p2 = instance.boardData['COMPONENTS']['R40'].package

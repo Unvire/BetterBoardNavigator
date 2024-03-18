@@ -23,7 +23,7 @@ class CamCadLoader:
         self._getSectionsLinesBeginEnd(fileLines)
         self._getBoardDimensions(fileLines)
         self._getComponenentsFromPARTLIST(fileLines)
-        self._getNetsfromNETLIST(fileLines)
+        self._getNetsFromNETLIST(fileLines)
         self._getPackages(fileLines)
 
         return self.boardData
@@ -70,7 +70,7 @@ class CamCadLoader:
                 newComponent = self._createComponent(name, partNumber, x, y, float(angle), side)
                 self.boardData['COMPONENTS'][name] = newComponent    
 
-    def _getNetsfromNETLIST(self, fileLines:list[str]):
+    def _getNetsFromNETLIST(self, fileLines:list[str]):
         netlistRange = self._calculateRange('NETLIST')
         for i in netlistRange:
             if ',' in fileLines[i]:
