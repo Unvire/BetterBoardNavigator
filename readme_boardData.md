@@ -41,7 +41,7 @@ component = {
     side: str ('T' or 'B')
     angle: float
     partNumber: str
-    package = [
+    componentArea = [
         bottomLeftPoint: geometryObjects.Point, 
         topRightPoint: geometryObjects.Point
     ]
@@ -53,7 +53,7 @@ component = {
 pin = {
     name: str
     shape: str ('RECT' or 'CIRCLE')
-    center = geometryObjects.Point
+    coords = geometryObjects.Point
     pinArea = [
         bottomLeftPoint: geometryObjects.Point, 
         topRightPoint: geometryObjects.Point
