@@ -30,3 +30,9 @@ class Pin:
     def setDimensions(self, width:float, height:float):
         self.width = width
         self.height = height
+    
+    def calculateArea(self):
+        moveVector = [-self.width / 2, -self.height / 2]
+        bottomLeftPoint = geometryObjects.Point.translate(self.center, moveVector)
+        topRightPoint = geometryObjects.Point.translate(bottomLeftPoint, [self.width, self.height])
+        self.setPinArea(bottomLeftPoint, topRightPoint)
