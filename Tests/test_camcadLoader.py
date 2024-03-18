@@ -211,11 +211,6 @@ def test__getPackages(packagesFileLines):
     instance._getNetsFromNETLIST(packagesFileLines, padsDict)
     instance._getPackages(packagesFileLines)
 
-    component1_p1, component1_p2 = instance.boardData['COMPONENTS']['R40'].componentArea
-    assert component1_p1 == geometryObjects.Point(0.98, 0.860) and component1_p2 == geometryObjects.Point(1.060, 0.896)
-
-    component2_p1, component2_p2 = instance.boardData['COMPONENTS']['C10'].componentArea
-    assert component2_p1 == geometryObjects.Point(2.102, 2.148) and component2_p2 == geometryObjects.Point(2.110, 2.190)
-
-    component3_p1, component3_p2 = instance.boardData['COMPONENTS']['LD1'].componentArea
-    assert component3_p1 == geometryObjects.Point(0.843, 1.941) and component3_p2 == geometryObjects.Point(1.021, 2.019)
+    assert instance.boardData['COMPONENTS']['R40'].componentArea == [geometryObjects.Point(0.98, 0.860), geometryObjects.Point(1.060, 0.896)]
+    assert instance.boardData['COMPONENTS']['C10'].componentArea == [geometryObjects.Point(2.102, 2.148), geometryObjects.Point(2.110, 2.190)]
+    assert instance.boardData['COMPONENTS']['LD1'].componentArea == [geometryObjects.Point(0.843, 1.941), geometryObjects.Point(1.021, 2.019)]
