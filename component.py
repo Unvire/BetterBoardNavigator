@@ -65,8 +65,8 @@ class Component:
         bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
         topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
         for pin in self.pins:
-            pinPoint = self.pins[pin]['point']
-            bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, pinPoint)
+            centerPoint = self.pins[pin].getCenter()
+            bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, centerPoint)
         return bottomLeftPoint, topRightPoint
 
     
