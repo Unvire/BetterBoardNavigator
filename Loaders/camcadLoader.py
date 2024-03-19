@@ -90,19 +90,14 @@ class CamCadLoader:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
                 _, netName, componentName, pinName , pinX, pinY, side, padID = [parameter.strip() for parameter in line.split(',')]
-                self._addBlankNet(nets, netName, componentName)
-                
+                self._addBlankNet(nets, netName, componentName)     
                 components = boardInstance.getComponents()
+                pad = self._calculatePinCoordsAndAddNet(padsDict[padID], pinX, pinY, netName)
+                
                 if componentName not in components:
                     newComponent = self._createComponent(componentName, '', None, None, 0, side)
-                    components[componentName] = newComponent
-                    boardInstance.setComponents(components)
+                    boardInstance.addComponent(newComponent)                
                 
-                pad = copy.deepcopy(padsDict[padID])
-                pad.setCoords(geometryObjects.Point(float(pinX), float(pinY)))
-                pad.calculateArea()
-                pad.setNet(netName)
-
                 componentOnNet = boardInstance.getComponents()[componentName]
                 componentOnNet.addPin(pinName, pad)
 
@@ -132,6 +127,13 @@ class CamCadLoader:
         newPin.setShape(shape)
         newPin.setDimensions(width, height)
         return newPin
+
+    def _calculatePinCoordsAndAddNet(self, pad:dict, pinX:str, pinY:str, netName:str) -> pin.Pin:
+        pad = copy.deepcopy(pad)
+        pad.setCoords(geometryObjects.Point(float(pinX), float(pinY)))
+        pad.calculateArea()
+        pad.setNet(netName)
+        return pad
 
     @staticmethod
     def floatOrNone(x:str):
