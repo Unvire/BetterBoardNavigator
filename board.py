@@ -31,3 +31,6 @@ class Board:
     
     def getNets(self) -> dict:
         return self.nets
+    
+    def addComponent(self, name:str, componentInstance:component.Component):
+        self.components[name] = componentInstance
