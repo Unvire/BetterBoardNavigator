@@ -126,23 +126,23 @@ def test__calculateRange(exampleFileLines):
 def test__getBoardDimensions(exampleFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(exampleFileLines)
-    instance._getBoardDimensions(exampleFileLines)
+    instance._getBoardDimensions(exampleFileLines, instance.boardData)
     line1 = geometryObjects.Line(geometryObjects.Point(2.238, -0.366), geometryObjects.Point(2.238, -0.177))
     line2 = geometryObjects.Line(geometryObjects.Point(4.028, -0.386), geometryObjects.Point(4.028, -0.287))
     line3 = geometryObjects.Line(geometryObjects.Point(4.028, -0.287), geometryObjects.Point(3.938, -0.287))
-    assert line1 == instance.boardData['SHAPE'][0]
-    assert line2 == instance.boardData['SHAPE'][1]    
-    assert line3 == instance.boardData['SHAPE'][2]
+    boardLine1, boardLine2, boardLine3 = instance.boardData.getOutlines()
+    assert line1 == boardLine1
+    assert line2 == boardLine2    
+    assert line3 == boardLine3
     bottomLeftPoint = geometryObjects.Point(2.238, -0.386)
     topRightPoint = geometryObjects.Point(4.028, -0.177)
-    assert bottomLeftPoint == instance.boardData['AREA'][0]
-    assert topRightPoint == instance.boardData['AREA'][1]
+    assert [bottomLeftPoint, topRightPoint] == instance.boardData.getArea()
 
 def test__getComponenentsFromPARTLIST(exampleFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(exampleFileLines)
-    instance._getComponenentsFromPARTLIST(exampleFileLines)
-    component1 = instance.boardData['COMPONENTS']['FID1']
+    instance._getComponenentsFromPARTLIST(exampleFileLines, instance.boardData)
+    component1 = instance.boardData.getComponents()['FID1']
     
     assert component1.name == 'FID1'
     assert component1.coords == geometryObjects.Point(0.101, -0.109)
@@ -175,42 +175,48 @@ def test__getPadsFromPAD(netlistFileLines):
 def test__getNetsFromNETLIST(netlistFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(netlistFileLines)
-    instance._getComponenentsFromPARTLIST(netlistFileLines)   
+    instance._getComponenentsFromPARTLIST(netlistFileLines, instance.boardData)   
     padsDict = instance._getPadsFromPAD(netlistFileLines)
-    instance._getNetsFromNETLIST(netlistFileLines, padsDict)
+    instance._getNetsFromNETLIST(netlistFileLines, padsDict, instance.boardData)
     
+    boardNets = instance.boardData.getNets()    
+    boardComponents = instance.boardData.getComponents()
+
     ## name of nets
-    assert list(instance.boardData['NETS'].keys()) == ['NetC41_1' , 'NetC47_2', 'NetC47_1']
+    assert list(boardNets.keys()) == ['NetC41_1' , 'NetC47_2', 'NetC47_1']
 
     ## components in the nets
-    assert 'TP100' in instance.boardData['NETS']['NetC41_1'] 
-    assert 'C47' in instance.boardData['NETS']['NetC47_1'] and 'C47' in instance.boardData['NETS']['NetC47_2']
-    assert 'TP135' in instance.boardData['NETS']['NetC47_2']
+    assert 'TP100' in boardNets['NetC41_1'] 
+    assert 'C47' in boardNets['NetC47_1'] and 'C47' in boardNets['NetC47_2']
+    assert 'TP135' in boardNets['NetC47_2']
 
     ## proper component mapping
-    assert instance.boardData['NETS']['NetC41_1']['TP100']['componentInstance'] is instance.boardData['COMPONENTS']['TP100']
-    assert instance.boardData['NETS']['NetC41_1']['TP100']['pins'] == ['1']
-    assert instance.boardData['COMPONENTS']['TP100'].pins['1'].net == 'NetC41_1'
-    assert instance.boardData['COMPONENTS']['TP100'].pins['1'].coords == geometryObjects.Point(785.190 ,348.564)
-    assert instance.boardData['COMPONENTS']['TP100'].pins['1'].pinArea == [geometryObjects.Point(785.180 ,348.554), geometryObjects.Point(785.200 ,348.574)]
+    assert boardNets['NetC41_1']['TP100']['componentInstance'] is boardComponents['TP100']
+    assert boardNets['NetC41_1']['TP100']['pins'] == ['1']
+    assert boardComponents['TP100'].pins['1'].net == 'NetC41_1'
+    assert boardComponents['TP100'].pins['1'].coords == geometryObjects.Point(785.190 ,348.564)
+    assert boardComponents['TP100'].pins['1'].pinArea == [geometryObjects.Point(785.180 ,348.554), geometryObjects.Point(785.200 ,348.574)]
 
-    assert instance.boardData['NETS']['NetC47_1']['C47']['componentInstance'] is instance.boardData['COMPONENTS']['C47']
-    assert instance.boardData['NETS']['NetC47_1']['C47']['componentInstance'] is instance.boardData['NETS']['NetC47_2']['C47']['componentInstance']
-    assert instance.boardData['COMPONENTS']['C47'].pins['1'].net == 'NetC47_1'
-    assert instance.boardData['COMPONENTS']['C47'].pins['1'].coords == geometryObjects.Point(771.855 ,342.902)
-    assert instance.boardData['COMPONENTS']['C47'].pins['1'].pinArea == [geometryObjects.Point(771.847 ,342.894), geometryObjects.Point(771.863 ,342.910)]
-    assert instance.boardData['COMPONENTS']['C47'].pins['2'].net == 'NetC47_2'
-    assert instance.boardData['COMPONENTS']['C47'].pins['2'].coords == geometryObjects.Point(770.839 ,342.902)
-    assert instance.boardData['COMPONENTS']['C47'].pins['2'].pinArea == [geometryObjects.Point(770.831 ,342.894), geometryObjects.Point(770.847 ,342.910)]
+    assert boardNets['NetC47_1']['C47']['componentInstance'] is boardComponents['C47']
+    assert boardNets['NetC47_1']['C47']['componentInstance'] is boardNets['NetC47_2']['C47']['componentInstance']
+    assert boardNets['NetC47_1']['C47']['pins'] == ['1']    
+    assert boardNets['NetC47_2']['C47']['pins'] == ['2']
+    assert boardComponents['C47'].pins['1'].net == 'NetC47_1'
+    assert boardComponents['C47'].pins['1'].coords == geometryObjects.Point(771.855 ,342.902)
+    assert boardComponents['C47'].pins['1'].pinArea == [geometryObjects.Point(771.847 ,342.894), geometryObjects.Point(771.863 ,342.910)]
+    assert boardComponents['C47'].pins['2'].net == 'NetC47_2'
+    assert boardComponents['C47'].pins['2'].coords == geometryObjects.Point(770.839 ,342.902)
+    assert boardComponents['C47'].pins['2'].pinArea == [geometryObjects.Point(770.831 ,342.894), geometryObjects.Point(770.847 ,342.910)]
 
 def test__getPackages(packagesFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(packagesFileLines)
-    instance._getComponenentsFromPARTLIST(packagesFileLines)  
+    instance._getComponenentsFromPARTLIST(packagesFileLines, instance.boardData)  
     padsDict = instance._getPadsFromPAD(packagesFileLines)  
-    instance._getNetsFromNETLIST(packagesFileLines, padsDict)
-    instance._getPackages(packagesFileLines)
+    instance._getNetsFromNETLIST(packagesFileLines, padsDict, instance.boardData)
+    instance._getPackages(packagesFileLines, instance.boardData)
 
-    assert instance.boardData['COMPONENTS']['R40'].componentArea == [geometryObjects.Point(0.98, 0.860), geometryObjects.Point(1.060, 0.896)]
-    assert instance.boardData['COMPONENTS']['C10'].componentArea == [geometryObjects.Point(2.102, 2.148), geometryObjects.Point(2.110, 2.190)]
-    assert instance.boardData['COMPONENTS']['LD1'].componentArea == [geometryObjects.Point(0.843, 1.941), geometryObjects.Point(1.021, 2.019)]
+    boardComponents = instance.boardData.getComponents()
+    assert boardComponents['R40'].componentArea == [geometryObjects.Point(0.98, 0.860), geometryObjects.Point(1.060, 0.896)]
+    assert boardComponents['C10'].componentArea == [geometryObjects.Point(2.102, 2.148), geometryObjects.Point(2.110, 2.190)]
+    assert boardComponents['LD1'].componentArea == [geometryObjects.Point(0.843, 1.941), geometryObjects.Point(1.021, 2.019)]
