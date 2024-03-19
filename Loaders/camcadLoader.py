@@ -1,22 +1,23 @@
 import sys, os, copy 
 sys.path.append(os.getcwd())
 import geometryObjects
-import component, pin
+import board, component, pin
 
 class CamCadLoader:
     def __init__(self):
-        self.boardData = {'SHAPE':[], 'COMPONENTS':{}, 'NETS':{}}
+        self.boardData = board.Board()
         self.sectionsLineNumbers = {'BOARDINFO':[], 'PARTLIST':[], 'PNDATA':[], 'NETLIST':[], 'PAD':[], 'PACKAGES':[], 'BOARDOUTLINE':[]}
 
     def loadFile(self, filePath):
         self.setFilePath(filePath)
-        fileLines = self._getFileLines()
+        fileLines = self._getFileLines()        
         self._getSectionsLinesBeginEnd(fileLines)
-        self._getBoardDimensions(fileLines)
-        self._getComponenentsFromPARTLIST(fileLines)
+
+        self._getBoardDimensions(fileLines, self.boardData)
+        self._getComponenentsFromPARTLIST(fileLines, self.boardData)
         padsDict = self._getPadsFromPAD(fileLines)
-        self._getNetsFromNETLIST(fileLines, padsDict)
-        self._getPackages(fileLines)
+        self._getNetsFromNETLIST(fileLines, padsDict, self.boardData)
+        self._getPackages(fileLines, self.boardData)
 
         return self.boardData
 
@@ -34,25 +35,30 @@ class CamCadLoader:
             if sectionName in self.sectionsLineNumbers or (sectionName:=sectionName[3:]) in self.sectionsLineNumbers:
                 self.sectionsLineNumbers[sectionName].append(i)
     
-    def _getBoardDimensions(self, fileLines:list[str]):
+    def _getBoardDimensions(self, fileLines:list[str], boardInstance:board.Board):
         boardOutlineRange = self._calculateRange('BOARDOUTLINE')
         bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
         topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+        shapes = []
+
         for i in boardOutlineRange:
             if ',' in fileLines[i]:
                 _, xStart, yStart, xEnd, yEnd = fileLines[i].split(',')
                 startPoint = geometryObjects.Point(float(xStart), float(yStart))              
                 endPoint = geometryObjects.Point(float(xEnd), float(yEnd))
 
-                self.boardData['SHAPE'].append(geometryObjects.Line(startPoint, endPoint))
+                shapes.append(geometryObjects.Line(startPoint, endPoint))
                 for point in [startPoint, endPoint]:
                     bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
-        self.boardData['AREA'] = [bottomLeftPoint, topRightPoint]
+        
+        boardInstance.setOutlines(shapes)
+        boardInstance.setArea(bottomLeftPoint, topRightPoint)
     
-    def _getComponenentsFromPARTLIST(self, fileLines:list[str]):
+    def _getComponenentsFromPARTLIST(self, fileLines:list[str], boardInstance:board.Board):
         partlistRange = self._calculateRange('PARTLIST')
         sideDict = {'T':'T', 'P':'T', 'B':'B', 'M':'B'}
 
+        components = {}
         for i in partlistRange:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
@@ -60,7 +66,8 @@ class CamCadLoader:
                 side = sideDict[side]
                 x, y  = CamCadLoader.floatOrNone(x), CamCadLoader.floatOrNone(y)
                 newComponent = self._createComponent(name, partNumber, x, y, float(angle), side)
-                self.boardData['COMPONENTS'][name] = newComponent    
+                components[name] = newComponent                    
+        boardInstance.setComponents(components)
 
     def _getPadsFromPAD(self, fileLines:list[str]) -> dict:
         padlistRange = self._calculateRange('PAD')
@@ -75,28 +82,32 @@ class CamCadLoader:
                 padsDict[padID] = self._createPin(name, shape, width, height)
         return padsDict
 
-    def _getNetsFromNETLIST(self, fileLines:list[str], padsDict:dict):
+    def _getNetsFromNETLIST(self, fileLines:list[str], padsDict:dict, boardInstance:board.Board):
         netlistRange = self._calculateRange('NETLIST')
+        nets = {}
         for i in netlistRange:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
                 _, netName, componentName, pinName , pinX, pinY, side, padID = [parameter.strip() for parameter in line.split(',')]
-                self._addBlankNet(netName, componentName)
+                self._addBlankNet(nets, netName, componentName)
                 
-                if componentName not in self.boardData['COMPONENTS']:
+                components = boardInstance.getComponents()
+                if componentName not in components:
                     newComponent = self._createComponent(componentName, '', None, None, 0, side)
-                    self.boardData['COMPONENTS'][componentName] = newComponent
+                    components[componentName] = newComponent
+                    boardInstance.setComponents(components)
                 
                 pad = copy.deepcopy(padsDict[padID])
                 pad.setCoords(geometryObjects.Point(float(pinX), float(pinY)))
                 pad.calculateArea()
                 pad.setNet(netName)
 
-                componentOnNet = self.boardData['COMPONENTS'][componentName]
+                componentOnNet = boardInstance.getComponents()[componentName]
                 componentOnNet.addPin(pinName, pad)
 
-                self.boardData['NETS'][netName][componentName]['componentInstance'] = componentOnNet
-                self.boardData['NETS'][netName][componentName]['pins'].append(pinName)
+                nets[netName][componentName]['componentInstance'] = componentOnNet
+                nets[netName][componentName]['pins'].append(pinName)
+            boardInstance.setNets(nets)
     
     def _getPackages(self, fileLines:list[str]):
         packagesDict = self._getPackagesfromPACKAGE(fileLines)
@@ -129,11 +140,11 @@ class CamCadLoader:
             x = None
         return x        
     
-    def _addBlankNet(self, netName:str, componentName:str):
-        if not netName in self.boardData['NETS']:
-            self.boardData['NETS'][netName] = {}
-        if not componentName in self.boardData['NETS'][netName]:
-            self.boardData['NETS'][netName][componentName] = {'componentInstance':None, 'pins':[]}
+    def _addBlankNet(self, netsDict:dict, netName:str, componentName:str):
+        if not netName in netsDict:
+            netsDict[netName] = {}
+        if not componentName in netsDict[netName]:
+            netsDict[netName][componentName] = {'componentInstance':None, 'pins':[]}
     
     def _getPackagesfromPACKAGE(self, fileLines:list[str]) -> dict:
         packagesRange = self._calculateRange('PACKAGES')
@@ -156,10 +167,11 @@ class CamCadLoader:
                 pnDict[componentPN] = partNumber
         return pnDict
     
-    def _matchPackagesToComponents(self, packagesDict:dict, pnDict:dict) -> list[component.Component]:
+    def _matchPackagesToComponents(self, packagesDict:dict, pnDict:dict, boardInstance:board.Board) -> list[component.Component]:
         noPackagesMatch = []
-        for componentName in self.boardData['COMPONENTS']:
-            componentInstance = self.boardData['COMPONENTS'][componentName]            
+        components = boardInstance.getComponents()
+        for componentName in components:
+            componentInstance = components[componentName]            
             if not componentInstance.isCoordsValid():   
                 componentInstance.calculateCenterFromPins()
             
