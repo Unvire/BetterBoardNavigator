@@ -1,23 +1,23 @@
-boardData = {
+board = {
     ## defines working area
-    'AREA': [
+    area: [
         bottomLeftPoint: geometryObjects.Point, 
         topRightPoint: geometryObjects.Point
         ] 
 
     ## defines board outlines as a list of Lines and Arcs 
-    'SHAPE': [
+    shape: [
         geometryObjects.Line,
         geometryObjects.Arc
         ]
 
     ## defines components as dict of  key=name, val=componentInstance
-    'COMPONENTS':{
+    components:{
         name:str : component.Component
         }
 
     ##
-    'NETS':{
+    nets:{
         netName: str:{
             componentName: str:{
                 'instance': component.Component (reference to component listed in 'COMPONENTS')
