@@ -180,11 +180,7 @@ class CamCadLoader:
             
             componentpartNumber = self._componentPartNumber(componentInstance, pnDict)
             if componentpartNumber in packagesDict:                
-                width, height = packagesDict[componentpartNumber]['dimensions']
-                x0, y0 = self._calculateMoveVectorFromWidthHeight(width, height, 3)
-                packageBottomLeftPoint = geometryObjects.Point.translate(componentInstance.coords, (x0, y0))
-                packageTopRightPoint = geometryObjects.Point.translate(componentInstance.coords, (-x0, -y0))
-
+                packageBottomLeftPoint, packageTopRightPoint = self._calculatePackageBottomRightAndTopLeftPoints(componentInstance, packagesDict[componentpartNumber]['dimensions'])
                 componentInstance.setComponentArea(packageBottomLeftPoint, packageTopRightPoint)                
                 componentInstance.setPackageType(packagesDict[componentpartNumber]['pinType'])
             else:
@@ -196,6 +192,13 @@ class CamCadLoader:
         if componentPartNumber in pnDict:
             return pnDict[componentPartNumber]
         return ''
+    
+    def _calculatePackageBottomRightAndTopLeftPoints(self, componentInstance:component.Component, dimesions:tuple[float, float]) -> tuple[geometryObjects.Point, geometryObjects.Point]:
+        width, height = dimesions
+        x0, y0 = self._calculateMoveVectorFromWidthHeight(width, height, 3)
+        packageBottomLeftPoint = geometryObjects.Point.translate(componentInstance.coords, (x0, y0))
+        packageTopRightPoint = geometryObjects.Point.translate(componentInstance.coords, (-x0, -y0))
+        return packageBottomLeftPoint, packageTopRightPoint
     
     def _calculateMoveVectorFromWidthHeight(self, width:float, height:float, roundDigits:int) -> (float, float):
         return round(-width / 2, roundDigits), round(-height / 2, roundDigits)
