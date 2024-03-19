@@ -109,10 +109,10 @@ class CamCadLoader:
                 nets[netName][componentName]['pins'].append(pinName)
             boardInstance.setNets(nets)
     
-    def _getPackages(self, fileLines:list[str]):
+    def _getPackages(self, fileLines:list[str], boardInstance:board.Board):
         packagesDict = self._getPackagesfromPACKAGE(fileLines)
         pnDict = self._getPNDATA(fileLines)
-        componentWithoutpackages = self._matchPackagesToComponents(packagesDict, pnDict)
+        componentWithoutpackages = self._matchPackagesToComponents(packagesDict, pnDict, boardInstance)
         
         for comp in componentWithoutpackages:
             comp.calculatePackageFromPins()
@@ -202,7 +202,8 @@ class CamCadLoader:
     
 
 if __name__ == '__main__':
-    filePath = r'C:\Users\krzys\Documents\GitHub\boardNavigator\Schematic\lvm Core.cad'
+    #filePath = r'C:\Users\krzys\Documents\GitHub\boardNavigator\Schematic\lvm Core.cad'
+    filePath = r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm Core.cad'
     loader = CamCadLoader()
     loader.loadFile(filePath)
-    print(loader.boardData['AREA'][0], loader.boardData['AREA'][1])  
+    print(loader.boardData.area[0], loader.boardData.area[1])  
