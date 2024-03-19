@@ -98,7 +98,7 @@ class CamCadLoader:
                     newComponent = self._createComponent(componentName, '', None, None, 0, side)
                     boardInstance.addComponent(newComponent)                
                 
-                componentOnNet = boardInstance.getComponents()[componentName]
+                componentOnNet = boardInstance.getElementByName('components', componentName)
                 componentOnNet.addPin(pinName, pad)
 
                 nets[netName][componentName]['componentInstance'] = componentOnNet
@@ -208,8 +208,8 @@ class CamCadLoader:
     
 
 if __name__ == '__main__':
-    #filePath = r'C:\Users\krzys\Documents\GitHub\boardNavigator\Schematic\lvm Core.cad'
-    filePath = r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm Core.cad'
+    filePath = r'C:\Users\krzys\Documents\GitHub\boardNavigator\Schematic\lvm Core.cad'
+    #filePath = r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm Core.cad'
     loader = CamCadLoader()
     loader.loadFile(filePath)
     print(loader.boardData.area[0], loader.boardData.area[1])  

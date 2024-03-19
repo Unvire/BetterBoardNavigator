@@ -34,3 +34,7 @@ class Board:
     
     def addComponent(self, name:str, componentInstance:component.Component):
         self.components[name] = componentInstance
+    
+    def getElementByName(self, groupName:str, elementName:str):
+        matchDict = {'components':self.components, 'nets':self.nets}
+        return matchDict[groupName].get(elementName, None)
