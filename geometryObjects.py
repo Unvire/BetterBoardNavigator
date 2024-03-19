@@ -65,6 +65,9 @@ class Line:
         result2 = self.startPoint == line.endPoint and self.endPoint == line.startPoint
         return result1 or result2
 
+class Arc:
+    pass
+
 if __name__ == '__main__':
     A = Point(0, 0)
     print(A)
