@@ -13,6 +13,7 @@ class CamCadLoader:
         fileLines = self._getFileLines()        
         self._getSectionsLinesBeginEnd(fileLines)
 
+        ## boardData is modified globally inside these functions
         self._getBoardDimensions(fileLines, self.boardData)
         self._getComponenentsFromPARTLIST(fileLines, self.boardData)
         padsDict = self._getPadsFromPAD(fileLines)
