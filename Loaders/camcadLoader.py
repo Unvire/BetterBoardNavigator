@@ -96,7 +96,7 @@ class CamCadLoader:
                 
                 if componentName not in components:
                     newComponent = self._createComponent(componentName, '', None, None, 0, side)
-                    boardInstance.addComponent(newComponent)                
+                    boardInstance.addComponent(componentName, newComponent)                
                 
                 componentOnNet = boardInstance.getElementByName('components', componentName)
                 componentOnNet.addPin(pinName, pad)
