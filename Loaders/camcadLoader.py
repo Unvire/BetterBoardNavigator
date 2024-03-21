@@ -9,7 +9,7 @@ class CamCadLoader:
         self.sectionsLineNumbers = {'BOARDINFO':[], 'PARTLIST':[], 'PNDATA':[], 'NETLIST':[], 'PAD':[], 'PACKAGES':[], 'BOARDOUTLINE':[]}
 
     def loadFile(self, filePath):
-        self.setFilePath(filePath)
+        self._setFilePath(filePath)
         fileLines = self._getFileLines()        
         self._getSectionsLinesBeginEnd(fileLines)
 
@@ -22,7 +22,7 @@ class CamCadLoader:
 
         return self.boardData
 
-    def setFilePath(self, filePath:str):
+    def _setFilePath(self, filePath:str):
         self.filePath = filePath
     
     def _getFileLines(self) -> list[str]:
