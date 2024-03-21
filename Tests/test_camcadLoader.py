@@ -142,7 +142,7 @@ def test__getComponenentsFromPARTLIST(exampleFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(exampleFileLines)
     instance._getComponenentsFromPARTLIST(exampleFileLines, instance.boardData)
-    component1 = instance.boardData.getComponents()['FID1']
+    component1 = instance.boardData.getElementByName('components', 'FID1')
     
     assert component1.name == 'FID1'
     assert component1.coords == geometryObjects.Point(0.101, -0.109)
