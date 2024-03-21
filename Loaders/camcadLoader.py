@@ -200,7 +200,7 @@ class CamCadLoader:
         packageTopRightPoint = geometryObjects.Point.translate(componentInstance.coords, (-x0, -y0))
         return packageBottomLeftPoint, packageTopRightPoint
     
-    def _calculateMoveVectorFromWidthHeight(self, width:float, height:float, roundDigits:int) -> (float, float):
+    def _calculateMoveVectorFromWidthHeight(self, width:float, height:float, roundDigits:int) -> tuple[float, float]:
         return round(-width / 2, roundDigits), round(-height / 2, roundDigits)
 
     def _calculateRange(self, sectionName:str) -> range:
