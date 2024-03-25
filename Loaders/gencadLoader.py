@@ -37,7 +37,7 @@ class GenCadLoader:
         shapes = []
 
         for i in boardOutlineRange:
-            if len(fileLines[i]) > 2:
+            if ' ' in fileLines[i]:
                 keyWord, *line  = fileLines[i].replace('\n', '').split(' ')
                 if keyWord == 'ARTWORK':
                     break
