@@ -77,3 +77,7 @@ def test_LineEqual():
     line3 = geometryObjects.Line(pointC, pointA)
     assert line1 == line2
     assert line1 != line3
+
+@pytest.mark.parametrize('input, expected', [('1', 1.0), (' ', None),('-1.0', -1.0), ('10.123', 10.123), ('0', 0.0), ('1y9897a', None),])
+def test_floatOrNone(input, expected):
+    assert geometryObjects.floatOrNone(input) == expected
