@@ -92,7 +92,7 @@ def test_ArcEqual():
     arc4 = geometryObjects.Arc(pointC, pointB, pointC)
     arc5 = geometryObjects.Arc(pointA, pointB, pointA)
     assert arc1 == arc1
-    assert arc1 == arc2
+    assert arc1 != arc2
     assert arc1 != arc3
     assert arc1 != arc4
     assert arc1 != arc5
