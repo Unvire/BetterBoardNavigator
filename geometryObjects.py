@@ -68,6 +68,13 @@ class Line:
 class Arc:
     pass
 
+def floatOrNone(x:str):
+    try:
+        x = float(x)
+    except ValueError:
+        x = None
+    return x    
+
 if __name__ == '__main__':
     A = Point(0, 0)
     print(A)

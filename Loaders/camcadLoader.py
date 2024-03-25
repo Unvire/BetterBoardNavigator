@@ -65,7 +65,7 @@ class CamCadLoader:
                 line = fileLines[i].replace('\n', '')
                 _, name, partNumber, x, y, side, angle = [parameter.strip() for parameter in line.split(',')]
                 side = sideDict[side]
-                x, y  = CamCadLoader.floatOrNone(x), CamCadLoader.floatOrNone(y)
+                x, y  = geometryObjects.floatOrNone(x), geometryObjects.floatOrNone(y)
                 newComponent = self._createComponent(name, partNumber, x, y, float(angle), side)
                 components[name] = newComponent                    
         boardInstance.setComponents(components)
@@ -78,8 +78,8 @@ class CamCadLoader:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
                 padID, name, shape, width, height, _, _ = [parameter.strip() for parameter in line.split(',')]                
-                width = CamCadLoader.floatOrNone(width)
-                height = CamCadLoader.floatOrNone(height)                
+                width = geometryObjects.floatOrNone(width)
+                height = geometryObjects.floatOrNone(height)                
                 padsDict[padID] = self._createPin(name, shape, width, height)
         return padsDict
 
@@ -134,14 +134,6 @@ class CamCadLoader:
         pad.calculateArea()
         pad.setNet(netName)
         return pad
-
-    @staticmethod
-    def floatOrNone(x:str):
-        try:
-            x = float(x)
-        except ValueError:
-            x = None
-        return x        
     
     def _addBlankNet(self, netsDict:dict, netName:str, componentName:str):
         if not netName in netsDict:
@@ -156,7 +148,7 @@ class CamCadLoader:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
                 partNumber, pinType, width, height, _ = [parameter.strip() for parameter in line.split(',')]
-                width, height  = CamCadLoader.floatOrNone(width), CamCadLoader.floatOrNone(height)
+                width, height  = geometryObjects.floatOrNone(width), geometryObjects.floatOrNone(height)
                 packagesDict[partNumber] = {'pinType': pinType, 'dimensions':(width, height)}
         return packagesDict
     

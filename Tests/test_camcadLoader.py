@@ -150,10 +150,6 @@ def test__getComponenentsFromPARTLIST(exampleFileLines):
     assert component1.side == 'T'
     assert component1.angle == 0
 
-@pytest.mark.parametrize('input, expected', [('1', 1.0), (' ', None),('-1.0', -1.0), ('10.123', 10.123), ('0', 0.0), ('1y9897a', None),])
-def test_floatOrNone(input, expected):
-    assert CamCadLoader.floatOrNone(input) == expected
-
 def test__getPadsFromPAD(netlistFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(netlistFileLines)
