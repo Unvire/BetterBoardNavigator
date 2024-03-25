@@ -70,6 +70,14 @@ class Arc:
         self.startPoint = startPoint
         self.endPoint = endPoint
         self.rotationPoint = rotationPoint
+    
+    def __str__(self):
+        return f'Line: start point=({self.startPoint}), end point=({self.endPoint}), rotation point=({self.rotationPoint})'
+    
+    def __eq__(self, arc:'Arc'):
+        result1 = self.startPoint == arc.startPoint and self.endPoint == arc.endPoint
+        result2 = self.startPoint == arc.endPoint and self.endPoint == arc.startPoint
+        return self.rotationPoint == arc.rotationPoint and (result1 or result2)
 
 def floatOrNone(x:str):
     try:

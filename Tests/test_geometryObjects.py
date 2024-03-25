@@ -81,3 +81,18 @@ def test_LineEqual():
 @pytest.mark.parametrize('input, expected', [('1', 1.0), (' ', None),('-1.0', -1.0), ('10.123', 10.123), ('0', 0.0), ('1y9897a', None),])
 def test_floatOrNone(input, expected):
     assert geometryObjects.floatOrNone(input) == expected
+
+def test_ArcEqual():
+    pointA = geometryObjects.Point(0, 0)
+    pointB = geometryObjects.Point(1.2, 1.2)
+    pointC = geometryObjects.Point(1, -1)
+    arc1 = geometryObjects.Arc(pointA, pointB, pointC)
+    arc2 = geometryObjects.Arc(pointB, pointA, pointC)
+    arc3 = geometryObjects.Arc(pointA, pointC, pointC)
+    arc4 = geometryObjects.Arc(pointC, pointB, pointC)
+    arc5 = geometryObjects.Arc(pointA, pointB, pointA)
+    assert arc1 == arc1
+    assert arc1 == arc2
+    assert arc1 != arc3
+    assert arc1 != arc4
+    assert arc1 != arc5
