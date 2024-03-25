@@ -24,7 +24,7 @@ def sectionsRangeTest():
     return fileLinesMock
 
 @pytest.fixture
-def BouardOutlineTest():
+def bouardOutlineTest():
     fileLinesMock = [
         '$BOARD\n',
         'ARC 0.2900811 3.820681 0.250711 3.860051 0.250711 3.820681\n',
@@ -32,7 +32,7 @@ def BouardOutlineTest():
         'LINE 0.2506389 2.090325 0.2506389 1.712375\n',
         'ARC -4.046038 3.859678 -4.08 3.820681 -4.04063 3.820681\n',
         'ARTWORK artwork1450 SILKSCREEN_TOP\n',
-        'LINE 1967.441 2267.244 2026.496 2267.244\n',
+        'LINE 1967.441 2267.244 -2026.496 -2267.244\n',
         '$ENDBOARD\n'
     ]
     return fileLinesMock
@@ -69,3 +69,15 @@ def test__getArcFromARC():
     assert shape == geometryObjects.Arc(geometryObjects.Point(996.063, 137.795), geometryObjects.Point(956.693, 137.795), geometryObjects.Point(976.378, 147.795))
     assert bottomLeftPoint == geometryObjects.Point(956.693, 137.795)
     assert topRightPoint == geometryObjects.Point(996.063, 147.795)
+
+def test__getBoardDimensions(bouardOutlineTest):
+    instance = GenCadLoader()
+    instance._getSectionsLinesBeginEnd(bouardOutlineTest)
+    instance._getBoardDimensions(bouardOutlineTest, instance.boardData)
+    
+    assert len(instance.boardData.getOutlines()) == 4
+    assert instance.boardData.getArea() == [geometryObjects.Point(-4.08, 1.712375), geometryObjects.Point(0.2900811, 3.860051)]
+    assert instance.boardData.getOutlines()[0] == geometryObjects.Arc(geometryObjects.Point(0.2900811, 3.820681), geometryObjects.Point(0.250711, 3.860051), geometryObjects.Point(0.250711, 3.820681))
+    assert instance.boardData.getOutlines()[1] == geometryObjects.Line(geometryObjects.Point(0.2900811, 2.129768), geometryObjects.Point(0.2506389, 2.090325))
+    assert instance.boardData.getOutlines()[2] == geometryObjects.Line(geometryObjects.Point(0.2506389, 2.090325), geometryObjects.Point(0.2506389, 1.712375))
+    assert instance.boardData.getOutlines()[3] == geometryObjects.Arc(geometryObjects.Point(-4.046038, 3.859678), geometryObjects.Point(-4.08, 3.820681), geometryObjects.Point(-4.04063, 3.820681))
