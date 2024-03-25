@@ -66,7 +66,10 @@ class Line:
         return result1 or result2
 
 class Arc:
-    pass
+    def __init__(self, startPoint:Point, endPoint:Point, rotationPoint:Point):
+        self.startPoint = startPoint
+        self.endPoint = endPoint
+        self.rotationPoint = rotationPoint
 
 def floatOrNone(x:str):
     try:
