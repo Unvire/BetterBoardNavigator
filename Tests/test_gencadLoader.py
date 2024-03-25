@@ -49,13 +49,23 @@ def test___calculateRange(sectionsRangeTest):
     assert instance._calculateRange('SIGNALS') == range(9, 10)
 
 def test__getLineFromLINE():
-    line = ['1967.441', '2267.244', '2026.496', '2267.244']    
+    line = ['1967.441', '2267.244', '2026.496', '3267.244']    
     bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
     topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
-
     
     instance = GenCadLoader()
     shape, bottomLeftPoint, topRightPoint = instance._getLineFromLINE(line, bottomLeftPoint, topRightPoint)
-    assert shape == geometryObjects.Line(geometryObjects.Point(1967.441, 2267.244), geometryObjects.Point(2026.496, 2267.244))
+    assert shape == geometryObjects.Line(geometryObjects.Point(1967.441, 2267.244), geometryObjects.Point(2026.496, 3267.244))
     assert bottomLeftPoint == geometryObjects.Point(1967.441, 2267.244)
-    assert topRightPoint == geometryObjects.Point(2026.496, 2267.244)
+    assert topRightPoint == geometryObjects.Point(2026.496, 3267.244)
+
+def test__getArcFromARC():
+    line = ['996.063', '137.795', '956.693', '137.795', '976.378', '147.795']    
+    bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
+    topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+    
+    instance = GenCadLoader()
+    shape, bottomLeftPoint, topRightPoint = instance._getArcFromARC(line, bottomLeftPoint, topRightPoint)
+    assert shape == geometryObjects.Arc(geometryObjects.Point(996.063, 137.795), geometryObjects.Point(956.693, 137.795), geometryObjects.Point(976.378, 147.795))
+    assert bottomLeftPoint == geometryObjects.Point(956.693, 137.795)
+    assert topRightPoint == geometryObjects.Point(996.063, 147.795)
