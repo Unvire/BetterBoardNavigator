@@ -49,7 +49,7 @@ class GenCadLoader:
                 
     
     def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point) -> tuple[geometryObjects.Line, geometryObjects.Point, geometryObjects.Point]:
-        _, xStart, yStart, xEnd, yEnd = [geometryObjects.floatOrNone(val) for val in fileLine]
+        xStart, yStart, xEnd, yEnd = [geometryObjects.floatOrNone(val) for val in fileLine]
         startPoint = geometryObjects.Point(xStart, yStart)
         endPoint = geometryObjects.Point(xEnd, yEnd)
 
@@ -60,14 +60,14 @@ class GenCadLoader:
         return lineInstance, bottomLeftPoint, topRightPoint
     
     def _getArcFromARC(self, fileLine:str, bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point) -> tuple[geometryObjects.Arc, geometryObjects.Point, geometryObjects.Point]:
-        _, xStart, yStart, xEnd, yEnd, xCenter, yCenter = [geometryObjects.floatOrNone(val) for val in fileLine.split(' ')]
+        xStart, yStart, xEnd, yEnd, xCenter, yCenter = [geometryObjects.floatOrNone(val) for val in fileLine.split(' ')]
         startPoint = geometryObjects.Point(xStart, yStart)
         endPoint = geometryObjects.Point(xEnd, yEnd)
         rotationPoint = geometryObjects.Point(xCenter, yCenter)
 
         for point in [startPoint, endPoint, rotationPoint]:
             bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
-            
+
         arcInstance = geometryObjects.Arc(startPoint, endPoint, rotationPoint)
         return arcInstance, bottomLeftPoint, topRightPoint
                 
