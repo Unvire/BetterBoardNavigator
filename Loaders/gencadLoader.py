@@ -56,7 +56,8 @@ class GenCadLoader:
         for point in [startPoint, endPoint]:
             bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
         
-        return geometryObjects.Line(startPoint, endPoint), bottomLeftPoint, topRightPoint
+        lineInstance = geometryObjects.Line(startPoint, endPoint)
+        return lineInstance, bottomLeftPoint, topRightPoint
     
     def _getArcFromARC(self, fileLine:str, bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point) -> tuple[geometryObjects.Arc, geometryObjects.Point, geometryObjects.Point]:
         _, xStart, yStart, xEnd, yEnd, xCenter, yCenter = [geometryObjects.floatOrNone(val) for val in fileLine.split(' ')]
@@ -66,8 +67,9 @@ class GenCadLoader:
 
         for point in [startPoint, endPoint, rotationPoint]:
             bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
-        
-        return geometryObjects.Arc(startPoint, endPoint, rotationPoint), bottomLeftPoint, topRightPoint
+            
+        arcInstance = geometryObjects.Arc(startPoint, endPoint, rotationPoint)
+        return arcInstance, bottomLeftPoint, topRightPoint
                 
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
