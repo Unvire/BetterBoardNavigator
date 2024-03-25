@@ -28,6 +28,9 @@ class GenCadLoader:
             sectionName = line[1:-1]
             if sectionName in self.sectionsLineNumbers or (sectionName:=sectionName[3:]) in self.sectionsLineNumbers:
                 self.sectionsLineNumbers[sectionName].append(i)
+                
+    def _calculateRange(self, sectionName:str) -> range:
+        return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
 
 if __name__ == '__main__':
     loader = GenCadLoader()
