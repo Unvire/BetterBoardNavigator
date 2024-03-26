@@ -72,10 +72,21 @@ class Arc:
         self.rotationPoint = rotationPoint
     
     def __str__(self):
-        return f'Line: start point=({self.startPoint}), end point=({self.endPoint}), rotation point=({self.rotationPoint})'
+        return f'Arc: start point=({self.startPoint}), end point=({self.endPoint}), rotation point=({self.rotationPoint})'
     
     def __eq__(self, arc:'Arc'):
         return self.rotationPoint == arc.rotationPoint and self.startPoint == arc.startPoint and self.endPoint == arc.endPoint
+
+class Circle:
+    def __init__(self, centerPoint:Point, radius:float):
+        self.centerPoint = centerPoint
+        self.radius = radius
+    
+    def __str__(self):
+        return f'Circle: center point=({self.centerPoint}), radius=({self.radius})'
+    
+    def __eq__(self, circle:'Circle'):
+        return self.radius == circle.radius and self.centerPoint == circle.centerPoint
 
 def floatOrNone(x:str):
     try:
