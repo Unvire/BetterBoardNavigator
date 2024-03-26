@@ -33,7 +33,7 @@ class GenCadLoader:
         boardOutlineRange = self._calculateRange('BOARD')
         bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
         topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
-        handleShape = {'LINE':self._getLineFromLINE, 'ARC': self._getArcFromARC}
+        handleShape = {'LINE':self._getLineFromLINE, 'ARC': self._getArcFromARC, 'CIRCLE':self._getCircleFromCIRCLE}
         shapes = []
 
         for i in boardOutlineRange:
@@ -53,24 +53,38 @@ class GenCadLoader:
         startPoint = geometryObjects.Point(xStart, yStart)
         endPoint = geometryObjects.Point(xEnd, yEnd)
 
-        for point in [startPoint, endPoint]:
-            bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
+        bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], [startPoint, endPoint])
         
         lineInstance = geometryObjects.Line(startPoint, endPoint)
         return lineInstance, bottomLeftPoint, topRightPoint
     
-    def _getArcFromARC(self, fileLine:str, bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point) -> tuple[geometryObjects.Arc, geometryObjects.Point, geometryObjects.Point]:
+    def _getArcFromARC(self, fileLine:list[str], bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point) -> tuple[geometryObjects.Arc, geometryObjects.Point, geometryObjects.Point]:
         xStart, yStart, xEnd, yEnd, xCenter, yCenter = [geometryObjects.floatOrNone(val) for val in fileLine]
         startPoint = geometryObjects.Point(xStart, yStart)
         endPoint = geometryObjects.Point(xEnd, yEnd)
         rotationPoint = geometryObjects.Point(xCenter, yCenter)
 
-        for point in [startPoint, endPoint, rotationPoint]:
-            bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
+        bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], [startPoint, endPoint, rotationPoint])
 
         arcInstance = geometryObjects.Arc(startPoint, endPoint, rotationPoint)
         return arcInstance, bottomLeftPoint, topRightPoint
-                
+
+    def _getCircleFromCIRCLE(self, fileLine:list[str], bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point) -> tuple[geometryObjects.Circle, geometryObjects.Point, geometryObjects.Point]:
+        xCenter, yCenter, radius = [geometryObjects.floatOrNone(val) for val in fileLine]
+        centerPoint = geometryObjects.Point(xCenter, yCenter)
+
+        checkedPoints = [geometryObjects.Point.translate(centerPoint, [-radius, -radius]), geometryObjects.Point.translate(centerPoint, [radius, radius])]
+        bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
+         
+        circleInstance = geometryObjects.Circle(centerPoint, radius)
+        return circleInstance, bottomLeftPoint, topRightPoint
+
+    def _updatebottomLeftTopRightPoints(self, bottomLeftTopRightPoints:tuple[geometryObjects.Point, geometryObjects.Point],  checkedPoints:list[geometryObjects.Point]) -> tuple[geometryObjects.Point, geometryObjects.Point]:
+        bottomLeftPoint, topRightPoint = bottomLeftTopRightPoints
+        for point in checkedPoints:
+            bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
+        return bottomLeftPoint, topRightPoint
+    
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
 
