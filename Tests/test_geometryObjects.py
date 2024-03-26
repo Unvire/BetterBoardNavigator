@@ -96,3 +96,13 @@ def test_ArcEqual():
     assert arc1 != arc3
     assert arc1 != arc4
     assert arc1 != arc5
+
+def test_CircleEqual():
+    c1 = geometryObjects.Circle(geometryObjects.Point(0, 0), 1)
+    c2 = geometryObjects.Circle(geometryObjects.Point(1, 0), 1)
+    c3 = geometryObjects.Circle(geometryObjects.Point(0, 0), 2)
+    c4 = geometryObjects.Circle(geometryObjects.Point(1, 0), 2)
+    assert c1 == c1
+    assert c1 != c2
+    assert c1 != c3
+    assert c1 != c4
