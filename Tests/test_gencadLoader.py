@@ -31,6 +31,7 @@ def bouardOutlineTest():
         'LINE 0.2900811 2.129768 0.2506389 2.090325\n',
         'LINE 0.2506389 2.090325 0.2506389 1.712375\n',
         'ARC -4.046038 3.859678 -4.08 3.820681 -4.04063 3.820681\n',
+        'CIRCLE -2.8661417 2.527559 0.08070866\n',
         'ARTWORK artwork1450 SILKSCREEN_TOP\n',
         'LINE 1967.441 2267.244 -2026.496 -2267.244\n',
         '$ENDBOARD\n'
@@ -70,14 +71,27 @@ def test__getArcFromARC():
     assert bottomLeftPoint == geometryObjects.Point(956.693, 137.795)
     assert topRightPoint == geometryObjects.Point(996.063, 147.795)
 
+def test__getCircleFromCIRCLE():
+    line = ['-2.8661417', '2.527559', '0.08070866']
+    bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
+    topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+
+    instance = GenCadLoader()
+    shape, bottomLeftPoint, topRightPoint = instance._getCircleFromCIRCLE(line, bottomLeftPoint, topRightPoint)
+    assert shape == geometryObjects.Circle(geometryObjects.Point(-2.8661417, 2.527559), 0.08070866)
+    assert bottomLeftPoint == geometryObjects.Point(-2.94685036, 2.44685034)
+    assert topRightPoint == geometryObjects.Point(-2.78543304, 2.60826766)
+
 def test__getBoardDimensions(bouardOutlineTest):
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(bouardOutlineTest)
-    instance._getBoardDimensions(bouardOutlineTest, instance.boardData)
-    
-    assert len(instance.boardData.getOutlines()) == 4
+    instance._getBoardDimensions(bouardOutlineTest, instance.boardData)  
+    shapes = instance.boardData.getOutlines()
+
+    assert len(instance.boardData.getOutlines()) == 5
     assert instance.boardData.getArea() == [geometryObjects.Point(-4.08, 1.712375), geometryObjects.Point(0.2900811, 3.860051)]
-    assert instance.boardData.getOutlines()[0] == geometryObjects.Arc(geometryObjects.Point(0.2900811, 3.820681), geometryObjects.Point(0.250711, 3.860051), geometryObjects.Point(0.250711, 3.820681))
-    assert instance.boardData.getOutlines()[1] == geometryObjects.Line(geometryObjects.Point(0.2900811, 2.129768), geometryObjects.Point(0.2506389, 2.090325))
-    assert instance.boardData.getOutlines()[2] == geometryObjects.Line(geometryObjects.Point(0.2506389, 2.090325), geometryObjects.Point(0.2506389, 1.712375))
-    assert instance.boardData.getOutlines()[3] == geometryObjects.Arc(geometryObjects.Point(-4.046038, 3.859678), geometryObjects.Point(-4.08, 3.820681), geometryObjects.Point(-4.04063, 3.820681))
+    assert shapes[0] == geometryObjects.Arc(geometryObjects.Point(0.2900811, 3.820681), geometryObjects.Point(0.250711, 3.860051), geometryObjects.Point(0.250711, 3.820681))
+    assert shapes[1] == geometryObjects.Line(geometryObjects.Point(0.2900811, 2.129768), geometryObjects.Point(0.2506389, 2.090325))
+    assert shapes[2] == geometryObjects.Line(geometryObjects.Point(0.2506389, 2.090325), geometryObjects.Point(0.2506389, 1.712375))
+    assert shapes[3] == geometryObjects.Arc(geometryObjects.Point(-4.046038, 3.859678), geometryObjects.Point(-4.08, 3.820681), geometryObjects.Point(-4.04063, 3.820681))
+    assert shapes[4] == geometryObjects.Circle(geometryObjects.Point(-2.8661417, 2.527559), 0.08070866)
