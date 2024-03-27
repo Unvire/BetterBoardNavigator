@@ -78,6 +78,21 @@ class GenCadLoader:
          
         circleInstance = geometryObjects.Circle(centerPoint, radius)
         return circleInstance, bottomLeftPoint, topRightPoint
+    
+    def _splitButNotBetweenCharacter(self, line:str, splitCharacter:str=' ', ignoreCharacter:str='"') -> list[str]:
+        initialSplit = line.split(splitCharacter)
+        result = []
+
+        while initialSplit:
+            current = initialSplit.pop(0)
+            if current[0] == ignoreCharacter:
+                concatenated = current
+                while current[-1] != ignoreCharacter:
+                    current = initialSplit.pop(0)
+                    concatenated += f'_{current}'
+                current = concatenated
+            result.append(current)
+        return result
 
     def _updatebottomLeftTopRightPoints(self, bottomLeftTopRightPoints:tuple[geometryObjects.Point, geometryObjects.Point],  checkedPoints:list[geometryObjects.Point]) -> tuple[geometryObjects.Point, geometryObjects.Point]:
         bottomLeftPoint, topRightPoint = bottomLeftTopRightPoints
