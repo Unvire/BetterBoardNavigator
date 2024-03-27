@@ -95,3 +95,10 @@ def test__getBoardDimensions(bouardOutlineTest):
     assert shapes[2] == geometryObjects.Line(geometryObjects.Point(0.2506389, 2.090325), geometryObjects.Point(0.2506389, 1.712375))
     assert shapes[3] == geometryObjects.Arc(geometryObjects.Point(-4.046038, 3.859678), geometryObjects.Point(-4.08, 3.820681), geometryObjects.Point(-4.04063, 3.820681))
     assert shapes[4] == geometryObjects.Circle(geometryObjects.Point(-2.8661417, 2.527559), 0.08070866)
+
+@pytest.mark.parametrize("testInput, expected", [('PAD "Round 32" ROUND -1', ['PAD', '"Round_32"', 'ROUND', '-1']), 
+                                                 ('ARTWORK artwork9 SOLDERPASTE_BOTTOM', ['ARTWORK', 'artwork9', 'SOLDERPASTE_BOTTOM']), 
+                                                 ('PAD "O b l o n g 2.7x1.7" FINGER -1', ['PAD', '"O_b_l_o_n_g_2.7x1.7"', 'FINGER', '-1'])])
+def test__splitButNotBetweenCharacter(testInput, expected):
+    instance = GenCadLoader()
+    assert expected == instance._splitButNotBetweenCharacter(testInput, ' ', '"')
