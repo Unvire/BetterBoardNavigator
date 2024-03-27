@@ -7,6 +7,7 @@ class GenCadLoader:
     def __init__(self):
         self.boardData = board.Board()
         self.sectionsLineNumbers = {'BOARD':[], 'PADS':[], 'SHAPES':[], 'COMPONENTS':[], 'SIGNALS':[], 'ROUTES':[], 'MECH':[]}
+        self.handleShape = {'LINE':self._getLineFromLINE, 'ARC': self._getArcFromARC, 'CIRCLE':self._getCircleFromCIRCLE}
     
     def loadFile(self, filePath:str):
         self._setFilePath(filePath)
@@ -23,17 +24,16 @@ class GenCadLoader:
             fileLines = file.readlines()
         return fileLines
     
-    def _getSectionsLinesBeginEnd(self, fileLines:str):
+    def _getSectionsLinesBeginEnd(self, fileLines:list[str]):
         for i, line in enumerate(fileLines):
             sectionName = line[1:-1]
             if sectionName in self.sectionsLineNumbers or (sectionName:=sectionName[3:]) in self.sectionsLineNumbers:
                 self.sectionsLineNumbers[sectionName].append(i)
     
-    def _getBoardDimensions(self, fileLines:str, boardInstance:board.Board):
+    def _getBoardDimensions(self, fileLines:list[str], boardInstance:board.Board):
         boardOutlineRange = self._calculateRange('BOARD')
         bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
         topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
-        handleShape = {'LINE':self._getLineFromLINE, 'ARC': self._getArcFromARC, 'CIRCLE':self._getCircleFromCIRCLE}
         shapes = []
 
         for i in boardOutlineRange:
@@ -41,11 +41,30 @@ class GenCadLoader:
                 keyWord, *line  = fileLines[i].replace('\n', '').split(' ')
                 if keyWord == 'ARTWORK':
                     break
-                shape, bottomLeftPoint, topRightPoint = handleShape[keyWord](line, bottomLeftPoint, topRightPoint)
+                shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](line, bottomLeftPoint, topRightPoint)
                 shapes.append(shape)
         
         boardInstance.setOutlines(shapes)
         boardInstance.setArea(bottomLeftPoint, topRightPoint)
+    
+    def _getPadsFromPADS(self, fileLines:list[str]) -> dict:
+        i, iEnd = self.sectionsLineNumbers(['PADS'])
+        padsDict = {}
+
+        while i <= iEnd:
+            if ' ' in fileLines[i] and 'PAD' in fileLines[i]:
+                _, padName, *_  = fileLines[i].replace('\n', '').split(' ')                    
+                bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
+                topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+                
+                while 'PAD' not in fileLines[i + 1]:
+                    keyWord, *line  = fileLines[i].replace('\n', '').split(' ')
+                    shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](line, bottomLeftPoint, topRightPoint)
+
+                    i += 1
+                padsDict[padName] = {}
+
+
                 
     
     def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point) -> tuple[geometryObjects.Line, geometryObjects.Point, geometryObjects.Point]:
