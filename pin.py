@@ -38,3 +38,19 @@ class Pin:
         bottomLeftPoint = gobj.Point.translate(self.coords, moveVector)
         topRightPoint = gobj.Point.translate(bottomLeftPoint, [self.width, self.height])
         self.setPinArea(bottomLeftPoint, topRightPoint)
+    
+    def calculateCenterDimensionsFromArea(self):
+        self._calculateCenterFromArea()
+        self._calculateDimensionsFromArea()
+    
+    def _calculateCenterFromArea(self):
+        bottomLeftPoint, topRightPoint = self.pinArea
+        xCenter = (topRightPoint.getX() + bottomLeftPoint.getX()) / 2
+        yCenter = (topRightPoint.getY() + bottomLeftPoint.getY()) / 2
+        self.setCoords(gobj.Point(xCenter, yCenter))
+    
+    def _calculateDimensionsFromArea(self):
+        bottomLeftPoint, topRightPoint = self.pinArea
+        width = topRightPoint.getX() - bottomLeftPoint.getX()
+        height = topRightPoint.getY() - bottomLeftPoint.getY()
+        self.setDimensions(width, height)
