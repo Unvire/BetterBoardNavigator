@@ -1,4 +1,4 @@
-import geometryObjects
+import geometryObjects as gobj 
 
 class Pin:
     def __init__(self, name:str):
@@ -17,13 +17,13 @@ class Pin:
     def setShape(self, shape:str):
         self.shape = shape
     
-    def setCoords(self, coords:geometryObjects.Point):
+    def setCoords(self, coords:gobj.Point):
         self.coords = coords
     
-    def getCoords(self) -> geometryObjects.Point:
+    def getCoords(self) -> gobj.Point:
         return self.coords
     
-    def setPinArea(self, bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point):
+    def setPinArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
         self.pinArea = [bottomLeftPoint, topRightPoint]
     
     def setNet(self, netName:str):
@@ -35,6 +35,6 @@ class Pin:
     
     def calculateArea(self):
         moveVector = [-self.width / 2, -self.height / 2]
-        bottomLeftPoint = geometryObjects.Point.translate(self.coords, moveVector)
-        topRightPoint = geometryObjects.Point.translate(bottomLeftPoint, [self.width, self.height])
+        bottomLeftPoint = gobj.Point.translate(self.coords, moveVector)
+        topRightPoint = gobj.Point.translate(bottomLeftPoint, [self.width, self.height])
         self.setPinArea(bottomLeftPoint, topRightPoint)

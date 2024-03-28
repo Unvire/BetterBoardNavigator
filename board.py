@@ -1,5 +1,6 @@
-import pin, component
-import geometryObjects
+import pin
+import geometryObjects as gobj
+import component as comp
 
 class Board:
     def __init__(self):
@@ -8,16 +9,16 @@ class Board:
         self.components = []
         self.nets = []
     
-    def setArea(self, bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point):
+    def setArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
         self.area = [bottomLeftPoint, topRightPoint]
     
-    def getArea(self) -> list[geometryObjects.Point]:
+    def getArea(self) -> list[gobj.Point]:
         return self.area
     
-    def setOutlines(self, outlinesList:list[geometryObjects.Point|geometryObjects.Arc]):
+    def setOutlines(self, outlinesList:list[gobj.Point|gobj.Arc]):
         self.outlines = outlinesList
 
-    def getOutlines(self) -> list[geometryObjects.Point|geometryObjects.Arc]:
+    def getOutlines(self) -> list[gobj.Point|gobj.Arc]:
         return self.outlines
     
     def setComponents(self, componentsDict:dict):
@@ -32,7 +33,7 @@ class Board:
     def getNets(self) -> dict:
         return self.nets
     
-    def addComponent(self, name:str, componentInstance:component.Component):
+    def addComponent(self, name:str, componentInstance:comp.Component):
         self.components[name] = componentInstance
     
     def getElementByName(self, groupName:str, elementName:str):

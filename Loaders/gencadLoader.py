@@ -1,7 +1,8 @@
 import sys, os, copy 
 sys.path.append(os.getcwd())
-import geometryObjects
-import board, component, pin
+import geometryObjects as gobj
+import component as comp
+import board, pin
 
 class GenCadLoader:
     def __init__(self):
@@ -32,8 +33,8 @@ class GenCadLoader:
     
     def _getBoardDimensions(self, fileLines:list[str], boardInstance:board.Board):
         boardOutlineRange = self._calculateRange('BOARD')
-        bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
-        topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+        bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
+        topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
         shapes = []
 
         for i in boardOutlineRange:
@@ -54,8 +55,8 @@ class GenCadLoader:
         while i <= iEnd:
             if ' ' in fileLines[i] and 'PAD' in fileLines[i]:
                 _, padName, *_  = fileLines[i].replace('\n', '').split(' ')                    
-                bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
-                topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+                bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
+                topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
                 
                 while 'PAD' not in fileLines[i + 1]:
                     keyWord, *line  = fileLines[i].replace('\n', '').split(' ')
@@ -67,35 +68,35 @@ class GenCadLoader:
 
                 
     
-    def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point) -> tuple[geometryObjects.Line, geometryObjects.Point, geometryObjects.Point]:
-        xStart, yStart, xEnd, yEnd = [geometryObjects.floatOrNone(val) for val in fileLine]
-        startPoint = geometryObjects.Point(xStart, yStart)
-        endPoint = geometryObjects.Point(xEnd, yEnd)
+    def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Line, gobj.Point, gobj.Point]:
+        xStart, yStart, xEnd, yEnd = [gobj.floatOrNone(val) for val in fileLine]
+        startPoint = gobj.Point(xStart, yStart)
+        endPoint = gobj.Point(xEnd, yEnd)
 
         bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], [startPoint, endPoint])
         
-        lineInstance = geometryObjects.Line(startPoint, endPoint)
+        lineInstance = gobj.Line(startPoint, endPoint)
         return lineInstance, bottomLeftPoint, topRightPoint
     
-    def _getArcFromARC(self, fileLine:list[str], bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point) -> tuple[geometryObjects.Arc, geometryObjects.Point, geometryObjects.Point]:
-        xStart, yStart, xEnd, yEnd, xCenter, yCenter = [geometryObjects.floatOrNone(val) for val in fileLine]
-        startPoint = geometryObjects.Point(xStart, yStart)
-        endPoint = geometryObjects.Point(xEnd, yEnd)
-        rotationPoint = geometryObjects.Point(xCenter, yCenter)
+    def _getArcFromARC(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Arc, gobj.Point, gobj.Point]:
+        xStart, yStart, xEnd, yEnd, xCenter, yCenter = [gobj.floatOrNone(val) for val in fileLine]
+        startPoint = gobj.Point(xStart, yStart)
+        endPoint = gobj.Point(xEnd, yEnd)
+        rotationPoint = gobj.Point(xCenter, yCenter)
 
         bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], [startPoint, endPoint, rotationPoint])
 
-        arcInstance = geometryObjects.Arc(startPoint, endPoint, rotationPoint)
+        arcInstance = gobj.Arc(startPoint, endPoint, rotationPoint)
         return arcInstance, bottomLeftPoint, topRightPoint
 
-    def _getCircleFromCIRCLE(self, fileLine:list[str], bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point) -> tuple[geometryObjects.Circle, geometryObjects.Point, geometryObjects.Point]:
-        xCenter, yCenter, radius = [geometryObjects.floatOrNone(val) for val in fileLine]
-        centerPoint = geometryObjects.Point(xCenter, yCenter)
+    def _getCircleFromCIRCLE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Circle, gobj.Point, gobj.Point]:
+        xCenter, yCenter, radius = [gobj.floatOrNone(val) for val in fileLine]
+        centerPoint = gobj.Point(xCenter, yCenter)
 
-        checkedPoints = [geometryObjects.Point.translate(centerPoint, [-radius, -radius]), geometryObjects.Point.translate(centerPoint, [radius, radius])]
+        checkedPoints = [gobj.Point.translate(centerPoint, [-radius, -radius]), gobj.Point.translate(centerPoint, [radius, radius])]
         bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
          
-        circleInstance = geometryObjects.Circle(centerPoint, radius)
+        circleInstance = gobj.Circle(centerPoint, radius)
         return circleInstance, bottomLeftPoint, topRightPoint
     
     def _splitButNotBetweenCharacter(self, line:str, splitCharacter:str=' ', ignoreCharacter:str='"') -> list[str]:
@@ -113,10 +114,10 @@ class GenCadLoader:
             result.append(current)
         return result
 
-    def _updatebottomLeftTopRightPoints(self, bottomLeftTopRightPoints:tuple[geometryObjects.Point, geometryObjects.Point],  checkedPoints:list[geometryObjects.Point]) -> tuple[geometryObjects.Point, geometryObjects.Point]:
+    def _updatebottomLeftTopRightPoints(self, bottomLeftTopRightPoints:tuple[gobj.Point, gobj.Point],  checkedPoints:list[gobj.Point]) -> tuple[gobj.Point, gobj.Point]:
         bottomLeftPoint, topRightPoint = bottomLeftTopRightPoints
         for point in checkedPoints:
-            bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
+            bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
         return bottomLeftPoint, topRightPoint
     
     def _calculateRange(self, sectionName:str) -> range:

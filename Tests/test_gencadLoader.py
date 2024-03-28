@@ -1,6 +1,6 @@
 import pytest
 from Loaders.gencadLoader import GenCadLoader
-import geometryObjects
+import geometryObjects as gobj 
 
 @pytest.fixture
 def sectionsRangeTest():
@@ -51,36 +51,36 @@ def test___calculateRange(sectionsRangeTest):
 
 def test__getLineFromLINE():
     line = ['1967.441', '2267.244', '2026.496', '3267.244']    
-    bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
-    topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+    bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
+    topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
     
     instance = GenCadLoader()
     shape, bottomLeftPoint, topRightPoint = instance._getLineFromLINE(line, bottomLeftPoint, topRightPoint)
-    assert shape == geometryObjects.Line(geometryObjects.Point(1967.441, 2267.244), geometryObjects.Point(2026.496, 3267.244))
-    assert bottomLeftPoint == geometryObjects.Point(1967.441, 2267.244)
-    assert topRightPoint == geometryObjects.Point(2026.496, 3267.244)
+    assert shape == gobj.Line(gobj.Point(1967.441, 2267.244), gobj.Point(2026.496, 3267.244))
+    assert bottomLeftPoint == gobj.Point(1967.441, 2267.244)
+    assert topRightPoint == gobj.Point(2026.496, 3267.244)
 
 def test__getArcFromARC():
     line = ['996.063', '137.795', '956.693', '137.795', '976.378', '147.795']    
-    bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
-    topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+    bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
+    topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
     
     instance = GenCadLoader()
     shape, bottomLeftPoint, topRightPoint = instance._getArcFromARC(line, bottomLeftPoint, topRightPoint)
-    assert shape == geometryObjects.Arc(geometryObjects.Point(996.063, 137.795), geometryObjects.Point(956.693, 137.795), geometryObjects.Point(976.378, 147.795))
-    assert bottomLeftPoint == geometryObjects.Point(956.693, 137.795)
-    assert topRightPoint == geometryObjects.Point(996.063, 147.795)
+    assert shape == gobj.Arc(gobj.Point(996.063, 137.795), gobj.Point(956.693, 137.795), gobj.Point(976.378, 147.795))
+    assert bottomLeftPoint == gobj.Point(956.693, 137.795)
+    assert topRightPoint == gobj.Point(996.063, 147.795)
 
 def test__getCircleFromCIRCLE():
     line = ['-2.8661417', '2.527559', '0.08070866']
-    bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
-    topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+    bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
+    topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
 
     instance = GenCadLoader()
     shape, bottomLeftPoint, topRightPoint = instance._getCircleFromCIRCLE(line, bottomLeftPoint, topRightPoint)
-    assert shape == geometryObjects.Circle(geometryObjects.Point(-2.8661417, 2.527559), 0.08070866)
-    assert bottomLeftPoint == geometryObjects.Point(-2.94685036, 2.44685034)
-    assert topRightPoint == geometryObjects.Point(-2.78543304, 2.60826766)
+    assert shape == gobj.Circle(gobj.Point(-2.8661417, 2.527559), 0.08070866)
+    assert bottomLeftPoint == gobj.Point(-2.94685036, 2.44685034)
+    assert topRightPoint == gobj.Point(-2.78543304, 2.60826766)
 
 def test__getBoardDimensions(bouardOutlineTest):
     instance = GenCadLoader()
@@ -89,12 +89,12 @@ def test__getBoardDimensions(bouardOutlineTest):
     shapes = instance.boardData.getOutlines()
 
     assert len(instance.boardData.getOutlines()) == 5
-    assert instance.boardData.getArea() == [geometryObjects.Point(-4.08, 1.712375), geometryObjects.Point(0.2900811, 3.860051)]
-    assert shapes[0] == geometryObjects.Arc(geometryObjects.Point(0.2900811, 3.820681), geometryObjects.Point(0.250711, 3.860051), geometryObjects.Point(0.250711, 3.820681))
-    assert shapes[1] == geometryObjects.Line(geometryObjects.Point(0.2900811, 2.129768), geometryObjects.Point(0.2506389, 2.090325))
-    assert shapes[2] == geometryObjects.Line(geometryObjects.Point(0.2506389, 2.090325), geometryObjects.Point(0.2506389, 1.712375))
-    assert shapes[3] == geometryObjects.Arc(geometryObjects.Point(-4.046038, 3.859678), geometryObjects.Point(-4.08, 3.820681), geometryObjects.Point(-4.04063, 3.820681))
-    assert shapes[4] == geometryObjects.Circle(geometryObjects.Point(-2.8661417, 2.527559), 0.08070866)
+    assert instance.boardData.getArea() == [gobj.Point(-4.08, 1.712375), gobj.Point(0.2900811, 3.860051)]
+    assert shapes[0] == gobj.Arc(gobj.Point(0.2900811, 3.820681), gobj.Point(0.250711, 3.860051), gobj.Point(0.250711, 3.820681))
+    assert shapes[1] == gobj.Line(gobj.Point(0.2900811, 2.129768), gobj.Point(0.2506389, 2.090325))
+    assert shapes[2] == gobj.Line(gobj.Point(0.2506389, 2.090325), gobj.Point(0.2506389, 1.712375))
+    assert shapes[3] == gobj.Arc(gobj.Point(-4.046038, 3.859678), gobj.Point(-4.08, 3.820681), gobj.Point(-4.04063, 3.820681))
+    assert shapes[4] == gobj.Circle(gobj.Point(-2.8661417, 2.527559), 0.08070866)
 
 @pytest.mark.parametrize("testInput, expected", [('PAD "Round 32" ROUND -1', ['PAD', '"Round_32"', 'ROUND', '-1']), 
                                                  ('ARTWORK artwork9 SOLDERPASTE_BOTTOM', ['ARTWORK', 'artwork9', 'SOLDERPASTE_BOTTOM']), 

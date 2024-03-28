@@ -1,4 +1,4 @@
-import geometryObjects
+import geometryObjects as gobj
 import pin
 
 class Component:
@@ -19,7 +19,7 @@ class Component:
     def addPin(self, pinName:str, pin:pin.Pin):
         self.pins[pinName] = pin
     
-    def setCoords(self, point:geometryObjects.Point):
+    def setCoords(self, point:gobj.Point):
         self.coords = point
     
     def setSide(self, side:str):
@@ -31,7 +31,7 @@ class Component:
     def setPartNumber(self, partNumber:str):
         self.partNumber = partNumber
     
-    def setComponentArea(self, bottomLeftPoint:geometryObjects.Point, topRightPoint:geometryObjects.Point):
+    def setComponentArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
         self.componentArea = [bottomLeftPoint, topRightPoint]
     
     def setPackageType(self, packageType:str):
@@ -44,13 +44,13 @@ class Component:
         bottomLeftPoint, topRightPoint = self.calculateHitBoxFromPins()
         xCenter = bottomLeftPoint.x + round((topRightPoint.x - bottomLeftPoint.x) / 2, 3)
         yCenter = bottomLeftPoint.y + round((topRightPoint.y - bottomLeftPoint.y) / 2, 3)
-        center = geometryObjects.Point(xCenter, yCenter)
+        center = gobj.Point(xCenter, yCenter)
         self.setCoords(center)
     
     def calculatePackageFromPins(self):
         bottomLeftPoint, topRightPoint = self.calculateHitBoxFromPins()        
-        bottomLeftPoint = geometryObjects.Point.scale(bottomLeftPoint, 0.95)
-        topRightPoint = geometryObjects.Point.scale(topRightPoint, 0.95)
+        bottomLeftPoint = gobj.Point.scale(bottomLeftPoint, 0.95)
+        topRightPoint = gobj.Point.scale(topRightPoint, 0.95)
 
         x1, y1 = bottomLeftPoint.x, bottomLeftPoint.y
         x2, y2 = topRightPoint.x, topRightPoint.y
@@ -65,12 +65,12 @@ class Component:
 
         self.setComponentArea(bottomLeftPoint, topRightPoint)
 
-    def calculateHitBoxFromPins(self) -> (geometryObjects.Point, geometryObjects.Point):
-        bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
-        topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+    def calculateHitBoxFromPins(self) -> tuple[gobj.Point, gobj.Point]:
+        bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
+        topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
         for pin in self.pins:
             centerPoint = self.pins[pin].getCoords()
-            bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, centerPoint)
+            bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, centerPoint)
         return bottomLeftPoint, topRightPoint
 
     

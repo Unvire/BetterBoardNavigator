@@ -1,7 +1,8 @@
 import sys, os, copy 
 sys.path.append(os.getcwd())
-import geometryObjects
-import board, component, pin
+import geometryObjects as gobj
+import component as comp
+import board, pin
 
 class CamCadLoader:
     def __init__(self):
@@ -38,19 +39,19 @@ class CamCadLoader:
     
     def _getBoardDimensions(self, fileLines:list[str], boardInstance:board.Board):
         boardOutlineRange = self._calculateRange('BOARDOUTLINE')
-        bottomLeftPoint = geometryObjects.Point(float('Inf'), float('Inf'))
-        topRightPoint = geometryObjects.Point(float('-Inf'), float('-Inf'))
+        bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
+        topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
         shapes = []
 
         for i in boardOutlineRange:
             if ',' in fileLines[i]:
                 _, xStart, yStart, xEnd, yEnd = fileLines[i].split(',')
-                startPoint = geometryObjects.Point(float(xStart), float(yStart))              
-                endPoint = geometryObjects.Point(float(xEnd), float(yEnd))
+                startPoint = gobj.Point(float(xStart), float(yStart))              
+                endPoint = gobj.Point(float(xEnd), float(yEnd))
 
-                shapes.append(geometryObjects.Line(startPoint, endPoint))
+                shapes.append(gobj.Line(startPoint, endPoint))
                 for point in [startPoint, endPoint]:
-                    bottomLeftPoint, topRightPoint = geometryObjects.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
+                    bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
         
         boardInstance.setOutlines(shapes)
         boardInstance.setArea(bottomLeftPoint, topRightPoint)
@@ -65,7 +66,7 @@ class CamCadLoader:
                 line = fileLines[i].replace('\n', '')
                 _, name, partNumber, x, y, side, angle = [parameter.strip() for parameter in line.split(',')]
                 side = sideDict[side]
-                x, y  = geometryObjects.floatOrNone(x), geometryObjects.floatOrNone(y)
+                x, y  = gobj.floatOrNone(x), gobj.floatOrNone(y)
                 newComponent = self._createComponent(name, partNumber, x, y, float(angle), side)
                 components[name] = newComponent                    
         boardInstance.setComponents(components)
@@ -78,8 +79,8 @@ class CamCadLoader:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
                 padID, name, shape, width, height, _, _ = [parameter.strip() for parameter in line.split(',')]                
-                width = geometryObjects.floatOrNone(width)
-                height = geometryObjects.floatOrNone(height)                
+                width = gobj.floatOrNone(width)
+                height = gobj.floatOrNone(height)                
                 padsDict[padID] = self._createPin(name, shape, width, height)
         return padsDict
 
@@ -113,10 +114,10 @@ class CamCadLoader:
         for comp in componentWithoutpackages:
             comp.calculatePackageFromPins()
     
-    def _createComponent(self, name:str, partNumber:str, x:float|None, y:float|None, angle:float, side:str) -> component.Component:
-        newComponent = component.Component(name)
+    def _createComponent(self, name:str, partNumber:str, x:float|None, y:float|None, angle:float, side:str) -> comp.Component:
+        newComponent = comp.Component(name)
         newComponent.setPartNumber(partNumber)
-        center = geometryObjects.Point(x, y)
+        center = gobj.Point(x, y)
         newComponent.setCoords(center)
         newComponent.setAngle(float(angle))
         newComponent.setSide(side)
@@ -130,7 +131,7 @@ class CamCadLoader:
 
     def _calculatePinCoordsAndAddNet(self, pad:dict, pinX:str, pinY:str, netName:str) -> pin.Pin:
         pad = copy.deepcopy(pad)
-        pad.setCoords(geometryObjects.Point(float(pinX), float(pinY)))
+        pad.setCoords(gobj.Point(float(pinX), float(pinY)))
         pad.calculateArea()
         pad.setNet(netName)
         return pad
@@ -148,7 +149,7 @@ class CamCadLoader:
             if ',' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
                 partNumber, pinType, width, height, _ = [parameter.strip() for parameter in line.split(',')]
-                width, height  = geometryObjects.floatOrNone(width), geometryObjects.floatOrNone(height)
+                width, height  = gobj.floatOrNone(width), gobj.floatOrNone(height)
                 packagesDict[partNumber] = {'pinType': pinType, 'dimensions':(width, height)}
         return packagesDict
     
@@ -162,7 +163,7 @@ class CamCadLoader:
                 pnDict[componentPN] = partNumber
         return pnDict
     
-    def _matchPackagesToComponents(self, packagesDict:dict, pnDict:dict, boardInstance:board.Board) -> list[component.Component]:
+    def _matchPackagesToComponents(self, packagesDict:dict, pnDict:dict, boardInstance:board.Board) -> list[comp.Component]:
         noPackagesMatch = []
         components = boardInstance.getComponents()
         for componentName in components:
@@ -170,26 +171,26 @@ class CamCadLoader:
             if not componentInstance.isCoordsValid():   
                 componentInstance.calculateCenterFromPins()
             
-            componentpartNumber = self._componentPartNumber(componentInstance, pnDict)
-            if componentpartNumber in packagesDict:                
-                packageBottomLeftPoint, packageTopRightPoint = self._calculatePackageBottomRightAndTopLeftPoints(componentInstance, packagesDict[componentpartNumber]['dimensions'])
+            comppartNumber = self._compPartNumber(componentInstance, pnDict)
+            if comppartNumber in packagesDict:                
+                packageBottomLeftPoint, packageTopRightPoint = self._calculatePackageBottomRightAndTopLeftPoints(componentInstance, packagesDict[comppartNumber]['dimensions'])
                 componentInstance.setComponentArea(packageBottomLeftPoint, packageTopRightPoint)                
-                componentInstance.setPackageType(packagesDict[componentpartNumber]['pinType'])
+                componentInstance.setPackageType(packagesDict[comppartNumber]['pinType'])
             else:
                 noPackagesMatch.append(componentInstance)
         return noPackagesMatch
 
-    def _componentPartNumber(self, componentInstance:component.Component, pnDict:dict) -> str:
-        componentPartNumber = componentInstance.partNumber
-        if componentPartNumber in pnDict:
-            return pnDict[componentPartNumber]
+    def _compPartNumber(self, componentInstance:comp.Component, pnDict:dict) -> str:
+        compPartNumber = componentInstance.partNumber
+        if compPartNumber in pnDict:
+            return pnDict[compPartNumber]
         return ''
     
-    def _calculatePackageBottomRightAndTopLeftPoints(self, componentInstance:component.Component, dimesions:tuple[float, float]) -> tuple[geometryObjects.Point, geometryObjects.Point]:
+    def _calculatePackageBottomRightAndTopLeftPoints(self, componentInstance:comp.Component, dimesions:tuple[float, float]) -> tuple[gobj.Point, gobj.Point]:
         width, height = dimesions
         x0, y0 = self._calculateMoveVectorFromWidthHeight(width, height, 3)
-        packageBottomLeftPoint = geometryObjects.Point.translate(componentInstance.coords, (x0, y0))
-        packageTopRightPoint = geometryObjects.Point.translate(componentInstance.coords, (-x0, -y0))
+        packageBottomLeftPoint = gobj.Point.translate(componentInstance.coords, (x0, y0))
+        packageTopRightPoint = gobj.Point.translate(componentInstance.coords, (-x0, -y0))
         return packageBottomLeftPoint, packageTopRightPoint
     
     def _calculateMoveVectorFromWidthHeight(self, width:float, height:float, roundDigits:int) -> tuple[float, float]:
