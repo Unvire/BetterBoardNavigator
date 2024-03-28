@@ -66,7 +66,7 @@ def padsTest():
 def test__getSectionsLinesBeginEnd(sectionsRangeTest):
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(sectionsRangeTest)
-    expected = {'BOARD':[0, 1], 'PADS':[2, 4], 'SHAPES':[5, 6], 'COMPONENTS':[7, 8], 'SIGNALS':[9, 10], 'ROUTES':[11, 12], 'MECH':[13, 14]}
+    expected = {'BOARD':[0, 1], 'PADS':[2, 4], 'SHAPES':[5, 6], 'COMPONENTS':[7, 8], 'SIGNALS':[9, 10], 'ROUTES':[11, 12], 'MECH':[13, 14], 'PADSTACKS':[]}
     assert instance.sectionsLineNumbers == expected
 
 def test___calculateRange(sectionsRangeTest):
