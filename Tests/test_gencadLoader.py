@@ -113,9 +113,9 @@ def test__getBoardDimensions(bouardOutlineTest):
     assert shapes[3] == gobj.Arc(gobj.Point(-4.046038, 3.859678), gobj.Point(-4.08, 3.820681), gobj.Point(-4.04063, 3.820681))
     assert shapes[4] == gobj.Circle(gobj.Point(-2.8661417, 2.527559), 0.08070866)
 
-@pytest.mark.parametrize("testInput, expected", [('PAD "Round 32" ROUND -1', ['PAD', '"Round 32"', 'ROUND', '-1']), 
+@pytest.mark.parametrize("testInput, expected", [('PAD "Round 32" ROUND -1', ['PAD', 'Round 32', 'ROUND', '-1']), 
                                                  ('ARTWORK artwork9 SOLDERPASTE_BOTTOM', ['ARTWORK', 'artwork9', 'SOLDERPASTE_BOTTOM']), 
-                                                 ('PAD "O b l o n g 2.7x1.7" FINGER -1', ['PAD', '"O b l o n g 2.7x1.7"', 'FINGER', '-1'])])
+                                                 ('PAD "O b l o n g 2.7x1.7" FINGER -1', ['PAD', 'O b l o n g 2.7x1.7', 'FINGER', '-1'])])
 def test__splitButNotBetweenCharacter(testInput, expected):
     instance = GenCadLoader()
     assert expected == instance._splitButNotBetweenCharacter(testInput, ' ', '"')
@@ -124,28 +124,25 @@ def test__getPadsFromPADS(padsTest):
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(padsTest)
     padsDict = instance._getPadsFromPADS(padsTest)
-    assert list(padsDict.keys()) == ['"Round 32"', '"Oblong 3.2x5.2"', '"Rectangle;1.15x1.65"']
+    assert list(padsDict.keys()) == ['Round 32', 'Oblong 3.2x5.2', 'Rectangle;1.15x1.65']
     
-    assert padsDict['"Round 32"'].name == '"Round 32"'
-    assert padsDict['"Round 32"'].shape == 'CIRCLE'
-    assert padsDict['"Round 32"'].pinArea == [gobj.Point(-0.406, -0.406), gobj.Point(0.406, 0.406)]
-    assert padsDict['"Round 32"'].coords == gobj.Point(0, 0)
-    assert padsDict['"Round 32"'].width == 0.812
-    assert padsDict['"Round 32"'].height == 0.812
+    assert padsDict['Round 32'].name == 'Round 32'
+    assert padsDict['Round 32'].shape == 'CIRCLE'
+    assert padsDict['Round 32'].pinArea == [gobj.Point(-0.406, -0.406), gobj.Point(0.406, 0.406)]
+    assert padsDict['Round 32'].coords == gobj.Point(0, 0)
+    assert padsDict['Round 32'].width == 0.812
+    assert padsDict['Round 32'].height == 0.812
 
-    assert padsDict['"Oblong 3.2x5.2"'].name == '"Oblong 3.2x5.2"'
-    assert padsDict['"Oblong 3.2x5.2"'].shape == 'RECT'    
-    assert padsDict['"Oblong 3.2x5.2"'].pinArea == [gobj.Point(-1.6, -1), gobj.Point(1.6, 1)]
-    assert padsDict['"Oblong 3.2x5.2"'].coords == gobj.Point(0, 0)
-    assert padsDict['"Oblong 3.2x5.2"'].width == 3.2
-    assert padsDict['"Oblong 3.2x5.2"'].height == 2
+    assert padsDict['Oblong 3.2x5.2'].name == 'Oblong 3.2x5.2'
+    assert padsDict['Oblong 3.2x5.2'].shape == 'RECT'    
+    assert padsDict['Oblong 3.2x5.2'].pinArea == [gobj.Point(-1.6, -1), gobj.Point(1.6, 1)]
+    assert padsDict['Oblong 3.2x5.2'].coords == gobj.Point(0, 0)
+    assert padsDict['Oblong 3.2x5.2'].width == 3.2
+    assert padsDict['Oblong 3.2x5.2'].height == 2
 
-    assert padsDict['"Rectangle;1.15x1.65"'].name == '"Rectangle;1.15x1.65"'
-    assert padsDict['"Rectangle;1.15x1.65"'].shape == 'RECT'
-    assert padsDict['"Rectangle;1.15x1.65"'].pinArea == [gobj.Point(-0.575, -0.825), gobj.Point(1.150, 1.650)]
-    assert padsDict['"Rectangle;1.15x1.65"'].coords == gobj.Point(0.288, 0.413)
-    assert padsDict['"Rectangle;1.15x1.65"'].width == 1.725
-    assert padsDict['"Rectangle;1.15x1.65"'].height == 2.475
-    #RECTANGLE -0.575000 -0.825000 1.150000 1.650000
-                                                        
-    #assert 1 == 0
+    assert padsDict['Rectangle;1.15x1.65'].name == 'Rectangle;1.15x1.65'
+    assert padsDict['Rectangle;1.15x1.65'].shape == 'RECT'
+    assert padsDict['Rectangle;1.15x1.65'].pinArea == [gobj.Point(-0.575, -0.825), gobj.Point(1.150, 1.650)]
+    assert padsDict['Rectangle;1.15x1.65'].coords == gobj.Point(0.288, 0.413)
+    assert padsDict['Rectangle;1.15x1.65'].width == 1.725
+    assert padsDict['Rectangle;1.15x1.65'].height == 2.475
