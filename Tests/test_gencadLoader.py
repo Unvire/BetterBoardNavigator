@@ -50,7 +50,15 @@ def padsTest():
         'LINE 1.600000 1.000000 1.600000 -1.000000\n',
         'PAD "Rectangle;1.15x1.65" RECTANGULAR -1\n',
         'RECTANGLE -0.575000 -0.825000 1.150000 1.650000\n',
-        '$ENDPADS\n'
+        '$ENDPADS\n',
+        '$PADSTACKS\n',
+        'PADSTACK "026VIA" 0.482600\n',
+        'PAD "Round 32" SOLDERMASK_BOTTOM 0 0\n',
+        'PAD "Round 26" TOP 0 0\n',
+        'PAD "Round 26" INNER 0 0\n',
+        'PADSTACK "Smd 0.95x1.45 mm_TOP" 0.000000\n',
+        'PAD "Rectangle;1.15x1.65" SOLDERMASK_TOP 0 0\n',
+        '$PADSTACKS\n',
     ]
     return fileLinesMock
 
@@ -146,3 +154,12 @@ def test__getPadsFromPADS(padsTest):
     assert padsDict['Rectangle;1.15x1.65'].coords == gobj.Point(0.288, 0.413)
     assert padsDict['Rectangle;1.15x1.65'].width == 1.725
     assert padsDict['Rectangle;1.15x1.65'].height == 2.475
+
+def test__getPadstacksFromPADSTACKS(padsTest):
+    instance = GenCadLoader()
+    instance._getSectionsLinesBeginEnd(padsTest)
+    padsDict = instance._getPadsFromPADS(padsTest)
+    padstackDict = instance._getPadstacksFromPADSTACKS(padsTest, padsDict)
+    assert list(padstackDict.keys()) == ['026VIA', 'Smd 0.95x1.45 mm_TOP']
+    assert padstackDict['026VIA'] is padsDict['Round 32']
+    assert padstackDict['Smd 0.95x1.45 mm_TOP'] is padsDict['Rectangle;1.15x1.65']

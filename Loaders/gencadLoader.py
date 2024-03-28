@@ -7,7 +7,7 @@ import board, pin
 class GenCadLoader:
     def __init__(self):
         self.boardData = board.Board()
-        self.sectionsLineNumbers = {'BOARD':[], 'PADS':[], 'SHAPES':[], 'COMPONENTS':[], 'SIGNALS':[], 'ROUTES':[], 'MECH':[]}
+        self.sectionsLineNumbers = {'BOARD':[], 'PADS':[], 'SHAPES':[], 'COMPONENTS':[], 'SIGNALS':[], 'ROUTES':[], 'MECH':[], 'PADSTACKS':[]}
         self.handleShape = {'LINE':self._getLineFromLINE, 'ARC': self._getArcFromARC, 'CIRCLE':self._getCircleFromCIRCLE, 'RECTANGLE':self._getRectFromRECTANGLE}
     
     def loadFile(self, filePath:str):
@@ -15,6 +15,7 @@ class GenCadLoader:
         fileLines = self._getFileLines()        
         self._getSectionsLinesBeginEnd(fileLines)
         padsDict = self._getPadsFromPADS(fileLines)
+        padstackDict = self._getPadstacksFromPADSTACKS(fileLines, padsDict)
 
         return self.boardData
     
@@ -68,6 +69,23 @@ class GenCadLoader:
                 padsDict[padName] = newPad
             i += 1
         return padsDict
+    
+    def _getPadstacksFromPADSTACKS(self, fileLines:list[str], padsDict:dict) -> dict:
+        i, iEnd = self.sectionsLineNumbers['PADSTACKS']
+        padstackDict = {}
+
+        while i <= iEnd:
+            if ' ' in fileLines[i] and 'PADSTACK' in fileLines[i]:
+                padstackLine = fileLines[i].replace('\n', '')
+                _, padstackName, *_ = self._splitButNotBetweenCharacter(padstackLine)
+                
+                padLine = fileLines[i + 1].replace('\n', '')
+                _, padName, *_ = self._splitButNotBetweenCharacter(padLine)
+
+                padstackDict[padstackName] = padsDict[padName]
+            i += 1
+        return padstackDict
+
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
         newPin = pin.Pin(name)
