@@ -6,7 +6,7 @@ class Board:
     def __init__(self):
         self.area = []
         self.outlines = []
-        self.components = []
+        self.components = {}
         self.nets = []
     
     def setArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):

@@ -16,6 +16,7 @@ class GenCadLoader:
         self._getSectionsLinesBeginEnd(fileLines)
         padsDict = self._getPadsFromPADS(fileLines)
         padstackDict = self._getPadstacksFromPADSTACKS(fileLines, padsDict)
+        self._getComponentsFromCOMPONENTS(fileLines, self.boardData)
 
         return self.boardData
     
@@ -85,14 +86,46 @@ class GenCadLoader:
                 padstackDict[padstackName] = padsDict[padName]
             i += 1
         return padstackDict
+    
+    def _getComponentsFromCOMPONENTS(self, fileLines:list[str], boardInstance:board.Board):
+        i, iEnd = self.sectionsLineNumbers['COMPONENTS']
 
+        while i <= iEnd:
+            if ' ' in fileLines[i] and 'COMPONENT' in fileLines[i]:
+                componentParameters = {}
+                isEndOfComponentSection = False
+                while not isEndOfComponentSection:
+                    line = fileLines[i].replace('\n', '')
+                    keyWord, *parameters = self._splitButNotBetweenCharacter(line)
+                    componentParameters[keyWord] = parameters
+                    i += 1
+                    isEndOfComponentSection = 'COMPONENT' in fileLines[i]
+                newComponent = self._createComponent(componentParameters)
+                componentName = componentParameters['COMPONENT'][0] 
+                boardInstance.addComponent(componentName, newComponent)
+            i += 1
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
         newPin = pin.Pin(name)
         newPin.setShape(shape)
         newPin.setPinArea(bottomLeftPoint, topRightPoint)
         newPin.calculateCenterDimensionsFromArea()
-        return newPin                
+        return newPin
+
+    def _createComponent(self, componentParameters:dict) -> comp.Component:
+        ## [0], because every value is nested in a list
+        name = componentParameters['COMPONENT'][0]
+        x, y = [gobj.floatOrNone(val) for val in componentParameters['PLACE']]
+        side = componentParameters['LAYER'][0][0]
+        angle = gobj.floatOrNone(componentParameters['ROTATION'][0])
+        shapeName = componentParameters['SHAPE'][0]
+
+        newComponent = comp.Component(name)
+        newComponent.setCoords(gobj.Point(x, y))
+        newComponent.setSide(side)
+        newComponent.setAngle(angle)
+        newComponent.setPartNumber(shapeName)
+        return newComponent
     
     def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Line, gobj.Point, gobj.Point]:
         xStart, yStart, xEnd, yEnd = [gobj.floatOrNone(val) for val in fileLine]
