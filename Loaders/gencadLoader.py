@@ -103,6 +103,7 @@ class GenCadLoader:
                 newComponent = self._createComponent(componentParameters)
                 componentName = componentParameters['COMPONENT'][0] 
                 boardInstance.addComponent(componentName, newComponent)
+                continue
             i += 1
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
