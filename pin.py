@@ -45,12 +45,12 @@ class Pin:
     
     def _calculateCenterFromArea(self):
         bottomLeftPoint, topRightPoint = self.pinArea
-        xCenter = (topRightPoint.getX() + bottomLeftPoint.getX()) / 2
-        yCenter = (topRightPoint.getY() + bottomLeftPoint.getY()) / 2
+        xCenter = round((topRightPoint.getX() + bottomLeftPoint.getX()) / 2, gobj.Point.DECIMAL_POINT_PRECISION)
+        yCenter = round((topRightPoint.getY() + bottomLeftPoint.getY()) / 2, gobj.Point.DECIMAL_POINT_PRECISION)
         self.setCoords(gobj.Point(xCenter, yCenter))
     
     def _calculateDimensionsFromArea(self):
         bottomLeftPoint, topRightPoint = self.pinArea
-        width = topRightPoint.getX() - bottomLeftPoint.getX()
-        height = topRightPoint.getY() - bottomLeftPoint.getY()
+        width = round(topRightPoint.getX() - bottomLeftPoint.getX(), gobj.Point.DECIMAL_POINT_PRECISION)
+        height = round(topRightPoint.getY() - bottomLeftPoint.getY(), gobj.Point.DECIMAL_POINT_PRECISION)
         self.setDimensions(width, height)
