@@ -39,8 +39,7 @@ class CamCadLoader:
     
     def _getBoardDimensions(self, fileLines:list[str], boardInstance:board.Board):
         boardOutlineRange = self._calculateRange('BOARDOUTLINE')
-        bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
-        topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
         shapes = []
 
         for i in boardOutlineRange:

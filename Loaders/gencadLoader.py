@@ -35,8 +35,7 @@ class GenCadLoader:
     
     def _getBoardDimensions(self, fileLines:list[str], boardInstance:board.Board):
         boardOutlineRange = self._calculateRange('BOARD')
-        bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
-        topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
         shapes = []
 
         for i in boardOutlineRange:
@@ -58,8 +57,7 @@ class GenCadLoader:
             if ' ' in fileLines[i] and 'PAD' in fileLines[i]:
                 line = fileLines[i].replace('\n', '')
                 _, padName, *_  = self._splitButNotBetweenCharacter(line)                  
-                bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
-                topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
+                bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
                 
                 while 'PAD' not in fileLines[i + 1]:
                     i += 1
@@ -143,7 +141,8 @@ class GenCadLoader:
     
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
-
+    
+    
 if __name__ == '__main__':
     loader = GenCadLoader()
     loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\wallbox main rev5.GCD')

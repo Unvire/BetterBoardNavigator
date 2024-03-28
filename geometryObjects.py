@@ -106,6 +106,11 @@ def floatOrNone(x:str):
         x = None
     return x    
 
+def getDefaultBottomLeftTopRightPoints() -> tuple[Point, Point]:
+    bottomLeftPoint = Point(float('Inf'), float('Inf'))
+    topRightPoint = Point(float('-Inf'), float('-Inf'))
+    return bottomLeftPoint, topRightPoint
+
 if __name__ == '__main__':
     A = Point(0, 0)
     print(A)
