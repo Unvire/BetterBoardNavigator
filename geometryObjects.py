@@ -88,6 +88,17 @@ class Circle:
     def __eq__(self, circle:'Circle'):
         return self.radius == circle.radius and self.centerPoint == circle.centerPoint
 
+class Rectangle:
+    def __init__(self, bottomLeftPoint:Point, topRightPoint:Point):
+        self.bottomLeftPoint = bottomLeftPoint
+        self.topRightPoint = topRightPoint
+    
+    def __str__(self):
+        return f'Rectangle: bottom-left point=({self.bottomLeftPoint}), top-right point=({self.topRightPoint})'
+    
+    def __eq__(self, rectangle:'Rectangle'):
+        return self.bottomLeftPoint == rectangle.bottomLeftPoint and self.topRightPoint == rectangle.topRightPoint
+
 def floatOrNone(x:str):
     try:
         x = float(x)
