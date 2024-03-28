@@ -15,7 +15,6 @@ class GenCadLoader:
         fileLines = self._getFileLines()        
         self._getSectionsLinesBeginEnd(fileLines)
         padsDict = self._getPadsFromPADS(fileLines)
-        print(padsDict)
 
         return self.boardData
     
@@ -74,6 +73,7 @@ class GenCadLoader:
         newPin = pin.Pin(name)
         newPin.setShape(shape)
         newPin.setPinArea(bottomLeftPoint, topRightPoint)
+        newPin.calculateCenterDimensionsFromArea()
         return newPin                
     
     def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Line, gobj.Point, gobj.Point]:
