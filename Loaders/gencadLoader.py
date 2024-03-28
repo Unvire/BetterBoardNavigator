@@ -8,7 +8,7 @@ class GenCadLoader:
     def __init__(self):
         self.boardData = board.Board()
         self.sectionsLineNumbers = {'BOARD':[], 'PADS':[], 'SHAPES':[], 'COMPONENTS':[], 'SIGNALS':[], 'ROUTES':[], 'MECH':[]}
-        self.handleShape = {'LINE':self._getLineFromLINE, 'ARC': self._getArcFromARC, 'CIRCLE':self._getCircleFromCIRCLE}
+        self.handleShape = {'LINE':self._getLineFromLINE, 'ARC': self._getArcFromARC, 'CIRCLE':self._getCircleFromCIRCLE, 'RECTANGLE':self._getRectFromRECTANGLE}
     
     def loadFile(self, filePath:str):
         self._setFilePath(filePath)
@@ -76,10 +76,7 @@ class GenCadLoader:
         newPin = pin.Pin(name)
         newPin.setShape(shape)
         newPin.setPinArea(bottomLeftPoint, topRightPoint)
-        return newPin
-
-
-                
+        return newPin                
     
     def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Line, gobj.Point, gobj.Point]:
         xStart, yStart, xEnd, yEnd = [gobj.floatOrNone(val) for val in fileLine]
@@ -111,6 +108,17 @@ class GenCadLoader:
          
         circleInstance = gobj.Circle(centerPoint, radius)
         return circleInstance, bottomLeftPoint, topRightPoint
+
+    def _getRectFromRECTANGLE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Rectangle, gobj.Point, gobj.Point]:
+        x0, y0, x1, y1 = [gobj.floatOrNone(val) for val in fileLine]
+        point0 = gobj.Point(x0, y0)
+        point1 = gobj.Point(x1, y1)
+
+        checkedPoints = [point0, point1]
+        bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
+         
+        rectangleInstance = gobj.Rectangle(point0, point1)
+        return rectangleInstance, bottomLeftPoint, topRightPoint
     
     def _splitButNotBetweenCharacter(self, line:str, splitCharacter:str=' ', ignoreCharacter:str='"') -> list[str]:
         initialSplit = line.split(splitCharacter)
