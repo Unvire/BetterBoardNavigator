@@ -62,6 +62,28 @@ def padsTest():
     ]
     return fileLinesMock
 
+@pytest.fixture
+def componentTest():
+    fileLinesMock = [
+        '$COMPONENTS\n',
+        'COMPONENT VR1\n',
+        'DEVICE 15023751_Generated\n',
+        'PLACE -2.97 1.11\n',
+        'LAYER BOTTOM\n',
+        'ROTATION 0\n',
+        'SHAPE RV-17X11X7.5P-M MIRRORY FLIP\n',
+        'COMPONENT C90\n',
+        'PLACE 1701.181 515.354\n',
+        'LAYER TOP\n',
+        'ROTATION 270.00\n',
+        'SHAPE C0402_T 0 0\n',
+        'DEVICE 15011408\n',
+        'ATTRIBUTE COMPONENT_383 "DEVICETYPE" "Capacitor"\n',
+        'ATTRIBUTE COMPONENT_384 "PARTNUMBER" "15011408"\n',
+        'ATTRIBUTE COMPONENT_385 "-TOL" "0"\n',
+        '$ENDCOMPONENTS\n'
+    ]
+    return fileLinesMock
 
 def test__getSectionsLinesBeginEnd(sectionsRangeTest):
     instance = GenCadLoader()
@@ -161,3 +183,23 @@ def test__getPadstacksFromPADSTACKS(padsTest):
     assert list(padstackDict.keys()) == ['026VIA', 'Smd 0.95x1.45 mm_TOP']
     assert padstackDict['026VIA'] is padsDict['Round 32']
     assert padstackDict['Smd 0.95x1.45 mm_TOP'] is padsDict['Rectangle;1.15x1.65']
+
+def test__getComponentsFromCOMPONENTS(componentTest):
+    instance = GenCadLoader()
+    instance._getSectionsLinesBeginEnd(componentTest)
+    instance._getComponentsFromCOMPONENTS(componentTest, instance.boardData)
+    componentsDict = instance.boardData.getComponents()
+
+    assert list(componentsDict.keys()) == ['VR1', 'C90']
+
+    assert componentsDict['VR1'].name == 'VR1'
+    assert componentsDict['VR1'].coords == gobj.Point(-2.970, 1.110)
+    assert componentsDict['VR1'].side == 'B'
+    assert componentsDict['VR1'].angle == 0
+    assert componentsDict['VR1'].partNumber == 'RV-17X11X7.5P-M'
+
+    assert componentsDict['C90'].name == 'C90'
+    assert componentsDict['C90'].coords == gobj.Point(1701.181, 515.354)
+    assert componentsDict['C90'].side == 'T'
+    assert componentsDict['C90'].angle == 270
+    assert componentsDict['C90'].partNumber == 'C0402_T'
