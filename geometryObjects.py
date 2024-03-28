@@ -18,6 +18,12 @@ class Point:
     
     def setY(self, y:float):
         self.y = y
+    
+    def getX(self) -> float:
+        return self.x
+
+    def getY(self) -> float:
+        return self.y
 
     @staticmethod
     def minXY_maxXYCoords(currentMinPoint:'Point', currentMaxPoint:'Point', checkedPoint:'Point') -> tuple['Point', 'Point']:
