@@ -76,8 +76,7 @@ def test___calculateRange(sectionsRangeTest):
 
 def test__getLineFromLINE():
     line = ['1967.441', '2267.244', '2026.496', '3267.244']    
-    bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
-    topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
     
     instance = GenCadLoader()
     shape, bottomLeftPoint, topRightPoint = instance._getLineFromLINE(line, bottomLeftPoint, topRightPoint)
@@ -87,8 +86,7 @@ def test__getLineFromLINE():
 
 def test__getArcFromARC():
     line = ['996.063', '137.795', '956.693', '137.795', '976.378', '147.795']    
-    bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
-    topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
     
     instance = GenCadLoader()
     shape, bottomLeftPoint, topRightPoint = instance._getArcFromARC(line, bottomLeftPoint, topRightPoint)
