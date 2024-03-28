@@ -14,6 +14,8 @@ class GenCadLoader:
         self._setFilePath(filePath)
         fileLines = self._getFileLines()        
         self._getSectionsLinesBeginEnd(fileLines)
+        padsDict = self._getPadsFromPADS(fileLines)
+        print(padsDict)
 
         return self.boardData
     
@@ -49,21 +51,32 @@ class GenCadLoader:
         boardInstance.setArea(bottomLeftPoint, topRightPoint)
     
     def _getPadsFromPADS(self, fileLines:list[str]) -> dict:
-        i, iEnd = self.sectionsLineNumbers(['PADS'])
+        i, iEnd = self.sectionsLineNumbers['PADS']
         padsDict = {}
 
         while i <= iEnd:
             if ' ' in fileLines[i] and 'PAD' in fileLines[i]:
-                _, padName, *_  = fileLines[i].replace('\n', '').split(' ')                    
+                line = fileLines[i].replace('\n', '')
+                _, padName, *_  = self._splitButNotBetweenCharacter(line)                  
                 bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
                 topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
                 
                 while 'PAD' not in fileLines[i + 1]:
-                    keyWord, *line  = fileLines[i].replace('\n', '').split(' ')
-                    shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](line, bottomLeftPoint, topRightPoint)
-
                     i += 1
-                padsDict[padName] = {}
+                    keyWord, *line  = fileLines[i].replace('\n', '').split(' ')
+                    _, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](line, bottomLeftPoint, topRightPoint)
+                
+                keyWord = 'RECT' if keyWord != 'CIRCLE' else keyWord
+                newPad = self._createPin(padName, keyWord, bottomLeftPoint, topRightPoint)                    
+                padsDict[padName] = newPad
+            i += 1
+        return padsDict
+
+    def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
+        newPin = pin.Pin(name)
+        newPin.setShape(shape)
+        newPin.setPinArea(bottomLeftPoint, topRightPoint)
+        return newPin
 
 
                 
