@@ -99,7 +99,7 @@ class GenCadLoader:
                     keyWord, *parameters = self._splitButNotBetweenCharacter(line)
                     componentParameters[keyWord] = parameters
                     i += 1
-                    isEndOfComponentSection = 'COMPONENT' in fileLines[i]
+                    isEndOfComponentSection = 'COMPONENT' == fileLines[i][:9] or i >= iEnd
                 newComponent = self._createComponent(componentParameters)
                 componentName = componentParameters['COMPONENT'][0] 
                 boardInstance.addComponent(componentName, newComponent)
