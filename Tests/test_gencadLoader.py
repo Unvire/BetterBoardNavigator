@@ -38,6 +38,23 @@ def bouardOutlineTest():
     ]
     return fileLinesMock
 
+@pytest.fixture
+def padsTest():
+    fileLinesMock = [
+        '$PADS\n',
+        'PAD "Round 32" ROUND -1\n',
+        'CIRCLE 0.000000 0.000000 0.406400\n',
+        'PAD "Oblong 3.2x5.2" FINGER -1\n',
+        'LINE -1.600000 -1.000000 -1.600000 1.000000\n',
+        'ARC 1.600000 1.000000 -1.600000 1.000000 0.000000 1.000000\n',
+        'LINE 1.600000 1.000000 1.600000 -1.000000\n',
+        'PAD "Rectangle;1.15x1.65" RECTANGULAR -1\n',
+        'RECTANGLE -0.575000 -0.825000 1.150000 1.650000\n',
+        '$ENDPADS\n'
+    ]
+    return fileLinesMock
+
+
 def test__getSectionsLinesBeginEnd(sectionsRangeTest):
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(sectionsRangeTest)
@@ -96,9 +113,9 @@ def test__getBoardDimensions(bouardOutlineTest):
     assert shapes[3] == gobj.Arc(gobj.Point(-4.046038, 3.859678), gobj.Point(-4.08, 3.820681), gobj.Point(-4.04063, 3.820681))
     assert shapes[4] == gobj.Circle(gobj.Point(-2.8661417, 2.527559), 0.08070866)
 
-@pytest.mark.parametrize("testInput, expected", [('PAD "Round 32" ROUND -1', ['PAD', '"Round_32"', 'ROUND', '-1']), 
+@pytest.mark.parametrize("testInput, expected", [('PAD "Round 32" ROUND -1', ['PAD', '"Round 32"', 'ROUND', '-1']), 
                                                  ('ARTWORK artwork9 SOLDERPASTE_BOTTOM', ['ARTWORK', 'artwork9', 'SOLDERPASTE_BOTTOM']), 
-                                                 ('PAD "O b l o n g 2.7x1.7" FINGER -1', ['PAD', '"O_b_l_o_n_g_2.7x1.7"', 'FINGER', '-1'])])
+                                                 ('PAD "O b l o n g 2.7x1.7" FINGER -1', ['PAD', '"O b l o n g 2.7x1.7"', 'FINGER', '-1'])])
 def test__splitButNotBetweenCharacter(testInput, expected):
     instance = GenCadLoader()
     assert expected == instance._splitButNotBetweenCharacter(testInput, ' ', '"')

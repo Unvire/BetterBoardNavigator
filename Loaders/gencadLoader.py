@@ -128,7 +128,7 @@ class GenCadLoader:
                 concatenated = current
                 while current[-1] != ignoreCharacter:
                     current = initialSplit.pop(0)
-                    concatenated += f'_{current}'
+                    concatenated += f'{splitCharacter}{current}'
                 current = concatenated
             result.append(current)
         return result
