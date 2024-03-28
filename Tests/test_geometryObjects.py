@@ -106,3 +106,13 @@ def test_CircleEqual():
     assert c1 != c2
     assert c1 != c3
     assert c1 != c4
+
+def test_RectangleEqual():
+    r1 = gobj.Rectangle(gobj.Point(0, 0), gobj.Point(1, 1))
+    r2 = gobj.Rectangle(gobj.Point(0, 0), gobj.Point(1.1, 1))
+    r3 = gobj.Rectangle(gobj.Point(-1, 0), gobj.Point(1.1, 1))
+    r4 = gobj.Rectangle(gobj.Point(-2, -2), gobj.Point(1.1, 11))
+    assert r1 == r1
+    assert r1 != r2
+    assert r1 != r3
+    assert r1 != r4
