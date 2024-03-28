@@ -170,19 +170,19 @@ class CamCadLoader:
             if not componentInstance.isCoordsValid():   
                 componentInstance.calculateCenterFromPins()
             
-            comppartNumber = self._compPartNumber(componentInstance, pnDict)
-            if comppartNumber in packagesDict:                
-                packageBottomLeftPoint, packageTopRightPoint = self._calculatePackageBottomRightAndTopLeftPoints(componentInstance, packagesDict[comppartNumber]['dimensions'])
+            componentPartNumber = self._componentPartNumber(componentInstance, pnDict)
+            if componentPartNumber in packagesDict:                
+                packageBottomLeftPoint, packageTopRightPoint = self._calculatePackageBottomRightAndTopLeftPoints(componentInstance, packagesDict[componentPartNumber]['dimensions'])
                 componentInstance.setComponentArea(packageBottomLeftPoint, packageTopRightPoint)                
-                componentInstance.setPackageType(packagesDict[comppartNumber]['pinType'])
+                componentInstance.setPackageType(packagesDict[componentPartNumber]['pinType'])
             else:
                 noPackagesMatch.append(componentInstance)
         return noPackagesMatch
 
-    def _compPartNumber(self, componentInstance:comp.Component, pnDict:dict) -> str:
-        compPartNumber = componentInstance.partNumber
-        if compPartNumber in pnDict:
-            return pnDict[compPartNumber]
+    def _componentPartNumber(self, componentInstance:comp.Component, pnDict:dict) -> str:
+        componentPartNumber = componentInstance.partNumber
+        if componentPartNumber in pnDict:
+            return pnDict[componentPartNumber]
         return ''
     
     def _calculatePackageBottomRightAndTopLeftPoints(self, componentInstance:comp.Component, dimesions:tuple[float, float]) -> tuple[gobj.Point, gobj.Point]:
