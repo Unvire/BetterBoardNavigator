@@ -156,6 +156,21 @@ class GenCadLoader:
         newComponent.setAngle(angle)
         return newComponent
     
+    def _calculateComponentArea(self, shapeParameters:dict) -> tuple[str, gobj.Point, gobj.Point]:
+        lines = self._unnestCoordsList(shapeParameters.get('LINE', []))
+        rectangles = self._unnestCoordsList(shapeParameters.get('RECTANGLE', []))
+        arcs = self._unnestCoordsList(shapeParameters.get('ARC', []))
+        circle = self._unnestCoordsList(shapeParameters.get('CIRCLE', []))
+        
+        if circle:
+            shape = 'CIRCLE'
+            bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+            _, bottomLeftPoint, topRightPoint = self._getCircleFromCIRCLE(circle[:3], bottomLeftPoint, topRightPoint) # extract only first circle
+        else:
+            shape = 'RECT'
+            bottomLeftPoint, topRightPoint = self._coordsListToBottomLeftTopRightPoint(rectangles + arcs + lines)
+        return shape, bottomLeftPoint, topRightPoint
+    
     def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Line, gobj.Point, gobj.Point]:
         xStart, yStart, xEnd, yEnd = [gobj.floatOrNone(val) for val in fileLine]
         startPoint = gobj.Point(xStart, yStart)
@@ -197,16 +212,6 @@ class GenCadLoader:
          
         rectangleInstance = gobj.Rectangle(point0, point1)
         return rectangleInstance, bottomLeftPoint, topRightPoint
-    
-    def _calculateComponentArea(self, shapeParameters:dict) -> tuple[str, gobj.Point, gobj.Point]:
-        lines = self._unnestCoordsList(shapeParameters.get('LINE', []))
-        rectangles = self._unnestCoordsList(shapeParameters.get('RECTANGLE', []))
-        arcs = self._unnestCoordsList(shapeParameters.get('ARC', []))
-        circles = self._unnestCoordsList(shapeParameters.get('CIRCLE', []))
-
-        shape = 'CIRCLE' if circles else 'RECT'
-        bottomLeftPoint, topRightPoint = self._coordsListToBottomLeftTopRightPoint(rectangles + arcs + lines + circles)
-        return shape, bottomLeftPoint, topRightPoint
     
     def _coordsListToBottomLeftTopRightPoint(self, coordsList:list[str|float]) -> tuple[str, gobj.Point, gobj.Point]:
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
