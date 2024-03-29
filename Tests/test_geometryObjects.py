@@ -12,6 +12,16 @@ def test_PointEqual():
     assert pointC == pointD
     assert pointC != pointE
 
+@pytest.mark.parametrize('inputData, expected', [((0, 0, 0), gobj.Point(1, 1)), ((0, 0, 90), gobj.Point(-1, 1)), 
+                                                 ((2, 2, 90), gobj.Point(3, 1)), ((1, 2, 90), gobj.Point(2, 2))])
+def test_PointRotate(inputData, expected):
+    xRotation, yRotation, angleDeg = inputData
+    rotationPoint = gobj.Point(xRotation, yRotation)
+
+    A = gobj.Point(1, 1)
+    A.rotate(rotationPoint, angleDeg)
+    assert A == expected
+
 def test_minXYCoords():
     minPoint = gobj.Point(float('Inf'), float('Inf'))
     point1 = gobj.Point(float(-10), float(23)) 

@@ -1,3 +1,5 @@
+import math
+
 class Point:
     DECIMAL_POINT_PRECISION = 3
     def __init__(self, x:float|int, y:float|int):
@@ -24,6 +26,18 @@ class Point:
 
     def getY(self) -> float:
         return self.y
+    
+    def rotate(self, rotationPoint:'Point', angleDeg:float):
+        xMove, yMove = rotationPoint.getX(), rotationPoint.getY()
+        angleRad = math.radians(angleDeg)
+        
+        # translate point as if it was rotated around (0, 0), rotate, undo rotation
+        xMoved = self.x - xMove
+        yMoved = self.y - yMove
+        xRotated = xMoved * math.cos(angleRad) - yMoved * math.sin(angleRad)
+        yRotated = xMoved * math.sin(angleRad) + yMoved * math.cos(angleRad)
+        self.x = round(xRotated + xMove, Point.DECIMAL_POINT_PRECISION)
+        self.y = round(yRotated + yMove, Point.DECIMAL_POINT_PRECISION)
 
     @staticmethod
     def minXY_maxXYCoords(currentMinPoint:'Point', currentMaxPoint:'Point', checkedPoint:'Point') -> tuple['Point', 'Point']:
