@@ -205,3 +205,10 @@ def test__getComponentsFromCOMPONENTS(componentTest):
     assert list(shapeDict.keys()) == ['RV-17X11X7.5P-M', 'C0402_T']
     assert shapeDict['RV-17X11X7.5P-M'] == ['VR1']    
     assert shapeDict['C0402_T'] == ['C90']
+
+def test__coordsListToBottomLeftTopRightPoint():
+    instance = GenCadLoader()
+    inputData = ['0.1417323', '-0.1309055', '0.1417323', '-0.08267717', '0.1417323', '-0.08267717', '0.09448819', '-0.08267717', 
+                 '0.09448819', '-0.08267717', '0.09448819', '-0.1309055', '0.09448819', '-0.1309055', '0.06299213', '-0.1309055']
+    point1, point2 = instance._coordsListToBottomLeftTopRightPoint(inputData)
+    assert [point1, point2] == [gobj.Point(0.06299213, -0.1309055), gobj.Point(0.1417323, -0.08267717)]
