@@ -212,3 +212,9 @@ def test__coordsListToBottomLeftTopRightPoint():
                  '0.09448819', '-0.08267717', '0.09448819', '-0.1309055', '0.09448819', '-0.1309055', '0.06299213', '-0.1309055']
     point1, point2 = instance._coordsListToBottomLeftTopRightPoint(inputData)
     assert [point1, point2] == [gobj.Point(0.06299213, -0.1309055), gobj.Point(0.1417323, -0.08267717)]
+
+@pytest.mark.parametrize("testInput, expected", [([[1, 2, 3, 4], [5, 6]], [1, 2, 3, 4, 5, 6]), ([[1, 2, 3], [4, 5, 6]], [1, 2, 3, 4, 5, 6]), 
+                                                 ([[]], []), ([], []), ([[], [5, 6]], [5, 6]), ([[1, 2, 3], []], [1, 2, 3])])
+def test__unnestCoordsList(testInput, expected):
+    instance = GenCadLoader()
+    assert instance._unnestCoordsList(testInput) == expected

@@ -199,10 +199,13 @@ class GenCadLoader:
         return rectangleInstance, bottomLeftPoint, topRightPoint
     
     def _calculateComponentArea(self, shapeParameters:dict) -> tuple[str, gobj.Point, gobj.Point]:
-        rectangles = shapeParameters.get('LINE', []) + shapeParameters.get('RECTANGLE', []) + shapeParameters.get('ARC', [])
-        circles = shapeParameters.get('CIRCLE', [])
+        lines = self._unnestCoordsList(shapeParameters.get('LINE', []))
+        rectangles = self._unnestCoordsList(shapeParameters.get('RECTANGLE', []))
+        arcs = self._unnestCoordsList(shapeParameters.get('ARC', []))
+        circles = self._unnestCoordsList(shapeParameters.get('CIRCLE', []))
+
         shape = 'CIRCLE' if circles else 'RECT'
-        bottomLeftPoint, topRightPoint = self._coordsListToBottomLeftTopRightPoint(rectangles + circles)
+        bottomLeftPoint, topRightPoint = self._coordsListToBottomLeftTopRightPoint(rectangles + arcs + lines + circles)
         return shape, bottomLeftPoint, topRightPoint
     
     def _coordsListToBottomLeftTopRightPoint(self, coordsList:list[str|float]) -> tuple[str, gobj.Point, gobj.Point]:
@@ -238,6 +241,12 @@ class GenCadLoader:
     
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
+
+    def _unnestCoordsList(self, nestedCoordsList:list[list[str|float]]) -> list[str|float]:
+        result = []
+        for array in nestedCoordsList:
+            result += array
+        return result
     
     
 if __name__ == '__main__':
