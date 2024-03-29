@@ -218,3 +218,16 @@ def test__coordsListToBottomLeftTopRightPoint():
 def test__unnestCoordsList(testInput, expected):
     instance = GenCadLoader()
     assert instance._unnestCoordsList(testInput) == expected
+
+def test__calculateComponentArea():    
+    instance = GenCadLoader()
+
+    shapeDict = {'LINE':[['-0.1417323', '-0.1309055', '-0.1732283', '-0.1309055'], ['-0.1732283', '-0.1309055', '-0.1732283', '-0.08267717']],
+                 'ARC':[['4.043769', '-0.9228939', '4.134528', '-0.7870866', '3.889094', '-0.7212966']],
+                 'RECTANGLE':[['-1.021654', '-0.8543307', '2.043307', '1.220472']],
+                 'CIRCLE':[[]]}
+    assert instance._calculateComponentArea(shapeDict) == ('RECT', gobj.Point(-1.021654, -0.9228939), gobj.Point(4.134528, 1.220472))
+
+    shapeDict = {'CIRCLE':[['0', '0', '0.196']]}
+    assert instance._calculateComponentArea(shapeDict) == ('CIRCLE', gobj.Point(-0.196, -0.196), gobj.Point(0.196, 0.196))
+
