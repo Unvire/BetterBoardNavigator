@@ -129,7 +129,8 @@ class GenCadLoader:
                     shapeParameters[keyWord].append(parameters)
                     i += 1
                     isEndOfShapeSection = 'SHAPE' == fileLines[i][:5] or i >= iEnd
-                self._calculateComponentArea(self, shapeParameters)
+                bottomLeftPoint, topRightPoint = self._calculateComponentArea(self, shapeParameters)
+                packageType = shapeParameters['INSERT'][0][0]
                 print(shapeParameters)
                 break
 
