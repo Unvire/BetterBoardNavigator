@@ -187,7 +187,7 @@ def test__getPadstacksFromPADSTACKS(padsTest):
 def test__getComponentsFromCOMPONENTS(componentTest):
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(componentTest)
-    instance._getComponentsFromCOMPONENTS(componentTest, instance.boardData)
+    shapeDict = instance._getComponentsFromCOMPONENTS(componentTest, instance.boardData)
     componentsDict = instance.boardData.getComponents()
 
     assert list(componentsDict.keys()) == ['VR1', 'C90']
@@ -196,10 +196,12 @@ def test__getComponentsFromCOMPONENTS(componentTest):
     assert componentsDict['VR1'].coords == gobj.Point(-2.970, 1.110)
     assert componentsDict['VR1'].side == 'B'
     assert componentsDict['VR1'].angle == 0
-    assert componentsDict['VR1'].partNumber == 'RV-17X11X7.5P-M'
 
     assert componentsDict['C90'].name == 'C90'
     assert componentsDict['C90'].coords == gobj.Point(1701.181, 515.354)
     assert componentsDict['C90'].side == 'T'
     assert componentsDict['C90'].angle == 270
-    assert componentsDict['C90'].partNumber == 'C0402_T'
+
+    assert list(shapeDict.keys()) == ['RV-17X11X7.5P-M', 'C0402_T']
+    assert shapeDict['RV-17X11X7.5P-M'] == ['VR1']    
+    assert shapeDict['C0402_T'] == ['C90']

@@ -16,7 +16,7 @@ class GenCadLoader:
         self._getSectionsLinesBeginEnd(fileLines)
         padsDict = self._getPadsFromPADS(fileLines)
         padstackDict = self._getPadstacksFromPADSTACKS(fileLines, padsDict)
-        self._getComponentsFromCOMPONENTS(fileLines, self.boardData)
+        shapeDict = self._getComponentsFromCOMPONENTS(fileLines, self.boardData)
 
         return self.boardData
     
@@ -87,8 +87,9 @@ class GenCadLoader:
             i += 1
         return padstackDict
     
-    def _getComponentsFromCOMPONENTS(self, fileLines:list[str], boardInstance:board.Board):
+    def _getComponentsFromCOMPONENTS(self, fileLines:list[str], boardInstance:board.Board) -> dict:
         i, iEnd = self.sectionsLineNumbers['COMPONENTS']
+        shapeDict = {}
 
         while i <= iEnd:
             if ' ' in fileLines[i] and 'COMPONENT' in fileLines[i]:
@@ -103,8 +104,14 @@ class GenCadLoader:
                 newComponent = self._createComponent(componentParameters)
                 componentName = componentParameters['COMPONENT'][0] 
                 boardInstance.addComponent(componentName, newComponent)
+
+                shapeName = componentParameters['SHAPE'][0]
+                if not shapeName in shapeDict:
+                    shapeDict[shapeName] = []
+                shapeDict[shapeName].append(componentName)
                 continue
             i += 1
+        return shapeDict
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
         newPin = pin.Pin(name)
@@ -119,13 +126,11 @@ class GenCadLoader:
         x, y = [gobj.floatOrNone(val) for val in componentParameters['PLACE']]
         side = componentParameters['LAYER'][0][0]
         angle = gobj.floatOrNone(componentParameters['ROTATION'][0])
-        shapeName = componentParameters['SHAPE'][0]
 
         newComponent = comp.Component(name)
         newComponent.setCoords(gobj.Point(x, y))
         newComponent.setSide(side)
         newComponent.setAngle(angle)
-        newComponent.setPartNumber(shapeName)
         return newComponent
     
     def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Line, gobj.Point, gobj.Point]:
