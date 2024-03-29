@@ -17,6 +17,7 @@ class GenCadLoader:
         padsDict = self._getPadsFromPADS(fileLines)
         padstackDict = self._getPadstacksFromPADSTACKS(fileLines, padsDict)
         shapeDict = self._getComponentsFromCOMPONENTS(fileLines, self.boardData)
+        self._getPinsAreafromSHAPES(fileLines, self.boardData, shapeDict, padstackDict)
 
         return self.boardData
     
@@ -92,7 +93,7 @@ class GenCadLoader:
         shapeDict = {}
 
         while i <= iEnd:
-            if ' ' in fileLines[i] and 'COMPONENT' in fileLines[i]:
+            if ' ' in fileLines[i] and 'COMPONENT' in fileLines[i][:9]:
                 componentParameters = {}
                 isEndOfComponentSection = False
                 while not isEndOfComponentSection:
@@ -112,6 +113,28 @@ class GenCadLoader:
                 continue
             i += 1
         return shapeDict
+    
+    def _getPinsAreafromSHAPES(self, fileLines:list[str], boardInstance: board.Board, shapeDict: dict, padstack: dict):
+        i, iEnd = self.sectionsLineNumbers['SHAPES']
+
+        while i <= iEnd:
+            if ' ' in fileLines[i] and 'SHAPE' in fileLines[i][:5]:
+                shapeParameters = {}                
+                isEndOfShapeSection = False                
+                while not isEndOfShapeSection:
+                    line = fileLines[i].replace('\n', '')
+                    keyWord, *parameters = self._splitButNotBetweenCharacter(line)
+                    if not keyWord in shapeParameters:
+                        shapeParameters[keyWord] = []
+                    shapeParameters[keyWord].append(parameters)
+                    i += 1
+                    isEndOfShapeSection = 'SHAPE' == fileLines[i][:5] or i >= iEnd
+                self._calculateComponentArea(self, shapeParameters)
+                print(shapeParameters)
+                break
+
+
+            i += 1
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
         newPin = pin.Pin(name)
@@ -175,6 +198,23 @@ class GenCadLoader:
         rectangleInstance = gobj.Rectangle(point0, point1)
         return rectangleInstance, bottomLeftPoint, topRightPoint
     
+    def _calculateComponentArea(self, shapeParameters:dict) -> tuple[str, gobj.Point, gobj.Point]:
+        rectangles = shapeParameters.get('LINE', []) + shapeParameters.get('RECTANGLE', []) + shapeParameters.get('ARC', [])
+        circles = shapeParameters.get('CIRCLE', [])
+        shape = 'CIRCLE' if circles else 'RECT'
+        bottomLeftPoint, topRightPoint = self._coordsListToBottomLeftTopRightPoint(rectangles + circles)
+        return shape, bottomLeftPoint, topRightPoint
+    
+    def _coordsListToBottomLeftTopRightPoint(self, coordsList:list[str|float]) -> tuple[str, gobj.Point, gobj.Point]:
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+
+        while coordsList:
+            x = gobj.floatOrNone(coordsList.pop(0))
+            y = gobj.floatOrNone(coordsList.pop(0))
+            point = gobj.Point(x, y)
+            bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
+        return bottomLeftPoint, topRightPoint
+
     def _splitButNotBetweenCharacter(self, line:str, splitCharacter:str=' ', ignoreCharacter:str='"') -> list[str]:
         initialSplit = line.split(splitCharacter)
         result = []
