@@ -16,8 +16,8 @@ class GenCadLoader:
         self._getSectionsLinesBeginEnd(fileLines)
         padsDict = self._getPadsFromPADS(fileLines)
         padstackDict = self._getPadstacksFromPADSTACKS(fileLines, padsDict)
-        shapeDict = self._getComponentsFromCOMPONENTS(fileLines, self.boardData)
-        self._getPinsAreafromSHAPES(fileLines, self.boardData, shapeDict, padstackDict)
+        shapeToComponentsDict = self._getComponentsFromCOMPONENTS(fileLines, self.boardData)
+        shapesDict = self._getAreaPinsfromSHAPES(fileLines)
 
         return self.boardData
     
@@ -114,9 +114,10 @@ class GenCadLoader:
             i += 1
         return shapeDict
     
-    def _getPinsAreafromSHAPES(self, fileLines:list[str], boardInstance: board.Board, shapeDict: dict, padstack: dict):
+    def _getAreaPinsfromSHAPES(self, fileLines:list[str]) -> dict:
         i, iEnd = self.sectionsLineNumbers['SHAPES']
 
+        shapesDict = {}
         while i <= iEnd:
             if ' ' in fileLines[i] and 'SHAPE' in fileLines[i][:5]:
                 shapeParameters = {}                
@@ -129,13 +130,11 @@ class GenCadLoader:
                     shapeParameters[keyWord].append(parameters)
                     i += 1
                     isEndOfShapeSection = 'SHAPE' == fileLines[i][:5] or i >= iEnd
-                bottomLeftPoint, topRightPoint = self._calculateComponentArea(self, shapeParameters)
-                packageType = shapeParameters['INSERT'][0][0]
-                print(shapeParameters)
-                break
-
-
+                shapeName = shapeParameters['SHAPE'][0][0]
+                shapesDict[shapeName] = shapeParameters
+                continue
             i += 1
+        return shapesDict
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
         newPin = pin.Pin(name)

@@ -85,6 +85,28 @@ def componentTest():
     ]
     return fileLinesMock
 
+@pytest.fixture
+def shapesTest():
+    fileLinesMock = [
+        '$SHAPES\n',
+        'SHAPE SMC_T\n',
+        'LINE 0.13386 0.11614 0.19705 0.075\n',
+        'LINE 0.19705 0.075 0.19705 -0.075\n',
+        'LINE 0.19705 -0.075 0.13386 -0.11614\n',
+        'LINE 0.13386 -0.11614 -0.13386 -0.11614\n',
+        'LINE -0.13386 -0.11614 -0.19705 -0.075\n',
+        'LINE -0.19705 -0.075 -0.19705 0.075\n',
+        'LINE -0.19705 0.075 -0.13386 0.11614\n',
+        'LINE -0.13386 0.11614 0.13386 0.11614\n',
+        'INSERT smt\n',
+        'HEIGHT 0.103150\n',
+        'PIN A padstack102 0.1279528 0 TOP 270 0\n',
+        'PIN K padstack102 -0.1279528 0 TOP 270 0\n',
+        '$ENDSHAPES\n',
+    ]
+    return fileLinesMock
+
+
 def test__getSectionsLinesBeginEnd(sectionsRangeTest):
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(sectionsRangeTest)
@@ -222,12 +244,26 @@ def test__unnestCoordsList(testInput, expected):
 def test__calculateComponentArea():    
     instance = GenCadLoader()
 
-    shapeDict = {'LINE':[['-0.1417323', '-0.1309055', '-0.1732283', '-0.1309055'], ['-0.1732283', '-0.1309055', '-0.1732283', '-0.08267717']],
+    shapeToComponentsDict = {'LINE':[['-0.1417323', '-0.1309055', '-0.1732283', '-0.1309055'], ['-0.1732283', '-0.1309055', '-0.1732283', '-0.08267717']],
                  'ARC':[['4.043769', '-0.9228939', '4.134528', '-0.7870866', '3.889094', '-0.7212966']],
                  'RECTANGLE':[['-1.021654', '-0.8543307', '2.043307', '1.220472']],
                  'CIRCLE':[[]]}
-    assert instance._calculateComponentArea(shapeDict) == ('RECT', gobj.Point(-1.021654, -0.9228939), gobj.Point(4.134528, 1.220472))
+    assert instance._calculateComponentArea(shapeToComponentsDict) == ('RECT', gobj.Point(-1.021654, -0.9228939), gobj.Point(4.134528, 1.220472))
 
-    shapeDict = {'CIRCLE':[['0', '0', '0.196']]}
-    assert instance._calculateComponentArea(shapeDict) == ('CIRCLE', gobj.Point(-0.196, -0.196), gobj.Point(0.196, 0.196))
+    shapeToComponentsDict = {'CIRCLE':[['0', '0', '0.196']]}
+    assert instance._calculateComponentArea(shapeToComponentsDict) == ('CIRCLE', gobj.Point(-0.196, -0.196), gobj.Point(0.196, 0.196))
 
+def test__getAreaPinsfromSHAPES(shapesTest):
+    instance = GenCadLoader()
+    instance._getSectionsLinesBeginEnd(shapesTest)
+    shapes = {'SMC_T':{ 
+                'SHAPE': [['SMC_T']],
+                'LINE':[['0.13386', '0.11614', '0.19705', '0.075'], ['0.19705', '0.075', '0.19705', '-0.075'], ['0.19705', '-0.075', '0.13386', '-0.11614'], 
+                    ['0.13386', '-0.11614', '-0.13386', '-0.11614'], ['-0.13386', '-0.11614', '-0.19705', '-0.075'], ['-0.19705', '-0.075', '-0.19705', '0.075'],
+                    ['-0.19705', '0.075', '-0.13386', '0.11614'], ['-0.13386', '0.11614', '0.13386', '0.11614']],
+                'INSERT': [['smt']],
+                'HEIGHT': [['0.103150']],
+                'PIN': [['A', 'padstack102', '0.1279528', '0', 'TOP', '270', '0'], ['K', 'padstack102', '-0.1279528', '0', 'TOP', '270', '0']]   
+                }
+            }
+    assert instance._getAreaPinsfromSHAPES(shapesTest) == shapes
