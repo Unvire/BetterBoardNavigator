@@ -24,3 +24,9 @@ def test_calculateCenterDimensionsFromArea(pin2):
     assert pin2.coords == gobj.Point(-1, 0)
     assert pin2.width == 4
     assert pin2.height == 4
+
+def test_translateInPlace(pin1):
+    pin1.translateInPlace([-1, 0.5])
+    pin1.calculateArea()
+    assert pin1.getCoords() == gobj.Point(-1, 0.5)
+    assert pin1.getPinArea() == [gobj.Point(-2, -1.5), gobj.Point(0, 2.5)]
