@@ -191,9 +191,7 @@ class CamCadLoader:
                 packageBottomLeftPoint, packageTopRightPoint = self._calculatePackageBottomRightAndTopLeftPoints(componentInstance, dimensions)
                 componentInstance.setComponentArea(packageBottomLeftPoint, packageTopRightPoint)                               
                 componentInstance.setMountingType(package['pinType'])
-                
-                #print(packagesDict)
-                #print(componentName, componentInstance.coords, partNumber, packageName, package, dimensions)
+
         return list(noPackagesMatch)
 
     def _componentPartNumber(self, componentInstance:comp.Component, pnDict:dict) -> str:
