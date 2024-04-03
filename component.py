@@ -10,7 +10,7 @@ class Component:
         self.angle = 0
         self.partNumber = None
         self.componentArea = []
-        self.packageType = 'SMT'
+        self.mountingType = 'SMT'
     
     def __str__(self):
         remark = f'Component={self.name}, coords={self.coords}, side={self.side}, numOfPins={len(self.pins)}'
@@ -22,20 +22,29 @@ class Component:
     def setCoords(self, point:gobj.Point):
         self.coords = point
     
+    def getCoords(self):
+        return self.coords
+    
     def setSide(self, side:str):
         self.side = side
 
     def setAngle(self, angle:float):
         self.angle = angle
 
-    def setPartNumber(self, partNumber:str):
-        self.partNumber = partNumber
+    def getAngle(self):
+        return self.angle
     
     def setComponentArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
         self.componentArea = [bottomLeftPoint, topRightPoint]
     
-    def setPackageType(self, packageType:str):
-        self.packageType = packageType
+    def getComponentArea(self):
+        return self.componentArea
+    
+    def setMountingType(self, mountingType:str):
+        self.mountingType = mountingType
+    
+    def getMountingType(self):
+        return self.mountingType
     
     def isCoordsValid(self):
         return bool(self.coords.x and self.coords.y)
