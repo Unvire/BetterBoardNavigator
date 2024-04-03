@@ -154,9 +154,9 @@ def test__getRectFromRECTANGLE():
 
     instance = GenCadLoader()
     shape, bottomLeftPoint, topRightPoint = instance._getRectFromRECTANGLE(line, bottomLeftPoint, topRightPoint)
-    assert shape == gobj.Rectangle(gobj.Point(-0.02755896, -0.03149596), gobj.Point(0.05511801, 0.06299203))
+    assert shape == gobj.Rectangle(gobj.Point(-0.02755896, -0.03149596), gobj.Point(-0.02755896 + 0.05511801, -0.03149596 + 0.06299203))
     assert bottomLeftPoint == gobj.Point(-0.02755896, -0.03149596)
-    assert topRightPoint == gobj.Point(0.05511801, 0.06299203)
+    assert topRightPoint == gobj.Point(-0.02755896 + 0.05511801, -0.03149596 + 0.06299203)
 
 def test__getBoardDimensions(bouardOutlineTest):
     instance = GenCadLoader()
@@ -201,10 +201,10 @@ def test__getPadsFromPADS(padsTest):
 
     assert padsDict['Rectangle;1.15x1.65'].name == 'Rectangle;1.15x1.65'
     assert padsDict['Rectangle;1.15x1.65'].shape == 'RECT'
-    assert padsDict['Rectangle;1.15x1.65'].pinArea == [gobj.Point(-0.575, -0.825), gobj.Point(1.150, 1.650)]
-    assert padsDict['Rectangle;1.15x1.65'].coords == gobj.Point(0.288, 0.413)
-    assert padsDict['Rectangle;1.15x1.65'].width == 1.725
-    assert padsDict['Rectangle;1.15x1.65'].height == 2.475
+    assert padsDict['Rectangle;1.15x1.65'].pinArea == [gobj.Point(-0.575, -0.825), gobj.Point(0.575, 0.825)]
+    assert padsDict['Rectangle;1.15x1.65'].coords == gobj.Point(0, 0)
+    assert padsDict['Rectangle;1.15x1.65'].width == 1.150
+    assert padsDict['Rectangle;1.15x1.65'].height == 1.650
 
 def test__getPadstacksFromPADSTACKS(padsTest):
     instance = GenCadLoader()

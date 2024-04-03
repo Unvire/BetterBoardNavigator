@@ -214,9 +214,9 @@ class GenCadLoader:
         return circleInstance, bottomLeftPoint, topRightPoint
 
     def _getRectFromRECTANGLE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Rectangle, gobj.Point, gobj.Point]:
-        x0, y0, x1, y1 = [gobj.floatOrNone(val) for val in fileLine]
+        x0, y0, width, height = [gobj.floatOrNone(val) for val in fileLine]
         point0 = gobj.Point(x0, y0)
-        point1 = gobj.Point(x1, y1)
+        point1 = gobj.Point(x0 + width, y0 + height)
 
         checkedPoints = [point0, point1]
         bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
