@@ -60,8 +60,10 @@ class Pin:
     
     def translateInPlace(self, vector:list[int|float, int|float]):
         self.coords.translateInPlace(vector)
-        self.pinArea = [point.translate(vector) for point in self.pinArea]
-    
+        p1, p2 = self.getPinArea()
+        p1.translateInPlace(vector)
+        p2.translateInPlace(vector)
+
     def rotateInPlace(self, rotationPoint:gobj.Point, angle:int|float):
         self.coords.rotate(rotationPoint, angle)
         p1, p2 = self.getPinArea()
