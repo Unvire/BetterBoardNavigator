@@ -18,7 +18,7 @@ class GenCadLoader:
         padstackDict = self._getPadstacksFromPADSTACKS(fileLines, padsDict)
         shapeToComponentsDict = self._getComponentsFromCOMPONENTS(fileLines, self.boardData)
         shapesDict = self._getAreaPinsfromSHAPES(fileLines)
-        self._addShapePadDataToComponent(self.boardData.getComponents(), shapeToComponentsDict, shapesDict, padstackDict)
+        self._addShapePadDataToComponent(self.boardData, shapeToComponentsDict, shapesDict, padstackDict)
 
         return self.boardData
     
@@ -137,11 +137,17 @@ class GenCadLoader:
             i += 1
         return shapesDict
     
-    def _addShapePadDataToComponent(self, components:dict, shapesToComponents:dict, shapesDict:dict, padstackDict:dict):
-        for shapeName in shapesToComponents:
-            shapeList = shapesToComponents[shapeName]
-            for componentName in shapeList:
-                print(componentName, components[componentName])
+    def _addShapePadDataToComponent(self, boardInstance:board.Board, shapesToComponents:dict, shapesDict:dict, padstackDict:dict):
+        components = boardInstance.getComponents()
+        for shapeName, componentsList in shapesToComponents.items():
+            for componentName in componentsList:
+                componentInstance = components[componentName]
+
+                print(componentName, componentInstance) # get component
+                print(shapesDict[shapeName]['PIN']) # get pins data
+                print(padstackDict['padstack40']) # get padstack
+                break
+            break
 
         ## 1. extract shape name from shapesToComponents; shapesToComponents -> shapeName
         ## 2. get shape data from shapesDict; shapesDict[shapeName]
