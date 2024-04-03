@@ -8,7 +8,7 @@ class Component:
         self.coords = None
         self.side = None
         self.angle = 0
-        self.componentAreaType = ''
+        self.componentAreaType = 'RECT'
         self.componentArea = []
         self.mountingType = 'SMT'
     
