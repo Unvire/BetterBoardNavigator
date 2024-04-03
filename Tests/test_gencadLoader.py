@@ -250,13 +250,13 @@ def test__unnestCoordsList(testInput, expected):
     instance = GenCadLoader()
     assert instance._unnestCoordsList(testInput) == expected
 
-@pytest.mark.parametrize("testInput, expected", [([[-1, -2, 2, 4]], [-1, -2, 1, 2])], 
-                                                 ([[-1, -2, 2, 4], [-5, -5, 10, 1]], [-1, -2, 1, 2, -5, -5, 5, -4]))
+@pytest.mark.parametrize("testInput, expected", [([[-1, -2, 2, 4]], [-1, -2, 1, 2]), 
+                                                 ([[-1, -2, 2, 4], [-5, -5, 10, 1]], [-1, -2, 1, 2, -5, -5, 5, -4])])
 def test__unnestRectanglesList(testInput, expected):
     instance = GenCadLoader()
     assert instance._unnestRectanglesList(testInput) == expected
 
-def test__calculateShapeAreaInPlace():    
+def test__calculateShapeAreaInPlace():
     instance = GenCadLoader()
 
     shapeToComponentsDict = {'LINE':[['-0.1417323', '-0.1309055', '-0.1732283', '-0.1309055'], ['-0.1732283', '-0.1309055', '-0.1732283', '-0.08267717']],
