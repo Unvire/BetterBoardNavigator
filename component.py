@@ -8,7 +8,7 @@ class Component:
         self.coords = None
         self.side = None
         self.angle = 0
-        self.partNumber = None
+        self.componentAreaType = ''
         self.componentArea = []
         self.mountingType = 'SMT'
     
@@ -34,6 +34,12 @@ class Component:
     def getAngle(self):
         return self.angle
     
+    def setComponentAreaType(self, areaType:str):
+        self.componentAreaType = areaType
+    
+    def getComponentAreaType(self):
+        return self.componentAreaType
+
     def setComponentArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
         self.componentArea = [bottomLeftPoint, topRightPoint]
     
