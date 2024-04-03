@@ -132,6 +132,7 @@ class GenCadLoader:
                     i += 1
                     isEndOfShapeSection = 'SHAPE' == fileLines[i][:5] or i >= iEnd
                 shapeName = shapeParameters['SHAPE'][0][0]
+                shapeAreaName, shapeArea = self._calculateShapeAreaInPlace(shapeParameters)
                 shapesDict[shapeName] = shapeParameters
                 continue
             i += 1
@@ -173,20 +174,22 @@ class GenCadLoader:
         newComponent.setAngle(angle)
         return newComponent
     
-    def _calculateComponentArea(self, shapeParameters:dict) -> tuple[str, gobj.Point, gobj.Point]:
-        lines = self._unnestCoordsList(shapeParameters.get('LINE', []))
-        rectangles = self._unnestCoordsList(shapeParameters.get('RECTANGLE', []))
-        arcs = self._unnestCoordsList(shapeParameters.get('ARC', []))
+    def _calculateShapeAreaInPlace(self, shapeParameters:dict) -> tuple[str, gobj.Point, gobj.Point]:        
         circle = self._unnestCoordsList(shapeParameters.get('CIRCLE', []))
-        
+
         if circle:
             shape = 'CIRCLE'
             bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
             _, bottomLeftPoint, topRightPoint = self._getCircleFromCIRCLE(circle[:3], bottomLeftPoint, topRightPoint) # extract only first circle
         else:
             shape = 'RECT'
+            rectangles = self._unnestRectanglesList(shapeParameters.get('RECTANGLES', []))
+            lines = self._unnestCoordsList(shapeParameters.get('LINE', []))
+            arcs = self._unnestCoordsList(shapeParameters.get('ARC', []))
             bottomLeftPoint, topRightPoint = self._coordsListToBottomLeftTopRightPoint(rectangles + arcs + lines)
-        return shape, bottomLeftPoint, topRightPoint
+        
+        shapeParameters['AREA_NAME'] = shape
+        shapeParameters['AREA'] = [bottomLeftPoint, topRightPoint]
     
     def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Line, gobj.Point, gobj.Point]:
         xStart, yStart, xEnd, yEnd = [gobj.floatOrNone(val) for val in fileLine]
@@ -263,6 +266,15 @@ class GenCadLoader:
     
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
+    
+    def _unnestRectanglesList(self, rectanglesNestedList: list[list[float]]) -> list:
+        result = []
+        for rect in rectanglesNestedList:
+                bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+                _, bottomLeftPoint, topRightPoint = self._getRectFromRECTANGLE(rect, bottomLeftPoint, topRightPoint)
+                newRectLine = [bottomLeftPoint.getX(), bottomLeftPoint.getY(), topRightPoint.getX(), topRightPoint.getY()]
+                result += newRectLine
+        return result
 
     def _unnestCoordsList(self, nestedCoordsList:list[list[str|float]]) -> list[str|float]:
         result = []
