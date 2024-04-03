@@ -140,8 +140,7 @@ def test__getArcFromARC():
 
 def test__getCircleFromCIRCLE():
     line = ['-2.8661417', '2.527559', '0.08070866']
-    bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
-    topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
 
     instance = GenCadLoader()
     shape, bottomLeftPoint, topRightPoint = instance._getCircleFromCIRCLE(line, bottomLeftPoint, topRightPoint)
