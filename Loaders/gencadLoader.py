@@ -132,7 +132,7 @@ class GenCadLoader:
                     i += 1
                     isEndOfShapeSection = 'SHAPE' == fileLines[i][:5] or i >= iEnd
                 shapeName = shapeParameters['SHAPE'][0][0]
-                shapeAreaName, shapeArea = self._calculateShapeAreaInPlace(shapeParameters)
+                self._calculateShapeAreaInPlace(shapeParameters)
                 shapesDict[shapeName] = shapeParameters
                 continue
             i += 1

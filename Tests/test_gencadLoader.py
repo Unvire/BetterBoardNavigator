@@ -288,7 +288,8 @@ def test__getAreaPinsfromSHAPES(shapesTest):
                 'INSERT': [['smt']],
                 'HEIGHT': [['0.103150']],
                 'PIN': [['A', 'padstack102', '0.1279528', '0', 'TOP', '270', '0'], ['K', 'padstack102', '-0.1279528', '0', 'TOP', '270', '0']],
-                'AREA':[]   
+                'AREA':[gobj.Point(-0.197, -0.11614), gobj.Point(0.19705, 0.11614)],
+                'AREA_NAME': 'RECT'
                 }
             }
     assert instance._getAreaPinsfromSHAPES(shapesTest) == shapes
