@@ -38,6 +38,10 @@ class Point:
         yRotated = xMoved * math.sin(angleRad) + yMoved * math.cos(angleRad)
         self.x = round(xRotated + xMove, Point.DECIMAL_POINT_PRECISION)
         self.y = round(yRotated + yMove, Point.DECIMAL_POINT_PRECISION)
+    
+    def scaleInPlace(self, coefficient:float):
+        self.x = round(self.x * coefficient, Point.DECIMAL_POINT_PRECISION)
+        self.y = round(self.y * coefficient, Point.DECIMAL_POINT_PRECISION)
 
     @staticmethod
     def minXY_maxXYCoords(currentMinPoint:'Point', currentMaxPoint:'Point', checkedPoint:'Point') -> tuple['Point', 'Point']:

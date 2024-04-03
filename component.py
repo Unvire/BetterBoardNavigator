@@ -49,8 +49,8 @@ class Component:
     
     def calculatePackageFromPins(self):
         bottomLeftPoint, topRightPoint = self.calculateHitBoxFromPins()        
-        bottomLeftPoint = gobj.Point.scale(bottomLeftPoint, 0.95)
-        topRightPoint = gobj.Point.scale(topRightPoint, 0.95)
+        bottomLeftPoint.scaleInPlace(0.95)
+        topRightPoint.scaleInPlace(0.95)
 
         x1, y1 = bottomLeftPoint.x, bottomLeftPoint.y
         x2, y2 = topRightPoint.x, topRightPoint.y
@@ -66,8 +66,7 @@ class Component:
         self.setComponentArea(bottomLeftPoint, topRightPoint)
 
     def calculateHitBoxFromPins(self) -> tuple[gobj.Point, gobj.Point]:
-        bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
-        topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
         for pin in self.pins:
             centerPoint = self.pins[pin].getCoords()
             bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, centerPoint)

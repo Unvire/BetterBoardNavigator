@@ -77,7 +77,18 @@ def test_PointRepr():
     pointB = gobj.Point(1.2, 1.2)
     repr = pointB.__str__()
     assert repr == 'Point x=1.2, y=1.2'
+
+def test_PointScaleInPlace():
+    pointA = gobj.Point(2, 2)
+    pointA.scaleInPlace(0.5)
+    assert [pointA.getX(), pointA.getY()] == [1, 1]
  
+def test_PointScale():
+    pointA = gobj.Point(2, 2)
+    pointB = gobj.Point.scale(pointA, 0.5)
+    assert [pointA.getX(), pointA.getY()] == [2, 2]    
+    assert [pointB.getX(), pointB.getY()] == [1, 1]
+
 def test_LineEqual():
     pointA = gobj.Point(0, 0)
     pointB = gobj.Point(1.2, 1.2)
