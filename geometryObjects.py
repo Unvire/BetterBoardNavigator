@@ -13,7 +13,6 @@ class Point:
         result1 = round(abs(self.x - point.x), Point.DECIMAL_POINT_PRECISION) <= 10**(-Point.DECIMAL_POINT_PRECISION)
         result2 = round(abs(self.y - point.y), Point.DECIMAL_POINT_PRECISION) <= 10**(-Point.DECIMAL_POINT_PRECISION)
         return result1 and result2
-                
     
     def setX(self, x:float):
         self.x = x
@@ -42,6 +41,11 @@ class Point:
     def scaleInPlace(self, coefficient:float):
         self.x = round(self.x * coefficient, Point.DECIMAL_POINT_PRECISION)
         self.y = round(self.y * coefficient, Point.DECIMAL_POINT_PRECISION)
+    
+    def translateInPlace(self, vector:list[int|float, int|float]):
+        xMove, yMove = vector
+        self.x = round(self.x + xMove, Point.DECIMAL_POINT_PRECISION)
+        self.y = round(self.y + yMove, Point.DECIMAL_POINT_PRECISION)
 
     @staticmethod
     def minXY_maxXYCoords(currentMinPoint:'Point', currentMaxPoint:'Point', checkedPoint:'Point') -> tuple['Point', 'Point']:

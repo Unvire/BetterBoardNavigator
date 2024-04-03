@@ -83,6 +83,18 @@ def test_PointScaleInPlace():
     pointA.scaleInPlace(0.5)
     assert [pointA.getX(), pointA.getY()] == [1, 1]
  
+def test_PointTranslateInPlace():
+    gobj.Point.DECIMAL_POINT_PRECISION = 3
+    pointA = gobj.Point(2, 2)
+    vector = [1.2345, -1.2345]
+
+    pointA.translateInPlace(vector)
+    errorX = abs(pointA.getX() - 3.235)
+    errorY = abs(pointA.getY() - 0.766)
+    decimalPrecision = 10 ** (-gobj.Point.DECIMAL_POINT_PRECISION)
+    assert errorX <= decimalPrecision
+    assert errorY <= decimalPrecision
+
 def test_PointScale():
     pointA = gobj.Point(2, 2)
     pointB = gobj.Point.scale(pointA, 0.5)
