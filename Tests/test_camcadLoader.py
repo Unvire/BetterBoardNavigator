@@ -214,5 +214,8 @@ def test__getPackages(packagesFileLines):
 
     boardComponents = instance.boardData.getComponents()
     assert boardComponents['R40'].componentArea == [gobj.Point(0.98, 0.860), gobj.Point(1.060, 0.896)]
+    assert boardComponents['R40'].mountingType == 'SMD'
     assert boardComponents['C10'].componentArea == [gobj.Point(2.102, 2.148), gobj.Point(2.110, 2.190)]
+    assert boardComponents['C10'].mountingType == 'SMT'
     assert boardComponents['LD1'].componentArea == [gobj.Point(0.843, 1.941), gobj.Point(1.021, 2.019)]
+    assert boardComponents['LD1'].mountingType == 'TH'
