@@ -149,6 +149,16 @@ def test__getCircleFromCIRCLE():
     assert bottomLeftPoint == gobj.Point(-2.94685036, 2.44685034)
     assert topRightPoint == gobj.Point(-2.78543304, 2.60826766)
 
+def test__getRectFromRECTANGLE():
+    line = ['-0.02755896', '-0.03149596', '0.05511801', '0.06299203']
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+
+    instance = GenCadLoader()
+    shape, bottomLeftPoint, topRightPoint = instance._getRectFromRECTANGLE(line, bottomLeftPoint, topRightPoint)
+    assert shape == gobj.Rectangle(gobj.Point(-0.02755896, -0.03149596), gobj.Point(0.05511801, 0.06299203))
+    assert bottomLeftPoint == gobj.Point(-0.02755896, -0.03149596)
+    assert topRightPoint == gobj.Point(0.05511801, 0.06299203)
+
 def test__getBoardDimensions(bouardOutlineTest):
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(bouardOutlineTest)
