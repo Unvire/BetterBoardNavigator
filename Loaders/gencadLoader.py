@@ -183,7 +183,7 @@ class GenCadLoader:
             _, bottomLeftPoint, topRightPoint = self._getCircleFromCIRCLE(circle[:3], bottomLeftPoint, topRightPoint) # extract only first circle
         else:
             shape = 'RECT'
-            rectangles = self._unnestRectanglesList(shapeParameters.get('RECTANGLES', []))
+            rectangles = self._unnestRectanglesList(shapeParameters.get('RECTANGLE', []))
             lines = self._unnestCoordsList(shapeParameters.get('LINE', []))
             arcs = self._unnestCoordsList(shapeParameters.get('ARC', []))
             bottomLeftPoint, topRightPoint = self._coordsListToBottomLeftTopRightPoint(rectangles + arcs + lines)

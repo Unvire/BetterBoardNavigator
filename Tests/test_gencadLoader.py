@@ -264,7 +264,6 @@ def test__calculateShapeAreaInPlace():
                  'RECTANGLE':[['-1.021654', '-0.8543307', '2.043307', '1.220472']],
                  'CIRCLE':[[]]}
     instance._calculateShapeAreaInPlace(shapeToComponentsDict)
-    print(shapeToComponentsDict['AREA'][0], shapeToComponentsDict['AREA'][1])
     assert shapeToComponentsDict == {'LINE':[['-0.1417323', '-0.1309055', '-0.1732283', '-0.1309055'], ['-0.1732283', '-0.1309055', '-0.1732283', '-0.08267717']],
                                     'ARC':[['4.043769', '-0.9228939', '4.134528', '-0.7870866', '3.889094', '-0.7212966']],
                                     'RECTANGLE':[['-1.021654', '-0.8543307', '2.043307', '1.220472']],
