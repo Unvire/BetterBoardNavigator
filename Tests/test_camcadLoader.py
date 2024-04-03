@@ -207,10 +207,10 @@ def test__getNetsFromNETLIST(netlistFileLines):
 def test__getPackages(packagesFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(packagesFileLines)
-    instance._getComponenentsFromPARTLIST(packagesFileLines, instance.boardData)  
+    partNumberToComponents = instance._getComponenentsFromPARTLIST(packagesFileLines, instance.boardData)  
     padsDict = instance._getPadsFromPAD(packagesFileLines)  
     instance._getNetsFromNETLIST(packagesFileLines, padsDict, instance.boardData)
-    instance._getPackages(packagesFileLines, instance.boardData)
+    instance._getPackages(packagesFileLines, partNumberToComponents, instance.boardData)
 
     boardComponents = instance.boardData.getComponents()
     assert boardComponents['R40'].componentArea == [gobj.Point(0.98, 0.860), gobj.Point(1.060, 0.896)]
