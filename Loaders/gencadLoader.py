@@ -143,9 +143,20 @@ class GenCadLoader:
         for shapeName, componentsList in shapesToComponents.items():
             for componentName in componentsList:
                 componentInstance = components[componentName]
-
-                print(componentName, componentInstance) # get component
-                print(shapesDict[shapeName]['PIN']) # get pins data
+                pins = shapesDict[shapeName]['PIN']
+                packageType = shapesDict[shapeName]['INSERT']
+                componentArea = shapesDict[shapeName]['AREA']
+                componentAreaType = shapesDict[shapeName]['AREA_NAME']
+                
+                for pinNumber, padstackName, pinX, pinY, _, pinAngle, _ in pins:
+                    pinInstance = copy.deepcopy(padstackDict[padstackName])
+                    pinInstance.rotateInPlace(pinInstance.getCoords(), float(pinAngle))
+                    pinInstance.translateInPlace([float(pinX), float(pinY)])
+                    componentInstance.addPin(pinNumber, pinInstance)
+                                
+                
+                print(componentName, componentInstance, componentInstance.side) # get component
+                print(shapesDict[shapeName]['PIN'], shapesDict[shapeName]['INSERT'], shapesDict[shapeName]['AREA'], shapesDict[shapeName]['AREA_NAME'], sep='\n') # get pins data
                 print(padstackDict['padstack40']) # get padstack
                 break
             break
