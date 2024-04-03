@@ -40,12 +40,12 @@ component = {
     coords: geometryObjects.Point
     side: str ('T' or 'B')
     angle: float
-    partNumber: str
+    areaType: str
     componentArea = [
         bottomLeftPoint: geometryObjects.Point, 
         topRightPoint: geometryObjects.Point
     ]
-    packageType: str ('SMT' or 'TH')
+    mountingType: str ('SMT' or 'TH')
 }
 
 #######################################################################################################################
