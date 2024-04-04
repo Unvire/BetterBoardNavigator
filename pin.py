@@ -26,6 +26,9 @@ class Pin:
     def setPinArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
         self.pinArea = [bottomLeftPoint, topRightPoint]
     
+    def getPinArea(self):
+        return self.pinArea
+    
     def setNet(self, netName:str):
         self.net = netName
     
@@ -54,3 +57,15 @@ class Pin:
         width = round(topRightPoint.getX() - bottomLeftPoint.getX(), gobj.Point.DECIMAL_POINT_PRECISION)
         height = round(topRightPoint.getY() - bottomLeftPoint.getY(), gobj.Point.DECIMAL_POINT_PRECISION)
         self.setDimensions(width, height)
+    
+    def translateInPlace(self, vector:list[int|float, int|float]):
+        self.coords.translateInPlace(vector)
+        p1, p2 = self.getPinArea()
+        p1.translateInPlace(vector)
+        p2.translateInPlace(vector)
+
+    def rotateInPlace(self, rotationPoint:gobj.Point, angle:int|float):
+        self.coords.rotate(rotationPoint, angle)
+        p1, p2 = self.getPinArea()
+        p1.rotate(rotationPoint, angle)
+        p2.rotate(rotationPoint, angle)

@@ -8,9 +8,9 @@ class Component:
         self.coords = None
         self.side = None
         self.angle = 0
-        self.partNumber = None
+        self.componentAreaType = 'RECT'
         self.componentArea = []
-        self.packageType = 'SMT'
+        self.mountingType = 'SMT'
     
     def __str__(self):
         remark = f'Component={self.name}, coords={self.coords}, side={self.side}, numOfPins={len(self.pins)}'
@@ -22,20 +22,35 @@ class Component:
     def setCoords(self, point:gobj.Point):
         self.coords = point
     
+    def getCoords(self):
+        return self.coords
+    
     def setSide(self, side:str):
         self.side = side
 
     def setAngle(self, angle:float):
         self.angle = angle
 
-    def setPartNumber(self, partNumber:str):
-        self.partNumber = partNumber
+    def getAngle(self):
+        return self.angle
     
+    def setComponentAreaType(self, areaType:str):
+        self.componentAreaType = areaType
+    
+    def getComponentAreaType(self):
+        return self.componentAreaType
+
     def setComponentArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
         self.componentArea = [bottomLeftPoint, topRightPoint]
     
-    def setPackageType(self, packageType:str):
-        self.packageType = packageType
+    def getComponentArea(self):
+        return self.componentArea
+    
+    def setMountingType(self, mountingType:str):
+        self.mountingType = mountingType
+    
+    def getMountingType(self):
+        return self.mountingType
     
     def isCoordsValid(self):
         return bool(self.coords.x and self.coords.y)
@@ -49,8 +64,8 @@ class Component:
     
     def calculatePackageFromPins(self):
         bottomLeftPoint, topRightPoint = self.calculateHitBoxFromPins()        
-        bottomLeftPoint = gobj.Point.scale(bottomLeftPoint, 0.95)
-        topRightPoint = gobj.Point.scale(topRightPoint, 0.95)
+        bottomLeftPoint.scaleInPlace(0.95)
+        topRightPoint.scaleInPlace(0.95)
 
         x1, y1 = bottomLeftPoint.x, bottomLeftPoint.y
         x2, y2 = topRightPoint.x, topRightPoint.y
@@ -66,8 +81,7 @@ class Component:
         self.setComponentArea(bottomLeftPoint, topRightPoint)
 
     def calculateHitBoxFromPins(self) -> tuple[gobj.Point, gobj.Point]:
-        bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
-        topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
         for pin in self.pins:
             centerPoint = self.pins[pin].getCoords()
             bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, centerPoint)

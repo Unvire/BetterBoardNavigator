@@ -140,14 +140,23 @@ def test__getArcFromARC():
 
 def test__getCircleFromCIRCLE():
     line = ['-2.8661417', '2.527559', '0.08070866']
-    bottomLeftPoint = gobj.Point(float('Inf'), float('Inf'))
-    topRightPoint = gobj.Point(float('-Inf'), float('-Inf'))
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
 
     instance = GenCadLoader()
     shape, bottomLeftPoint, topRightPoint = instance._getCircleFromCIRCLE(line, bottomLeftPoint, topRightPoint)
     assert shape == gobj.Circle(gobj.Point(-2.8661417, 2.527559), 0.08070866)
     assert bottomLeftPoint == gobj.Point(-2.94685036, 2.44685034)
     assert topRightPoint == gobj.Point(-2.78543304, 2.60826766)
+
+def test__getRectFromRECTANGLE():
+    line = ['-0.02755896', '-0.03149596', '0.05511801', '0.06299203']
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+
+    instance = GenCadLoader()
+    shape, bottomLeftPoint, topRightPoint = instance._getRectFromRECTANGLE(line, bottomLeftPoint, topRightPoint)
+    assert shape == gobj.Rectangle(gobj.Point(-0.02755896, -0.03149596), gobj.Point(-0.02755896 + 0.05511801, -0.03149596 + 0.06299203))
+    assert bottomLeftPoint == gobj.Point(-0.02755896, -0.03149596)
+    assert topRightPoint == gobj.Point(-0.02755896 + 0.05511801, -0.03149596 + 0.06299203)
 
 def test__getBoardDimensions(bouardOutlineTest):
     instance = GenCadLoader()
@@ -192,10 +201,10 @@ def test__getPadsFromPADS(padsTest):
 
     assert padsDict['Rectangle;1.15x1.65'].name == 'Rectangle;1.15x1.65'
     assert padsDict['Rectangle;1.15x1.65'].shape == 'RECT'
-    assert padsDict['Rectangle;1.15x1.65'].pinArea == [gobj.Point(-0.575, -0.825), gobj.Point(1.150, 1.650)]
-    assert padsDict['Rectangle;1.15x1.65'].coords == gobj.Point(0.288, 0.413)
-    assert padsDict['Rectangle;1.15x1.65'].width == 1.725
-    assert padsDict['Rectangle;1.15x1.65'].height == 2.475
+    assert padsDict['Rectangle;1.15x1.65'].pinArea == [gobj.Point(-0.575, -0.825), gobj.Point(0.575, 0.825)]
+    assert padsDict['Rectangle;1.15x1.65'].coords == gobj.Point(0, 0)
+    assert padsDict['Rectangle;1.15x1.65'].width == 1.150
+    assert padsDict['Rectangle;1.15x1.65'].height == 1.650
 
 def test__getPadstacksFromPADSTACKS(padsTest):
     instance = GenCadLoader()
@@ -241,17 +250,32 @@ def test__unnestCoordsList(testInput, expected):
     instance = GenCadLoader()
     assert instance._unnestCoordsList(testInput) == expected
 
-def test__calculateComponentArea():    
+@pytest.mark.parametrize("testInput, expected", [([[-1, -2, 2, 4]], [-1, -2, 1, 2]), 
+                                                 ([[-1, -2, 2, 4], [-5, -5, 10, 1]], [-1, -2, 1, 2, -5, -5, 5, -4])])
+def test__unnestRectanglesList(testInput, expected):
+    instance = GenCadLoader()
+    assert instance._unnestRectanglesList(testInput) == expected
+
+def test__calculateShapeAreaInPlace():
     instance = GenCadLoader()
 
     shapeToComponentsDict = {'LINE':[['-0.1417323', '-0.1309055', '-0.1732283', '-0.1309055'], ['-0.1732283', '-0.1309055', '-0.1732283', '-0.08267717']],
                  'ARC':[['4.043769', '-0.9228939', '4.134528', '-0.7870866', '3.889094', '-0.7212966']],
                  'RECTANGLE':[['-1.021654', '-0.8543307', '2.043307', '1.220472']],
                  'CIRCLE':[[]]}
-    assert instance._calculateComponentArea(shapeToComponentsDict) == ('RECT', gobj.Point(-1.021654, -0.9228939), gobj.Point(4.134528, 1.220472))
+    instance._calculateShapeAreaInPlace(shapeToComponentsDict)
+    assert shapeToComponentsDict == {'LINE':[['-0.1417323', '-0.1309055', '-0.1732283', '-0.1309055'], ['-0.1732283', '-0.1309055', '-0.1732283', '-0.08267717']],
+                                    'ARC':[['4.043769', '-0.9228939', '4.134528', '-0.7870866', '3.889094', '-0.7212966']],
+                                    'RECTANGLE':[['-1.021654', '-0.8543307', '2.043307', '1.220472']],
+                                    'CIRCLE':[[]],
+                                    'AREA':[gobj.Point(-1.021654, -0.9228939), gobj.Point(4.134528, 0.3661413)],
+                                    'AREA_NAME':'RECT'}
 
     shapeToComponentsDict = {'CIRCLE':[['0', '0', '0.196']]}
-    assert instance._calculateComponentArea(shapeToComponentsDict) == ('CIRCLE', gobj.Point(-0.196, -0.196), gobj.Point(0.196, 0.196))
+    instance._calculateShapeAreaInPlace(shapeToComponentsDict)
+    assert shapeToComponentsDict == {'CIRCLE':[['0', '0', '0.196']],
+                                    'AREA':[gobj.Point(-0.196, -0.196), gobj.Point(0.196, 0.196)],
+                                    'AREA_NAME':'CIRCLE'}
 
 def test__getAreaPinsfromSHAPES(shapesTest):
     instance = GenCadLoader()
@@ -263,7 +287,9 @@ def test__getAreaPinsfromSHAPES(shapesTest):
                     ['-0.19705', '0.075', '-0.13386', '0.11614'], ['-0.13386', '0.11614', '0.13386', '0.11614']],
                 'INSERT': [['smt']],
                 'HEIGHT': [['0.103150']],
-                'PIN': [['A', 'padstack102', '0.1279528', '0', 'TOP', '270', '0'], ['K', 'padstack102', '-0.1279528', '0', 'TOP', '270', '0']]   
+                'PIN': [['A', 'padstack102', '0.1279528', '0', 'TOP', '270', '0'], ['K', 'padstack102', '-0.1279528', '0', 'TOP', '270', '0']],
+                'AREA':[gobj.Point(-0.197, -0.11614), gobj.Point(0.19705, 0.11614)],
+                'AREA_NAME': 'RECT'
                 }
             }
     assert instance._getAreaPinsfromSHAPES(shapesTest) == shapes

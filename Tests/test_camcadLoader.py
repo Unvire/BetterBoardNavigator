@@ -141,12 +141,12 @@ def test__getBoardDimensions(exampleFileLines):
 def test__getComponenentsFromPARTLIST(exampleFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(exampleFileLines)
-    instance._getComponenentsFromPARTLIST(exampleFileLines, instance.boardData)
+    partNumberToComponents = instance._getComponenentsFromPARTLIST(exampleFileLines, instance.boardData)
     component1 = instance.boardData.getElementByName('components', 'FID1')
     
+    assert partNumberToComponents == {'PNFID': ['FID1', 'FID2', 'FID3', 'FID4']}
     assert component1.name == 'FID1'
     assert component1.coords == gobj.Point(0.101, -0.109)
-    assert component1.partNumber == 'PNFID'
     assert component1.side == 'T'
     assert component1.angle == 0
 
@@ -207,12 +207,15 @@ def test__getNetsFromNETLIST(netlistFileLines):
 def test__getPackages(packagesFileLines):
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(packagesFileLines)
-    instance._getComponenentsFromPARTLIST(packagesFileLines, instance.boardData)  
+    partNumberToComponents = instance._getComponenentsFromPARTLIST(packagesFileLines, instance.boardData)  
     padsDict = instance._getPadsFromPAD(packagesFileLines)  
     instance._getNetsFromNETLIST(packagesFileLines, padsDict, instance.boardData)
-    instance._getPackages(packagesFileLines, instance.boardData)
+    instance._getPackages(packagesFileLines, partNumberToComponents, instance.boardData)
 
     boardComponents = instance.boardData.getComponents()
     assert boardComponents['R40'].componentArea == [gobj.Point(0.98, 0.860), gobj.Point(1.060, 0.896)]
+    assert boardComponents['R40'].mountingType == 'SMD'
     assert boardComponents['C10'].componentArea == [gobj.Point(2.102, 2.148), gobj.Point(2.110, 2.190)]
+    assert boardComponents['C10'].mountingType == 'SMT'
     assert boardComponents['LD1'].componentArea == [gobj.Point(0.843, 1.941), gobj.Point(1.021, 2.019)]
+    assert boardComponents['LD1'].mountingType == 'TH'

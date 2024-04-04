@@ -18,7 +18,7 @@ class GenCadLoader:
         padstackDict = self._getPadstacksFromPADSTACKS(fileLines, padsDict)
         shapeToComponentsDict = self._getComponentsFromCOMPONENTS(fileLines, self.boardData)
         shapesDict = self._getAreaPinsfromSHAPES(fileLines)
-        self._addShapePadDataToComponent(self.boardData.getComponents(), shapeToComponentsDict, shapesDict, padstackDict)
+        self._addShapePadDataToComponent(self.boardData, shapeToComponentsDict, shapesDict, padstackDict)
 
         return self.boardData
     
@@ -132,16 +132,34 @@ class GenCadLoader:
                     i += 1
                     isEndOfShapeSection = 'SHAPE' == fileLines[i][:5] or i >= iEnd
                 shapeName = shapeParameters['SHAPE'][0][0]
+                self._calculateShapeAreaInPlace(shapeParameters)
                 shapesDict[shapeName] = shapeParameters
                 continue
             i += 1
         return shapesDict
     
-    def _addShapePadDataToComponent(self, components:dict, shapesToComponents:dict, shapesDict:dict, padstackDict:dict):
-        for shapeName in shapesToComponents:
-            shapeList = shapesToComponents[shapeName]
-            for componentName in shapeList:
-                print(componentName, components[componentName])
+    def _addShapePadDataToComponent(self, boardInstance:board.Board, shapesToComponents:dict, shapesDict:dict, padstackDict:dict):
+        components = boardInstance.getComponents()
+        for shapeName, componentsList in shapesToComponents.items():
+            for componentName in componentsList:
+                componentInstance = components[componentName]
+                pins = shapesDict[shapeName]['PIN']
+                packageType = shapesDict[shapeName]['INSERT']
+                componentArea = shapesDict[shapeName]['AREA']
+                componentAreaType = shapesDict[shapeName]['AREA_NAME']
+                
+                for pinNumber, padstackName, pinX, pinY, _, pinAngle, _ in pins:
+                    pinInstance = copy.deepcopy(padstackDict[padstackName])
+                    pinInstance.rotateInPlace(pinInstance.getCoords(), float(pinAngle))
+                    pinInstance.translateInPlace([float(pinX), float(pinY)])
+                    componentInstance.addPin(pinNumber, pinInstance)
+                                
+                
+                print(componentName, componentInstance, componentInstance.side) # get component
+                print(shapesDict[shapeName]['PIN'], shapesDict[shapeName]['INSERT'], shapesDict[shapeName]['AREA'], shapesDict[shapeName]['AREA_NAME'], sep='\n') # get pins data
+                print(padstackDict['padstack40']) # get padstack
+                break
+            break
 
         ## 1. extract shape name from shapesToComponents; shapesToComponents -> shapeName
         ## 2. get shape data from shapesDict; shapesDict[shapeName]
@@ -167,20 +185,22 @@ class GenCadLoader:
         newComponent.setAngle(angle)
         return newComponent
     
-    def _calculateComponentArea(self, shapeParameters:dict) -> tuple[str, gobj.Point, gobj.Point]:
-        lines = self._unnestCoordsList(shapeParameters.get('LINE', []))
-        rectangles = self._unnestCoordsList(shapeParameters.get('RECTANGLE', []))
-        arcs = self._unnestCoordsList(shapeParameters.get('ARC', []))
+    def _calculateShapeAreaInPlace(self, shapeParameters:dict) -> tuple[str, gobj.Point, gobj.Point]:        
         circle = self._unnestCoordsList(shapeParameters.get('CIRCLE', []))
-        
+
         if circle:
             shape = 'CIRCLE'
             bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
             _, bottomLeftPoint, topRightPoint = self._getCircleFromCIRCLE(circle[:3], bottomLeftPoint, topRightPoint) # extract only first circle
         else:
             shape = 'RECT'
+            rectangles = self._unnestRectanglesList(shapeParameters.get('RECTANGLE', []))
+            lines = self._unnestCoordsList(shapeParameters.get('LINE', []))
+            arcs = self._unnestCoordsList(shapeParameters.get('ARC', []))
             bottomLeftPoint, topRightPoint = self._coordsListToBottomLeftTopRightPoint(rectangles + arcs + lines)
-        return shape, bottomLeftPoint, topRightPoint
+        
+        shapeParameters['AREA_NAME'] = shape
+        shapeParameters['AREA'] = [bottomLeftPoint, topRightPoint]
     
     def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Line, gobj.Point, gobj.Point]:
         xStart, yStart, xEnd, yEnd = [gobj.floatOrNone(val) for val in fileLine]
@@ -214,9 +234,9 @@ class GenCadLoader:
         return circleInstance, bottomLeftPoint, topRightPoint
 
     def _getRectFromRECTANGLE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Rectangle, gobj.Point, gobj.Point]:
-        x0, y0, x1, y1 = [gobj.floatOrNone(val) for val in fileLine]
+        x0, y0, width, height = [gobj.floatOrNone(val) for val in fileLine]
         point0 = gobj.Point(x0, y0)
-        point1 = gobj.Point(x1, y1)
+        point1 = gobj.Point(x0 + width, y0 + height)
 
         checkedPoints = [point0, point1]
         bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
@@ -257,6 +277,15 @@ class GenCadLoader:
     
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
+    
+    def _unnestRectanglesList(self, rectanglesNestedList: list[list[float]]) -> list:
+        result = []
+        for rect in rectanglesNestedList:
+                bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+                _, bottomLeftPoint, topRightPoint = self._getRectFromRECTANGLE(rect, bottomLeftPoint, topRightPoint)
+                newRectLine = [bottomLeftPoint.getX(), bottomLeftPoint.getY(), topRightPoint.getX(), topRightPoint.getY()]
+                result += newRectLine
+        return result
 
     def _unnestCoordsList(self, nestedCoordsList:list[list[str|float]]) -> list[str|float]:
         result = []
