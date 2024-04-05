@@ -148,13 +148,14 @@ class GenCadLoader:
                 componentArea = shapesDict[shapeName]['AREA']
                 componentAreaType = shapesDict[shapeName]['AREA_NAME']
                 
-                self._addAreaAndMountingData(componentInstance, componentAreaType, componentArea, packageType)
-
                 for pinNumber, padstackName, pinX, pinY, _, pinAngle, _ in pins:
                     pinInstance = copy.deepcopy(padstackDict[padstackName])
                     self._caclulatePinToBaseShape(pinInstance, float(pinAngle), [float(pinX), float(pinY)])
-                    self._calculatePinToComponent(pinInstance, componentInstance)
                     componentInstance.addPin(pinNumber, pinInstance)
+
+                
+                self._calculateComponentPosition(componentInstance)
+                self._addAreaAndMountingData(componentInstance, componentAreaType, componentArea, packageType)
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
         newPin = pin.Pin(name)
@@ -186,9 +187,10 @@ class GenCadLoader:
         pinInstance.rotateInPlace(pinInstance.getCoords(), angle)
         pinInstance.translateInPlace(translationVector)
 
-    def _calculatePinToComponent(self, pinInstance:pin.Pin, componentInstance:comp.Component):
-        pinInstance.translateInPlace(componentInstance.getCoordsAsTranslationVector())
-        pinInstance.rotateInPlace(componentInstance.getCoords(), componentInstance.getAngle())
+    def _calculateComponentPosition(self, componentInstance:comp.Component):
+        ## rotate componentArea and all pins around central point of shape and then translate whole thing to declared coords
+        componentInstance.rotateInPlace(componentInstance.getCoords(), componentInstance.getAngle())
+        componentInstance.translateInPlace(componentInstance.getCoordsAsTranslationVector())
     
     def _calculateShapeAreaInPlace(self, shapeParameters:dict) -> tuple[str, gobj.Point, gobj.Point]:        
         circle = self._unnestCoordsList(shapeParameters.get('CIRCLE', []))
