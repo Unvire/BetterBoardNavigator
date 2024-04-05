@@ -24,6 +24,9 @@ class Component:
     
     def getCoords(self):
         return self.coords
+
+    def getCoordsAsTranslationVector(self):
+        return [self.coords.getX(), self.coords.getY()]
     
     def setSide(self, side:str):
         self.side = side

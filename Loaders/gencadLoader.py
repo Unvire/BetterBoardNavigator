@@ -144,26 +144,21 @@ class GenCadLoader:
             for componentName in componentsList:
                 componentInstance = components[componentName]
                 pins = shapesDict[shapeName]['PIN']
-                packageType = shapesDict[shapeName]['INSERT']
-                componentArea = shapesDict[shapeName]['AREA']
+                packageType = shapesDict[shapeName]['INSERT'][0][0]
+                componentAreaX, componentAreaY = shapesDict[shapeName]['AREA']
                 componentAreaType = shapesDict[shapeName]['AREA_NAME']
                 
+                componentInstance.setComponentAreaType(componentAreaType)
+                componentInstance.setComponentArea(componentAreaX, componentAreaY)
+                componentInstance.setMountingType(packageType)
+
                 for pinNumber, padstackName, pinX, pinY, _, pinAngle, _ in pins:
                     pinInstance = copy.deepcopy(padstackDict[padstackName])
                     pinInstance.rotateInPlace(pinInstance.getCoords(), float(pinAngle))
                     pinInstance.translateInPlace([float(pinX), float(pinY)])
+                    pinInstance.translateInPlace(componentInstance.getCoordsAsTranslationVector())
+                    pinInstance.rotateInPlace(componentInstance.getCoords(), componentInstance.getAngle())
                     componentInstance.addPin(pinNumber, pinInstance)
-                                
-                
-                print(componentName, componentInstance, componentInstance.side) # get component
-                print(shapesDict[shapeName]['PIN'], shapesDict[shapeName]['INSERT'], shapesDict[shapeName]['AREA'], shapesDict[shapeName]['AREA_NAME'], sep='\n') # get pins data
-                print(padstackDict['padstack40']) # get padstack
-                break
-            break
-
-        ## 1. extract shape name from shapesToComponents; shapesToComponents -> shapeName
-        ## 2. get shape data from shapesDict; shapesDict[shapeName]
-        ## 3. modify componentData. recalculate area position, pad position etc component(shapesDict[shapeName], padstackDict)
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
         newPin = pin.Pin(name)
