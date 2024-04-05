@@ -145,19 +145,15 @@ class GenCadLoader:
                 componentInstance = components[componentName]
                 pins = shapesDict[shapeName]['PIN']
                 packageType = shapesDict[shapeName]['INSERT'][0][0]
-                componentAreaX, componentAreaY = shapesDict[shapeName]['AREA']
+                componentArea = shapesDict[shapeName]['AREA']
                 componentAreaType = shapesDict[shapeName]['AREA_NAME']
                 
-                componentInstance.setComponentAreaType(componentAreaType)
-                componentInstance.setComponentArea(componentAreaX, componentAreaY)
-                componentInstance.setMountingType(packageType)
+                self._addAreaAndMountingData(componentInstance, componentAreaType, componentArea, packageType)
 
                 for pinNumber, padstackName, pinX, pinY, _, pinAngle, _ in pins:
                     pinInstance = copy.deepcopy(padstackDict[padstackName])
-                    pinInstance.rotateInPlace(pinInstance.getCoords(), float(pinAngle))
-                    pinInstance.translateInPlace([float(pinX), float(pinY)])
-                    pinInstance.translateInPlace(componentInstance.getCoordsAsTranslationVector())
-                    pinInstance.rotateInPlace(componentInstance.getCoords(), componentInstance.getAngle())
+                    self._caclulatePinToBaseShape(pinInstance, float(pinAngle), [float(pinX), float(pinY)])
+                    self._calculatePinToComponent(pinInstance, componentInstance)
                     componentInstance.addPin(pinNumber, pinInstance)
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
@@ -179,6 +175,20 @@ class GenCadLoader:
         newComponent.setSide(side)
         newComponent.setAngle(angle)
         return newComponent
+    
+    def _addAreaAndMountingData(self, componentInstance:comp.Component, componentAreaType:str, componentArea:list[gobj.Point, gobj.Point], componentMountingType:str):
+        componentAreaX, componentAreaY = componentArea
+        componentInstance.setComponentAreaType(componentAreaType)
+        componentInstance.setComponentArea(componentAreaX, componentAreaY)
+        componentInstance.setMountingType(componentMountingType)
+    
+    def _caclulatePinToBaseShape(self, pinInstance:pin.Pin, angle:float|int, translationVector:list[float|int, float|int]):
+        pinInstance.rotateInPlace(pinInstance.getCoords(), angle)
+        pinInstance.translateInPlace(translationVector)
+
+    def _calculatePinToComponent(self, pinInstance:pin.Pin, componentInstance:comp.Component):
+        pinInstance.translateInPlace(componentInstance.getCoordsAsTranslationVector())
+        pinInstance.rotateInPlace(componentInstance.getCoords(), componentInstance.getAngle())
     
     def _calculateShapeAreaInPlace(self, shapeParameters:dict) -> tuple[str, gobj.Point, gobj.Point]:        
         circle = self._unnestCoordsList(shapeParameters.get('CIRCLE', []))
