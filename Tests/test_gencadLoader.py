@@ -106,6 +106,36 @@ def shapesTest():
     ]
     return fileLinesMock
 
+@pytest.fixture
+def fullComponentTest():
+    fileLinesMock = [
+        '$SHAPES\n',
+        'SHAPE IND_0603_T_3\n',
+        'RECTANGLE -0.03149606 -0.01574803 0.06299213 0.03149606\n',
+        'INSERT smt\n',
+        'HEIGHT 0.035000\n',
+        'PIN 1 padstack12 0.03098425 0 TOP 0 MIRRORY\n',
+        'PIN 2 padstack12 -0.03098425 0 TOP 270 MIRRORY\n',
+        '$ENDSHAPES\n',
+        '$PADSTACKS\n',
+        'PADSTACK padstack12 0\n',
+        'PAD rect48x52 SOLDERMASK_TOP 0 0\n',
+        '$ENDPADSTACKS\n',
+        '$COMPONENTS\n',
+        'COMPONENT L8\n',
+        'DEVICE 15017501_Generated\n',
+        'PLACE -0.992126 0.7244094\n',
+        'LAYER BOTTOM\n',
+        'ROTATION 90\n',
+        'SHAPE IND_0603_T_3 MIRRORY FLIP\n',
+        '$ENDCOMPONENTS\n',
+        '$PADS\n',
+        'PAD rect48x52 RECTANGULAR 0\n',
+        'RECTANGLE -0.024 -0.026 0.048 0.052\n',
+        '$ENDPADS\n',
+    ]
+    return fileLinesMock
+
 
 def test__getSectionsLinesBeginEnd(sectionsRangeTest):
     instance = GenCadLoader()
@@ -293,3 +323,18 @@ def test__getAreaPinsfromSHAPES(shapesTest):
                 }
             }
     assert instance._getAreaPinsfromSHAPES(shapesTest) == shapes
+
+def test__addShapePadDataToComponent(fullComponentTest):
+    instance = GenCadLoader()
+    instance._getSectionsLinesBeginEnd(fullComponentTest)
+    padsDict = instance._getPadsFromPADS(fullComponentTest)
+    padstackDict = instance._getPadstacksFromPADSTACKS(fullComponentTest, padsDict)
+    shapeToComponentsDict = instance._getComponentsFromCOMPONENTS(fullComponentTest, instance.boardData)
+    shapesDict = instance._getAreaPinsfromSHAPES(fullComponentTest)
+    instance._addShapePadDataToComponent(instance.boardData, shapeToComponentsDict, shapesDict, padstackDict)
+
+    componentInstance = instance.boardData.getElementByName('components', 'L8')
+    print(componentInstance.getComponentArea()[0], componentInstance.getComponentArea()[1])
+
+    assert componentInstance.getMountingType() == 'smt'
+    assert componentInstance.getComponentArea() == []
