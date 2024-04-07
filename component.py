@@ -86,5 +86,21 @@ class Component:
             centerPoint = self.pins[pin].getCoords()
             bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, centerPoint)
         return bottomLeftPoint, topRightPoint
+    
+    def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:float|int):
+        self.coords.rotate(rotationPoint, angleDeg)
+        p1, p2 = self.getPinArea()
+        p1.rotate(rotationPoint, angleDeg)
+        p2.rotate(rotationPoint, angleDeg)
+        for _, pinInstance in self.pins.items():
+            pinInstance.rotateInPlace(rotationPoint, angleDeg)
+    
+    def translateInPlace(self, vector:list[int|float, int|float]):
+        self.coords.translateInPlace(vector)
+        p1, p2 = self.getPinArea()
+        p1.translateInPlace(vector)
+        p2.translateInPlace(vector)     
+        for _, pinInstance in self.pins.items():
+            pinInstance.translateInPlace(vector)
 
     
