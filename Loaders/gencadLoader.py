@@ -150,11 +150,11 @@ class GenCadLoader:
                 
                 for pinNumber, padstackName, pinX, pinY, _, pinAngle, _ in pins:
                     pinInstance = copy.deepcopy(padstackDict[padstackName])
-                    self._caclulatePinToBaseShape(pinInstance, float(pinAngle), [float(pinX), float(pinY)])
-                    componentInstance.addPin(pinNumber, pinInstance)
+                    self._caclulatePinToBasePosition(pinInstance, float(pinAngle), [float(pinX), float(pinY)])
+                    self._calculatePinToComponentPosition(pinInstance, pinNumber, componentInstance)
                 
                 self._addAreaAndMountingData(componentInstance, componentAreaType, componentArea, packageType)
-                self._calculateComponentPosition(componentInstance)
+                componentInstance.rotateInPlaceAroundCoords(componentInstance.getAngle())
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
         newPin = pin.Pin(name)
@@ -186,14 +186,14 @@ class GenCadLoader:
         componentAreaY.translateInPlace(moveVector)
         componentInstance.setComponentArea(componentAreaX, componentAreaY)
     
-    def _caclulatePinToBaseShape(self, pinInstance:pin.Pin, angle:float|int, translationVector:list[float|int, float|int]):
+    def _caclulatePinToBasePosition(self, pinInstance:pin.Pin, angle:float|int, translationVector:list[float|int, float|int]):
         pinInstance.rotateInPlace(pinInstance.getCoords(), angle)
         pinInstance.translateInPlace(translationVector)
-
-    def _calculateComponentPosition(self, componentInstance:comp.Component):
-        ## rotate componentArea and all pins around central point of shape and then translate whole thing to declared coords
-        componentInstance.rotateInPlaceAroundCoords(componentInstance.getAngle())
-        componentInstance.translatePinsInPlace(componentInstance.getCoordsAsTranslationVector())
+    
+    def _calculatePinToComponentPosition(self, pinInstance:pin.Pin, pinName:str, componentInstance:comp.Component):
+        moveVector = componentInstance.getCoordsAsTranslationVector()
+        pinInstance.translateInPlace(moveVector)
+        componentInstance.addPin(pinName, pinInstance)
     
     def _calculateShapeAreaInPlace(self, shapeParameters:dict) -> tuple[str, gobj.Point, gobj.Point]:        
         circle = self._unnestCoordsList(shapeParameters.get('CIRCLE', []))
