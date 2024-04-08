@@ -3,7 +3,7 @@ import geometryObjects as gobj
 class Pin:
     def __init__(self, name:str):
         self.name = name
-        self.shape = 'RECTANGLE'
+        self.shape = 'RECTANGLEDeg'
         self.coords = None
         self.pinArea = []
         self.net = None
@@ -64,8 +64,8 @@ class Pin:
         p1.translateInPlace(vector)
         p2.translateInPlace(vector)
 
-    def rotateInPlace(self, rotationPoint:gobj.Point, angle:int|float):
-        self.coords.rotate(rotationPoint, angle)
+    def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:int|float):
+        self.coords.rotate(rotationPoint, angleDeg)
         p1, p2 = self.getPinArea()
-        p1.rotate(rotationPoint, angle)
-        p2.rotate(rotationPoint, angle)
+        p1.rotate(rotationPoint, angleDeg)
+        p2.rotate(rotationPoint, angleDeg)
