@@ -334,7 +334,19 @@ def test__addShapePadDataToComponent(fullComponentTest):
     instance._addShapePadDataToComponent(instance.boardData, shapeToComponentsDict, shapesDict, padstackDict)
 
     componentInstance = instance.boardData.getElementByName('components', 'L8')
-    print(componentInstance.getComponentArea()[0], componentInstance.getComponentArea()[1])
-
+    pin1 = componentInstance.getPinByName('1') 
+    pin2 = componentInstance.getPinByName('2')
+    
+    assert componentInstance.name == 'L8'
+    assert componentInstance.side == 'B'
+    assert componentInstance.angle == 90
     assert componentInstance.getMountingType() == 'smt'
-    assert componentInstance.getComponentArea() == []
+    assert componentInstance.getComponentAreaType() == 'RECT'
+    assert componentInstance.getCoords() == gobj.Point(-0.992, 0.724)
+    assert componentInstance.getComponentArea() == [gobj.Point(-0.977, 0.692), gobj.Point(-1.008, 0.755)] # shape moved with vector of instance.coords and rotated by instance.angle
+    
+    assert pin1 is not pin2
+    assert pin1.getCoords() == gobj.Point(-0.992, 0.755) # -0.961, 0.724 before rotation
+    assert pin1.getPinArea() == [gobj.Point(-0.966, 0.731), gobj.Point(-1.018, 0.779)] # (-0.985, 0.698); (-0.937, 0.750) before rotation
+    assert pin2.getCoords() == gobj.Point(-0.992, 0.693) # -1.023, 0.724 before rotation
+    assert pin2.getPinArea() == [gobj.Point(-0.966, 0.669), gobj.Point(-1.018, 0.717)] # (-0.024, -0.026); (0.024, 0.026) -> (-1.047, 0.698); (-0.999, 0.750)
