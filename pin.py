@@ -3,7 +3,7 @@ import geometryObjects as gobj
 class Pin:
     def __init__(self, name:str):
         self.name = name
-        self.shape = 'RECTANGLEDeg'
+        self.shape = 'RECT'
         self.coords = None
         self.pinArea = []
         self.net = None
