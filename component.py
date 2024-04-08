@@ -93,6 +93,10 @@ class Component:
             bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, centerPoint)
         return bottomLeftPoint, topRightPoint
     
+    def rotateInPlaceAroundCoords(self, angleDeg:float|int):
+        rotationPoint = self.getCoords()
+        self.rotateInPlace(rotationPoint, angleDeg)
+
     def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:float|int):
         self.coords.rotate(rotationPoint, angleDeg)
         p1, p2 = self.getComponentArea()
