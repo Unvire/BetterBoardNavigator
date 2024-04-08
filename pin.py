@@ -66,9 +66,9 @@ class Pin:
 
     def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:int|float):
         self.coords.rotate(rotationPoint, angleDeg)
-        p1, p2 = self.getPinArea()
-        p1.rotate(rotationPoint, angleDeg)
-        p2.rotate(rotationPoint, angleDeg)
+        for point in self.getPinArea():
+            point.rotate(rotationPoint, angleDeg)
+        self._normalizePinArea()
     
     def _normalizePinArea(self):
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
