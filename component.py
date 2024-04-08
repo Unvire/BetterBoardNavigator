@@ -109,7 +109,10 @@ class Component:
         self.coords.translateInPlace(vector)
         p1, p2 = self.getComponentArea()
         p1.translateInPlace(vector)
-        p2.translateInPlace(vector)     
+        p2.translateInPlace(vector)
+        self.translatePinsInPlace(vector)
+    
+    def translatePinsInPlace(self, vector:list[int|float, int|float]):
         for _, pinInstance in self.pins.items():
             pinInstance.translateInPlace(vector)
 
