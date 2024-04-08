@@ -95,7 +95,7 @@ class Component:
     
     def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:float|int):
         self.coords.rotate(rotationPoint, angleDeg)
-        p1, p2 = self.getPinArea()
+        p1, p2 = self.getComponentArea()
         p1.rotate(rotationPoint, angleDeg)
         p2.rotate(rotationPoint, angleDeg)
         for _, pinInstance in self.pins.items():
