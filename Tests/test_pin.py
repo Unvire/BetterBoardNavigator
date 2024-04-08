@@ -32,9 +32,7 @@ def test_translateInPlace(pin1):
     assert pin1.getPinArea() == [gobj.Point(-2, -1.5), gobj.Point(0, 2.5)]
 
 def test_rotateInPlace(pin1):
-    pin1.calculateArea()    
-    print(pin1.getPinArea()[0], pin1.getPinArea()[1])
+    pin1.calculateArea()
     pin1.rotateInPlace(gobj.Point(0, 0), 45)
-    print(pin1.getPinArea()[0], pin1.getPinArea()[1])
     assert pin1.getCoords() == gobj.Point(0, 0)
     assert pin1.getPinArea() == [gobj.Point(-0.707, -2.121), gobj.Point(0.707, 2.121)]
