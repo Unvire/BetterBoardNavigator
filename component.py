@@ -19,6 +19,9 @@ class Component:
     def addPin(self, pinName:str, pin:pin.Pin):
         self.pins[pinName] = pin
     
+    def getPinByName(self, pinName:str) -> pin.Pin|None:
+        return self.pins.get(pinName, None)
+    
     def setCoords(self, point:gobj.Point):
         self.coords = point
     
