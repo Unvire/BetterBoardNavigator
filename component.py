@@ -99,9 +99,9 @@ class Component:
 
     def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:float|int):
         self.coords.rotate(rotationPoint, angleDeg)
-        p1, p2 = self.getComponentArea()
-        p1.rotate(rotationPoint, angleDeg)
-        p2.rotate(rotationPoint, angleDeg)
+        for point in self.getComponentArea():
+            point.rotate(rotationPoint, angleDeg)
+        self._normalizeComponentArea()
         for _, pinInstance in self.pins.items():
             pinInstance.rotateInPlace(rotationPoint, angleDeg)
     
@@ -116,4 +116,8 @@ class Component:
         for _, pinInstance in self.pins.items():
             pinInstance.translateInPlace(vector)
 
-    
+    def _normalizeComponentArea(self):
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+        for point in self.getComponentArea():
+            bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
+        self.setComponentArea(bottomLeftPoint, topRightPoint)
