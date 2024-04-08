@@ -79,6 +79,20 @@ def test_translateInPlace(componentForRotateTranslate):
     assert pin2.getCoords() == gobj.Point(12, 11)
     assert pin2.getPinArea() == [gobj.Point(11.5, 10.5), gobj.Point(12.5, 11.5)] # before translation: (1.5, 0.5), (2.5, 1.5)
 
+def test_rotateInPlace(componentForRotateTranslate):
+    componentForRotateTranslate.rotateInPlace(gobj.Point(1, 1), 30)
+    assert componentForRotateTranslate.getCoords() == gobj.Point(0.634, -0.366)
+    assert componentForRotateTranslate.getComponentArea() == [gobj.Point(-1.830, -4.098), gobj.Point(3.098, 3.366)]
+
+    pin1 = componentForRotateTranslate.getPinByName('1')
+    assert pin1.getCoords() == gobj.Point(-0.598, -2.232)
+    assert pin1.getPinArea() == [gobj.Point(-0.781, -2.915), gobj.Point(-0.415, -1.549)] # before translation: (-2.5, -1.5), (-1.5, 0.5)
+
+    pin2 = componentForRotateTranslate.getPinByName('2')
+    assert pin2.getCoords() == gobj.Point(1.866, 1.500)
+    assert pin2.getPinArea() == [gobj.Point(1.683, 0.817), gobj.Point(2.049, 2.183)] # before translation: (1.5, 0.5), (2.5, 1.5)
+    
+
 def test_getPinByName(componentForPinsCalculation):
     testPin = componentForPinsCalculation.getPinByName('1')
     assert testPin == componentForPinsCalculation.pins['1']
