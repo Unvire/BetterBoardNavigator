@@ -44,13 +44,17 @@ def test_translateInPlace(shape1):
     assert shape1.getArea() == [gobj.Point(-2, -1.5), gobj.Point(0, 2.5)]
     assert shape1.getShapePoints() == [gobj.Point(-2, -1.5), gobj.Point(0, -1.5), gobj.Point(0, 2.5), gobj.Point(-2, 2.5)]
 
-    shape1.setShape('CIRCLE')
+    shape1.setShape('CIRCLE') #verify calculations -> area is not a square
     shape1.caluclateShapeData()
     shape1.translateInPlace([1, -0.5])
     assert shape1.getShapePoints() == [gobj.Point(0, 0)]
 
 def test_rotateInPlace(shape1):
     shape1.calculateAreaFromWidthHeightCoords()
+    shape1.setShape('RECT')
+    shape1.caluclateShapeData()
+    
     shape1.rotateInPlace(gobj.Point(0, 0), 45)
     assert shape1.getCoords() == gobj.Point(0, 0)
     assert shape1.getArea() == [gobj.Point(-0.707, -2.121), gobj.Point(0.707, 2.121)]
+    assert shape1.getShapePoints() == [gobj.Point(0.707, -2.121), gobj.Point(2.121, -0.707), gobj.Point(-0.707, 2.121), gobj.Point(-2.121, 0.707)]
