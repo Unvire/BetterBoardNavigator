@@ -5,7 +5,7 @@ class Shape():
         self.name = name
         self.shape = 'RECT'
         self.coords = None
-        self.pinArea = []
+        self.area = []
     
     def setShape(self, shape:str):
         self.shape = shape
@@ -30,16 +30,38 @@ class Shape():
 
     def setDimensions(self, width:float, height:float):
         self.width = width
-        self.height = height
+        self.height = height  
+    
+    def calculateAreaFromWidthHeightCoords(self):
+        moveVector = [-self.width / 2, -self.height / 2]
+        bottomLeftPoint = gobj.Point.translate(self.coords, moveVector)
+        topRightPoint = gobj.Point.translate(bottomLeftPoint, [self.width, self.height])
+        self.setArea(bottomLeftPoint, topRightPoint)
+    
+    def calculateCenterDimensionsFromArea(self):
+        self._calculateCenterFromArea()
+        self._calculateDimensionsFromArea()
+    
+    def _calculateDimensionsFromArea(self):
+        bottomLeftPoint, topRightPoint = self.area
+        width = round(topRightPoint.getX() - bottomLeftPoint.getX(), gobj.Point.DECIMAL_POINT_PRECISION)
+        height = round(topRightPoint.getY() - bottomLeftPoint.getY(), gobj.Point.DECIMAL_POINT_PRECISION)
+        self.setDimensions(width, height)
     
     def _calculateCenterFromArea(self):
-        bottomLeftPoint, topRightPoint = self.pinArea
+        bottomLeftPoint, topRightPoint = self.area
+        xCenter = round((topRightPoint.getX() + bottomLeftPoint.getX()) / 2, gobj.Point.DECIMAL_POINT_PRECISION)
+        yCenter = round((topRightPoint.getY() + bottomLeftPoint.getY()) / 2, gobj.Point.DECIMAL_POINT_PRECISION)
+        self.setCoords(gobj.Point(xCenter, yCenter))
+    
+    def _calculateCenterFromArea(self):
+        bottomLeftPoint, topRightPoint = self.area
         xCenter = round((topRightPoint.getX() + bottomLeftPoint.getX()) / 2, gobj.Point.DECIMAL_POINT_PRECISION)
         yCenter = round((topRightPoint.getY() + bottomLeftPoint.getY()) / 2, gobj.Point.DECIMAL_POINT_PRECISION)
         self.setCoords(gobj.Point(xCenter, yCenter))
     
     def _calculateDimensionsFromArea(self):
-        bottomLeftPoint, topRightPoint = self.pinArea
+        bottomLeftPoint, topRightPoint = self.area
         width = round(topRightPoint.getX() - bottomLeftPoint.getX(), gobj.Point.DECIMAL_POINT_PRECISION)
         height = round(topRightPoint.getY() - bottomLeftPoint.getY(), gobj.Point.DECIMAL_POINT_PRECISION)
         self.setDimensions(width, height)
