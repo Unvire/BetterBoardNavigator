@@ -48,23 +48,23 @@ class Component(abstractShape.Shape):
         center = gobj.Point(xCenter, yCenter)
         self.setCoords(center)
     
-    def calculatePackageFromPins(self):
+    def calculateAreaFromPins(self):
         bottomLeftPoint, topRightPoint = self.calculateHitBoxFromPins()        
         bottomLeftPoint.scaleInPlace(0.95)
         topRightPoint.scaleInPlace(0.95)
 
-        x1, y1 = bottomLeftPoint.x, bottomLeftPoint.y
-        x2, y2 = topRightPoint.x, topRightPoint.y
-        if round(x2 - x1, 3) == 0:
-            moveDistance = round((y2 - y1) * 0.1, gobj.Point.DECIMAL_POINT_PRECISION)
-            bottomLeftPoint.x = x1 - moveDistance
-            topRightPoint.x = x2 + moveDistance
-        if round(y2 - y1, 3) == 0:
-            moveDistance = round((x2 - x1) * 0.1, gobj.Point.DECIMAL_POINT_PRECISION)
-            bottomLeftPoint.y = y1 - moveDistance
-            topRightPoint.y = y2 + moveDistance
+        #x1, y1 = bottomLeftPoint.x, bottomLeftPoint.y
+        #x2, y2 = topRightPoint.x, topRightPoint.y
+        #if round(x2 - x1, 3) == 0:
+        #    moveDistance = round((y2 - y1) * 0.1, gobj.Point.DECIMAL_POINT_PRECISION)
+        #    bottomLeftPoint.x = x1 - moveDistance
+        #   topRightPoint.x = x2 + moveDistance
+        #if round(y2 - y1, 3) == 0:
+        #    moveDistance = round((x2 - x1) * 0.1, gobj.Point.DECIMAL_POINT_PRECISION)
+        #    bottomLeftPoint.y = y1 - moveDistance
+        #    topRightPoint.y = y2 + moveDistance
 
-        self.setComponentArea(bottomLeftPoint, topRightPoint)
+        self.setArea(bottomLeftPoint, topRightPoint)
 
     def calculateHitBoxFromPins(self) -> tuple[gobj.Point, gobj.Point]:
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
