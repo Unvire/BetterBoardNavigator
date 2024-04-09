@@ -19,6 +19,15 @@ def test_calculateArea(shape1):
     shape1.calculateAreaFromWidthHeightCoords()
     assert shape1.getArea() == [gobj.Point(-1, -2), gobj.Point(1, 2)]
 
+def test_calculateShapeData(shape2):
+    shape2.setShape('RECT')
+    shape2.caluclateShapeData()
+    assert shape2.shapeData == gobj.Rectangle(gobj.Point(-3, -2), gobj.Point(1, 2))
+
+    shape2.setShape('CIRCLE')
+    shape2.caluclateShapeData()
+    assert shape2.shapeData == gobj.Circle(gobj.Point(-1, 0), 2)
+
 def test_calculateCenterDimensionsFromArea(shape2):
     shape2.calculateCenterDimensionsFromArea()
     assert shape2.getCoords() == gobj.Point(-1, 0)
@@ -27,9 +36,18 @@ def test_calculateCenterDimensionsFromArea(shape2):
 
 def test_translateInPlace(shape1):
     shape1.calculateAreaFromWidthHeightCoords()
+    shape1.setShape('RECT')
+    shape1.caluclateShapeData()
+
     shape1.translateInPlace([-1, 0.5])
     assert shape1.getCoords() == gobj.Point(-1, 0.5)
     assert shape1.getArea() == [gobj.Point(-2, -1.5), gobj.Point(0, 2.5)]
+    assert shape1.getShapePoints() == [gobj.Point(-2, -1.5), gobj.Point(0, -1.5), gobj.Point(0, 2.5), gobj.Point(-2, 2.5)]
+
+    shape1.setShape('CIRCLE')
+    shape1.caluclateShapeData()
+    shape1.translateInPlace([1, -0.5])
+    assert shape1.getShapePoints() == [gobj.Point(0, 0)]
 
 def test_rotateInPlace(shape1):
     shape1.calculateAreaFromWidthHeightCoords()
