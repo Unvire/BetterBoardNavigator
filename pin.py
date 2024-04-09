@@ -13,12 +13,6 @@ class Pin(abstractShape.Shape):
     def setNet(self, netName:str):
         self.net = netName
     
-    def calculateArea(self):
-        moveVector = [-self.width / 2, -self.height / 2]
-        bottomLeftPoint = gobj.Point.translate(self.coords, moveVector)
-        topRightPoint = gobj.Point.translate(bottomLeftPoint, [self.width, self.height])
-        self.setPinArea(bottomLeftPoint, topRightPoint)
-    
     def calculateCenterDimensionsFromArea(self):
         self._calculateCenterFromArea()
         self._calculateDimensionsFromArea()
