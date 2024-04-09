@@ -101,10 +101,11 @@ class Shape():
         
         for point in self.getArea():
             point.rotate(rotationPoint, angleDeg)
+        self.normalizeArea(self.getArea())
     
-    def normalizeArea(self):
+    def normalizeArea(self, pointList:list[gobj.Point]):
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
-        for point in self.getArea() + self.getShapePoints():
+        for point in pointList:
             bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
         self.setArea(bottomLeftPoint, topRightPoint)
     
