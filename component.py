@@ -83,6 +83,7 @@ class Component(abstractShape.Shape):
         super().rotateInPlace(rotationPoint, angleDeg)
         for _, pinInstance in self.pins.items():
             pinInstance.rotateInPlace(rotationPoint, angleDeg)
+        self.normalizeArea()
     
     def translateInPlace(self, vector:list[int|float, int|float]):
         super().translateInPlace(vector)
