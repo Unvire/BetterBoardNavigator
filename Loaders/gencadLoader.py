@@ -185,8 +185,10 @@ class GenCadLoader:
         componentAreaX.translateInPlace(moveVector)
         componentAreaY.translateInPlace(moveVector)
         componentInstance.setArea(componentAreaX, componentAreaY)
+        componentInstance.caluclateShapeData()
     
     def _caclulatePinToBasePosition(self, pinInstance:pin.Pin, angle:float|int, translationVector:list[float|int, float|int]):
+        pinInstance.caluclateShapeData()
         pinInstance.rotateInPlace(pinInstance.getCoords(), angle)
         pinInstance.translateInPlace(translationVector)
     
