@@ -123,12 +123,20 @@ class Rectangle:
     def __init__(self, bottomLeftPoint:Point, topRightPoint:Point):
         self.bottomLeftPoint = bottomLeftPoint
         self.topRightPoint = topRightPoint
+        xBL, yBL = self.bottomLeftPoint.getXY()
+        xTR, yTR = self.topRightPoint.getXY()
+        self.bottomRightPoint = Point(xTR, yBL)
+        self.topLeftPoint = Point(xBL, yTR)
     
     def __str__(self):
         return f'Rectangle: bottom-left point=({self.bottomLeftPoint}), top-right point=({self.topRightPoint})'
     
     def __eq__(self, rectangle:'Rectangle'):
-        return self.bottomLeftPoint == rectangle.bottomLeftPoint and self.topRightPoint == rectangle.topRightPoint
+        bottomLeftEqual = self.bottomLeftPoint == rectangle.bottomLeftPoint
+        bottomRightEqual = self.bottomRightPoint == rectangle.bottomRightPoint
+        topLeftEqual = self.topLeftPoint == rectangle.topLeftPoint
+        topRightEqual = self.topRightPoint == rectangle.topRightPoint 
+        return bottomLeftEqual and bottomRightEqual and topLeftEqual and topRightEqual
 
 def floatOrNone(x:str):
     try:
