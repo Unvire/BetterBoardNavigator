@@ -217,21 +217,21 @@ def test__getPadsFromPADS(padsTest):
     
     assert padsDict['Round 32'].name == 'Round 32'
     assert padsDict['Round 32'].shape == 'CIRCLE'
-    assert padsDict['Round 32'].pinArea == [gobj.Point(-0.406, -0.406), gobj.Point(0.406, 0.406)]
+    assert padsDict['Round 32'].area == [gobj.Point(-0.406, -0.406), gobj.Point(0.406, 0.406)]
     assert padsDict['Round 32'].coords == gobj.Point(0, 0)
     assert padsDict['Round 32'].width == 0.812
     assert padsDict['Round 32'].height == 0.812
 
     assert padsDict['Oblong 3.2x5.2'].name == 'Oblong 3.2x5.2'
     assert padsDict['Oblong 3.2x5.2'].shape == 'RECT'    
-    assert padsDict['Oblong 3.2x5.2'].pinArea == [gobj.Point(-1.6, -1), gobj.Point(1.6, 1)]
+    assert padsDict['Oblong 3.2x5.2'].area == [gobj.Point(-1.6, -1), gobj.Point(1.6, 1)]
     assert padsDict['Oblong 3.2x5.2'].coords == gobj.Point(0, 0)
     assert padsDict['Oblong 3.2x5.2'].width == 3.2
     assert padsDict['Oblong 3.2x5.2'].height == 2
 
     assert padsDict['Rectangle;1.15x1.65'].name == 'Rectangle;1.15x1.65'
     assert padsDict['Rectangle;1.15x1.65'].shape == 'RECT'
-    assert padsDict['Rectangle;1.15x1.65'].pinArea == [gobj.Point(-0.575, -0.825), gobj.Point(0.575, 0.825)]
+    assert padsDict['Rectangle;1.15x1.65'].area == [gobj.Point(-0.575, -0.825), gobj.Point(0.575, 0.825)]
     assert padsDict['Rectangle;1.15x1.65'].coords == gobj.Point(0, 0)
     assert padsDict['Rectangle;1.15x1.65'].width == 1.150
     assert padsDict['Rectangle;1.15x1.65'].height == 1.650
@@ -341,12 +341,12 @@ def test__addShapePadDataToComponent(fullComponentTest):
     assert componentInstance.side == 'B'
     assert componentInstance.angle == 90
     assert componentInstance.getMountingType() == 'smt'
-    assert componentInstance.getComponentAreaType() == 'RECT'
+    assert componentInstance.getShape() == 'RECT'
     assert componentInstance.getCoords() == gobj.Point(-0.992, 0.724)
-    assert componentInstance.getComponentArea() == [gobj.Point(-1.008, 0.692), gobj.Point(-0.977, 0.755)] # shape moved with vector of instance.coords and rotated by instance.angle
+    assert componentInstance.getArea() == [gobj.Point(-1.008, 0.692), gobj.Point(-0.977, 0.755)] # shape moved with vector of instance.coords and rotated by instance.angle
     
     assert pin1 is not pin2
     assert pin1.getCoords() == gobj.Point(-0.992, 0.755) # -0.961, 0.724 before rotation
-    assert pin1.getPinArea() == [gobj.Point(-1.018, 0.731), gobj.Point(-0.966, 0.779)] # (-0.985, 0.698); (-0.937, 0.750) before rotation
+    assert pin1.getArea() == [gobj.Point(-1.018, 0.731), gobj.Point(-0.966, 0.779)] # (-0.985, 0.698); (-0.937, 0.750) before rotation
     assert pin2.getCoords() == gobj.Point(-0.992, 0.693) # -1.023, 0.724 before rotation
-    assert pin2.getPinArea() == [gobj.Point(-1.016, 0.667), gobj.Point(-0.968, 0.719)] # (-0.026, -0.024); (0.026, 0.024) -> (-1.049, 0.700); (-0.997, 0.748)
+    assert pin2.getArea() == [gobj.Point(-1.016, 0.667), gobj.Point(-0.968, 0.719)] # (-0.026, -0.024); (0.026, 0.024) -> (-1.049, 0.700); (-0.997, 0.748)

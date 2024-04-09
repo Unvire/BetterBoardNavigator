@@ -159,7 +159,7 @@ class GenCadLoader:
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
         newPin = pin.Pin(name)
         newPin.setShape(shape)
-        newPin.setPinArea(bottomLeftPoint, topRightPoint)
+        newPin.setArea(bottomLeftPoint, topRightPoint)
         newPin.calculateCenterDimensionsFromArea()
         return newPin
 
@@ -178,13 +178,13 @@ class GenCadLoader:
     
     def _addAreaAndMountingData(self, componentInstance:comp.Component, componentAreaType:str, componentArea:list[gobj.Point, gobj.Point], componentMountingType:str):
         componentAreaX, componentAreaY = componentArea
-        componentInstance.setComponentAreaType(componentAreaType)
+        componentInstance.setShape(componentAreaType)
         componentInstance.setMountingType(componentMountingType)
 
         moveVector = componentInstance.getCoordsAsTranslationVector()
         componentAreaX.translateInPlace(moveVector)
         componentAreaY.translateInPlace(moveVector)
-        componentInstance.setComponentArea(componentAreaX, componentAreaY)
+        componentInstance.setArea(componentAreaX, componentAreaY)
     
     def _caclulatePinToBasePosition(self, pinInstance:pin.Pin, angle:float|int, translationVector:list[float|int, float|int]):
         pinInstance.rotateInPlace(pinInstance.getCoords(), angle)
