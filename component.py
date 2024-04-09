@@ -25,6 +25,9 @@ class Component(abstractShape.Shape):
     
     def setSide(self, side:str):
         self.side = side
+    
+    def getSide(self) -> str:
+        return self.side
 
     def setAngle(self, angle:float):
         self.angle = angle
