@@ -288,12 +288,13 @@ def test__unnestRectanglesList(testInput, expected):
 
 def test__calculateShapeAreaInPlace():
     instance = GenCadLoader()
-
     shapeToComponentsDict = {'LINE':[['-0.1417323', '-0.1309055', '-0.1732283', '-0.1309055'], ['-0.1732283', '-0.1309055', '-0.1732283', '-0.08267717']],
                  'ARC':[['4.043769', '-0.9228939', '4.134528', '-0.7870866', '3.889094', '-0.7212966']],
                  'RECTANGLE':[['-1.021654', '-0.8543307', '2.043307', '1.220472']],
                  'CIRCLE':[[]]}
+    
     instance._calculateShapeAreaInPlace(shapeToComponentsDict)
+
     assert shapeToComponentsDict == {'LINE':[['-0.1417323', '-0.1309055', '-0.1732283', '-0.1309055'], ['-0.1732283', '-0.1309055', '-0.1732283', '-0.08267717']],
                                     'ARC':[['4.043769', '-0.9228939', '4.134528', '-0.7870866', '3.889094', '-0.7212966']],
                                     'RECTANGLE':[['-1.021654', '-0.8543307', '2.043307', '1.220472']],
@@ -303,6 +304,7 @@ def test__calculateShapeAreaInPlace():
 
     shapeToComponentsDict = {'CIRCLE':[['0', '0', '0.196']]}
     instance._calculateShapeAreaInPlace(shapeToComponentsDict)
+
     assert shapeToComponentsDict == {'CIRCLE':[['0', '0', '0.196']],
                                     'AREA':[gobj.Point(-0.196, -0.196), gobj.Point(0.196, 0.196)],
                                     'AREA_NAME':'CIRCLE'}
@@ -342,11 +344,16 @@ def test__addShapePadDataToComponent(fullComponentTest):
     assert componentInstance.angle == 90
     assert componentInstance.getMountingType() == 'smt'
     assert componentInstance.getShape() == 'RECT'
+    assert componentInstance.getShapePoints() == [gobj.Point(-0.976, 0.692), gobj.Point(-0.976, 0.756),
+                                                  gobj.Point(-1.008, 0.756), gobj.Point(-1.008, 0.692)]
     assert componentInstance.getCoords() == gobj.Point(-0.992, 0.724)
-    assert componentInstance.getArea() == [gobj.Point(-1.008, 0.692), gobj.Point(-0.977, 0.755)] # shape moved with vector of instance.coords and rotated by instance.angle
-    
+    assert componentInstance.getArea() == [gobj.Point(-1.008, 0.692), gobj.Point(-0.977, 0.755)] # (-1.024, 0.708) (-0.960, 0.740) before rotation
+
     assert pin1 is not pin2
-    assert pin1.getCoords() == gobj.Point(-0.992, 0.755) # -0.961, 0.724 before rotation
+    assert pin1.getCoords() == gobj.Point(-0.992, 0.755) # (-0.961, 0.724) before rotation
     assert pin1.getArea() == [gobj.Point(-1.018, 0.731), gobj.Point(-0.966, 0.779)] # (-0.985, 0.698); (-0.937, 0.750) before rotation
-    assert pin2.getCoords() == gobj.Point(-0.992, 0.693) # -1.023, 0.724 before rotation
-    assert pin2.getArea() == [gobj.Point(-1.016, 0.667), gobj.Point(-0.968, 0.719)] # (-0.026, -0.024); (0.026, 0.024) -> (-1.049, 0.700); (-0.997, 0.748)
+    assert pin1.getShapePoints() == [gobj.Point(-0.966, 0.731), gobj.Point(-0.966, 0.779), gobj.Point(-1.018, 0.779), gobj.Point(-1.018, 0.731)]
+
+    assert pin2.getCoords() == gobj.Point(-0.992, 0.693) # (-1.023, 0.724) before rotation
+    assert pin2.getArea() == [gobj.Point(-1.016, 0.667), gobj.Point(-0.968, 0.719)] # (-0.026, -0.024); (0.026, 0.024) -> (-1.049, 0.700); (-0.997, 0.748) before rotation
+    assert pin2.getShapePoints() == [gobj.Point(-1.016, 0.667), gobj.Point(-0.968, 0.667), gobj.Point(-0.968, 0.719), gobj.Point(-1.016, 0.719)]
