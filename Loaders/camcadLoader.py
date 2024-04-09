@@ -118,7 +118,7 @@ class CamCadLoader:
 
         for compName in componentWithoutpackages:
             componentInstance = boardInstance.getElementByName('components', compName)
-            componentInstance.calculatePackageFromPins()
+            componentInstance.calculateAreaFromPins()
     
     def _createComponent(self, name:str, x:float|None, y:float|None, angle:float, side:str) -> comp.Component:
         newComponent = comp.Component(name)
@@ -137,7 +137,7 @@ class CamCadLoader:
     def _calculatePinCoordsAndAddNet(self, pad:dict, pinX:str, pinY:str, netName:str) -> pin.Pin:
         pad = copy.deepcopy(pad)
         pad.setCoords(gobj.Point(float(pinX), float(pinY)))
-        pad.calculateArea()
+        pad.calculateAreaFromWidthHeightCoords()
         pad.setNet(netName)
         return pad
     
@@ -189,16 +189,10 @@ class CamCadLoader:
                 package = packagesDict[packageName]
                 dimensions = package['dimensions']
                 packageBottomLeftPoint, packageTopRightPoint = self._calculatePackageBottomRightAndTopLeftPoints(componentInstance, dimensions)
-                componentInstance.setComponentArea(packageBottomLeftPoint, packageTopRightPoint)                               
+                componentInstance.setArea(packageBottomLeftPoint, packageTopRightPoint)                               
                 componentInstance.setMountingType(package['pinType'])
 
         return list(noPackagesMatch)
-
-    def _componentPartNumber(self, componentInstance:comp.Component, pnDict:dict) -> str:
-        componentPartNumber = componentInstance.partNumber
-        if componentPartNumber in pnDict:
-            return pnDict[componentPartNumber]
-        return ''
     
     def _calculatePackageBottomRightAndTopLeftPoints(self, componentInstance:comp.Component, dimesions:tuple[float, float]) -> tuple[gobj.Point, gobj.Point]:
         width, height = dimesions
