@@ -1,40 +1,17 @@
 import geometryObjects as gobj 
+import abstractShape
 
-class Pin:
+class Pin(abstractShape.Shape):
     def __init__(self, name:str):
-        self.name = name
-        self.shape = 'RECT'
-        self.coords = None
-        self.pinArea = []
+        super().__init__(name)
         self.net = None
-        self.width = 0
-        self.height = 0
     
     def __str__(self):
         remark = f'Pad shape={self.shape}, coords={self.coords}, dimensions=[{self.width}, {self.height}]'
         return remark
-    
-    def setShape(self, shape:str):
-        self.shape = shape
-    
-    def setCoords(self, coords:gobj.Point):
-        self.coords = coords
-    
-    def getCoords(self) -> gobj.Point:
-        return self.coords
-    
-    def setPinArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
-        self.pinArea = [bottomLeftPoint, topRightPoint]
-    
-    def getPinArea(self):
-        return self.pinArea
-    
+        
     def setNet(self, netName:str):
         self.net = netName
-    
-    def setDimensions(self, width:float, height:float):
-        self.width = width
-        self.height = height
     
     def calculateArea(self):
         moveVector = [-self.width / 2, -self.height / 2]
@@ -69,9 +46,3 @@ class Pin:
         for point in self.getPinArea():
             point.rotate(rotationPoint, angleDeg)
         self._normalizePinArea()
-    
-    def _normalizePinArea(self):
-        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
-        for point in self.getPinArea():
-            bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
-        self.setPinArea(bottomLeftPoint, topRightPoint)

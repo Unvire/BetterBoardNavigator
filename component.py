@@ -1,15 +1,13 @@
 import geometryObjects as gobj
+import abstractShape
 import pin
 
-class Component:
-    def __init__(self, name:str):
-        self.name = name
+class Component(abstractShape.Shape):
+    def __init__(self, name:str):        
+        super().__init__(name)
         self.pins = {}
-        self.coords = None
         self.side = None
         self.angle = 0
-        self.componentAreaType = 'RECT'
-        self.componentArea = []
         self.mountingType = 'SMT'
     
     def __str__(self):
@@ -21,12 +19,6 @@ class Component:
     
     def getPinByName(self, pinName:str) -> pin.Pin|None:
         return self.pins.get(pinName, None)
-    
-    def setCoords(self, point:gobj.Point):
-        self.coords = point
-    
-    def getCoords(self):
-        return self.coords
 
     def getCoordsAsTranslationVector(self):
         return [self.coords.getX(), self.coords.getY()]
@@ -40,26 +32,11 @@ class Component:
     def getAngle(self):
         return self.angle
     
-    def setComponentAreaType(self, areaType:str):
-        self.componentAreaType = areaType
-    
-    def getComponentAreaType(self):
-        return self.componentAreaType
-
-    def setComponentArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
-        self.componentArea = [bottomLeftPoint, topRightPoint]
-    
-    def getComponentArea(self):
-        return self.componentArea
-    
     def setMountingType(self, mountingType:str):
         self.mountingType = mountingType
     
     def getMountingType(self):
         return self.mountingType
-    
-    def isCoordsValid(self):
-        return bool(self.coords.x and self.coords.y)
     
     def calculateCenterFromPins(self):
         bottomLeftPoint, topRightPoint = self.calculateHitBoxFromPins()
@@ -115,9 +92,3 @@ class Component:
     def translatePinsInPlace(self, vector:list[int|float, int|float]):
         for _, pinInstance in self.pins.items():
             pinInstance.translateInPlace(vector)
-
-    def _normalizeComponentArea(self):
-        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
-        for point in self.getComponentArea():
-            bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
-        self.setComponentArea(bottomLeftPoint, topRightPoint)
