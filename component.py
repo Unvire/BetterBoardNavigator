@@ -62,11 +62,11 @@ class Component(abstractShape.Shape):
             moveDistance = round((y2 - y1) * 0.1, gobj.Point.DECIMAL_POINT_PRECISION)
             bottomLeftPoint.translateInPlace([-moveDistance, 0])
             topRightPoint.translateInPlace([moveDistance, 0])
-        if round(y2 - y1, gobj.Point.DECIMAL_POINT_PRECISION) == 0:
+        elif round(y2 - y1, gobj.Point.DECIMAL_POINT_PRECISION) == 0:
             moveDistance = round((x2 - x1) * 0.1, gobj.Point.DECIMAL_POINT_PRECISION)
             bottomLeftPoint.translateInPlace([0, -moveDistance])
             topRightPoint.translateInPlace([0, moveDistance])
-        return topRightPoint, topRightPoint
+        return bottomLeftPoint, topRightPoint
 
     def calculateHitBoxFromPins(self) -> tuple[gobj.Point, gobj.Point]:
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
