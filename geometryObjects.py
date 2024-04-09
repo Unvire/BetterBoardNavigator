@@ -26,6 +26,9 @@ class Point:
     def getY(self) -> float:
         return self.y
     
+    def getXY(self) -> tuple[float, float]:
+        return self.x, self.y
+    
     def rotate(self, rotationPoint:'Point', angleDeg:float):
         xMove, yMove = rotationPoint.getX(), rotationPoint.getY()
         angleRad = math.radians(angleDeg)
