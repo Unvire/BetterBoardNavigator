@@ -119,6 +119,7 @@ class CamCadLoader:
         for compName in componentWithoutpackages:
             componentInstance = boardInstance.getElementByName('components', compName)
             componentInstance.calculateAreaFromPins()
+            componentInstance.caluclateShapeData()
     
     def _createComponent(self, name:str, x:float|None, y:float|None, angle:float, side:str) -> comp.Component:
         newComponent = comp.Component(name)
@@ -126,6 +127,7 @@ class CamCadLoader:
         newComponent.setCoords(center)
         newComponent.setAngle(float(angle))
         newComponent.setSide(side)
+        newComponent.setShape('RECT')
         return newComponent
     
     def _createPin(self, name:str, shape:str, width:float|None, height:float|None) -> pin.Pin: 
@@ -139,6 +141,7 @@ class CamCadLoader:
         pad.setCoords(gobj.Point(float(pinX), float(pinY)))
         pad.calculateAreaFromWidthHeightCoords()
         pad.setNet(netName)
+        pad.caluclateShapeData()
         return pad
     
     def _addBlankNet(self, netsDict:dict, netName:str, componentName:str):
@@ -191,6 +194,7 @@ class CamCadLoader:
                 packageBottomLeftPoint, packageTopRightPoint = self._calculatePackageBottomRightAndTopLeftPoints(componentInstance, dimensions)
                 componentInstance.setArea(packageBottomLeftPoint, packageTopRightPoint)                               
                 componentInstance.setMountingType(package['pinType'])
+                componentInstance.caluclateShapeData()
 
         return list(noPackagesMatch)
     
