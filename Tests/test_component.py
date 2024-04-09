@@ -103,7 +103,9 @@ def test_translateInPlace(componentForRotateTranslate):
 def test_rotateInPlace(componentForRotateTranslate):
     componentForRotateTranslate.rotateInPlace(gobj.Point(1, 1), 30)
     assert componentForRotateTranslate.getCoords() == gobj.Point(0.634, -0.366)
-    assert componentForRotateTranslate.getArea() == [gobj.Point(-1.830, -4.098), gobj.Point(3.098, 3.366)]
+    assert componentForRotateTranslate.getArea() == [gobj.Point(-3.830, -4.098), gobj.Point(5.098, 3.366)]
+    assert componentForRotateTranslate.getShapePoints() == [gobj.Point(-1.830, -4.098), gobj.Point(5.098, -0.098), 
+                                                            gobj.Point(3.098, 3.366), gobj.Point(-3.830, -0.634)]
 
     pin1 = componentForRotateTranslate.getPinByName('1')
     assert pin1.getCoords() == gobj.Point(-0.598, -2.232)
