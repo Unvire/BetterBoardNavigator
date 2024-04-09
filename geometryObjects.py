@@ -119,6 +119,10 @@ class Circle:
     def __eq__(self, circle:'Circle'):
         return self.radius == circle.radius and self.centerPoint == circle.centerPoint
 
+    def getPoints(self) -> list[Point]:
+        ''' [centerPoint] ''' 
+        return [self.centerPoint]
+    
 class Rectangle:
     def __init__(self, bottomLeftPoint:Point, topRightPoint:Point):
         self.bottomLeftPoint = bottomLeftPoint
@@ -138,6 +142,10 @@ class Rectangle:
         topRightEqual = self.topRightPoint == rectangle.topRightPoint 
         return bottomLeftEqual and bottomRightEqual and topLeftEqual and topRightEqual
 
+    def getPoints(self) -> list[Point, Point, Point, Point]:
+        ''' [bottomLeftPoint, bottomRightPoint, topRightPoint, topLeftPoint] '''
+        return [self.bottomLeftPoint, self.bottomRightPoint, self.topRightPoint, self.topLeftPoint]
+    
 def floatOrNone(x:str):
     try:
         x = float(x)
