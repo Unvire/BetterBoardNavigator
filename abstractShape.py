@@ -9,6 +9,9 @@ class Shape():
     
     def setShape(self, shape:str):
         self.shape = shape
+
+    def getShape(self) -> str:
+        return self.shape
     
     def setCoords(self, coords:gobj.Point):
         self.coords = coords
