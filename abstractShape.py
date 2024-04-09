@@ -4,6 +4,7 @@ class Shape():
     def __init__(self, name:str):
         self.name = name
         self.shape = 'RECT'
+        self.shapeData = None
         self.coords = None
         self.area = []
     
@@ -12,6 +13,21 @@ class Shape():
 
     def getShape(self) -> str:
         return self.shape
+    
+    def setShapeData(self):
+        bottomLeftPoint, topRightPoint = self.coords
+
+        if self.shape == 'RECT':
+            self.shapeData = gobj.Rectangle(bottomLeftPoint, topRightPoint)
+        elif self.shape == 'CIRCLE':
+            xBL, yBL = bottomLeftPoint.getXY()
+            xTR, yTR = topRightPoint.getXY()
+            radius = xTR - xBL
+            centerPoint = gobj.Point((xBL + xTR) / 2, (yBL + yTR) / 2)
+            self.shapeData = gobj.Circle(centerPoint, radius)
+    
+    def getShapeData(self) -> gobj.Rectangle|gobj.Circle:
+        return self.shapeData
     
     def setCoords(self, coords:gobj.Point):
         self.coords = coords
@@ -71,11 +87,17 @@ class Shape():
 
     def translateInPlace(self, vector:list[int|float, int|float]):
         self.coords.translateInPlace(vector)
+        for point in self.shapeData.getPoints():
+            point.translateInPlace(vector)
+
         for point in self.getArea():
             point.translateInPlace(vector)
     
     def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:int|float):
         self.coords.rotate(rotationPoint, angleDeg)
+        for point in self.shapeData.getPoints():
+            point.rotate(rotationPoint, angleDeg)
+        
         for point in self.getArea():
             point.rotate(rotationPoint, angleDeg)
         self._normalizeArea()
