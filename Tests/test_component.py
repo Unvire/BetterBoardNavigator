@@ -26,17 +26,23 @@ def componentForPinsCalculation():
 def componentForRotateTranslate():
     testedComponent = comp.Component('test')
     testedComponent.setCoords(gobj.Point(0, 0))
-    testedComponent.setArea(gobj.Point(-4, -2), gobj.Point(4, 2))
+    testedComponent.setArea(gobj.Point(-4, -2), gobj.Point(4, 2))    
+    testedComponent.setShape('RECT')
+    testedComponent.caluclateShapeData()
 
     pad1 = pin.Pin('1')
     pad1.setCoords(gobj.Point(-2, -1)) 
     pad1.setDimensions(1, 1)
     pad1.calculateAreaFromWidthHeightCoords()
+    pad1.setShape('RECT')
+    pad1.caluclateShapeData()
 
     pad2 = pin.Pin('2')
     pad2.setCoords(gobj.Point(2, 1))
     pad2.setDimensions(1, 1)
-    pad2.calculateAreaFromWidthHeightCoords()
+    pad2.calculateAreaFromWidthHeightCoords()    
+    pad2.setShape('RECT')
+    pad2.caluclateShapeData()
 
     testedComponent.addPin('1', pad1)
     testedComponent.addPin('2', pad2)
@@ -79,17 +85,20 @@ def test__makeAreaNotLinear():
 
 def test_translateInPlace(componentForRotateTranslate):
     componentForRotateTranslate.translateInPlace([10, 10])
-    
+
     assert componentForRotateTranslate.getCoords() == gobj.Point(10, 10)
     assert componentForRotateTranslate.getArea() == [gobj.Point(6, 8), gobj.Point(14, 12)]
+    assert componentForRotateTranslate.getShapePoints() == [gobj.Point(6, 8), gobj.Point(14, 8), gobj.Point(14, 12), gobj.Point(6, 12)]
 
     pin1 = componentForRotateTranslate.getPinByName('1')
     assert pin1.getCoords() == gobj.Point(8, 9)
     assert pin1.getArea() == [gobj.Point(7.5, 8.5), gobj.Point(8.5, 9.5)] # before translation: (-2.5, -1.5), (-1.5, 0.5)
+    assert pin1.getShapePoints() == [gobj.Point(7.5, 8.5), gobj.Point(8.5, 8.5), gobj.Point(8.5, 9.5), gobj.Point(7.5, 9.5)]
 
     pin2 = componentForRotateTranslate.getPinByName('2')
     assert pin2.getCoords() == gobj.Point(12, 11)
     assert pin2.getArea() == [gobj.Point(11.5, 10.5), gobj.Point(12.5, 11.5)] # before translation: (1.5, 0.5), (2.5, 1.5)
+    assert pin2.getShapePoints() == [gobj.Point(11.5, 10.5), gobj.Point(12.5, 10.5), gobj.Point(12.5, 11.5), gobj.Point(11.5, 11.5)]
 
 def test_rotateInPlace(componentForRotateTranslate):
     componentForRotateTranslate.rotateInPlace(gobj.Point(1, 1), 30)
