@@ -105,7 +105,7 @@ class Shape():
     
     def _normalizeArea(self):
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
-        for point in self.getArea():
+        for point in self.getArea() + self.getShapePoints():
             bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
         self.setArea(bottomLeftPoint, topRightPoint)
     
