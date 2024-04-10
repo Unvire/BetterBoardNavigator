@@ -19,6 +19,7 @@ class GenCadLoader:
         shapeToComponentsDict = self._getComponentsFromCOMPONENTS(fileLines, self.boardData)
         shapesDict = self._getAreaPinsfromSHAPES(fileLines)
         self._addShapePadDataToComponent(self.boardData, shapeToComponentsDict, shapesDict, padstackDict)
+        self._getNetsFromSIGNALS(fileLines, self.boardData)
 
         return self.boardData
     
@@ -155,6 +156,35 @@ class GenCadLoader:
                 
                 self._addAreaAndMountingData(componentInstance, componentAreaType, componentArea, packageType)
                 componentInstance.rotateInPlaceAroundCoords(componentInstance.getAngle())
+    
+    def _getNetsFromSIGNALS(self, fileLines:list[str], boardInstance:board.Board):
+        i, iEnd = self.sectionsLineNumbers['SIGNALS']
+        netsDict = {}
+
+        while i <= iEnd:
+            if ' ' in fileLines[i] and 'SIGNAL' in fileLines[i][:6]:
+                line = fileLines[i].replace('\n', '')
+                _, netName = self._splitButNotBetweenCharacter(line)
+                netsDict[netName] = {}
+                isEndOfSignalsSection = False
+                i += 1
+                while not isEndOfSignalsSection:
+                    line = fileLines[i].replace('\n', '')
+                    _, componentName, pinName = self._splitButNotBetweenCharacter(line)
+                    
+                    componentInstance, pinInstance = self._getComponentAndPinByNames(boardInstance, componentName, pinName)
+                    pinInstance.setNet(netName)
+
+                    if not componentName in netsDict[netName]:
+                        netsDict[netName][componentName] = {'componentInstance':componentInstance, 'pins':[]}
+                    netsDict[netName][componentName]['pins'].append(pinName)
+                    
+                    i += 1
+                    isEndOfSignalsSection = 'SIGNAL' == fileLines[i][:6] or i >= iEnd
+                continue
+            i += 1
+        boardInstance.setNets(netsDict)
+
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
         newPin = pin.Pin(name)
@@ -175,6 +205,11 @@ class GenCadLoader:
         newComponent.setSide(side)
         newComponent.setAngle(angle)
         return newComponent
+
+    def _getComponentAndPinByNames(self, boardInstance:board.Board, componentName:str, pinName:str) -> tuple[comp.Component, pin.Pin]:
+        componentInstance = boardInstance.getElementByName('components', componentName)
+        pinInstance = componentInstance.getPinByName(pinName)
+        return componentInstance, pinInstance
     
     def _addAreaAndMountingData(self, componentInstance:comp.Component, componentAreaType:str, componentArea:list[gobj.Point, gobj.Point], componentMountingType:str):
         componentAreaX, componentAreaY = componentArea
