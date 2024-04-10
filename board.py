@@ -27,7 +27,7 @@ class Board:
     def getComponents(self) -> dict:
         return self.components
     
-    def setNets(self, netsDict):
+    def setNets(self, netsDict:dict):
         self.nets = netsDict
     
     def getNets(self) -> dict:
