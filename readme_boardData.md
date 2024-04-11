@@ -16,49 +16,67 @@ board = {
         name:str : component.Component
         }
 
-    ##
+    ## defines nets as a dict
     nets:{
         netName: str:{
             componentName: str:{
-                'instance': component.Component (reference to component listed in 'COMPONENTS')
+                'componentInstance': component.Component (reference to component listed in 'COMPONENTS')
                 'pinName': str
                 }
             }
         }
+    
+    ## defines tracks as a dict of nets -> sides
+    tracks:{
+        netName:str :{
+            'T': [
+                geometryObjects.Line,
+                geometryObjects.Arc,
+                geometryObjects.Rectangle,
+                geometryObjects.Circle
+            ],
+            'B': [
+                geometryObjects.Line,
+                geometryObjects.Arc,
+                geometryObjects.Rectangle,
+                geometryObjects.Circle
+            ]
 
+        }
+    }
+
+}
+#######################################################################################################################
+parent class for component and pin classes
+shape = {
+    name: str,
+    shape = 'RECT' or 'CIRCLE'
+    shapeData:list : [geometryObjects.Point, geometryObjects.Point, geometryObjects.Point, geometryObjects.Point] 
+                     or
+                     [geometryObjects.Point]
+    coords: geometryObjects.Point,
+    area = [
+        bottomLeftPoint: geometryObjects.Point, 
+        topRightPoint: geometryObjects.Point
+    ]
 }
 
 #######################################################################################################################
+Component inherits shape's parameter
 
 component = {
-    name: str,
     pins: {
         pinName:str :{
             pin: pin.Pin
         }
     }
-    coords: geometryObjects.Point
     side: str ('T' or 'B')
     angle: float
-    areaType: str
-    componentArea = [
-        bottomLeftPoint: geometryObjects.Point, 
-        topRightPoint: geometryObjects.Point
-    ]
     mountingType: str ('SMT' or 'TH')
 }
 
 #######################################################################################################################
-
+Pin inherits shape's parameter 
 pin = {
-    name: str
-    shape: str ('RECT' or 'CIRCLE')
-    coords = geometryObjects.Point
-    pinArea = [
-        bottomLeftPoint: geometryObjects.Point, 
-        topRightPoint: geometryObjects.Point
-    ]
     net: str
-    width: float
-    height: float
 }
