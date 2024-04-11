@@ -171,14 +171,15 @@ class GenCadLoader:
                 i += 1
                 while not isEndOfSignalsSection:
                     line = fileLines[i].replace('\n', '')
-                    _, componentName, pinName = self._splitButNotBetweenCharacter(line)
-                    
-                    componentInstance, pinInstance = self._getComponentAndPinByNames(boardInstance, componentName, pinName)
-                    pinInstance.setNet(netName)
+                    keyWord, *parameters = self._splitButNotBetweenCharacter(line)
+                    if keyWord == 'NODE':
+                        componentName, pinName = parameters
+                        componentInstance, pinInstance = self._getComponentAndPinByNames(boardInstance, componentName, pinName)
+                        pinInstance.setNet(netName)
 
-                    if not componentName in netsDict[netName]:
-                        netsDict[netName][componentName] = {'componentInstance':componentInstance, 'pins':[]}
-                    netsDict[netName][componentName]['pins'].append(pinName)
+                        if not componentName in netsDict[netName]:
+                            netsDict[netName][componentName] = {'componentInstance':componentInstance, 'pins':[]}
+                        netsDict[netName][componentName]['pins'].append(pinName)
                     
                     i += 1
                     isEndOfSignalsSection = 'SIGNAL' == fileLines[i][:6] or i >= iEnd
