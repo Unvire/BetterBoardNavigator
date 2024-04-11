@@ -335,7 +335,9 @@ class GenCadLoader:
 
         while initialSplit:
             current = initialSplit.pop(0)
-            if current[0] == ignoreCharacter:
+            if not current:
+                continue
+            elif current[0] == ignoreCharacter:
                 concatenated = current
                 while current[-1] != ignoreCharacter:
                     current = initialSplit.pop(0)
@@ -371,4 +373,4 @@ class GenCadLoader:
     
 if __name__ == '__main__':
     loader = GenCadLoader()
-    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\wallbox main rev5.GCD')
+    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\wallbox SOM.GCD')
