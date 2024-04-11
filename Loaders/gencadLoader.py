@@ -84,9 +84,13 @@ class GenCadLoader:
                 padstackLine = fileLines[i].replace('\n', '')
                 _, padstackName, *_ = self._splitButNotBetweenCharacter(padstackLine)
                 
-                padLine = fileLines[i + 1].replace('\n', '')
-                _, padName, *_ = self._splitButNotBetweenCharacter(padLine)
-
+                j = 1
+                padName = None
+                while padName not in padsDict:
+                    padLine = fileLines[i + j].replace('\n', '')
+                    _, padName, *_ = self._splitButNotBetweenCharacter(padLine)
+                    j += 1 
+            
                 padstackDict[padstackName] = padsDict[padName]
             i += 1
         return padstackDict
@@ -202,7 +206,7 @@ class GenCadLoader:
                 _, netName = self._splitButNotBetweenCharacter(line)
                 tracksDict[netName] = {'B':[], 'T':[]}
                 i += 1
-                
+
                 isEndOfRoutesSection = False
                 while not isEndOfRoutesSection:
                     line = fileLines[i].replace('\n', '')
@@ -379,4 +383,4 @@ class GenCadLoader:
     
 if __name__ == '__main__':
     loader = GenCadLoader()
-    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\board2.GCD')
+    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\winterhalter miniCU.GCD')
