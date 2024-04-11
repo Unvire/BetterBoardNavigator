@@ -136,6 +136,99 @@ def fullComponentTest():
     ]
     return fileLinesMock
 
+@pytest.fixture
+def netsTest():
+    fileLinesMock = [
+        '$SIGNALS\n',
+        'SIGNAL +5V\n',
+        'NODE L10 2\n',
+        'NODE L9 2\n',
+        'NODE R283 2\n',
+        'NODE R283 1\n',
+        'SIGNAL BUS1_AF\n',
+        'NODE L10 1\n',
+        'SIGNAL N16516693\n',
+        'NODE L9 1\n',
+        '$ENDSIGNALS\n',
+        '$COMPONENTS\n',
+        'COMPONENT L10\n',
+        'DEVICE 15016530_Generated\n',
+        'PLACE 0.6614173 3.925197\n',
+        'LAYER TOP\n',
+        'ROTATION 0\n',
+        'SHAPE IND_LVS404018_T 0 0\n',
+        'COMPONENT L9\n',
+        'DEVICE 15021261_Generated\n',
+        'PLACE 3.318898 3.283465\n',
+        'LAYER TOP\n',
+        'ROTATION 0\n',
+        'SHAPE IND_COILCRAFT_XAL4040_T 0 0\n',
+        'COMPONENT R283\n',
+        'DEVICE 15014524_Generated\n',
+        'PLACE 0.6299213 1.799213\n',
+        'LAYER TOP\n',
+        'ROTATION 270\n',
+        'SHAPE R0603_T 0 0\n',
+        '$ENDCOMPONENTS\n',
+        '$SHAPES\n',
+        'SHAPE IND_LVS404018_T\n',
+        'LINE -0.08267717 0.08129921 0.08267717 0.08232283\n',
+        'LINE 0.08267717 0.08232283 0.08267717 -0.08267717\n',
+        'LINE 0.08267717 -0.08267717 -0.08267717 -0.08267717\n',
+        'LINE -0.08267717 -0.08267717 -0.08267717 0.08129921\n',
+        'INSERT smt\n',
+        'HEIGHT 0.078740\n',
+        'PIN 1 padstack33 -0.05511811 -9.84252e-08 TOP 0 0\n',
+        'PIN 2 padstack33 0.05511811 -9.84252e-08 TOP 0 0\n',
+        'SHAPE IND_COILCRAFT_XAL4040_T\n',
+        'RECTANGLE -0.07874016 -0.07874016 0.1574803 0.1574803\n',
+        'INSERT smt\n',
+        'HEIGHT 0.161417\n',
+        'PIN 1 padstack34 -0.04724409 0 TOP 0 0\n',
+        'PIN 2 padstack34 0.04724409 0 TOP 0 0\n',
+        'SHAPE R0603_T\n',
+        'RECTANGLE -0.035 -0.02 0.07 0.04\n',
+        'INSERT smt\n',
+        'HEIGHT 0.018110\n',
+        'PIN 1 padstack36 0.03110236 0 TOP 90 0\n',
+        'PIN 2 padstack35 -0.03110236 0 TOP 90 0\n',
+        '$ENDSHAPES\n',
+        '$PADSTACKS\n',
+        'PADSTACK padstack33 0\n',
+        'PAD rect55.118x153.543 SOLDERMASK_TOP 0 0\n',
+        'PAD rect43.307x141.732 SOLDERPASTE_TOP 0 0\n',
+        'PAD rect47.244x145.669 TOP 0 0\n',
+        'PADSTACK padstack34 0\n',
+        'PAD rect46.457x153.543 SOLDERMASK_TOP 0 0\n',
+        'PAD rect36.22x143.307 SOLDERPASTE_TOP 0 0\n',
+        'PAD rect38.583x145.669 TOP 0 0\n',
+        'PADSTACK padstack35 0\n',
+        'PAD rect51.969x48.031 SOLDERMASK_TOP 0 0\n',
+        'PAD smd_r0603+1_2314166692 SOLDERPASTE_TOP 0 0\n',
+        'PAD rect44.094x40.157 TOP 0 0\n',
+        'PADSTACK padstack36 0\n',
+        'PAD rect51.969x48.031 SOLDERMASK_TOP 0 0\n',
+        'PAD smd_r0603+1_2314166692 SOLDERPASTE_TOP 180 0\n',
+        'PAD rect44.094x40.157 TOP 0 0\n',
+        '$ENDPADSTACKS\n',
+        '$PADS\n',
+        'PAD rect55.118x153.543 RECTANGULAR 0\n',
+        'RECTANGLE -0.02755896 -0.07677146 0.05511801 0.153543\n',
+        'PAD rect43.307x141.732 RECTANGULAR 0\n',
+        'RECTANGLE -0.02165344 -0.07086594 0.04330699 0.141732\n',
+        'PAD rect47.244x145.669 RECTANGULAR 0\n',
+        'RECTANGLE -0.02362195 -0.07283445 0.047244 0.145669\n',
+        'PAD rect46.457x153.543 RECTANGULAR 0\n',
+        'RECTANGLE -0.02322844 -0.07677146 0.04645699 0.153543\n',
+        'PAD rect36.22x143.307 RECTANGULAR 0\n',
+        'RECTANGLE -0.01810994 -0.07165344 0.03621998 0.143307\n',
+        'PAD rect38.583x145.669 RECTANGULAR 0\n',
+        'RECTANGLE -0.01929144 -0.07283445 0.03858297 0.145669\n',
+        'PAD rect51.969x48.031 RECTANGULAR 0\n',
+        'RECTANGLE -0.02598445 -0.02401545 0.051969 0.048031\n',
+        '$ENDPADS\n',
+    ]
+    return fileLinesMock
 
 def test__getSectionsLinesBeginEnd(sectionsRangeTest):
     instance = GenCadLoader()
@@ -357,3 +450,46 @@ def test__addShapePadDataToComponent(fullComponentTest):
     assert pin2.getCoords() == gobj.Point(-0.992, 0.693) # (-1.023, 0.724) before rotation
     assert pin2.getArea() == [gobj.Point(-1.016, 0.667), gobj.Point(-0.968, 0.719)] # (-0.026, -0.024); (0.026, 0.024) -> (-1.049, 0.700); (-0.997, 0.748) before rotation
     assert pin2.getShapePoints() == [gobj.Point(-1.016, 0.667), gobj.Point(-0.968, 0.667), gobj.Point(-0.968, 0.719), gobj.Point(-1.016, 0.719)]
+
+def test__getNetsFromSIGNALS(netsTest):
+    instance = GenCadLoader()      
+    instance._getSectionsLinesBeginEnd(netsTest)
+    padsDict = instance._getPadsFromPADS(netsTest)
+    padstackDict = instance._getPadstacksFromPADSTACKS(netsTest, padsDict)
+    shapeToComponentsDict = instance._getComponentsFromCOMPONENTS(netsTest, instance.boardData)
+    shapesDict = instance._getAreaPinsfromSHAPES(netsTest)
+    instance._addShapePadDataToComponent(instance.boardData, shapeToComponentsDict, shapesDict, padstackDict)
+    instance._getNetsFromSIGNALS(netsTest, instance.boardData)
+
+    boardNets = instance.boardData.getNets()
+    boardComponents = instance.boardData.getComponents()
+
+    ## name of nets
+    assert list(boardNets.keys()) == ['+5V', 'BUS1_AF', 'N16516693']
+    
+    ## components in the nets
+    assert list((boardNets['+5V'].keys())) == ['L10', 'L9', 'R283']
+    assert 'L10' in boardNets['BUS1_AF']
+    assert 'L9' in boardNets['N16516693']
+
+    ## proper component mapping
+    assert boardNets['+5V']['L10']['componentInstance'] is boardComponents['L10']
+    assert boardNets['+5V']['L10']['pins'] == ['2']
+    assert boardComponents['L10'].getPinByName('2').getNet() == '+5V'
+
+    assert boardNets['+5V']['L9']['componentInstance'] is boardComponents['L9']
+    assert boardNets['+5V']['L9']['pins'] == ['2']
+    assert boardComponents['L9'].getPinByName('2').getNet() == '+5V'
+
+    assert boardNets['+5V']['R283']['componentInstance'] is boardComponents['R283']
+    assert boardNets['+5V']['R283']['pins'] == ['2', '1']
+    assert boardComponents['R283'].getPinByName('2').getNet() == '+5V'
+    assert boardComponents['R283'].getPinByName('1').getNet() == '+5V'
+
+    assert boardNets['BUS1_AF']['L10']['componentInstance'] is boardComponents['L10']
+    assert boardNets['BUS1_AF']['L10']['pins'] == ['1']
+    assert boardComponents['L10'].getPinByName('1').getNet() == 'BUS1_AF'
+
+    assert boardNets['N16516693']['L9']['componentInstance'] is boardComponents['L9']
+    assert boardNets['N16516693']['L9']['pins'] == ['1']
+    assert boardComponents['L9'].getPinByName('1').getNet() == 'N16516693'
