@@ -340,14 +340,12 @@ class GenCadLoader:
         return bottomLeftPoint, topRightPoint
 
     def _splitButNotBetweenCharacter(self, line:str, splitCharacter:str=' ', ignoreCharacter:str='"') -> list[str]:
-        initialSplit = line.split(splitCharacter)
+        initialSplit = [val for val in line.split(splitCharacter) if val]
         result = []
 
         while initialSplit:
             current = initialSplit.pop(0)
-            if not current:
-                continue
-            elif current[0] == ignoreCharacter:
+            if current[0] == ignoreCharacter:
                 concatenated = current
                 while current[-1] != ignoreCharacter:
                     current = initialSplit.pop(0)
@@ -383,4 +381,4 @@ class GenCadLoader:
     
 if __name__ == '__main__':
     loader = GenCadLoader()
-    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\winterhalter miniCU.GCD')
+    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\jaguar REV.GCD')
