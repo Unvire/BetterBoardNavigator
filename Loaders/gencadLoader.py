@@ -151,6 +151,8 @@ class GenCadLoader:
                 componentAreaType = shapesDict[shapeName]['AREA_NAME']
                 
                 for pinNumber, padstackName, pinX, pinY, _, pinAngle, _ in pins:
+                    if not padstackName in padstackDict:
+                        padstackName = list(padstackDict.keys())[0]
                     pinInstance = copy.deepcopy(padstackDict[padstackName])
                     self._caclulatePinToBasePosition(pinInstance, float(pinAngle), [float(pinX), float(pinY)])
                     self._calculatePinToComponentPosition(pinInstance, pinNumber, componentInstance)
@@ -374,4 +376,4 @@ class GenCadLoader:
     
 if __name__ == '__main__':
     loader = GenCadLoader()
-    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\wallbox SOM.GCD')
+    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\board2.GCD')
