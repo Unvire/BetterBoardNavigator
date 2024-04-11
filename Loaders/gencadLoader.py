@@ -193,21 +193,24 @@ class GenCadLoader:
         i, iEnd = self.sectionsLineNumbers['ROUTES']
         sideDict = {'TOP': 'T', 'BOTTOM': 'B'}
         point1, point2 = gobj.getDefaultBottomLeftTopRightPoints()
+        currentSide = None
         tracksDict = {}
 
         while i <= iEnd:
             if ' ' in fileLines[i] and 'ROUTE' in fileLines[i][:5]:
                 line = fileLines[i].replace('\n', '')
                 _, netName = self._splitButNotBetweenCharacter(line)
-                isEndOfRoutesSection = False
                 tracksDict[netName] = {'B':[], 'T':[]}
                 i += 1
+                
+                isEndOfRoutesSection = False
                 while not isEndOfRoutesSection:
                     line = fileLines[i].replace('\n', '')
                     keyWord, *parameters = self._splitButNotBetweenCharacter(line)
                     if keyWord == 'LAYER':
-                        currentSide = sideDict[parameters[0]]
-                    if keyWord in self.handleShape:
+                        currentSide = sideDict.get(parameters[0], None)
+                        
+                    if currentSide and keyWord in self.handleShape:
                         shape, *_ = self.handleShape[keyWord](parameters, point1, point2)
                         tracksDict[netName][currentSide].append(shape)
                     
