@@ -317,7 +317,7 @@ def test__getBoardDimensions(bouardOutlineTest):
 
 @pytest.mark.parametrize("testInput, expected", [('PAD "Round 32" ROUND -1', ['PAD', 'Round 32', 'ROUND', '-1']), 
                                                  ('ARTWORK artwork9 SOLDERPASTE_BOTTOM', ['ARTWORK', 'artwork9', 'SOLDERPASTE_BOTTOM']), 
-                                                 ('PAD "O b l o n g 2.7x1.7" FINGER -1', ['PAD', 'O b l o n g 2.7x1.7', 'FINGER', '-1'])])
+                                                 ('PAD    "O b l o n g 2.7x1.7"  FINGER -1', ['PAD', 'O b l o n g 2.7x1.7', 'FINGER', '-1'])])
 def test__splitButNotBetweenCharacter(testInput, expected):
     instance = GenCadLoader()
     assert expected == instance._splitButNotBetweenCharacter(testInput, ' ', '"')
