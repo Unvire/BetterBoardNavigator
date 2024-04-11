@@ -8,6 +8,7 @@ class Board:
         self.outlines = []
         self.components = {}
         self.nets = []
+        self.tracks = {}
     
     def setArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
         self.area = [bottomLeftPoint, topRightPoint]
@@ -39,3 +40,12 @@ class Board:
     def getElementByName(self, groupName:str, elementName:str):
         matchDict = {'components':self.components, 'nets':self.nets}
         return matchDict[groupName].get(elementName, None)
+    
+    def setTracks(self, tracksDict:dict):
+        self.tracks = tracksDict
+    
+    def getTracks(self) -> dict:
+        return self.tracks
+    
+    def getTrack(self, side:str, netName:str) -> list[gobj.Line|gobj.Rectangle|gobj.Arc|gobj.Circle]:
+        return self.tracks[netName][side]
