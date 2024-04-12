@@ -21,13 +21,21 @@ class ODBPlusPlusLoader():
         with tarfile.open(self.filePath, 'r') as file:
             tarPaths = file.getnames()
         
-        self._getTarPathsToEdaComponents(tarPaths)
+        paths = self._getTarPathsToEdaComponents(tarPaths)
+        print(paths)
         
     def _getTarPathsToEdaComponents(self, tarPaths:list[str]) -> list[str]:
         componentsFilePattern = '^\w+\/steps\/\w+\/layers\/comp_\+_(bot|top)\/components(.Z)?$' # matches comp_+_bot and comp_+_top files both zipped and uzipped
         edaFilePattern = '^\w+\/steps\/\w+\/eda\/data(.Z)?$' # matches eda path both zipped and unzipped
+        pattern = f'{componentsFilePattern}|{edaFilePattern}'
+
+        result = []
         for name in tarPaths:
-            print(name)
+            if re.match(pattern, name):
+                result.append(name)
+            if len(result) == 3:
+                break
+        return result
         
 
 if __name__ == '__main__':
