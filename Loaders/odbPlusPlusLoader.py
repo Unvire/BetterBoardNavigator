@@ -58,9 +58,7 @@ class ODBPlusPlusLoader():
         return matchDict
 
     def _createComponent(self, name:str, x:str, y:str, angle:str, side:str) -> comp.Component:
-        x = gobj.floatOrNone(x)
-        y = gobj.floatOrNone(y)
-        centerPoint = gobj.Point(x, y)
+        centerPoint = gobj.Point(gobj.floatOrNone(x), gobj.floatOrNone(y))
         angle = gobj.floatOrNone(angle)
 
         newComponent = comp.Component(name)
@@ -70,10 +68,8 @@ class ODBPlusPlusLoader():
         return newComponent
     
     def _createPin(self, pinNumber:str, x:str, y:str) -> pin.Pin:
-        x = gobj.floatOrNone(x)
-        y = gobj.floatOrNone(y)
-        centerPoint = gobj.Point(x, y)
-        
+        centerPoint = gobj.Point(gobj.floatOrNone(x), gobj.floatOrNone(y))
+                
         newPin = pin.Pin(pinNumber)
         newPin.setCoords(centerPoint)
         return newPin
