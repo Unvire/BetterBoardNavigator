@@ -5,7 +5,8 @@ import component as comp
 import board, pin
 
 class GenCadLoader:
-    def __init__(self):
+    def __init__(self):        
+        self.filePath = None
         self.boardData = board.Board()
         self.sectionsLineNumbers = {'BOARD':[], 'PADS':[], 'SHAPES':[], 'COMPONENTS':[], 'SIGNALS':[], 'ROUTES':[], 'MECH':[], 'PADSTACKS':[]}
         self.handleShape = {'LINE':self._getLineFromLINE, 'ARC': self._getArcFromARC, 'CIRCLE':self._getCircleFromCIRCLE, 'RECTANGLE':self._getRectFromRECTANGLE}

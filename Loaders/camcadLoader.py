@@ -5,7 +5,8 @@ import component as comp
 import board, pin
 
 class CamCadLoader:
-    def __init__(self):
+    def __init__(self):        
+        self.filePath = None
         self.boardData = board.Board()
         self.sectionsLineNumbers = {'BOARDINFO':[], 'PARTLIST':[], 'PNDATA':[], 'NETLIST':[], 'PAD':[], 'PACKAGES':[], 'BOARDOUTLINE':[]}
 

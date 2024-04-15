@@ -7,6 +7,7 @@ import board, pin
 
 class ODBPlusPlusLoader():
     def __init__(self):
+        self.filePath = None
         self.boardData = board.Board()
         self.fileLines = {'eda':[], 'comp_+_top':[], 'comp_+_bot':[]}
 
