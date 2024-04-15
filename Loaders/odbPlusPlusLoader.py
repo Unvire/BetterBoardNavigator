@@ -9,7 +9,7 @@ class ODBPlusPlusLoader():
     def __init__(self):
         self.filePath = None
         self.boardData = board.Board()
-        self.fileLines = {'eda':[], 'comp_+_top':[], 'comp_+_bot':[]}
+        self.fileLines = {'eda':[], 'comp_+_top':[], 'comp_+_bot':[], 'profile':[]}
 
     def loadFile(self, filePath:str):
         self._setFilePath(filePath)
@@ -23,6 +23,7 @@ class ODBPlusPlusLoader():
             allTarPaths = file.getnames()
         
         tarPaths = self._getTarPathsToEdaComponents(allTarPaths)
+        print(tarPaths)
         fileLinesKeys = list(self.fileLines.keys())
         for key, path in zip(fileLinesKeys, tarPaths):
             lines = self._extractFileInsideTar(path)
@@ -31,13 +32,14 @@ class ODBPlusPlusLoader():
     def _getTarPathsToEdaComponents(self, tarPaths:list[str]) -> list[str]:
         componentsFilePattern = '^\w+\/steps\/\w+\/layers\/comp_\+_(bot|top)\/components(.(z|Z))?$' # matches comp_+_bot and comp_+_top files both zipped and uzipped
         edaFilePattern = '^\w+\/steps\/\w+\/eda\/data(.(z|Z))?$' # matches eda path both zipped and unzipped
-        pattern = f'{componentsFilePattern}|{edaFilePattern}'
+        profileFilePattern = '^\w+\/steps\/\w+\/profile(.(z|Z))?$'  # matches profile path both zipped and unzipped
+        pattern = f'{componentsFilePattern}|{edaFilePattern}|{profileFilePattern}'
 
         result = []
         for name in tarPaths:
             if re.match(pattern, name):
                 result.append(name)
-            if len(result) == 3:
+            if len(result) == 4:
                 break
         return sorted(result)
     

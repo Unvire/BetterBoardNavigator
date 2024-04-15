@@ -17,7 +17,8 @@ def exampleTarPaths():
         'odb/symbols/rect27.685x31.622xr6.9528_135', 
         'odb/symbols/rect27.685x31.622xr6.9528_135/features', 
         'odb/symbols/rect27.685x31.622xr6.9528_315', 
-        'odb/symbols/rect27.685x31.622xr6.9528_315/features'
+        'odb/symbols/rect27.685x31.622xr6.9528_315/features',
+        'odb/steps/pcb/profile'
         ]
     return fileLinesMock
 
@@ -26,6 +27,7 @@ def test__getTarPathsToEdaComponents(exampleTarPaths):
     expected = [
         'odb/steps/pcb/eda/data', 
         'odb/steps/pcb/layers/comp_+_bot/components.z', 
-        'odb/steps/pcb/layers/comp_+_top/components.Z'
+        'odb/steps/pcb/layers/comp_+_top/components.Z',
+        'odb/steps/pcb/profile'
         ]
     assert instance._getTarPathsToEdaComponents(exampleTarPaths) == expected
