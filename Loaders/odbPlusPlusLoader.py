@@ -29,8 +29,8 @@ class ODBPlusPlusLoader():
             self.fileLines[key] = lines
 
     def _getTarPathsToEdaComponents(self, tarPaths:list[str]) -> list[str]:
-        componentsFilePattern = '^\w+\/steps\/\w+\/layers\/comp_\+_(bot|top)\/components(.Z)?$' # matches comp_+_bot and comp_+_top files both zipped and uzipped
-        edaFilePattern = '^\w+\/steps\/\w+\/eda\/data(.Z)?$' # matches eda path both zipped and unzipped
+        componentsFilePattern = '^\w+\/steps\/\w+\/layers\/comp_\+_(bot|top)\/components(.(z|Z))?$' # matches comp_+_bot and comp_+_top files both zipped and uzipped
+        edaFilePattern = '^\w+\/steps\/\w+\/eda\/data(.(z|Z))?$' # matches eda path both zipped and unzipped
         pattern = f'{componentsFilePattern}|{edaFilePattern}'
 
         result = []
