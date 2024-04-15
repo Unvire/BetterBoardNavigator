@@ -39,5 +39,4 @@ def test__getTarPathsToEdaComponents(exampleTarPaths):
         'zodb/steps/pcb/layers/comp_+_bot/components.z',
         'zodb/steps/pcb/layers/comp_+_top/components.Z'
         ]
-    print(instance._getTarPathsToEdaComponents(exampleTarPaths))
     assert instance._getTarPathsToEdaComponents(exampleTarPaths) == expected
