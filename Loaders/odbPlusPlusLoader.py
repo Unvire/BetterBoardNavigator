@@ -14,6 +14,7 @@ class ODBPlusPlusLoader():
     def loadFile(self, filePath:str):
         self._setFilePath(filePath)
         self._getFileLinesFromTar()
+        matchDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
 
     def _setFilePath(self, filePath:str):
         self.filePath = filePath
@@ -23,11 +24,58 @@ class ODBPlusPlusLoader():
             allTarPaths = file.getnames()
         
         tarPaths = self._getTarPathsToEdaComponents(allTarPaths)
-        print(tarPaths)
         fileLinesKeys = list(self.fileLines.keys())
         for key, path in zip(fileLinesKeys, tarPaths):
             lines = self._extractFileInsideTar(path)
             self.fileLines[key] = lines
+    
+    def _getComponentsFromCompBotTopFiles(self, botFileLines:list[str], topFileLines:list[str], boardInstance:board.Board):
+        matchDict = {}
+        
+        for side, fileLines in zip(['B', 'T'], [botFileLines, topFileLines]):  
+            i, iEnd = 0, len(fileLines)
+            while i < iEnd - 1: 
+                while 'CMP' not in fileLines[i][:3]:
+                    i += 1
+
+                componentLine = fileLines[i].split(';')[0]
+                _, packageReference, xComp, yComp, angle, _, componentName, *_ = componentLine.split(' ')
+                componentInstance = self._createComponent(componentName, xComp, yComp, angle, side)
+                matchDict[componentName] = {'packageID':packageReference}
+                i += 1
+                
+                while fileLines[i] != '#':
+                    pinLine = fileLines[i].split(';')[0]
+                    _, pinNumber, xPin, yPin, _, _, netNumber, *_ = pinLine.split(' ')
+                    pinInstance = self._createPin(pinNumber, xPin, yPin)
+                    componentInstance.addPin(pinNumber, pinInstance)
+                    matchDict[componentName][pinNumber] = netNumber
+                    i += 1
+                self.boardData.addComponent(componentName, componentInstance)
+
+        return matchDict
+
+    def _createComponent(self, name:str, x:str, y:str, angle:str, side:str) -> comp.Component:
+        x = gobj.floatOrNone(x)
+        y = gobj.floatOrNone(y)
+        centerPoint = gobj.Point(x, y)
+        angle = gobj.floatOrNone(angle)
+
+        newComponent = comp.Component(name)
+        newComponent.setAngle(angle)
+        newComponent.setCoords(centerPoint)
+        newComponent.setSide(side)
+        return newComponent
+    
+    def _createPin(self, pinNumber:str, x:str, y:str) -> pin.Pin:
+        x = gobj.floatOrNone(x)
+        y = gobj.floatOrNone(y)
+        centerPoint = gobj.Point(x, y)
+        
+        newPin = pin.Pin(pinNumber)
+        newPin.setCoords(centerPoint)
+        return newPin
+            
 
     def _getTarPathsToEdaComponents(self, tarPaths:list[str]) -> list[str]:
         componentsFilePattern = '^\w+\/steps\/\w+\/layers\/comp_\+_(bot|top)\/components(.(z|Z))?$' # matches comp_+_bot and comp_+_top files both zipped and uzipped
