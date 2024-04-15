@@ -51,7 +51,7 @@ class ODBPlusPlusLoader():
                     componentInstance.addPin(pinNumber, pinInstance)
                     matchDict[componentName][pinNumber] = netNumber
                     i += 1
-                self.boardData.addComponent(componentName, componentInstance)
+                boardInstance.addComponent(componentName, componentInstance)
 
         return matchDict
 
