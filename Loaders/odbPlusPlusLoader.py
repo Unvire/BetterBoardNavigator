@@ -11,8 +11,8 @@ class ODBPlusPlusLoader():
         self.boardData = board.Board()
         self.fileLines = {'eda':[], 'comp_+_top':[], 'comp_+_bot':[], 'profile':[]}
         self.handleShape = {'CR':gobj.getCircleAndAreaFromValArray, 'RC':gobj.getRectangleAndAreaFromValArray, 
-                               'SQ':gobj.getSquareAndAreaFromValArray, 'OS':gobj.getLineAndAreaFromNumArray, 
-                               'OC':gobj.getArcAndAreaFromValArray}
+                            'SQ':gobj.getSquareAndAreaFromValArray, 'OS':gobj.getLineAndAreaFromNumArray, 
+                            'OC':gobj.getArcAndAreaFromValArray}
 
     def loadFile(self, filePath:str):
         self._setFilePath(filePath)
@@ -60,11 +60,34 @@ class ODBPlusPlusLoader():
         return matchDict
     
     def _getBoardOutlineFromProfileFile(self, fileLines:list[str], boardInstance:board.Board):
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+        shapes, bottomLeftPoint, topRightPoint = self._getShapesAndPointsFromConturSection(fileLines, bottomLeftPoint, topRightPoint)
+        
+        boardInstance.setArea(bottomLeftPoint, topRightPoint)
+        boardInstance.setOutlines(shapes)
+
+    def _createComponent(self, name:str, x:str, y:str, angle:str, side:str) -> comp.Component:
+        centerPoint = gobj.Point(gobj.floatOrNone(x), gobj.floatOrNone(y))
+        angle = gobj.floatOrNone(angle)
+
+        newComponent = comp.Component(name)
+        newComponent.setAngle(angle)
+        newComponent.setCoords(centerPoint)
+        newComponent.setSide(side)
+        return newComponent
+    
+    def _createPin(self, pinNumber:str, x:str, y:str) -> pin.Pin:
+        centerPoint = gobj.Point(gobj.floatOrNone(x), gobj.floatOrNone(y))
+                
+        newPin = pin.Pin(pinNumber)
+        newPin.setCoords(centerPoint)
+        return newPin
+    
+    def _getShapesAndPointsFromConturSection(self, fileLines:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[list[gobj.Point|gobj.Arc|gobj.Circle|gobj.Rectangle], gobj.Point, gobj.Point]:
         i, iEnd = 0, len(fileLines)
         shapes = []
-        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
 
-        while i < iEnd - 2: # -2 because outlines is a layer defined point by point and ending with lines "OE", "SE"
+        while i < iEnd - 2 and fileLines[i] not in ('SE', 'CE'): # -2 because outlines is a layer defined point by point and ending with lines "OE", "SE"
             while 'OB' not in fileLines[i]:
                 i += 1
 
@@ -87,26 +110,7 @@ class ODBPlusPlusLoader():
                 while len(pointQueue) > 2:
                     pointQueue.pop(0)
                 i += 1
-        
-        boardInstance.setArea(bottomLeftPoint, topRightPoint)
-        boardInstance.setOutlines(shapes)
-
-    def _createComponent(self, name:str, x:str, y:str, angle:str, side:str) -> comp.Component:
-        centerPoint = gobj.Point(gobj.floatOrNone(x), gobj.floatOrNone(y))
-        angle = gobj.floatOrNone(angle)
-
-        newComponent = comp.Component(name)
-        newComponent.setAngle(angle)
-        newComponent.setCoords(centerPoint)
-        newComponent.setSide(side)
-        return newComponent
-    
-    def _createPin(self, pinNumber:str, x:str, y:str) -> pin.Pin:
-        centerPoint = gobj.Point(gobj.floatOrNone(x), gobj.floatOrNone(y))
-                
-        newPin = pin.Pin(pinNumber)
-        newPin.setCoords(centerPoint)
-        return newPin
+        return shapes, bottomLeftPoint, topRightPoint
 
     def _getTarPathsToEdaComponents(self, tarPaths:list[str]) -> list[str]:
         componentsFilePattern = '^\w+\/steps\/\w+\/layers\/comp_\+_(bot|top)\/components(.(z|Z))?$' # matches comp_+_bot and comp_+_top files both zipped and uzipped
