@@ -31,11 +31,11 @@ class GenCadLoader:
     def _getFileLines(self) -> list[str]:
         with open(self.filePath, 'r') as file:
             fileLines = file.readlines()
-        return fileLines
+        return [line.replace('\n', '') for line in fileLines]
     
     def _getSectionsLinesBeginEnd(self, fileLines:list[str]):
         for i, line in enumerate(fileLines):
-            sectionName = line[1:-1]
+            sectionName = line[1:]
             if sectionName in self.sectionsLineNumbers or (sectionName:=sectionName[3:]) in self.sectionsLineNumbers:
                 self.sectionsLineNumbers[sectionName].append(i)
     
@@ -46,7 +46,7 @@ class GenCadLoader:
 
         for i in boardOutlineRange:
             if ' ' in fileLines[i]:
-                keyWord, *line  = fileLines[i].replace('\n', '').split(' ')
+                keyWord, *line  = fileLines[i].split(' ')
                 if keyWord == 'ARTWORK':
                     break
                 shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](line, bottomLeftPoint, topRightPoint)
@@ -61,13 +61,13 @@ class GenCadLoader:
 
         while i <= iEnd:
             if ' ' in fileLines[i] and 'PAD' in fileLines[i]:
-                line = fileLines[i].replace('\n', '')
+                line = fileLines[i]
                 _, padName, *_  = self._splitButNotBetweenCharacter(line)                  
                 bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
                 
                 while 'PAD' not in fileLines[i + 1]:
                     i += 1
-                    keyWord, *line  = fileLines[i].replace('\n', '').split(' ')
+                    keyWord, *line  = fileLines[i].split(' ')
                     _, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](line, bottomLeftPoint, topRightPoint)
                 
                 keyWord = 'RECT' if keyWord != 'CIRCLE' else keyWord
@@ -82,13 +82,13 @@ class GenCadLoader:
 
         while i <= iEnd:
             if ' ' in fileLines[i] and 'PADSTACK' in fileLines[i]:
-                padstackLine = fileLines[i].replace('\n', '')
+                padstackLine = fileLines[i]
                 _, padstackName, *_ = self._splitButNotBetweenCharacter(padstackLine)
                 
                 j = 1
                 padName = None
                 while padName not in padsDict:
-                    padLine = fileLines[i + j].replace('\n', '')
+                    padLine = fileLines[i + j]
                     _, padName, *_ = self._splitButNotBetweenCharacter(padLine)
                     j += 1 
             
@@ -105,7 +105,7 @@ class GenCadLoader:
                 componentParameters = {}
                 isEndOfComponentSection = False
                 while not isEndOfComponentSection:
-                    line = fileLines[i].replace('\n', '')
+                    line = fileLines[i]
                     keyWord, *parameters = self._splitButNotBetweenCharacter(line)
                     componentParameters[keyWord] = parameters
                     i += 1
@@ -131,7 +131,7 @@ class GenCadLoader:
                 shapeParameters = {}                
                 isEndOfShapeSection = False                
                 while not isEndOfShapeSection:
-                    line = fileLines[i].replace('\n', '')
+                    line = fileLines[i]
                     keyWord, *parameters = self._splitButNotBetweenCharacter(line)
                     if not keyWord in shapeParameters:
                         shapeParameters[keyWord] = []
@@ -171,13 +171,13 @@ class GenCadLoader:
 
         while i <= iEnd:
             if ' ' in fileLines[i] and 'SIGNAL' in fileLines[i][:6]:
-                line = fileLines[i].replace('\n', '')
+                line = fileLines[i]
                 _, netName = self._splitButNotBetweenCharacter(line)
                 netsDict[netName] = {}
                 isEndOfSignalsSection = False
                 i += 1
                 while not isEndOfSignalsSection:
-                    line = fileLines[i].replace('\n', '')
+                    line = fileLines[i]
                     keyWord, *parameters = self._splitButNotBetweenCharacter(line)
                     if keyWord == 'NODE':
                         componentName, pinName = parameters
@@ -203,14 +203,14 @@ class GenCadLoader:
 
         while i <= iEnd:
             if ' ' in fileLines[i] and 'ROUTE' in fileLines[i][:5]:
-                line = fileLines[i].replace('\n', '')
+                line = fileLines[i]
                 _, netName = self._splitButNotBetweenCharacter(line)
                 tracksDict[netName] = {'B':[], 'T':[]}
                 i += 1
 
                 isEndOfRoutesSection = False
                 while not isEndOfRoutesSection:
-                    line = fileLines[i].replace('\n', '')
+                    line = fileLines[i]
                     keyWord, *parameters = self._splitButNotBetweenCharacter(line)
                     if keyWord == 'LAYER':
                         currentSide = sideDict.get(parameters[0], None)
