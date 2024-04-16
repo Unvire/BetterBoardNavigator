@@ -150,7 +150,7 @@ def test_RectangleEqual():
     assert r1 != r3
     assert r1 != r4
 
-def test__getLineAndAreaFromNumArray():
+def test_getLineAndAreaFromNumArray():
     valArray = ['1967.441', '2267.244', '2026.496', '3267.244']    
     bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
 
@@ -159,7 +159,7 @@ def test__getLineAndAreaFromNumArray():
     assert bottomLeftPoint == gobj.Point(1967.441, 2267.244)
     assert topRightPoint == gobj.Point(2026.496, 3267.244)
 
-def test__getArcAndAreaFromValArray():
+def test_getArcAndAreaFromValArray():
     valArray = ['996.063', '137.795', '956.693', '137.795', '976.378', '147.795']    
     bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
     
@@ -168,7 +168,7 @@ def test__getArcAndAreaFromValArray():
     assert bottomLeftPoint == gobj.Point(956.693, 137.795)
     assert topRightPoint == gobj.Point(996.063, 147.795)
 
-def test__getCircleAndAreaFromValArray():
+def test_getCircleAndAreaFromValArray():
     valArray = ['-2.8661417', '2.527559', '0.08070866']
     bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
 
@@ -177,7 +177,7 @@ def test__getCircleAndAreaFromValArray():
     assert bottomLeftPoint == gobj.Point(-2.94685036, 2.44685034)
     assert topRightPoint == gobj.Point(-2.78543304, 2.60826766)
 
-def test__getRectangleAndAreaFromValArray():
+def test_getRectangleAndAreaFromValArray():
     valArray = ['-0.02755896', '-0.03149596', '0.05511801', '0.06299203']
     bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
 
@@ -186,7 +186,7 @@ def test__getRectangleAndAreaFromValArray():
     assert bottomLeftPoint == gobj.Point(-0.02755896, -0.03149596)
     assert topRightPoint == gobj.Point(-0.02755896 + 0.05511801, -0.03149596 + 0.06299203)
 
-def test__getSquareAndAreaFromValArray():
+def test_getSquareAndAreaFromValArray():
     valArray = ['-0.025', '-0.025', '0.025']
     bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
 
