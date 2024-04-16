@@ -61,11 +61,19 @@ class ODBPlusPlusLoader():
     
     def _getBoardOutlineFromProfileFile(self, fileLines:list[str], boardInstance:board.Board):
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+        i, iEnd = 0, len(fileLines)
+        shapes = []
 
-                 #   while 'OB' not in fileLines[i]:
-                #i += 1
-
-        shapes, bottomLeftPoint, topRightPoint = self._getShapesAndPointsFromConturSection(fileLines, bottomLeftPoint, topRightPoint)
+        while i < iEnd:
+            if 'OB' in fileLines[i]:
+                sectionShapes, i, bottomLeftPoint, topRightPoint = self._getShapesAndPointsFromConturSection(fileLines, i, bottomLeftPoint, topRightPoint)
+                shapes += sectionShapes
+            else:
+                keyWord, *parameters = fileLines[i].split(' ')
+                if keyWord in self.handleShape:
+                    shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](parameters, bottomLeftPoint, topRightPoint)
+                    shapes.append(shape)
+            i += 1
         
         boardInstance.setArea(bottomLeftPoint, topRightPoint)
         boardInstance.setOutlines(shapes)
@@ -106,8 +114,7 @@ class ODBPlusPlusLoader():
 
             shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](shapeHandlerArgumentList, bottomLeftPoint, topRightPoint)
             shapes.append(shape)
-            while len(pointQueue) > 2:
-                pointQueue.pop(0)
+            pointQueue = pointQueue[2:] # remove first two coordinates -> queue.pop(0) x2
             i += 1
 
         return shapes, i, bottomLeftPoint, topRightPoint
