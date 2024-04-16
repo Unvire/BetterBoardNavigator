@@ -10,13 +10,14 @@ class ODBPlusPlusLoader():
         self.filePath = None
         self.boardData = board.Board()
         self.fileLines = {'eda':[], 'comp_+_top':[], 'comp_+_bot':[], 'profile':[]}
-        self.shapesKeywords = {'CR':gobj.getCircleAndAreaFromValArray, 'RC':gobj.getRectangleAndAreaFromValArray, 
+        self.handleShape = {'CR':gobj.getCircleAndAreaFromValArray, 'RC':gobj.getRectangleAndAreaFromValArray, 
                                'SQ':gobj.getSquareAndAreaFromValArray, 'OS':gobj.getLineAndAreaFromNumArray, 
                                'OC':gobj.getArcAndAreaFromValArray}
 
     def loadFile(self, filePath:str):
         self._setFilePath(filePath)
         self._getFileLinesFromTar()
+        self._getBoardOutlineFromProfileFile(self.fileLines['profile'], self.boardData)
         matchDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
 
     def _setFilePath(self, filePath:str):
@@ -37,7 +38,7 @@ class ODBPlusPlusLoader():
         
         for side, fileLines in zip(['B', 'T'], [botFileLines, topFileLines]):  
             i, iEnd = 0, len(fileLines)
-            while i < iEnd - 1: 
+            while i < iEnd - 1: # -1, because the file component always end with "#" line
                 while 'CMP' not in fileLines[i][:3]:
                     i += 1
 
@@ -57,6 +58,38 @@ class ODBPlusPlusLoader():
                 boardInstance.addComponent(componentName, componentInstance)
 
         return matchDict
+    
+    def _getBoardOutlineFromProfileFile(self, fileLines:list[str], boardInstance:board.Board):
+        i, iEnd = 0, len(fileLines)
+        shapes = []
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+
+        while i < iEnd - 2: # -2 because outlines is a layer defined point by point and ending with lines "OE", "SE"
+            while 'OB' not in fileLines[i]:
+                i += 1
+
+            _, x, y, *_ = fileLines[i].split(' ')
+            firstPoint = x, y
+            pointQueue = list(firstPoint)
+            i += 1
+            while fileLines[i] != 'OE':
+                keyWord, x, y, *rest  = fileLines[i].split(' ')
+                if keyWord == 'OC':
+                    xCenter, yCenter, isClockwise = rest
+                    pointQueue = [x, y] + pointQueue if isClockwise else pointQueue + [x, y]
+                    rotationPointList = [xCenter, yCenter]
+                else:
+                    pointQueue += [x, y]
+                    rotationPointList = []
+
+                shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](pointQueue + rotationPointList, bottomLeftPoint, topRightPoint)
+                shapes.append(shape)
+                while len(pointQueue) > 2:
+                    pointQueue.pop(0)
+                i += 1
+        
+        boardInstance.setArea(bottomLeftPoint, topRightPoint)
+        boardInstance.setOutlines(shapes)
 
     def _createComponent(self, name:str, x:str, y:str, angle:str, side:str) -> comp.Component:
         centerPoint = gobj.Point(gobj.floatOrNone(x), gobj.floatOrNone(y))
@@ -74,7 +107,6 @@ class ODBPlusPlusLoader():
         newPin = pin.Pin(pinNumber)
         newPin.setCoords(centerPoint)
         return newPin
-            
 
     def _getTarPathsToEdaComponents(self, tarPaths:list[str]) -> list[str]:
         componentsFilePattern = '^\w+\/steps\/\w+\/layers\/comp_\+_(bot|top)\/components(.(z|Z))?$' # matches comp_+_bot and comp_+_top files both zipped and uzipped
