@@ -61,6 +61,10 @@ class ODBPlusPlusLoader():
     
     def _getBoardOutlineFromProfileFile(self, fileLines:list[str], boardInstance:board.Board):
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+
+                 #   while 'OB' not in fileLines[i]:
+                #i += 1
+
         shapes, bottomLeftPoint, topRightPoint = self._getShapesAndPointsFromConturSection(fileLines, bottomLeftPoint, topRightPoint)
         
         boardInstance.setArea(bottomLeftPoint, topRightPoint)
@@ -83,34 +87,30 @@ class ODBPlusPlusLoader():
         newPin.setCoords(centerPoint)
         return newPin
     
-    def _getShapesAndPointsFromConturSection(self, fileLines:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[list[gobj.Point|gobj.Arc|gobj.Circle|gobj.Rectangle], gobj.Point, gobj.Point]:
-        i, iEnd = 0, len(fileLines)
+    def _getShapesAndPointsFromConturSection(self, fileLines:list[str], i:int, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[list[gobj.Point|gobj.Arc|gobj.Circle|gobj.Rectangle], int, gobj.Point, gobj.Point]:
         shapes = []
 
-        while i < iEnd - 2 and fileLines[i] not in ('SE', 'CE'): # -2 because outlines is a layer defined point by point and ending with lines "OE", "SE"
-            while 'OB' not in fileLines[i]:
-                i += 1
+        _, x, y, *_ = fileLines[i].split(' ')
+        pointQueue = [x, y]
+        i += 1
+        while fileLines[i] != 'OE':
+            keyWord, x, y, *rest  = fileLines[i].split(' ')
+            pointQueue += [x, y]                
+            shapeHandlerArgumentList = pointQueue[:] # shallow copy to prevent overwriting pointQueue
+            if keyWord == 'OC':
+                xCenter, yCenter, isClockwise = rest
+                if isClockwise == 'Y':
+                    for _ in range(2):
+                        shapeHandlerArgumentList.append(shapeHandlerArgumentList.pop(0)) # swap start point and end point in a shift register way for clockwise arc
+                shapeHandlerArgumentList += [xCenter, yCenter]
 
-            _, x, y, *_ = fileLines[i].split(' ')
-            pointQueue = [x, y]
+            shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](shapeHandlerArgumentList, bottomLeftPoint, topRightPoint)
+            shapes.append(shape)
+            while len(pointQueue) > 2:
+                pointQueue.pop(0)
             i += 1
-            while fileLines[i] != 'OE':
-                keyWord, x, y, *rest  = fileLines[i].split(' ')
-                pointQueue += [x, y]                
-                shapeHandlerArgumentList = pointQueue[:] # shallow copy to prevent overwriting pointQueue
-                if keyWord == 'OC':
-                    xCenter, yCenter, isClockwise = rest
-                    if isClockwise == 'Y':
-                        for _ in range(2):
-                            shapeHandlerArgumentList.append(shapeHandlerArgumentList.pop(0)) # swap start point and end point in a shift register way for clockwise arc
-                    shapeHandlerArgumentList += [xCenter, yCenter]
 
-                shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](shapeHandlerArgumentList, bottomLeftPoint, topRightPoint)
-                shapes.append(shape)
-                while len(pointQueue) > 2:
-                    pointQueue.pop(0)
-                i += 1
-        return shapes, bottomLeftPoint, topRightPoint
+        return shapes, i, bottomLeftPoint, topRightPoint
 
     def _getTarPathsToEdaComponents(self, tarPaths:list[str]) -> list[str]:
         componentsFilePattern = '^\w+\/steps\/\w+\/layers\/comp_\+_(bot|top)\/components(.(z|Z))?$' # matches comp_+_bot and comp_+_top files both zipped and uzipped
