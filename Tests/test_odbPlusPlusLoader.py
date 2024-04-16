@@ -145,6 +145,8 @@ def test__getBoardOutlineFromProfileFile(exampleProfileLines):
     boardOutlines = instance.boardData.getOutlines()
 
     assert instance.boardData.getArea() == [gobj.Point(0, -36.35), gobj.Point(16.2, -28.85)]    
+    assert len(boardOutlines) == 8
+
     assert boardOutlines[0] == gobj.Line(gobj.Point(1.2, -36.35), gobj.Point(1.2, -28.85))
     assert boardOutlines[1] == gobj.Arc(gobj.Point(1.2, -28.85), gobj.Point(0, -28.85), gobj.Point(0.6, -28.85))
     assert boardOutlines[2] == gobj.Line(gobj.Point(0, -28.85), gobj.Point(0, -36.35))
