@@ -87,6 +87,7 @@ def exampleProfileLines():
         'OS 15 -36.35',
         'OC 16.2 -36.35 15.6 -36.35 N',
         'OE',
+        'RC -2.5 -2.5 5 5',
         'SE'
     ]
     return profileMock
@@ -165,8 +166,8 @@ def test__getBoardOutlineFromProfileFile(exampleProfileLines):
     instance._getBoardOutlineFromProfileFile(exampleProfileLines, instance.boardData)
     boardOutlines = instance.boardData.getOutlines()
 
-    assert instance.boardData.getArea() == [gobj.Point(0, -36.35), gobj.Point(16.2, -28.85)]    
-    assert len(boardOutlines) == 8
+    assert instance.boardData.getArea() == [gobj.Point(-2.5, -36.35), gobj.Point(16.2, 2.5)]    
+    assert len(boardOutlines) == 9
 
     assert boardOutlines[0] == gobj.Line(gobj.Point(1.2, -36.35), gobj.Point(1.2, -28.85))
     assert boardOutlines[1] == gobj.Arc(gobj.Point(1.2, -28.85), gobj.Point(0, -28.85), gobj.Point(0.6, -28.85))
@@ -177,4 +178,5 @@ def test__getBoardOutlineFromProfileFile(exampleProfileLines):
     assert boardOutlines[5] == gobj.Arc(gobj.Point(15, -28.85), gobj.Point(16.2, -28.85), gobj.Point(15.6, -28.85))
     assert boardOutlines[6] == gobj.Line(gobj.Point(15, -28.85), gobj.Point(15, -36.35))
     assert boardOutlines[7] == gobj.Arc(gobj.Point(15, -36.35), gobj.Point(16.2, -36.35), gobj.Point(15.6, -36.35))
-    
+
+    assert boardOutlines[8] == gobj.Rectangle(gobj.Point(-2.5, -2.5), gobj.Point(2.5, 2.5))
