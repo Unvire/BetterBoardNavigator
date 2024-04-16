@@ -9,7 +9,8 @@ class GenCadLoader:
         self.filePath = None
         self.boardData = board.Board()
         self.sectionsLineNumbers = {'BOARD':[], 'PADS':[], 'SHAPES':[], 'COMPONENTS':[], 'SIGNALS':[], 'ROUTES':[], 'MECH':[], 'PADSTACKS':[]}
-        self.handleShape = {'LINE':self._getLineFromLINE, 'ARC': self._getArcFromARC, 'CIRCLE':self._getCircleFromCIRCLE, 'RECTANGLE':self._getRectFromRECTANGLE}
+        self.handleShape = {'LINE':gobj.getLineAndAreaFromNumArray, 'ARC':gobj.getArcAndAreaFromValArray, 
+                            'CIRCLE':gobj.getCircleAndAreaFromValArray, 'RECTANGLE':gobj.getRectangleAndAreaFromValArray}
     
     def loadFile(self, filePath:str):
         self._setFilePath(filePath)
@@ -277,7 +278,7 @@ class GenCadLoader:
         if circle:
             shape = 'CIRCLE'
             bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
-            _, bottomLeftPoint, topRightPoint = self._getCircleFromCIRCLE(circle[:3], bottomLeftPoint, topRightPoint) # extract only first circle
+            _, bottomLeftPoint, topRightPoint = self.handleShape['CIRCLE'](circle[:3], bottomLeftPoint, topRightPoint) # extract only first circle
         else:
             shape = 'RECT'
             rectangles = self._unnestRectanglesList(shapeParameters.get('RECTANGLE', []))
@@ -287,48 +288,6 @@ class GenCadLoader:
         
         shapeParameters['AREA_NAME'] = shape
         shapeParameters['AREA'] = [bottomLeftPoint, topRightPoint]
-    
-    def _getLineFromLINE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Line, gobj.Point, gobj.Point]:
-        xStart, yStart, xEnd, yEnd = [gobj.floatOrNone(val) for val in fileLine]
-        startPoint = gobj.Point(xStart, yStart)
-        endPoint = gobj.Point(xEnd, yEnd)
-
-        bottomLeftPoint, topRightPoint = gobj.updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], [startPoint, endPoint])
-        
-        lineInstance = gobj.Line(startPoint, endPoint)
-        return lineInstance, bottomLeftPoint, topRightPoint
-    
-    def _getArcFromARC(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Arc, gobj.Point, gobj.Point]:
-        xStart, yStart, xEnd, yEnd, xCenter, yCenter = [gobj.floatOrNone(val) for val in fileLine]
-        startPoint = gobj.Point(xStart, yStart)
-        endPoint = gobj.Point(xEnd, yEnd)
-        rotationPoint = gobj.Point(xCenter, yCenter)
-
-        bottomLeftPoint, topRightPoint = gobj.updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], [startPoint, endPoint, rotationPoint])
-
-        arcInstance = gobj.Arc(startPoint, endPoint, rotationPoint)
-        return arcInstance, bottomLeftPoint, topRightPoint
-
-    def _getCircleFromCIRCLE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Circle, gobj.Point, gobj.Point]:
-        xCenter, yCenter, radius = [gobj.floatOrNone(val) for val in fileLine]
-        centerPoint = gobj.Point(xCenter, yCenter)
-
-        checkedPoints = [gobj.Point.translate(centerPoint, [-radius, -radius]), gobj.Point.translate(centerPoint, [radius, radius])]
-        bottomLeftPoint, topRightPoint = gobj.updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
-         
-        circleInstance = gobj.Circle(centerPoint, radius)
-        return circleInstance, bottomLeftPoint, topRightPoint
-
-    def _getRectFromRECTANGLE(self, fileLine:list[str], bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Rectangle, gobj.Point, gobj.Point]:
-        x0, y0, width, height = [gobj.floatOrNone(val) for val in fileLine]
-        point0 = gobj.Point(x0, y0)
-        point1 = gobj.Point(x0 + width, y0 + height)
-
-        checkedPoints = [point0, point1]
-        bottomLeftPoint, topRightPoint = gobj.updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
-         
-        rectangleInstance = gobj.Rectangle(point0, point1)
-        return rectangleInstance, bottomLeftPoint, topRightPoint
     
     def _coordsListToBottomLeftTopRightPoint(self, coordsList:list[str|float]) -> tuple[str, gobj.Point, gobj.Point]:
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
@@ -362,7 +321,7 @@ class GenCadLoader:
         result = []
         for rect in rectanglesNestedList:
                 bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
-                _, bottomLeftPoint, topRightPoint = self._getRectFromRECTANGLE(rect, bottomLeftPoint, topRightPoint)
+                _, bottomLeftPoint, topRightPoint = self.handleShape['RECTANGLE'](rect, bottomLeftPoint, topRightPoint)
                 newRectLine = [bottomLeftPoint.getX(), bottomLeftPoint.getY(), topRightPoint.getX(), topRightPoint.getY()]
                 result += newRectLine
         return result

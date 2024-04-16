@@ -10,8 +10,9 @@ class ODBPlusPlusLoader():
         self.filePath = None
         self.boardData = board.Board()
         self.fileLines = {'eda':[], 'comp_+_top':[], 'comp_+_bot':[], 'profile':[]}
-        self.shapesKeywords = {'CR': self._getCircleFromFileLine, 'RC':self._getRectangleFromFileLine, 'SQ':self._getSquareFromFileLine, 
-                               'OS':self._getLineFromFileLine, 'OC':self._getArcFromFileLine}
+        self.shapesKeywords = {'CR':gobj.getCircleAndAreaFromValArray, 'RC':gobj.getRectangleAndAreaFromValArray, 
+                               'SQ':gobj.getSquareAndAreaFromValArray, 'OS':gobj.getLineAndAreaFromNumArray, 
+                               'OC':gobj.getArcAndAreaFromValArray}
 
     def loadFile(self, filePath:str):
         self._setFilePath(filePath)
@@ -99,21 +100,6 @@ class ODBPlusPlusLoader():
                 else:
                     lines = [line.decode('utf-8').replace('\r\n', '') for line in extractedFile.readlines()]
         return lines
-    
-    def _getLineFromFileLine(self, nums:list[str|float|int]) -> gobj.Line:
-        pass
-
-    def _getArcFromFileLine(self, nums:list[str|float|int]) -> gobj.Arc:
-        pass
-
-    def _getRectangleFromFileLine(self, nums:list[str|float|int]) -> gobj.Rectangle:
-        pass
-    
-    def _getSquareFromFileLine(self, nums:list[str|float|int]) -> gobj.Rectangle:
-        pass
-
-    def _getCircleFromFileLine(self, nums:list[str|float|int]) -> gobj.Circle:
-        pass
 
 if __name__ == '__main__':
     loader = ODBPlusPlusLoader()

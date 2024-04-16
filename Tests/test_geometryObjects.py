@@ -149,3 +149,39 @@ def test_RectangleEqual():
     assert r1 != r2
     assert r1 != r3
     assert r1 != r4
+
+def test__getLineFromLINE():
+    line = ['1967.441', '2267.244', '2026.496', '3267.244']    
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+
+    shape, bottomLeftPoint, topRightPoint = gobj.getLineAndAreaFromNumArray(line, bottomLeftPoint, topRightPoint)
+    assert shape == gobj.Line(gobj.Point(1967.441, 2267.244), gobj.Point(2026.496, 3267.244))
+    assert bottomLeftPoint == gobj.Point(1967.441, 2267.244)
+    assert topRightPoint == gobj.Point(2026.496, 3267.244)
+
+def test__getArcFromARC():
+    line = ['996.063', '137.795', '956.693', '137.795', '976.378', '147.795']    
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+    
+    shape, bottomLeftPoint, topRightPoint = gobj.getArcAndAreaFromValArray(line, bottomLeftPoint, topRightPoint)
+    assert shape == gobj.Arc(gobj.Point(996.063, 137.795), gobj.Point(956.693, 137.795), gobj.Point(976.378, 147.795))
+    assert bottomLeftPoint == gobj.Point(956.693, 137.795)
+    assert topRightPoint == gobj.Point(996.063, 147.795)
+
+def test__getCircleFromCIRCLE():
+    line = ['-2.8661417', '2.527559', '0.08070866']
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+
+    shape, bottomLeftPoint, topRightPoint = gobj.getCircleAndAreaFromValArray(line, bottomLeftPoint, topRightPoint)
+    assert shape == gobj.Circle(gobj.Point(-2.8661417, 2.527559), 0.08070866)
+    assert bottomLeftPoint == gobj.Point(-2.94685036, 2.44685034)
+    assert topRightPoint == gobj.Point(-2.78543304, 2.60826766)
+
+def test__getRectFromRECTANGLE():
+    line = ['-0.02755896', '-0.03149596', '0.05511801', '0.06299203']
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+
+    shape, bottomLeftPoint, topRightPoint = gobj.getRectangleAndAreaFromValArray(line, bottomLeftPoint, topRightPoint)
+    assert shape == gobj.Rectangle(gobj.Point(-0.02755896, -0.03149596), gobj.Point(-0.02755896 + 0.05511801, -0.03149596 + 0.06299203))
+    assert bottomLeftPoint == gobj.Point(-0.02755896, -0.03149596)
+    assert topRightPoint == gobj.Point(-0.02755896 + 0.05511801, -0.03149596 + 0.06299203)

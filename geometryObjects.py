@@ -158,11 +158,61 @@ def getDefaultBottomLeftTopRightPoints() -> tuple[Point, Point]:
     topRightPoint = Point(float('-Inf'), float('-Inf'))
     return bottomLeftPoint, topRightPoint
 
-def updatebottomLeftTopRightPoints(bottomLeftTopRightPoints:tuple[Point, Point],  checkedPoints:list[Point]) -> tuple[Point, Point]:
+def updateBottomLeftTopRightPoints(bottomLeftTopRightPoints:tuple[Point, Point],  checkedPoints:list[Point]) -> tuple[Point, Point]:
         bottomLeftPoint, topRightPoint = bottomLeftTopRightPoints
         for point in checkedPoints:
             bottomLeftPoint, topRightPoint = Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
         return bottomLeftPoint, topRightPoint
+
+def getLineAndAreaFromNumArray(nums:list[str|float], bottomLeftPoint:Point, topRightPoint:Point) -> tuple[Line, Point, Point]:
+        x0, y0, x1, y1 = [floatOrNone(val) for val in nums]
+        startPoint = Point(x0, y0)
+        endPoint = Point(x1, y1)
+
+        checkedPoints = [startPoint, endPoint]
+        bottomLeftPoint, topRightPoint = updateBottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
+
+        lineInstance = Line(startPoint, endPoint)
+        return lineInstance, bottomLeftPoint, topRightPoint
+
+def getArcAndAreaFromValArray(nums:list[str|float], bottomLeftPoint:Point, topRightPoint:Point) -> tuple[Arc, Point, Point]:
+    x0, y0, x1, y1, xCenter, yCenter = [floatOrNone(val) for val in nums]
+    startPoint = Point(x0, y0)
+    endPoint = Point(x1, y1)
+    centerPoint = Point(xCenter, yCenter)
+
+    checkedPoints = [startPoint, endPoint, centerPoint]
+    bottomLeftPoint, topRightPoint = updateBottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
+
+    arcInstance = Arc(startPoint, endPoint, centerPoint)
+    return arcInstance, bottomLeftPoint, topRightPoint
+
+def getRectangleAndAreaFromValArray(nums:list[str|float], bottomLeftPoint:Point, topRightPoint:Point) -> tuple[Rectangle, Point, Point]:
+    x, y, width, height = [floatOrNone(val) for val in nums]
+    rectangleBottomLeftPoint = Point(x, y)
+    rectangleTopLeftPoint = Point(x + width, y + height)
+
+    checkedPoints = [rectangleBottomLeftPoint, rectangleTopLeftPoint]
+    bottomLeftPoint, topRightPoint = updateBottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
+
+    rectangleInstance = Rectangle(rectangleBottomLeftPoint, rectangleTopLeftPoint)
+    return rectangleInstance, bottomLeftPoint, topRightPoint
+
+def getCircleAndAreaFromValArray(nums:list[str|float], bottomLeftPoint:Point, topRightPoint:Point) -> tuple[Circle, Point, Point]:
+    x, y, radius = [floatOrNone(val) for val in nums]
+    circleBottomLeftPoint = Point(x - radius, y - radius)
+    circleTopRightPoint = Point(x + radius, y + radius)
+
+    checkedPoints = [circleBottomLeftPoint, circleTopRightPoint]
+    bottomLeftPoint, topRightPoint = updateBottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
+
+    centerPoint = Point(x, y)
+    circleInstance = Circle(centerPoint, radius)
+    return circleInstance, bottomLeftPoint, topRightPoint
+
+def getSquareAndAreaFromValArray(nums:list[str|float], bottomLeftPoint:Point, topRightPoint:Point) -> tuple[Rectangle, Point, Point]:
+    x, y, halfWidth = [floatOrNone(val) for val in nums]
+    return getRectangleAndAreaFromValArray([x, y, x + halfWidth, y + halfWidth], bottomLeftPoint, topRightPoint)
 
 if __name__ == '__main__':
     A = Point(0, 0)
