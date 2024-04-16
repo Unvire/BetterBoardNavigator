@@ -293,7 +293,7 @@ class GenCadLoader:
         startPoint = gobj.Point(xStart, yStart)
         endPoint = gobj.Point(xEnd, yEnd)
 
-        bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], [startPoint, endPoint])
+        bottomLeftPoint, topRightPoint = gobj.updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], [startPoint, endPoint])
         
         lineInstance = gobj.Line(startPoint, endPoint)
         return lineInstance, bottomLeftPoint, topRightPoint
@@ -304,7 +304,7 @@ class GenCadLoader:
         endPoint = gobj.Point(xEnd, yEnd)
         rotationPoint = gobj.Point(xCenter, yCenter)
 
-        bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], [startPoint, endPoint, rotationPoint])
+        bottomLeftPoint, topRightPoint = gobj.updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], [startPoint, endPoint, rotationPoint])
 
         arcInstance = gobj.Arc(startPoint, endPoint, rotationPoint)
         return arcInstance, bottomLeftPoint, topRightPoint
@@ -314,7 +314,7 @@ class GenCadLoader:
         centerPoint = gobj.Point(xCenter, yCenter)
 
         checkedPoints = [gobj.Point.translate(centerPoint, [-radius, -radius]), gobj.Point.translate(centerPoint, [radius, radius])]
-        bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
+        bottomLeftPoint, topRightPoint = gobj.updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
          
         circleInstance = gobj.Circle(centerPoint, radius)
         return circleInstance, bottomLeftPoint, topRightPoint
@@ -325,7 +325,7 @@ class GenCadLoader:
         point1 = gobj.Point(x0 + width, y0 + height)
 
         checkedPoints = [point0, point1]
-        bottomLeftPoint, topRightPoint = self._updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
+        bottomLeftPoint, topRightPoint = gobj.updatebottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], checkedPoints)
          
         rectangleInstance = gobj.Rectangle(point0, point1)
         return rectangleInstance, bottomLeftPoint, topRightPoint
@@ -354,12 +354,6 @@ class GenCadLoader:
                 current = concatenated.replace(ignoreCharacter, '')
             result.append(current)
         return result
-
-    def _updatebottomLeftTopRightPoints(self, bottomLeftTopRightPoints:tuple[gobj.Point, gobj.Point],  checkedPoints:list[gobj.Point]) -> tuple[gobj.Point, gobj.Point]:
-        bottomLeftPoint, topRightPoint = bottomLeftTopRightPoints
-        for point in checkedPoints:
-            bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
-        return bottomLeftPoint, topRightPoint
     
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])

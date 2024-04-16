@@ -158,6 +158,12 @@ def getDefaultBottomLeftTopRightPoints() -> tuple[Point, Point]:
     topRightPoint = Point(float('-Inf'), float('-Inf'))
     return bottomLeftPoint, topRightPoint
 
+def updatebottomLeftTopRightPoints(bottomLeftTopRightPoints:tuple[Point, Point],  checkedPoints:list[Point]) -> tuple[Point, Point]:
+        bottomLeftPoint, topRightPoint = bottomLeftTopRightPoints
+        for point in checkedPoints:
+            bottomLeftPoint, topRightPoint = Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
+        return bottomLeftPoint, topRightPoint
+
 if __name__ == '__main__':
     A = Point(0, 0)
     print(A)
