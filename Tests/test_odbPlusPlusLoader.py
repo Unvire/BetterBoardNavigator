@@ -138,7 +138,28 @@ def test__getComponentsFromCompBotTopFiles(exampleComponentsLines):
 
     pin = boardComponents['TP56'].getPinByName('0')
     assert pin.getCoords() == gobj.Point(0.4, 1.2)
-    
+
+def test__getShapesAndPointsFromConturSection(exampleProfileLines):
+    instance = ODBPlusPlusLoader()
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+    shapes, i, bottomLeftPoint, topRightPoint = instance._getShapesAndPointsFromConturSection(exampleProfileLines, 11, bottomLeftPoint, topRightPoint)
+
+    assert i == 16
+    assert [bottomLeftPoint, topRightPoint] == [gobj.Point(0, -36.35), gobj.Point(1.2, -28.85)]
+    assert shapes[0] == gobj.Line(gobj.Point(1.2, -36.35), gobj.Point(1.2, -28.85))
+    assert shapes[1] == gobj.Arc(gobj.Point(1.2, -28.85), gobj.Point(0, -28.85), gobj.Point(0.6, -28.85))
+    assert shapes[2] == gobj.Line(gobj.Point(0, -28.85), gobj.Point(0, -36.35))
+    assert shapes[3] == gobj.Arc(gobj.Point(0, -36.35), gobj.Point(1.2, -36.35), gobj.Point(0.6, -36.35))
+
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+    shapes, i, bottomLeftPoint, topRightPoint = instance._getShapesAndPointsFromConturSection(exampleProfileLines, 17, bottomLeftPoint, topRightPoint)
+    assert i == 22
+    assert [bottomLeftPoint, topRightPoint] == [gobj.Point(15, -36.35), gobj.Point(16.2, -28.85)]
+    assert shapes[0] == gobj.Line(gobj.Point(16.2, -36.35), gobj.Point(16.2, -28.85))
+    assert shapes[1] == gobj.Arc(gobj.Point(15, -28.85), gobj.Point(16.2, -28.85), gobj.Point(15.6, -28.85))
+    assert shapes[2] == gobj.Line(gobj.Point(15, -28.85), gobj.Point(15, -36.35))
+    assert shapes[3] == gobj.Arc(gobj.Point(15, -36.35), gobj.Point(16.2, -36.35), gobj.Point(15.6, -36.35))
+
 def test__getBoardOutlineFromProfileFile(exampleProfileLines):
     instance = ODBPlusPlusLoader()
     instance._getBoardOutlineFromProfileFile(exampleProfileLines, instance.boardData)
