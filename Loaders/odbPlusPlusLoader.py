@@ -69,20 +69,20 @@ class ODBPlusPlusLoader():
                 i += 1
 
             _, x, y, *_ = fileLines[i].split(' ')
-            firstPoint = x, y
-            pointQueue = list(firstPoint)
+            pointQueue = [x, y]
             i += 1
             while fileLines[i] != 'OE':
                 keyWord, x, y, *rest  = fileLines[i].split(' ')
+                pointQueue += [x, y]                
+                shapeHandlerArgumentList = pointQueue[:] # shallow copy to prevent overwriting pointQueue
                 if keyWord == 'OC':
                     xCenter, yCenter, isClockwise = rest
-                    pointQueue = [x, y] + pointQueue if isClockwise else pointQueue + [x, y]
-                    rotationPointList = [xCenter, yCenter]
-                else:
-                    pointQueue += [x, y]
-                    rotationPointList = []
+                    if isClockwise == 'Y':
+                        for _ in range(2):
+                            shapeHandlerArgumentList.append(shapeHandlerArgumentList.pop(0)) # swap start point and end point in a shift register way for clockwise arc
+                    shapeHandlerArgumentList += [xCenter, yCenter]
 
-                shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](pointQueue + rotationPointList, bottomLeftPoint, topRightPoint)
+                shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](shapeHandlerArgumentList, bottomLeftPoint, topRightPoint)
                 shapes.append(shape)
                 while len(pointQueue) > 2:
                     pointQueue.pop(0)
