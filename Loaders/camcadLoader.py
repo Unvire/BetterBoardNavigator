@@ -30,11 +30,11 @@ class CamCadLoader:
     def _getFileLines(self) -> list[str]:
         with open(self.filePath, 'r') as file:
             fileLines = file.readlines()
-        return fileLines
+        return [line.replace('\n') for line in fileLines]
 
     def _getSectionsLinesBeginEnd(self, fileLines:list[str]):
         for i, line in enumerate(fileLines):
-            sectionName = line[1:-1]
+            sectionName = line[1:]
             if sectionName in self.sectionsLineNumbers or (sectionName:=sectionName[3:]) in self.sectionsLineNumbers:
                 self.sectionsLineNumbers[sectionName].append(i)
     
@@ -64,7 +64,7 @@ class CamCadLoader:
         partNumberToComponents = {}
         for i in partlistRange:
             if ',' in fileLines[i]:
-                line = fileLines[i].replace('\n', '')
+                line = fileLines[i]
                 _, name, partNumber, x, y, side, angle = [parameter.strip() for parameter in line.split(',')]
                 side = sideDict[side]
                 x, y  = gobj.floatOrNone(x), gobj.floatOrNone(y)
@@ -83,7 +83,7 @@ class CamCadLoader:
         padsDict = {}
         for i in padlistRange:
             if ',' in fileLines[i]:
-                line = fileLines[i].replace('\n', '')
+                line = fileLines[i]
                 padID, name, shape, width, height, _, _ = [parameter.strip() for parameter in line.split(',')]                
                 width = gobj.floatOrNone(width)
                 height = gobj.floatOrNone(height)                
@@ -95,7 +95,7 @@ class CamCadLoader:
         nets = {}
         for i in netlistRange:
             if ',' in fileLines[i]:
-                line = fileLines[i].replace('\n', '')
+                line = fileLines[i]
                 _, netName, componentName, pinName , pinX, pinY, side, padID = [parameter.strip() for parameter in line.split(',')]
                 self._addBlankNet(nets, netName, componentName)     
                 components = boardInstance.getComponents()
@@ -156,7 +156,7 @@ class CamCadLoader:
         packagesDict = {}
         for i in packagesRange:
             if ',' in fileLines[i]:
-                line = fileLines[i].replace('\n', '')
+                line = fileLines[i]
                 partNumber, pinType, width, height, _ = [parameter.strip() for parameter in line.split(',')]
                 width, height  = gobj.floatOrNone(width), gobj.floatOrNone(height)
                 packagesDict[partNumber] = {'pinType': pinType, 'dimensions':(width, height)}
@@ -167,7 +167,7 @@ class CamCadLoader:
         pnDict = {}
         for i in pnRange:
             if ',' in fileLines[i]:
-                line = fileLines[i].replace('\n', '')
+                line = fileLines[i]
                 componentPN, _, _, _, _, _, _, partNumber = [parameter.strip() for parameter in line.split(',')]
                 pnDict[componentPN] = partNumber
         return pnDict
