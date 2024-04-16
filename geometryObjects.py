@@ -212,7 +212,7 @@ def getCircleAndAreaFromValArray(nums:list[str|float], bottomLeftPoint:Point, to
 
 def getSquareAndAreaFromValArray(nums:list[str|float], bottomLeftPoint:Point, topRightPoint:Point) -> tuple[Rectangle, Point, Point]:
     x, y, halfWidth = [floatOrNone(val) for val in nums]
-    return getRectangleAndAreaFromValArray([x, y, x + halfWidth, y + halfWidth], bottomLeftPoint, topRightPoint)
+    return getRectangleAndAreaFromValArray([x, y, 2 * halfWidth, 2 * halfWidth], bottomLeftPoint, topRightPoint)
 
 if __name__ == '__main__':
     A = Point(0, 0)
