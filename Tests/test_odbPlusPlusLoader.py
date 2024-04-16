@@ -61,6 +61,36 @@ def exampleComponentsLines():
     ]
     return [compBotMock, compTopMock]
 
+@pytest.fixture
+def exampleProfileLines():
+    profileMock = [
+        'UNITS=MM',
+        'ID=6',
+        '#',
+        '#Num Features',
+        '#',
+        'F 1',
+        '',
+        '#',
+        '#Layer features',
+        '#',
+        'S P 0;;ID=62564',
+        'OB 1.2 -36.35 H',
+        'OS 1.2 -28.85',
+        'OC 0 -28.85 0.6 -28.85 N',
+        'OS 0 -36.35',
+        'OC 1.2 -36.35 0.6 -36.35 N',
+        'OE',
+        'OB 16.2 -36.35 H',
+        'OS 16.2 -28.85',
+        'OC 15 -28.85 15.6 -28.85 Y',
+        'OS 15 -36.35',
+        'OC 16.2 -36.35 15.6 -36.35 N',
+        'OE',
+        'SE'
+    ]
+    return profileMock
+
 def test__getTarPathsToEdaComponents(exampleTarPaths):
     instance = ODBPlusPlusLoader()
     expected = [
@@ -108,4 +138,20 @@ def test__getComponentsFromCompBotTopFiles(exampleComponentsLines):
 
     pin = boardComponents['TP56'].getPinByName('0')
     assert pin.getCoords() == gobj.Point(0.4, 1.2)
+    
+def test__getBoardOutlineFromProfileFile(exampleProfileLines):
+    instance = ODBPlusPlusLoader()
+    instance._getBoardOutlineFromProfileFile(exampleProfileLines, instance.boardData)
+    boardOutlines = instance.boardData.getOutlines()
+
+    assert instance.boardData.getArea() == [gobj.Point(0, -36.35), gobj.Point(16.2, -28.85)]    
+    assert boardOutlines[0] == gobj.Line(gobj.Point(1.2, -36.35), gobj.Point(1.2, -28.85))
+    assert boardOutlines[1] == gobj.Arc(gobj.Point(1.2, -28.85), gobj.Point(0, -28.85), gobj.Point(0.6, -28.85))
+    assert boardOutlines[2] == gobj.Line(gobj.Point(0, -28.85), gobj.Point(0, -36.35))
+    assert boardOutlines[3] == gobj.Arc(gobj.Point(0, -36.35), gobj.Point(1.2, -36.35), gobj.Point(0.6, -36.35))
+
+    assert boardOutlines[4] == gobj.Line(gobj.Point(16.2, -36.35), gobj.Point(16.2, -28.85))
+    assert boardOutlines[5] == gobj.Arc(gobj.Point(15, -28.85), gobj.Point(16.2, -28.85), gobj.Point(15.6, -28.85))
+    assert boardOutlines[6] == gobj.Line(gobj.Point(15, -28.85), gobj.Point(15, -36.35))
+    assert boardOutlines[7] == gobj.Arc(gobj.Point(15, -36.35), gobj.Point(16.2, -36.35), gobj.Point(15.6, -36.35))
     
