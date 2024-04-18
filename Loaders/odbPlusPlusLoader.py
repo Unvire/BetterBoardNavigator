@@ -114,7 +114,6 @@ class ODBPlusPlusLoader():
         else:
             keyWord, *parameters = fileLines[i].split(' ')
             shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](parameters, bottomLeftPoint, topRightPoint)
-            i += 1
             if isinstance(shape, gobj.Circle):
                 shapeName = 'CIRCLE'
         return shapeName, i, bottomLeftPoint, topRightPoint
