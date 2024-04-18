@@ -107,7 +107,7 @@ def examplePackageLines():
         'OS 0.0206738 -0.0106266',
         'OE',
         'CE',
-        'PIN 1 S -0.0177166 0 0 U U',
+        'PIN 1 T -0.0177166 0 0 U U',
         'CT',
         'OB -0.0078741 -0.0088582 I',
         'OC -0.0108269 -0.011811 -0.0108269 -0.0088582 Y',
@@ -120,7 +120,7 @@ def examplePackageLines():
         'OS -0.0078741 -0.0088582 I',
         'OE',
         'CE',
-        'PIN 2 S 0.0177166 0 0 U U',
+        'PIN 2 T 0.0177166 0 0 U U',
         'CT',
         'OB 0.0275591 -0.0088582 I',
         'OC 0.0246063 -0.011811 0.0246063 -0.0088582 Y',
@@ -261,3 +261,26 @@ def test__getShapeData(examplePackageLines):
     assert shapeName == 'CIRCLE'
     assert i == 44
     assert [bottomLeftPoint, topRightPoint] == [gobj.Point(-1, -1), gobj.Point(1, 1)]
+
+def test__getPackagesFromEda(examplePackageLines):
+    instance = ODBPlusPlusLoader()
+    packagesDict = instance._getPackagesFromEda(examplePackageLines)
+    
+    assert list(packagesDict.keys()) == ['0', '54']
+    assert packagesDict['0']['Area'] == [gobj.Point(-0.0206646, -0.0106266), gobj.Point(0.0206738, 0.0106334)]
+    assert packagesDict['0']['Shape'] == 'RECT'
+    assert packagesDict['0']['Mounting type'] == 'TH'
+    
+    assert list(packagesDict['0']['Pins'].keys()) == ['1', '2']
+    assert packagesDict['0']['Pins']['1']['Area'] == [gobj.Point(-0.0275591, -0.011811), gobj.Point(-0.0078741, 0.011811)]
+    assert packagesDict['0']['Pins']['1']['Shape'] == 'RECT'
+    assert packagesDict['0']['Pins']['2']['Area'] == [gobj.Point(0.0078741, -0.011811), gobj.Point(0.0275591, 0.011811)]
+    assert packagesDict['0']['Pins']['2']['Shape'] == 'RECT'
+
+    assert packagesDict['54']['Area'] == [gobj.Point(-1.5, -1.5), gobj.Point(1.5, 1.5)]
+    assert packagesDict['54']['Shape'] == 'RECT'
+    assert packagesDict['54']['Mounting type'] == 'SMT'
+
+    assert list(packagesDict['54']['Pins'].keys()) == ['un_1']
+    assert packagesDict['54']['Pins']['un_1']['Area'] == [gobj.Point(-1, -1), gobj.Point(1, 1)]
+    assert packagesDict['54']['Pins']['un_1']['Shape'] == 'CIRCLE'
