@@ -144,6 +144,40 @@ def examplePackageLines():
     ]
     return packagesMock
 
+@pytest.fixture
+def exampleNetLines():
+    netMock = [
+        '# PKG 0',
+        '# NET 0',
+        'NET GND ',
+        'SNT TRC',
+        'FID C 0 0',
+        'FID C 0 1',
+        'SNT TRC',
+        'FID C 0 2',
+        'SNT TOP B 21 12',
+        'FID C 6 722',
+        'FID C 7 19',
+        'FID C 8 17',
+        'SNT TOP B 40 0',
+        'FID C 6 865',
+        'FID C 7 159',
+        'SNT TOP B 55 0',
+        'FID C 6 870',
+        'FID C 7 164',
+        'FID C 8 139',
+        '#NET 1',
+        'NET NetQ11_1',
+        'SNT TOP B 21 13',
+        'FID C 6 721',
+        'FID C 7 18',
+        'FID C 8 16',
+        'SNT TOP B 33 0',
+        'FID C 6 861',
+        'FID C 7 155',
+    ]
+    return netMock
+
 def test__getTarPathsToEdaComponents(exampleTarPaths):
     instance = ODBPlusPlusLoader()
     expected = [
@@ -284,3 +318,10 @@ def test__getPackagesFromEda(examplePackageLines):
     assert list(packagesDict['54']['Pins'].keys()) == ['un_1']
     assert packagesDict['54']['Pins']['un_1']['Area'] == [gobj.Point(-1, -1), gobj.Point(1, 1)]
     assert packagesDict['54']['Pins']['un_1']['Shape'] == 'CIRCLE'
+
+@pytest.mark.parametrize('inputData, expected', [(2, 'GND'), (20, 'NetQ11_1')])
+def test__getNetName(exampleNetLines, inputData, expected):
+    instance = ODBPlusPlusLoader()
+    
+    netName = instance._getNetName(exampleNetLines, inputData)
+    assert netName == expected
