@@ -95,7 +95,7 @@ class ODBPlusPlusLoader():
                 while fileLines[i][0] != '#':
                     if 'PIN' in fileLines[i][:3]:
                         _, pinNumber, mountingType, *_ = fileLines[i].split(' ')
-                        _, i, bottomLeftPoint, topRightPoint = self._getShapeData(fileLines, i + 1)
+                        shapeName, i, bottomLeftPoint, topRightPoint = self._getShapeData(fileLines, i + 1)
                         newPin = {'Area':[bottomLeftPoint, topRightPoint], 'Shape':shapeName}
 
                         newPackage['Mounting type'] = mountTypeDict[mountingType]
