@@ -114,7 +114,9 @@ class ODBPlusPlusLoader():
 
         netsDict = {}
         while i < iEnd and 'NET' in fileLines[i]:
-            i, netName = self._getNetName(fileLines, i + 1)
+            if '#' in fileLines[i]:
+                i += 1
+            netName = self._getNetName(fileLines, i)
             i, newNetData = self._getPinsOnNet(fileLines, i + 1)
             netsDict[netName] = newNetData
         return netsDict
@@ -137,7 +139,7 @@ class ODBPlusPlusLoader():
     
     def _getPinsOnNet(self, fileLines:list[str], i:int) -> tuple[int, dict]:
         newNetData = {}
-        while '#' not in fileLines[i]:
+        while i < len(fileLines) and '#' not in fileLines[i]:
             if 'SNT TOP' in fileLines[i][:7]:
                 *_, componentID, pinID = fileLines[i].split(' ')
                 if not componentID in newNetData:
