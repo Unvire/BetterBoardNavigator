@@ -131,9 +131,9 @@ class ODBPlusPlusLoader():
                 shapeName = 'CIRCLE'
         return shapeName, i, bottomLeftPoint, topRightPoint
     
-    def _getNetName(self, fileLines:list[str], i:int) -> tuple[int, str]:
+    def _getNetName(self, fileLines:list[str], i:int) -> str:
         _, netName, *_ = fileLines[i].split(' ')
-        return i, netName
+        return netName
     
     def _getPinsOnNet(self, fileLines:list[str], i:int) -> tuple[int, dict]:
         newNetData = {}
