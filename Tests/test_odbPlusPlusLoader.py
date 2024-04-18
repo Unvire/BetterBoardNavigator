@@ -92,6 +92,58 @@ def exampleProfileLines():
     ]
     return profileMock
 
+@pytest.fixture
+def examplePackageLines():
+    packagesMock = [
+        'SNT TRC',
+        'FID C 6 8',
+        '# PKG 0',
+        'PKG 0402 0.0354332 -0.0275591 -0.011811 0.0275591 0.011811',
+        'CT',
+        'OB 0.0206738 -0.0106266 I',
+        'OS -0.0206646 -0.0106266',
+        'OS -0.0206646 0.0106334',
+        'OS 0.0206738 0.0106334',
+        'OS 0.0206738 -0.0106266',
+        'OE',
+        'CE',
+        'PIN 1 S -0.0177166 0 0 U U',
+        'CT',
+        'OB -0.0078741 -0.0088582 I',
+        'OC -0.0108269 -0.011811 -0.0108269 -0.0088582 Y',
+        'OS -0.0246063 -0.011811 I',
+        'OC -0.0275591 -0.0088582 -0.0246063 -0.0088582 Y',
+        'OS -0.0275591 0.0088582 I',
+        'OC -0.0246063 0.011811 -0.0246063 0.0088582 Y',
+        'OS -0.0108269 0.011811 I',
+        'OC -0.0078741 0.0088582 -0.0108269 0.0088582 Y',
+        'OS -0.0078741 -0.0088582 I',
+        'OE',
+        'CE',
+        'PIN 2 S 0.0177166 0 0 U U',
+        'CT',
+        'OB 0.0275591 -0.0088582 I',
+        'OC 0.0246063 -0.011811 0.0246063 -0.0088582 Y',
+        'OS 0.0108269 -0.011811 I',
+        'OC 0.0078741 -0.0088582 0.0108269 -0.0088582 Y',
+        'OS 0.0078741 0.0088582 I',
+        'OC 0.0108269 0.011811 0.0108269 0.0088582 Y',
+        'OS 0.0246063 0.011811 I',
+        'OC 0.0275591 0.0088582 0.0246063 0.0088582 Y',
+        'OS 0.0275591 -0.0088582 I',
+        'OE',
+        'CE',
+        '#',
+        '# PKG 54',
+        'PKG MARKER 0 -1.5 -1.5 1.5 1.5;;ID=1515',
+        'RC -1.5 -1.5 3 3',
+        "PRP PACKAGE_NAME 'MARKER'", 
+        'PIN un_1 S 0 0 0 U U ID=1518',
+        'CR 0 0 1',
+        '#',
+    ]
+    return packagesMock
+
 def test__getTarPathsToEdaComponents(exampleTarPaths):
     instance = ODBPlusPlusLoader()
     expected = [
@@ -180,3 +232,32 @@ def test__getBoardOutlineFromProfileFile(exampleProfileLines):
     assert boardOutlines[7] == gobj.Arc(gobj.Point(15, -36.35), gobj.Point(16.2, -36.35), gobj.Point(15.6, -36.35))
 
     assert boardOutlines[8] == gobj.Rectangle(gobj.Point(-2.5, -2.5), gobj.Point(2.5, 2.5))
+
+def test__getShapeData(examplePackageLines):
+    instance = ODBPlusPlusLoader()
+    bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+    
+    shapeName, i, bottomLeftPoint, topRightPoint = instance._getShapeData(examplePackageLines, 4)
+    assert shapeName == 'RECT'
+    assert i == 10
+    assert [bottomLeftPoint, topRightPoint] == [gobj.Point(-0.0206646, -0.0106266), gobj.Point(0.0206738, 0.0106334)] 
+
+    shapeName, i, bottomLeftPoint, topRightPoint = instance._getShapeData(examplePackageLines, 13)
+    assert shapeName == 'RECT'
+    assert i == 23
+    assert [bottomLeftPoint, topRightPoint] == [gobj.Point(-0.0275591, -0.011811), gobj.Point(-0.0078741, 0.011811)] 
+
+    shapeName, i, bottomLeftPoint, topRightPoint = instance._getShapeData(examplePackageLines, 26)
+    assert shapeName == 'RECT'
+    assert i == 36
+    assert [bottomLeftPoint, topRightPoint] == [gobj.Point(0.0078741, -0.011811), gobj.Point(0.0275591, 0.011811)] 
+
+    shapeName, i, bottomLeftPoint, topRightPoint = instance._getShapeData(examplePackageLines, 41)
+    assert shapeName == 'RECT'
+    assert i == 42
+    assert [bottomLeftPoint, topRightPoint] == [gobj.Point(-1.5, -1.5), gobj.Point(1.5, 1.5)] 
+
+    shapeName, i, bottomLeftPoint, topRightPoint = instance._getShapeData(examplePackageLines, 44)
+    assert shapeName == 'CIRCLE'
+    assert i == 45
+    assert [bottomLeftPoint, topRightPoint] == [gobj.Point(-1, -1), gobj.Point(1, 1)]
