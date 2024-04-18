@@ -19,6 +19,7 @@ class ODBPlusPlusLoader():
         self._getFileLinesFromTar()
         self._getBoardOutlineFromProfileFile(self.fileLines['profile'], self.boardData)
         matchDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
+        packagesDict = self._getPackagesFromEda(self.fileLines['eda'])
 
     def _setFilePath(self, filePath:str):
         self.filePath = filePath
@@ -77,6 +78,45 @@ class ODBPlusPlusLoader():
         
         boardInstance.setArea(bottomLeftPoint, topRightPoint)
         boardInstance.setOutlines(shapes)
+    
+    def _getPackagesFromEda(self, fileLines:list[str]) -> dict:
+        i, iEnd = 0, len(fileLines)
+        while fileLines[i] != '# PKG 0':
+            i += 1
+        
+        packagesDict = {}
+        mountTypeDict = {'T': 'TH', 'S':'SMT', 'B':'SMT'}
+        while i < iEnd and '#' in fileLines[i]:
+            if '# PKG' in fileLines[i]:
+                _, _, packageID = fileLines[i].split(' ')
+                shapeName, i, bottomLeftPoint, topRightPoint = self._getShapeData(fileLines, i + 2)
+                newPackage = {'Area':[bottomLeftPoint, topRightPoint], 'Shape':shapeName, 'Pins':{}}
+
+                while fileLines[i][0] != '#':
+                    if 'PIN' in fileLines[i][:3]:
+                        _, pinNumber, mountingType, *_ = fileLines[i].split(' ')
+                        _, i, bottomLeftPoint, topRightPoint = self._getShapeData(fileLines, i + 1)
+                        newPin = {'Area':[bottomLeftPoint, topRightPoint], 'Shape':shapeName}
+
+                        newPackage['Mounting type'] = mountTypeDict[mountingType]
+                        newPackage['Pins'][pinNumber] = newPin
+                    i += 1
+
+                packagesDict[packageID] = newPackage
+            i += 1
+        return packagesDict
+
+    def _getShapeData(self, fileLines:list[str], i:int) -> tuple[int, str, gobj.Point, gobj.Point]:
+        shapeName = 'RECT'
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints() 
+        if 'CT' in fileLines[i]:
+            _, i, bottomLeftPoint, topRightPoint = self._getShapesAndPointsFromConturSection(fileLines, i + 1, bottomLeftPoint, topRightPoint)
+        else:
+            keyWord, *parameters = fileLines[i].split(' ')
+            shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](parameters, bottomLeftPoint, topRightPoint)
+            if isinstance(shape, gobj.Circle):
+                shapeName = 'CIRCLE'
+        return shapeName, i, bottomLeftPoint, topRightPoint
 
     def _createComponent(self, name:str, x:str, y:str, angle:str, side:str) -> comp.Component:
         centerPoint = gobj.Point(gobj.floatOrNone(x), gobj.floatOrNone(y))
