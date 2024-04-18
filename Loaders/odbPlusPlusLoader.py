@@ -20,6 +20,7 @@ class ODBPlusPlusLoader():
         self._getBoardOutlineFromProfileFile(self.fileLines['profile'], self.boardData)
         matchDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
         packagesDict = self._getPackagesFromEda(self.fileLines['eda'])
+        netsDict = self._getNetsFromEda(self.fileLines['eda'])
 
     def _setFilePath(self, filePath:str):
         self.filePath = filePath
@@ -105,6 +106,18 @@ class ODBPlusPlusLoader():
                 packagesDict[packageID] = newPackage
             i += 1
         return packagesDict
+    
+    def _getNetsFromEda(self, fileLines:list[str]) -> dict:
+        i, iEnd = 0, len(fileLines)
+        while fileLines[i][:3] != 'NET':
+            i += 1
+
+        netsDict = {}
+        while i < iEnd and 'NET' in fileLines[i]:
+            i, netName = self._getNetName(fileLines, i + 1)
+            i, newNetData = self._getPinsOnNet(fileLines, i + 1)
+            netsDict[netName] = newNetData
+        return netsDict
 
     def _getShapeData(self, fileLines:list[str], i:int) -> tuple[int, str, gobj.Point, gobj.Point]:
         shapeName = 'RECT'
@@ -117,6 +130,21 @@ class ODBPlusPlusLoader():
             if isinstance(shape, gobj.Circle):
                 shapeName = 'CIRCLE'
         return shapeName, i, bottomLeftPoint, topRightPoint
+    
+    def _getNetName(self, fileLines:list[str], i:int) -> tuple[int, str]:
+        _, netName, *_ = fileLines[i].split(' ')
+        return i, netName
+    
+    def _getPinsOnNet(self, fileLines:list[str], i:int) -> tuple[int, dict]:
+        newNetData = {}
+        while '#' not in fileLines[i]:
+            if 'SNT TOP' in fileLines[i][:7]:
+                *_, componentID, pinID = fileLines[i].split(' ')
+                if not componentID in newNetData:
+                    newNetData[componentID] = []
+                newNetData[componentID].append(pinID)
+            i += 1
+        return i, newNetData
 
     def _createComponent(self, name:str, x:str, y:str, angle:str, side:str) -> comp.Component:
         centerPoint = gobj.Point(gobj.floatOrNone(x), gobj.floatOrNone(y))
