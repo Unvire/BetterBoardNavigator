@@ -254,10 +254,10 @@ def test__getShapeData(examplePackageLines):
 
     shapeName, i, bottomLeftPoint, topRightPoint = instance._getShapeData(examplePackageLines, 41)
     assert shapeName == 'RECT'
-    assert i == 42
+    assert i == 41
     assert [bottomLeftPoint, topRightPoint] == [gobj.Point(-1.5, -1.5), gobj.Point(1.5, 1.5)] 
 
     shapeName, i, bottomLeftPoint, topRightPoint = instance._getShapeData(examplePackageLines, 44)
     assert shapeName == 'CIRCLE'
-    assert i == 45
+    assert i == 44
     assert [bottomLeftPoint, topRightPoint] == [gobj.Point(-1, -1), gobj.Point(1, 1)]
