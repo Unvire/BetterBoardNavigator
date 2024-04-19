@@ -21,6 +21,7 @@ class ODBPlusPlusLoader():
         matchComponentIDDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
         packagesDict = self._getPackagesFromEda(self.fileLines['eda'])
         netsDict = self._getNetsFromEda(self.fileLines['eda'])
+        self._assignPackagesToComponents(matchComponentIDDict, packagesDict, self.boardData)
 
     def _setFilePath(self, filePath:str):
         self.filePath = filePath
@@ -121,6 +122,26 @@ class ODBPlusPlusLoader():
             i, newNetData = self._getPinsOnNet(fileLines, i + 1)
             netsDict[netName] = newNetData
         return netsDict
+    
+    def _assignPackagesToComponents(self, matchComponentIDDict:dict, packagesDict:dict, boardInstance:board.Board):
+        for packageID, componentsNames in matchComponentIDDict.items():
+            for componentName in componentsNames: 
+                componentInstance = boardInstance.getElementByName('components', componentName)
+                packageData = copy.deepcopy(packagesDict[packageID])
+                self._addAreaShapeToComponent(componentInstance, packageData)
+    
+    def _addAreaShapeToComponent(self, componentInstance:comp.Component, packageData:dict):
+        moveVector = componentInstance.getCoordsAsTranslationVector()
+
+        bottomLeftPoint, topRightPoint = packageData['Area']
+        for point in [bottomLeftPoint, topRightPoint]:
+            point.translateInPlace(moveVector)
+        componentInstance.setArea(bottomLeftPoint, topRightPoint)
+        componentInstance.calculateDimensionsFromArea()
+
+        shapeName = packageData['Shape']
+        componentInstance.setShape(shapeName)
+        componentInstance.caluclateShapeData()
 
     def _getShapeData(self, fileLines:list[str], i:int) -> tuple[int, str, gobj.Point, gobj.Point]:
         shapeName = 'RECT'
