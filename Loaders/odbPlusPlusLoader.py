@@ -89,7 +89,6 @@ class ODBPlusPlusLoader():
             i += 1
         
         packagesDict = {}
-        mountTypeDict = {'T': 'TH', 'S':'SMT', 'B':'SMT'}
         while i < iEnd and '#' in fileLines[i]:
             if '# PKG' in fileLines[i]:
                 _, _, packageID = fileLines[i].split(' ')
@@ -98,12 +97,10 @@ class ODBPlusPlusLoader():
 
                 while fileLines[i][0] != '#':
                     if 'PIN' in fileLines[i][:3]:
-                        _, _, mountingType, *_ = fileLines[i].split(' ')
                         shapeName, i, bottomLeftPoint, topRightPoint = self._getShapeData(fileLines, i + 1)
                         newPin = {'Area':[bottomLeftPoint, topRightPoint], 'Shape':shapeName}
                         
                         pinNumber = str(len(newPackage['Pins'].keys()) + 1) # pins are described 1, 2, 3... in eda, but this does not match with their names in comp files. The pins will be named 1, 2, 3 ... for simplier matching
-                        newPackage['Mounting type'] = mountTypeDict[mountingType]
                         newPackage['Pins'][pinNumber] = newPin
                     i += 1
 

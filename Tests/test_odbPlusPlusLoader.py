@@ -301,7 +301,6 @@ def test__getPackagesFromEda(examplePackageLines):
     assert list(packagesDict.keys()) == ['0', '54']
     assert packagesDict['0']['Area'] == [gobj.Point(-0.0206646, -0.0106266), gobj.Point(0.0206738, 0.0106334)]
     assert packagesDict['0']['Shape'] == 'RECT'
-    assert packagesDict['0']['Mounting type'] == 'TH'
     
     assert list(packagesDict['0']['Pins'].keys()) == ['1', '2']
     assert packagesDict['0']['Pins']['1']['Area'] == [gobj.Point(-0.0275591, -0.011811), gobj.Point(-0.0078741, 0.011811)]
@@ -311,7 +310,6 @@ def test__getPackagesFromEda(examplePackageLines):
 
     assert packagesDict['54']['Area'] == [gobj.Point(-1.5, -1.5), gobj.Point(1.5, 1.5)]
     assert packagesDict['54']['Shape'] == 'RECT'
-    assert packagesDict['54']['Mounting type'] == 'SMT'
 
     assert list(packagesDict['54']['Pins'].keys()) == ['1']
     assert packagesDict['54']['Pins']['1']['Area'] == [gobj.Point(-1, -1), gobj.Point(1, 1)]
