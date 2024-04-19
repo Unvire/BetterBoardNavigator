@@ -64,11 +64,12 @@ class ODBPlusPlusLoader():
                 i += 1
                 
                 while fileLines[i] != '#':
-                    pinLine = fileLines[i].split(';')[0]
-                    _, pinNumber, xPin, yPin, *_ = pinLine.split(' ') # pins are described 1, 2, 3... in eda
-                    pinNumber = str(int(pinNumber) + 1)
-                    pinInstance = self._createPin(pinNumber, xPin, yPin)
-                    componentInstance.addPin(pinNumber, pinInstance)
+                    if fileLines[i][:3] == 'TOP':
+                        pinLine = fileLines[i].split(';')[0]
+                        _, pinNumber, xPin, yPin, *_ = pinLine.split(' ') # pins are described 1, 2, 3... in eda
+                        pinNumber = str(int(pinNumber) + 1)
+                        pinInstance = self._createPin(pinNumber, xPin, yPin)
+                        componentInstance.addPin(pinNumber, pinInstance)
                     i += 1
                 boardInstance.addComponent(componentName, componentInstance)
         return packageIDToComponentNameDict, componentIDToNameDict
