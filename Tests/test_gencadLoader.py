@@ -418,7 +418,7 @@ def test__addShapePadDataToComponent(fullComponentTest):
     assert componentInstance.name == 'L8'
     assert componentInstance.side == 'B'
     assert componentInstance.angle == 90
-    assert componentInstance.getMountingType() == 'smt'
+    assert componentInstance.getMountingType() == 'SMT'
     assert componentInstance.getShape() == 'RECT'
     assert componentInstance.getShapePoints() == [gobj.Point(-0.976, 0.692), gobj.Point(-0.976, 0.756),
                                                   gobj.Point(-1.008, 0.756), gobj.Point(-1.008, 0.692)]

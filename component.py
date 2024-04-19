@@ -36,7 +36,7 @@ class Component(abstractShape.Shape):
         return self.angle
     
     def setMountingType(self, mountingType:str):
-        self.mountingType = mountingType
+        self.mountingType = mountingType.upper()
     
     def getMountingType(self):
         return self.mountingType
