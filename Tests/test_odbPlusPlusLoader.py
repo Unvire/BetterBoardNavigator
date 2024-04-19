@@ -234,8 +234,7 @@ def test__getTarPathsToEdaComponents(exampleTarPaths):
 def test__getComponentsFromCompBotTopFiles(exampleComponentsLines):
     botFileLines, topFileLines = exampleComponentsLines
     instance = ODBPlusPlusLoader()
-    packageIDToComponentNameDict = instance._getComponentsFromCompBotTopFiles(botFileLines, topFileLines, instance.boardData)
-    
+    packageIDToComponentNameDict, componentIDToNameDict = instance._getComponentsFromCompBotTopFiles(botFileLines, topFileLines, instance.boardData)
     
     boardComponents = instance.boardData.getComponents()
     expectedPackageIDToComponentNameDict = {'16':['TP49', 'TP56'], '8': ['J1']}
@@ -266,6 +265,9 @@ def test__getComponentsFromCompBotTopFiles(exampleComponentsLines):
 
     pin = boardComponents['TP56'].getPinByName('1')
     assert pin.getCoords() == gobj.Point(0.4, 1.2)
+
+    expectedComponentIDToNameDict = {'B-0':'TP49', 'T-0':'J1', 'T-1':'TP56'}
+    assert componentIDToNameDict == expectedComponentIDToNameDict
 
 def test__getShapesAndPointsFromConturSection(exampleProfileLines):
     instance = ODBPlusPlusLoader()
@@ -396,7 +398,7 @@ def test__getNetsFromEda(exampleNetLines):
 def test__assignPackagesToComponents(exampleComponentMatchLines):
     bottomComponentLines, packageLines = exampleComponentMatchLines
     instance = ODBPlusPlusLoader()
-    packageIDToComponentNameDict = instance._getComponentsFromCompBotTopFiles(bottomComponentLines, [], instance.boardData)
+    packageIDToComponentNameDict, _ = instance._getComponentsFromCompBotTopFiles(bottomComponentLines, [], instance.boardData)
     packagesDict = instance._getPackagesFromEda(packageLines)
     instance._assignPackagesToComponents(packageIDToComponentNameDict, packagesDict, instance.boardData)
 
