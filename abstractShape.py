@@ -60,9 +60,9 @@ class Shape():
     
     def calculateCenterDimensionsFromArea(self):
         self._calculateCenterFromArea()
-        self._calculateDimensionsFromArea()
+        self.calculateDimensionsFromArea()
     
-    def _calculateDimensionsFromArea(self):
+    def calculateDimensionsFromArea(self):
         bottomLeftPoint, topRightPoint = self.area
         width = round(topRightPoint.getX() - bottomLeftPoint.getX(), gobj.Point.DECIMAL_POINT_PRECISION)
         height = round(topRightPoint.getY() - bottomLeftPoint.getY(), gobj.Point.DECIMAL_POINT_PRECISION)
