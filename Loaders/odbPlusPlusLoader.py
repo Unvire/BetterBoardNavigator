@@ -24,6 +24,8 @@ class ODBPlusPlusLoader():
         self._assignPackagesToComponents(packageIDToComponentNameDict, packagesDict, self.boardData)
         self._assignNetsAndPins(componentIDToNameDict, netsDict, self.boardData)
 
+        return self.boardData
+
     def _setFilePath(self, filePath:str):
         self.filePath = filePath
 
@@ -151,7 +153,7 @@ class ODBPlusPlusLoader():
                     if pinInstance:
                         pinInstance.setNet(netName)
                 netsDict[netName][componentName] = subnet
-
+        boardInstance.setNets(netsDict)
 
     def _addAreaShapeToComponent(self, componentInstance:comp.Component, packageData:dict):
         area = packageData['Area']
@@ -198,6 +200,7 @@ class ODBPlusPlusLoader():
         while i < len(fileLines) and '#' not in fileLines[i]:
             if 'SNT TOP' in fileLines[i][:7]:
                 *_, side, componentID, pinID = fileLines[i].split(' ')
+                pinID = str(int(pinID) + 1)
                 componentID = f'{side}-{componentID}'
                 if not componentID in newNetData:
                     newNetData[componentID] = []
