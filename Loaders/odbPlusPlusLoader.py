@@ -139,11 +139,12 @@ class ODBPlusPlusLoader():
     def _addAreaShapeToPins(self, componentInstance:comp.Component, pinsData:dict):
         for pinName in pinsData:
             pinInstance = componentInstance.getPinByName(pinName)
-            area = pinsData['Area']
-            shapeName = pinsData['Shape']
-            self._addAreaShapeToAbstractShape(pinInstance, area, shapeName)
+            if pinInstance:
+                area = pinsData[pinName]['Area']
+                shapeName = pinsData[pinName]['Shape']
+                self._addAreaShapeToAbstractShape(pinInstance, area, shapeName)
         
-    def _addAreaShapeToAbstractShape(instance:comp.Component|pin.Pin, area:list[gobj.Point, gobj.Point], shapeName:str):
+    def _addAreaShapeToAbstractShape(self, instance:comp.Component|pin.Pin, area:list[gobj.Point, gobj.Point], shapeName:str):
         moveVector = instance.getCoordsAsTranslationVector()
         bottomLeftPoint, topRightPoint = area
         for point in [bottomLeftPoint, topRightPoint]:
