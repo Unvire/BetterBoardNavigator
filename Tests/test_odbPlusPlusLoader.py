@@ -210,10 +210,10 @@ def test__getComponentsFromCompBotTopFiles(exampleComponentsLines):
     assert boardComponents['TP56'].getSide() == 'T'
     assert boardComponents['TP56'].getAngle() == 270
 
-    pin = boardComponents['TP49'].getPinByName('0')
+    pin = boardComponents['TP49'].getPinByName('1')
     assert pin.getCoords() == gobj.Point(-0.5393701, 1.6830709)
 
-    pinNumbers = ['0', '1', '2', '3', '4', '5', '6', '7']
+    pinNumbers = ['1', '2', '3', '4', '5', '6', '7', '8']
     pinCoords = [(-0.8728347, 2.3338582), (-0.8728347, 2.1251968), (-0.7940946, 2.3338582), (-0.7940947, 2.1251968), 
                  (-0.7153544, 2.3338582), (-0.7153545, 2.1251968), (-0.6366143, 2.3338582), (-0.6366144, 2.1251968)]
     for pinNumber, pinCoords in zip(pinNumbers, pinCoords):
@@ -221,7 +221,7 @@ def test__getComponentsFromCompBotTopFiles(exampleComponentsLines):
         x, y = pinCoords
         assert pin.getCoords() == gobj.Point(x, y)
 
-    pin = boardComponents['TP56'].getPinByName('0')
+    pin = boardComponents['TP56'].getPinByName('1')
     assert pin.getCoords() == gobj.Point(0.4, 1.2)
 
 def test__getShapesAndPointsFromConturSection(exampleProfileLines):
@@ -313,9 +313,9 @@ def test__getPackagesFromEda(examplePackageLines):
     assert packagesDict['54']['Shape'] == 'RECT'
     assert packagesDict['54']['Mounting type'] == 'SMT'
 
-    assert list(packagesDict['54']['Pins'].keys()) == ['un_1']
-    assert packagesDict['54']['Pins']['un_1']['Area'] == [gobj.Point(-1, -1), gobj.Point(1, 1)]
-    assert packagesDict['54']['Pins']['un_1']['Shape'] == 'CIRCLE'
+    assert list(packagesDict['54']['Pins'].keys()) == ['1']
+    assert packagesDict['54']['Pins']['1']['Area'] == [gobj.Point(-1, -1), gobj.Point(1, 1)]
+    assert packagesDict['54']['Pins']['1']['Shape'] == 'CIRCLE'
 
 @pytest.mark.parametrize('inputData, expected', [(2, 'GND'), (20, 'NetQ11_1')])
 def test__getNetName(exampleNetLines, inputData, expected):
