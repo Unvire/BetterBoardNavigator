@@ -55,7 +55,7 @@ def exampleComponentsLines():
         'TOP 7 -0.6366144 2.1251968 90 N 3 3 J1-8',
         '#',
         '# CMP 1',
-        'CMP 14 0.4 1.2 270 N TP56 TP ;0=1,1=0.0669',
+        'CMP 16 0.4 1.2 270 N TP56 TP ;0=1,1=0.0669',
         'TOP 0 0.4 1.2 270 N 43 0 TP56-1',
         '#'
     ]
@@ -191,15 +191,13 @@ def test__getTarPathsToEdaComponents(exampleTarPaths):
 def test__getComponentsFromCompBotTopFiles(exampleComponentsLines):
     botFileLines, topFileLines = exampleComponentsLines
     instance = ODBPlusPlusLoader()
-    matchDict = instance._getComponentsFromCompBotTopFiles(botFileLines, topFileLines, instance.boardData)
+    matchComponentIDDict = instance._getComponentsFromCompBotTopFiles(botFileLines, topFileLines, instance.boardData)
     
     
     boardComponents = instance.boardData.getComponents()
-    expectedMatchDict = {'TP49': {'packageID':'16', '0':'38'},
-                        'J1': {'packageID':'8', '0':'53', '1':'5', '2':'52', '3':'6', '4':'7', '5':'4', '6':'54', '7':'3'},
-                        'TP56': {'packageID': '14', '0':'43'}}
+    expectedMatchComponentIDDict = {'16':['TP49', 'TP56'], '8': ['J1']}
 
-    assert matchDict == expectedMatchDict
+    assert matchComponentIDDict == expectedMatchComponentIDDict
     assert list(boardComponents.keys()) == ['TP49', 'J1', 'TP56']
     
     assert boardComponents['TP49'].getCoords() == gobj.Point(-0.5413386, 1.6830709)

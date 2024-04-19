@@ -18,7 +18,7 @@ class ODBPlusPlusLoader():
         self._setFilePath(filePath)
         self._getFileLinesFromTar()
         self._getBoardOutlineFromProfileFile(self.fileLines['profile'], self.boardData)
-        matchDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
+        matchComponentIDDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
         packagesDict = self._getPackagesFromEda(self.fileLines['eda'])
         netsDict = self._getNetsFromEda(self.fileLines['eda'])
 
@@ -36,7 +36,7 @@ class ODBPlusPlusLoader():
             self.fileLines[key] = lines
     
     def _getComponentsFromCompBotTopFiles(self, botFileLines:list[str], topFileLines:list[str], boardInstance:board.Board):
-        matchDict = {}
+        matchComponentIDDict = {}
         
         for side, fileLines in zip(['B', 'T'], [botFileLines, topFileLines]):  
             i, iEnd = 0, len(fileLines)
@@ -47,19 +47,20 @@ class ODBPlusPlusLoader():
                 componentLine = fileLines[i].split(';')[0]
                 _, packageReference, xComp, yComp, angle, _, componentName, *_ = componentLine.split(' ')
                 componentInstance = self._createComponent(componentName, xComp, yComp, angle, side)
-                matchDict[componentName] = {'packageID':packageReference}
+                if not packageReference in matchComponentIDDict:
+                    matchComponentIDDict[packageReference] = []
+                matchComponentIDDict[packageReference].append(componentName)
                 i += 1
                 
                 while fileLines[i] != '#':
                     pinLine = fileLines[i].split(';')[0]
-                    _, pinNumber, xPin, yPin, _, _, netNumber, *_ = pinLine.split(' ')
+                    _, pinNumber, xPin, yPin, *_ = pinLine.split(' ')
                     pinInstance = self._createPin(pinNumber, xPin, yPin)
                     componentInstance.addPin(pinNumber, pinInstance)
-                    matchDict[componentName][pinNumber] = netNumber
                     i += 1
                 boardInstance.addComponent(componentName, componentInstance)
 
-        return matchDict
+        return matchComponentIDDict
     
     def _getBoardOutlineFromProfileFile(self, fileLines:list[str], boardInstance:board.Board):
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
