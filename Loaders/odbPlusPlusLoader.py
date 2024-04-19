@@ -22,6 +22,7 @@ class ODBPlusPlusLoader():
         packagesDict = self._getPackagesFromEda(self.fileLines['eda'])
         netsDict = self._getNetsFromEda(self.fileLines['eda'])
         self._assignPackagesToComponents(matchComponentIDDict, packagesDict, self.boardData)
+        self._assignNetsAndPins(matchComponentIDDict, netsDict, self.boardData)
 
     def _setFilePath(self, filePath:str):
         self.filePath = filePath
@@ -131,6 +132,21 @@ class ODBPlusPlusLoader():
                 self._addAreaShapeToPins(componentInstance, packageData['Pins'])
                 componentInstance.rotateInPlaceAroundCoords(componentInstance.getAngle())
     
+    def _assignNetsAndPins(self, matchComponentIDDict:dict, netsIDDict:dict, boardInstance:board.Board):
+        netsDict = {}
+        for netName, componentIDs in netsIDDict.items():
+            netsDict[netName] = {}
+            for componentID, pinsList in componentIDs.items():
+                componentName = matchComponentIDDict[componentID]
+                componentInstance = boardInstance.getElementByName('components', componentName)
+                
+                subnet = {'componentInstance': componentInstance, 'pins':sorted(pinsList, key=lambda x: int(x))}
+                for pinNumber in pinsList:
+                    pinInstance = componentInstance.getPinByName(pinNumber)
+                    pinInstance.setNet(netName)
+                netsDict[netName][componentName] = subnet
+
+
     def _addAreaShapeToComponent(self, componentInstance:comp.Component, packageData:dict):
         area = packageData['Area']
         shapeName = packageData['Shape']
