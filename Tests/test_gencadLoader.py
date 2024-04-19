@@ -283,6 +283,7 @@ def test__splitButNotBetweenCharacter(testInput, expected):
     assert expected == instance._splitButNotBetweenCharacter(testInput, ' ', '"')
 
 def test__getPadsFromPADS(padsTest):
+    gobj.Point.DECIMAL_POINT_PRECISION = 3
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(padsTest)
     padsDict = instance._getPadsFromPADS(padsTest)
@@ -383,6 +384,7 @@ def test__calculateShapeAreaInPlace():
                                     'AREA_NAME':'CIRCLE'}
 
 def test__getAreaPinsfromSHAPES(shapesTest):
+    gobj.Point.DECIMAL_POINT_PRECISION = 3
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(shapesTest)
     shapes = {'SMC_T':{ 
@@ -400,6 +402,7 @@ def test__getAreaPinsfromSHAPES(shapesTest):
     assert instance._getAreaPinsfromSHAPES(shapesTest) == shapes
 
 def test__addShapePadDataToComponent(fullComponentTest):
+    gobj.Point.DECIMAL_POINT_PRECISION = 3
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(fullComponentTest)
     padsDict = instance._getPadsFromPADS(fullComponentTest)

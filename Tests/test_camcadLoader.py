@@ -215,6 +215,7 @@ def test__getNetsFromNETLIST(netlistFileLines):
     assert boardComponents['C47'].pins['2'].getShapePoints() == [gobj.Point(770.839 ,342.902)]
 
 def test__getPackages(packagesFileLines):
+    gobj.Point.DECIMAL_POINT_PRECISION = 3
     instance = CamCadLoader()
     instance._getSectionsLinesBeginEnd(packagesFileLines)
     partNumberToComponents = instance._getComponenentsFromPARTLIST(packagesFileLines, instance.boardData)  

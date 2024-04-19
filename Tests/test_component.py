@@ -101,7 +101,7 @@ def test_translateInPlace(componentForRotateTranslate):
     assert pin2.getShapePoints() == [gobj.Point(11.5, 10.5), gobj.Point(12.5, 10.5), gobj.Point(12.5, 11.5), gobj.Point(11.5, 11.5)]
 
 def test_rotateInPlace(componentForRotateTranslate):
-    
+    gobj.Point.DECIMAL_POINT_PRECISION = 3
     for point in componentForRotateTranslate.getPinByName('2').getShapePoints():
         print(point)
     

@@ -2,6 +2,7 @@ import pytest
 import geometryObjects as gobj
 
 def test_PointEqual():
+    gobj.Point.DECIMAL_POINT_PRECISION = 3
     pointA = gobj.Point(0, 0)
     pointB = gobj.Point(1.2, 1.2)
     pointC = gobj.Point(1.200, 1.200)

@@ -50,6 +50,7 @@ def test_translateInPlace(shape1):
     assert shape1.getShapePoints() == [gobj.Point(0, 0)]
 
 def test_rotateInPlace(shape1):
+    gobj.Point.DECIMAL_POINT_PRECISION = 3
     shape1.calculateAreaFromWidthHeightCoords()
     shape1.setShape('RECT')
     shape1.caluclateShapeData()
@@ -60,6 +61,7 @@ def test_rotateInPlace(shape1):
     assert shape1.getShapePoints() == [gobj.Point(0.707, -2.121), gobj.Point(2.121, -0.707), gobj.Point(-0.707, 2.121), gobj.Point(-2.121, 0.707)]
 
 def test_rotateInPlace_normalizeShapePoints(shape1):
+    gobj.Point.DECIMAL_POINT_PRECISION = 3
     shape1.calculateAreaFromWidthHeightCoords()
     shape1.setShape('RECT')
     shape1.caluclateShapeData()
