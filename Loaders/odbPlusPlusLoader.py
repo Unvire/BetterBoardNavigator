@@ -55,7 +55,8 @@ class ODBPlusPlusLoader():
                 
                 while fileLines[i] != '#':
                     pinLine = fileLines[i].split(';')[0]
-                    _, pinNumber, xPin, yPin, *_ = pinLine.split(' ')
+                    _, pinNumber, xPin, yPin, *_ = pinLine.split(' ') # pins are described 1, 2, 3... in eda
+                    pinNumber = str(int(pinNumber) + 1)
                     pinInstance = self._createPin(pinNumber, xPin, yPin)
                     componentInstance.addPin(pinNumber, pinInstance)
                     i += 1
@@ -97,10 +98,11 @@ class ODBPlusPlusLoader():
 
                 while fileLines[i][0] != '#':
                     if 'PIN' in fileLines[i][:3]:
-                        _, pinNumber, mountingType, *_ = fileLines[i].split(' ')
+                        _, _, mountingType, *_ = fileLines[i].split(' ')
                         shapeName, i, bottomLeftPoint, topRightPoint = self._getShapeData(fileLines, i + 1)
                         newPin = {'Area':[bottomLeftPoint, topRightPoint], 'Shape':shapeName}
-
+                        
+                        pinNumber = str(len(newPackage['Pins'].keys()) + 1) # pins are described 1, 2, 3... in eda, but this does not match with their names in comp files. The pins will be named 1, 2, 3 ... for simplier matching
                         newPackage['Mounting type'] = mountTypeDict[mountingType]
                         newPackage['Pins'][pinNumber] = newPin
                     i += 1
@@ -130,6 +132,7 @@ class ODBPlusPlusLoader():
                 packageData = copy.deepcopy(packagesDict[packageID])
                 self._addAreaShapeToComponent(componentInstance, packageData)
                 self._addAreaShapeToPins(componentInstance, packageData['Pins'])
+                componentInstance.rotateInPlaceAroundCoords(componentInstance.getAngle())
     
     def _addAreaShapeToComponent(self, componentInstance:comp.Component, packageData:dict):
         area = packageData['Area']
