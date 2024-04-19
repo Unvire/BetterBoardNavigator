@@ -18,11 +18,11 @@ class ODBPlusPlusLoader():
         self._setFilePath(filePath)
         self._getFileLinesFromTar()
         self._getBoardOutlineFromProfileFile(self.fileLines['profile'], self.boardData)
-        matchComponentIDDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
+        packageIDToComponentNameDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
         packagesDict = self._getPackagesFromEda(self.fileLines['eda'])
         netsDict = self._getNetsFromEda(self.fileLines['eda'])
-        self._assignPackagesToComponents(matchComponentIDDict, packagesDict, self.boardData)
-        self._assignNetsAndPins(matchComponentIDDict, netsDict, self.boardData)
+        self._assignPackagesToComponents(packageIDToComponentNameDict, packagesDict, self.boardData)
+        self._assignNetsAndPins(packageIDToComponentNameDict, netsDict, self.boardData)
 
     def _setFilePath(self, filePath:str):
         self.filePath = filePath
@@ -38,7 +38,7 @@ class ODBPlusPlusLoader():
             self.fileLines[key] = lines
     
     def _getComponentsFromCompBotTopFiles(self, botFileLines:list[str], topFileLines:list[str], boardInstance:board.Board):
-        matchComponentIDDict = {}
+        packageIDToComponentNameDict = {}
         
         for side, fileLines in zip(['B', 'T'], [botFileLines, topFileLines]):  
             i, iEnd = 0, len(fileLines)
@@ -49,9 +49,9 @@ class ODBPlusPlusLoader():
                 componentLine = fileLines[i].split(';')[0]
                 _, packageReference, xComp, yComp, angle, _, componentName, *_ = componentLine.split(' ')
                 componentInstance = self._createComponent(componentName, xComp, yComp, angle, side)
-                if not packageReference in matchComponentIDDict:
-                    matchComponentIDDict[packageReference] = []
-                matchComponentIDDict[packageReference].append(componentName)
+                if not packageReference in packageIDToComponentNameDict:
+                    packageIDToComponentNameDict[packageReference] = []
+                packageIDToComponentNameDict[packageReference].append(componentName)
                 i += 1
                 
                 while fileLines[i] != '#':
@@ -63,7 +63,7 @@ class ODBPlusPlusLoader():
                     i += 1
                 boardInstance.addComponent(componentName, componentInstance)
 
-        return matchComponentIDDict
+        return packageIDToComponentNameDict
     
     def _getBoardOutlineFromProfileFile(self, fileLines:list[str], boardInstance:board.Board):
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
