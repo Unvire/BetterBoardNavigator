@@ -21,7 +21,7 @@ board = {
         netName: str:{
             componentName: str:{
                 'componentInstance': component.Component (reference to component listed in 'COMPONENTS')
-                'pinName': str
+                'pins': list[str]
                 }
             }
         }
