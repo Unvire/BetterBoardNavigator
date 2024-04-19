@@ -129,19 +129,30 @@ class ODBPlusPlusLoader():
                 componentInstance = boardInstance.getElementByName('components', componentName)
                 packageData = copy.deepcopy(packagesDict[packageID])
                 self._addAreaShapeToComponent(componentInstance, packageData)
+                self._addAreaShapeToPins(componentInstance, packageData['Pins'])
     
     def _addAreaShapeToComponent(self, componentInstance:comp.Component, packageData:dict):
-        moveVector = componentInstance.getCoordsAsTranslationVector()
-
-        bottomLeftPoint, topRightPoint = packageData['Area']
+        area = packageData['Area']
+        shapeName = packageData['Shape']
+        self._addAreaShapeToAbstractShape(componentInstance, area, shapeName)
+    
+    def _addAreaShapeToPins(self, componentInstance:comp.Component, pinsData:dict):
+        for pinName in pinsData:
+            pinInstance = componentInstance.getPinByName(pinName)
+            area = pinsData['Area']
+            shapeName = pinsData['Shape']
+            self._addAreaShapeToAbstractShape(pinInstance, area, shapeName)
+        
+    def _addAreaShapeToAbstractShape(instance:comp.Component|pin.Pin, area:list[gobj.Point, gobj.Point], shapeName:str):
+        moveVector = instance.getCoordsAsTranslationVector()
+        bottomLeftPoint, topRightPoint = area
         for point in [bottomLeftPoint, topRightPoint]:
             point.translateInPlace(moveVector)
-        componentInstance.setArea(bottomLeftPoint, topRightPoint)
-        componentInstance.calculateDimensionsFromArea()
+        instance.setArea(bottomLeftPoint, topRightPoint)
+        instance.calculateDimensionsFromArea()
 
-        shapeName = packageData['Shape']
-        componentInstance.setShape(shapeName)
-        componentInstance.caluclateShapeData()
+        instance.setShape(shapeName)
+        instance.caluclateShapeData()
 
     def _getShapeData(self, fileLines:list[str], i:int) -> tuple[int, str, gobj.Point, gobj.Point]:
         shapeName = 'RECT'
