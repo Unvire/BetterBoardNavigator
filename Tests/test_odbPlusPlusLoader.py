@@ -140,7 +140,7 @@ def examplePackageLines():
         "PRP PACKAGE_NAME 'MARKER'", 
         'PIN un_1 S 0 0 0 U U ID=1518',
         'CR 0 0 1',
-        '#',
+        '#'
     ]
     return packagesMock
 
@@ -174,9 +174,52 @@ def exampleNetLines():
         'FID C 8 16',
         'SNT TOP B 21 3',
         'FID C 6 861',
-        'FID C 7 155',
+        'FID C 7 155'
     ]
     return netMock
+
+@pytest.fixture
+def exampleComponentMatchLines():
+    componentMockLines = [
+        '# CMP 16',
+        'CMP 0 -0.046063 0.9043307 90 N C1 RFANT5220110A2T ;0=1,1=0.0492',
+        'TOP 0 -0.046063 0.9978346 0 N 51 0 C1-1',
+        'TOP 1 -0.046063 0.8108268 0 N 0 0 C1-2',
+        '#'
+    ]
+
+    packagesMockLines = [
+        '# PKG 0',
+        'PKG RFANT5220110A2T 0.1870078 -0.1131889 -0.0433071 0.1131889 0.0433071',
+        'CT',
+        'OB 0.1062992 -0.0433071 I',
+        'OS -0.1062992 -0.0433071',
+        'OS -0.1062992 0.0433071',
+        'OS 0.1062992 0.0433071',
+        'OS 0.1062992 -0.0433071',
+        'OE',
+        'CE',
+        'PIN 1 S -0.0935039 0 0 U U',
+        'CT',
+        'OB -0.1131039 -0.0433 I',
+        'OS -0.1131039 0.0433',
+        'OS -0.0739039 0.0433',
+        'OS -0.0739039 -0.0433',
+        'OS -0.1131039 -0.0433',
+        'OE',
+        'CE',
+        'PIN 2 S 0.0935039 0 0 U U',
+        'CT',
+        'OB 0.0739039 -0.0433 I',
+        'OS 0.0739039 0.0433',
+        'OS 0.1131039 0.0433',
+        'OS 0.1131039 -0.0433',
+        'OS 0.0739039 -0.0433',
+        'OE',
+        'CE',
+        '#'
+    ]
+    return componentMockLines, packagesMockLines
 
 def test__getTarPathsToEdaComponents(exampleTarPaths):
     instance = ODBPlusPlusLoader()
@@ -349,3 +392,38 @@ def test__getNetsFromEda(exampleNetLines):
     
     assert list(netsDict['NetQ11_1'].keys()) == ['21']
     assert netsDict['NetQ11_1']['21'] == ['0', '3']
+
+def test__assignPackagesToComponents(exampleComponentMatchLines):
+    bottomComponentLines, packageLines = exampleComponentMatchLines
+    instance = ODBPlusPlusLoader()
+    matchComponentIDDict = instance._getComponentsFromCompBotTopFiles(bottomComponentLines, [], instance.boardData)
+    packagesDict = instance._getPackagesFromEda(packageLines)
+    instance._assignPackagesToComponents(matchComponentIDDict, packagesDict, instance.boardData)
+
+    components = instance.boardData.getComponents()
+    assert list(components.keys()) == ['C1']
+
+    componentInstance = instance.boardData.getElementByName('components', 'C1')
+    assert componentInstance.name == 'C1'
+    assert componentInstance.side == 'B'
+    assert componentInstance.angle == 90
+    assert componentInstance.getMountingType() == 'SMT'
+    assert componentInstance.getShape() == 'RECT'
+    assert componentInstance.getCoords() == gobj.Point(-0.046063, 0.9043307)
+    assert componentInstance.getArea() == [gobj.Point(-0.089370, 0.798032), gobj.Point(-0.002756, 1.010630)] # (-0.152362 0.861024), (0.060236 0.947638) before rotation
+    assert componentInstance.getShapePoints() == [gobj.Point(-0.002756, 0.798032), gobj.Point(-0.002756, 1.010630),
+                                                  gobj.Point(-0.089370, 1.010630), gobj.Point(-0.089370, 0.798032)]
+
+    pin1 = componentInstance.getPinByName('1')
+    pin2 = componentInstance.getPinByName('2')
+    assert pin1 is not pin2
+
+    assert pin1.getCoords() == gobj.Point(-0.139567, 0.904331) # (-0.046063, 0.9978346) before rotation
+    assert pin1.getArea() == [gobj.Point(-0.182867, 0.791227), gobj.Point(-0.096267, 0.830427)] # (-0.159167, 0.954535), (-0.119967, 1.041135) before rotation
+    assert pin1.getShapePoints() == [gobj.Point(-0.096267, 0.791227), gobj.Point(-0.096267, 0.830427),
+                                     gobj.Point(-0.182867, 0.830427), gobj.Point(-0.182867, 0.791227)]
+    
+    assert pin2.getCoords() == gobj.Point(0.047441, 0.904331) # (-0.046063, 0.810827) before rotation
+    assert pin2.getArea() == [gobj.Point(0.004141, 0.978235), gobj.Point(0.090741, 1.017435)] # (0.027841, 0.767527), (0.067041, 0.854127) before rotation
+    assert pin2.getShapePoints() == [gobj.Point(0.090741, 0.978235), gobj.Point(0.090741, 1.017435),
+                                     gobj.Point(0.004141, 1.017435), gobj.Point(0.004141, 0.978235)]
