@@ -17,15 +17,15 @@ class Shape():
     
     def caluclateShapeData(self):
         bottomLeftPoint, topRightPoint = copy.deepcopy(self.area)
-
-        if self.shape == 'RECT':
-            self.shapeData = gobj.Rectangle(bottomLeftPoint, topRightPoint)
-        elif self.shape == 'CIRCLE':
+  
+        if self.shape == 'CIRCLE':
             xBL, yBL = bottomLeftPoint.getXY()
             xTR, yTR = topRightPoint.getXY()
             radius = (xTR - xBL) / 2
             centerPoint = gobj.Point((xBL + xTR) / 2, (yBL + yTR) / 2)
             self.shapeData = gobj.Circle(centerPoint, radius)
+        else:
+            self.shapeData = gobj.Rectangle(bottomLeftPoint, topRightPoint)
     
     def getShapePoints(self) -> tuple[gobj.Point]:
         return self.shapeData.getPoints()
