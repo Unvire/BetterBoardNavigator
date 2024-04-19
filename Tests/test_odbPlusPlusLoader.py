@@ -221,6 +221,51 @@ def exampleComponentMatchLines():
     ]
     return componentMockLines, packagesMockLines
 
+@pytest.fixture
+def exampleNetPinsMatchLines():
+    bottomComponentMockLines = [
+        '# CMP 16',
+        'CMP 0 -0.046063 0.9043307 90 N C1 RFANT5220110A2T ;0=1,1=0.0492',
+        'TOP 0 -0.046063 0.9978346 0 N 51 0 C1-1',
+        'TOP 1 -0.046063 0.8108268 0 N 0 0 C1-2',
+        '#'
+    ]
+
+    topComponentMockLines = [
+        '# CMP 1',
+        'CMP 14 0.4 1.2 270 N TP56 TP ;0=1,1=0.0669',
+        'TOP 0 0.4 1.2 270 N 43 0 TP56-1',
+        '#',
+        '# CMP 2',
+        'CMP 0 -0.0393701 1.6761811 45 N C13 100nF/50V ;0=1,1=0.0000',
+        'TOP 0 -0.0268426 1.6887086 135 N 52 63 C13-1',
+        'TOP 1 -0.0518976 1.6636536 135 N 53 21 C13-2',
+        '#'
+    ]
+
+    netsMockLines = [
+        '#NET 1',
+        'NET GND',
+        'SNT TOP B 16 1',
+        'FID C 6 816v',
+        'FID C 7 111',
+        'SNT TOP T 1 0',
+        'FID C 6 712',
+        'SNT TOP T 2 0',
+        'SNT TRC',
+        'FID C 6 300',
+        '#NET 6',
+        'NET SWCLK',
+        'SNT TOP B 16 0',
+        'FID C 2 5',
+        'FID C 3 299',
+        '#NET 11',
+        'NET NetQ15_1',
+        'SNT TOP T 2 1',
+        'FID C 6 769'
+    ]
+    return bottomComponentMockLines, topComponentMockLines, netsMockLines
+
 def test__getTarPathsToEdaComponents(exampleTarPaths):
     instance = ODBPlusPlusLoader()
     expected = [
@@ -373,14 +418,14 @@ def test__getPinsOnNet(exampleNetLines):
     i, netDict = instance._getPinsOnNet(exampleNetLines, 2)
     assert i == 19
     assert list(netDict.keys()) == ['B-21', 'B-40', 'B-55']
-    assert netDict['B-21'] == ['12']
-    assert netDict['B-40'] == ['0']
-    assert netDict['B-55'] == ['0']
+    assert netDict['B-21'] == ['13']
+    assert netDict['B-40'] == ['1']
+    assert netDict['B-55'] == ['1']
 
     i, netDict = instance._getPinsOnNet(exampleNetLines, 20)
     assert i == 28
     assert list(netDict.keys()) == ['T-21']
-    assert netDict['T-21'] == ['0', '3']
+    assert netDict['T-21'] == ['1', '4']
 
 def test__getNetsFromEda(exampleNetLines):
     instance = ODBPlusPlusLoader()
@@ -388,12 +433,12 @@ def test__getNetsFromEda(exampleNetLines):
     netsDict = instance._getNetsFromEda(exampleNetLines)
     assert list(netsDict.keys()) == ['GND', 'NetQ11_1']
     assert list(netsDict['GND'].keys()) == ['B-21', 'B-40', 'B-55']
-    assert netsDict['GND']['B-21'] == ['12']
-    assert netsDict['GND']['B-40'] == ['0']
-    assert netsDict['GND']['B-55'] == ['0']
+    assert netsDict['GND']['B-21'] == ['13']
+    assert netsDict['GND']['B-40'] == ['1']
+    assert netsDict['GND']['B-55'] == ['1']
     
     assert list(netsDict['NetQ11_1'].keys()) == ['T-21']
-    assert netsDict['NetQ11_1']['T-21'] == ['0', '3']
+    assert netsDict['NetQ11_1']['T-21'] == ['1', '4']
 
 def test__assignPackagesToComponents(exampleComponentMatchLines):
     bottomComponentLines, packageLines = exampleComponentMatchLines
@@ -429,3 +474,42 @@ def test__assignPackagesToComponents(exampleComponentMatchLines):
     assert pin2.getArea() == [gobj.Point(0.004141, 0.978235), gobj.Point(0.090741, 1.017435)] # (0.027841, 0.767527), (0.067041, 0.854127) before rotation
     assert pin2.getShapePoints() == [gobj.Point(0.090741, 0.978235), gobj.Point(0.090741, 1.017435),
                                      gobj.Point(0.004141, 1.017435), gobj.Point(0.004141, 0.978235)]
+    
+def test__assignNetsAndPins(exampleNetPinsMatchLines):
+    bottomComponentLines, topComponentLines, netsLines = exampleNetPinsMatchLines
+    instance = ODBPlusPlusLoader()
+    _, componentIDToNameDict = instance._getComponentsFromCompBotTopFiles(bottomComponentLines, topComponentLines, instance.boardData)
+    netsDict = instance._getNetsFromEda(netsLines)
+    instance._assignNetsAndPins(componentIDToNameDict, netsDict, instance.boardData)
+
+    boardNets = instance.boardData.getNets()
+    assert list(boardNets.keys()) == ['GND', 'SWCLK', 'NetQ15_1']
+    assert list(boardNets['GND'].keys()) == ['C1', 'TP56', 'C13']
+    assert instance.boardData.getElementByName('components', 'C1') is boardNets['GND']['C1']['componentInstance']
+    assert instance.boardData.getElementByName('components', 'TP56') is boardNets['GND']['TP56']['componentInstance']
+    assert instance.boardData.getElementByName('components', 'C13') is boardNets['GND']['C13']['componentInstance']
+    assert boardNets['GND']['C1']['pins'] == ['2']
+    assert boardNets['GND']['TP56']['pins'] == ['1']
+    assert boardNets['GND']['C13']['pins'] == ['1']
+
+    assert list(boardNets['SWCLK'].keys()) == ['C1']
+    assert instance.boardData.getElementByName('components', 'C1') is boardNets['SWCLK']['C1']['componentInstance']
+    assert boardNets['SWCLK']['C1']['pins'] == ['1']
+
+    assert list(boardNets['NetQ15_1'].keys()) == ['C13']
+    assert instance.boardData.getElementByName('components', 'C13') is boardNets['NetQ15_1']['C13']['componentInstance']
+    assert boardNets['NetQ15_1']['C13']['pins'] == ['2']
+
+    component = instance.boardData.getElementByName('components', 'C1')
+    for pinNumber, netName in zip(['1', '2'], ['SWCLK', 'GND']):
+        pin = component.getPinByName(pinNumber)
+        assert pin.getNet() == netName
+    
+    component = instance.boardData.getElementByName('components', 'TP56')
+    pin = component.getPinByName('1')
+    pin.getNet() == 'GND'
+
+    component = instance.boardData.getElementByName('components', 'C13')
+    for pinNumber, netName in zip(['1', '2'], ['GND', 'NetQ15_1']):
+        pin = component.getPinByName(pinNumber)
+        assert pin.getNet() == netName
