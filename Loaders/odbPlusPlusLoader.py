@@ -46,9 +46,10 @@ class ODBPlusPlusLoader():
         for side, fileLines in zip(['B', 'T'], [botFileLines, topFileLines]):  
             i, iEnd = 0, len(fileLines)
             while i < iEnd - 1: # -1, because the file component always end with "#" line
-                while 'CMP' not in fileLines[i]:
+                if'CMP' not in fileLines[i]:
                     i += 1
-
+                    continue
+                
                 *_, componentID = fileLines[i].split(' ')
                 i += 1
 
@@ -269,11 +270,11 @@ class ODBPlusPlusLoader():
                 if pathInTar[-2:].upper() == '.Z':
                     compressedFile = extractedFile.read()
                     decompressedFile = unlzw3.unlzw(compressedFile).decode('utf-8')
-                    lines = decompressedFile.split('\n')
+                    lines = [line.replace('\r', '') for line in decompressedFile.split('\n')]
                 else:
-                    lines = [line.decode('utf-8').replace('\r\n', '') for line in extractedFile.readlines()]
+                    lines = [line.decode('utf-8').replace('\n', '').replace('\r', '') for line in extractedFile.readlines()]
         return lines
 
 if __name__ == '__main__':
     loader = ODBPlusPlusLoader()
-    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\660891125.tgz')
+    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\m10.tgz')
