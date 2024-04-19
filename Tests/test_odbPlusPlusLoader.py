@@ -168,11 +168,11 @@ def exampleNetLines():
         'FID C 8 139',
         '#NET 1',
         'NET NetQ11_1',
-        'SNT TOP B 21 0',
+        'SNT TOP T 21 0',
         'FID C 6 721',
         'FID C 7 18',
         'FID C 8 16',
-        'SNT TOP B 21 3',
+        'SNT TOP T 21 3',
         'FID C 6 861',
         'FID C 7 155'
     ]
@@ -372,28 +372,28 @@ def test__getPinsOnNet(exampleNetLines):
     
     i, netDict = instance._getPinsOnNet(exampleNetLines, 2)
     assert i == 19
-    assert list(netDict.keys()) == ['21', '40', '55']
-    assert netDict['21'] == ['12']
-    assert netDict['40'] == ['0']
-    assert netDict['55'] == ['0']
+    assert list(netDict.keys()) == ['B-21', 'B-40', 'B-55']
+    assert netDict['B-21'] == ['12']
+    assert netDict['B-40'] == ['0']
+    assert netDict['B-55'] == ['0']
 
     i, netDict = instance._getPinsOnNet(exampleNetLines, 20)
     assert i == 28
-    assert list(netDict.keys()) == ['21']
-    assert netDict['21'] == ['0', '3']
+    assert list(netDict.keys()) == ['T-21']
+    assert netDict['T-21'] == ['0', '3']
 
 def test__getNetsFromEda(exampleNetLines):
     instance = ODBPlusPlusLoader()
 
     netsDict = instance._getNetsFromEda(exampleNetLines)
     assert list(netsDict.keys()) == ['GND', 'NetQ11_1']
-    assert list(netsDict['GND'].keys()) == ['21', '40', '55']
-    assert netsDict['GND']['21'] == ['12']
-    assert netsDict['GND']['40'] == ['0']
-    assert netsDict['GND']['55'] == ['0']
+    assert list(netsDict['GND'].keys()) == ['B-21', 'B-40', 'B-55']
+    assert netsDict['GND']['B-21'] == ['12']
+    assert netsDict['GND']['B-40'] == ['0']
+    assert netsDict['GND']['B-55'] == ['0']
     
-    assert list(netsDict['NetQ11_1'].keys()) == ['21']
-    assert netsDict['NetQ11_1']['21'] == ['0', '3']
+    assert list(netsDict['NetQ11_1'].keys()) == ['T-21']
+    assert netsDict['NetQ11_1']['T-21'] == ['0', '3']
 
 def test__assignPackagesToComponents(exampleComponentMatchLines):
     bottomComponentLines, packageLines = exampleComponentMatchLines

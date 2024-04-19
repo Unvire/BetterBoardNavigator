@@ -22,7 +22,7 @@ class ODBPlusPlusLoader():
         packagesDict = self._getPackagesFromEda(self.fileLines['eda'])
         netsDict = self._getNetsFromEda(self.fileLines['eda'])
         self._assignPackagesToComponents(packageIDToComponentNameDict, packagesDict, self.boardData)
-        self._assignNetsAndPins(packageIDToComponentNameDict, netsDict, self.boardData)
+        self._assignNetsAndPins(componentIDToNameDict, netsDict, self.boardData)
 
     def _setFilePath(self, filePath:str):
         self.filePath = filePath
@@ -137,12 +137,12 @@ class ODBPlusPlusLoader():
                 self._addAreaShapeToPins(componentInstance, packageData['Pins'])
                 componentInstance.rotateInPlaceAroundCoords(componentInstance.getAngle())
     
-    def _assignNetsAndPins(self, matchComponentIDDict:dict, netsIDDict:dict, boardInstance:board.Board):
+    def _assignNetsAndPins(self, componentIDToNameDict:dict, netsIDDict:dict, boardInstance:board.Board):
         netsDict = {}
         for netName, componentIDs in netsIDDict.items():
             netsDict[netName] = {}
             for componentID, pinsList in componentIDs.items():
-                componentName = matchComponentIDDict[componentID]
+                componentName = componentIDToNameDict[componentID]
                 componentInstance = boardInstance.getElementByName('components', componentName)
                 
                 subnet = {'componentInstance': componentInstance, 'pins':sorted(pinsList, key=lambda x: int(x))}
@@ -196,7 +196,8 @@ class ODBPlusPlusLoader():
         newNetData = {}
         while i < len(fileLines) and '#' not in fileLines[i]:
             if 'SNT TOP' in fileLines[i][:7]:
-                *_, componentID, pinID = fileLines[i].split(' ')
+                *_, side, componentID, pinID = fileLines[i].split(' ')
+                componentID = f'{side}-{componentID}'
                 if not componentID in newNetData:
                     newNetData[componentID] = []
                 newNetData[componentID].append(pinID)
