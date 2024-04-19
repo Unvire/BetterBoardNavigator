@@ -1,7 +1,7 @@
 import math
 
 class Point:
-    DECIMAL_POINT_PRECISION = 3
+    DECIMAL_POINT_PRECISION = 6
     def __init__(self, x:float|int, y:float|int):
         self.x = x
         self.y = y
