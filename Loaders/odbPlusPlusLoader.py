@@ -9,7 +9,7 @@ class ODBPlusPlusLoader():
     def __init__(self):
         self.filePath = None
         self.boardData = board.Board()
-        self.fileLines = {'eda':[], 'comp_+_top':[], 'comp_+_bot':[], 'profile':[]}
+        self.fileLines = {'eda':[], 'comp_+_bot':[], 'comp_+_top':[], 'profile':[]}
         self.handleShape = {'CR':gobj.getCircleAndAreaFromValArray, 'RC':gobj.getRectangleAndAreaFromValArray, 
                             'SQ':gobj.getSquareAndAreaFromValArray, 'OS':gobj.getLineAndAreaFromNumArray, 
                             'OC':gobj.getArcAndAreaFromValArray}
@@ -148,7 +148,8 @@ class ODBPlusPlusLoader():
                 subnet = {'componentInstance': componentInstance, 'pins':sorted(pinsList, key=lambda x: int(x))}
                 for pinNumber in pinsList:
                     pinInstance = componentInstance.getPinByName(pinNumber)
-                    pinInstance.setNet(netName)
+                    if pinInstance:
+                        pinInstance.setNet(netName)
                 netsDict[netName][componentName] = subnet
 
 
