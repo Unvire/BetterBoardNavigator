@@ -32,7 +32,7 @@ class ODBPlusPlusLoader():
     def _getFileLinesFromTar(self):
         with tarfile.open(self.filePath, 'r') as file:
             allTarPaths = file.getnames()
-        
+
         tarPaths = self._getTarPathsToEdaComponents(allTarPaths)
         fileLinesKeys = list(self.fileLines.keys())
         for key, path in zip(fileLinesKeys, tarPaths):
@@ -252,9 +252,9 @@ class ODBPlusPlusLoader():
         return shapes, i, bottomLeftPoint, topRightPoint
 
     def _getTarPathsToEdaComponents(self, tarPaths:list[str]) -> list[str]:
-        componentsFilePattern = '^\w+\/steps\/\w+\/layers\/comp_\+_(bot|top)\/components(.(z|Z))?$' # matches comp_+_bot and comp_+_top files both zipped and uzipped
-        edaFilePattern = '^\w+\/steps\/\w+\/eda\/data(.(z|Z))?$' # matches eda path both zipped and unzipped
-        profileFilePattern = '^\w+\/steps\/\w+\/profile(.(z|Z))?$'  # matches profile path both zipped and unzipped
+        componentsFilePattern = '^[\w+\s\-]+\/steps\/[\w+\s\-]+\/layers\/comp_\+_(bot|top)\/components(.(z|Z))?$' # matches comp_+_bot and comp_+_top files both zipped and uzipped
+        edaFilePattern = '^[\w+\s\-]+\/steps\/[\w+\s\-]+\/eda\/data(.(z|Z))?$' # matches eda path both zipped and unzipped
+        profileFilePattern = '^[\w+\s\-]+\/steps\/[\w+\s\-]+\/profile(.(z|Z))?$'  # matches profile path both zipped and unzipped
         pattern = f'{componentsFilePattern}|{edaFilePattern}|{profileFilePattern}'
 
         result = []
@@ -287,5 +287,4 @@ class ODBPlusPlusLoader():
 
 if __name__ == '__main__':
     loader = ODBPlusPlusLoader()
-    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\panel_15021048_01.tgz')
-    #odb_15020470_02, panel_15021048_01
+    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\m10.tgz')
