@@ -46,7 +46,7 @@ class ODBPlusPlusLoader():
         for side, fileLines in zip(['B', 'T'], [botFileLines, topFileLines]):  
             i, iEnd = 0, len(fileLines)
             while i < iEnd - 1: # -1, because the file component always end with "#" line
-                if'CMP' not in fileLines[i]:
+                if 'CMP' not in fileLines[i]:
                     i += 1
                     continue
                 
@@ -262,11 +262,20 @@ class ODBPlusPlusLoader():
             if re.match(pattern, name):
                 result.append(name)
             if len(result) == 4:
-                break
-        return sorted(result)
+                return sorted(result)
+        
+        result.sort()
+        if 'top' in result[1]:
+            result.insert(1, []) # comp_+_bot is missing
+            return result
+        if 'top' not in result[2]:
+            result.insert(2, [])  # comp_+_top is missing
+            return result
     
     def _extractFileInsideTar(self, pathInTar) -> list[str]:
         with tarfile.open(self.filePath, 'r') as file:
+            if not pathInTar:
+                return []
             with file.extractfile(pathInTar) as extractedFile:
                 if pathInTar[-2:].upper() == '.Z':
                     compressedFile = extractedFile.read()
@@ -278,4 +287,5 @@ class ODBPlusPlusLoader():
 
 if __name__ == '__main__':
     loader = ODBPlusPlusLoader()
-    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\m10.tgz')
+    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\panel_15021048_01.tgz')
+    #odb_15020470_02, panel_15021048_01
