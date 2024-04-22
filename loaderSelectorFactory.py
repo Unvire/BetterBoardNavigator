@@ -3,7 +3,7 @@ import Loaders.gencadLoader
 import Loaders.odbPlusPlusLoader
 import board
 
-class LoaderSelector:
+class LoaderSelectorFactory:
     def __init__(self):
         self.loadersDict = {
             '.cad': Loaders.camcadLoader.CamCadLoader,
