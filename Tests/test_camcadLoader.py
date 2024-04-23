@@ -1,5 +1,5 @@
 import pytest
-from Loaders.camcadLoader import CamCadLoader
+from camcadLoader import CamCadLoader
 import geometryObjects as gobj
 
 @pytest.fixture

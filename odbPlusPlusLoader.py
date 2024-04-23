@@ -1,5 +1,4 @@
-import sys, os, copy, re
-sys.path.append(os.getcwd())
+import copy, re
 import tarfile,  unlzw3
 import geometryObjects as gobj
 import component as comp

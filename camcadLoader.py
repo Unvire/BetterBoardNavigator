@@ -1,5 +1,4 @@
-import sys, os, copy 
-sys.path.append(os.getcwd())
+import copy 
 import geometryObjects as gobj
 import component as comp
 import board, pin

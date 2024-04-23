@@ -1,5 +1,5 @@
 import pytest
-from Loaders.odbPlusPlusLoader import ODBPlusPlusLoader
+from odbPlusPlusLoader import ODBPlusPlusLoader
 import geometryObjects as gobj
 
 @pytest.fixture

@@ -1,5 +1,5 @@
 import pytest
-from Loaders.gencadLoader import GenCadLoader
+from gencadLoader import GenCadLoader
 import geometryObjects as gobj 
 
 @pytest.fixture
