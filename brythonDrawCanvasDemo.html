@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rysowanie na Canvas z Brython</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
+</head>
+<body onload="brython()">
+    <canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+    <script type="text/python">
+        from browser import document, window
+
+        # Pobranie elementu canvas
+        canvas = document['myCanvas']
+        if canvas.getContext:
+            ctx = canvas.getContext('2d')
+            
+            # Rysowanie prostokąta bez wypełnienia
+            ctx.beginPath()
+            ctx.rect(50, 50, 200, 100)  # x, y, szerokość, wysokość
+            ctx.strokeStyle = 'blue'
+            ctx.lineWidth = 5
+            ctx.stroke()
+            
+            # Rysowanie linii prostej
+            ctx.beginPath()
+            ctx.moveTo(300, 300)  # Punkt początkowy
+            ctx.lineTo(450, 450)  # Punkt końcowy
+            ctx.strokeStyle = 'green'
+            ctx.lineWidth = 2
+            ctx.stroke()
+            
+            # Rysowanie koła
+            ctx.beginPath()
+            ctx.arc(150, 400, 50, 0, 2 * window.Math.PI)  # x, y, promień, kąt początkowy, kąt końcowy
+            ctx.strokeStyle = 'red'
+            ctx.lineWidth = 3
+            ctx.stroke()
+            
+            # Ustawienie stylów dla łuku
+            ctx.fillStyle = 'yellow'
+            ctx.beginPath()
+            
+            # Rysowanie łuku
+            # ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
+            ctx.arc(380, 150, 100, 0, 1.5 * window.Math.PI)  # np. 3/2 PI oznacza łuk 270 stopni
+
+            # Zakończenie rysowania i wypełnienie łuku			
+            ctx.strokeStyle = 'yellow'
+            ctx.stroke()
+            ctx.fill()
+			
+    </script>
+</body>
+</html>
