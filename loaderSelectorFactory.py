@@ -1,14 +1,12 @@
-import Loaders.camcadLoader
-import Loaders.gencadLoader
-import Loaders.odbPlusPlusLoader
+import camcadLoader, gencadLoader, odbPlusPlusLoader
 import board
 
 class LoaderSelectorFactory:
     def __init__(self):
         self.loadersDict = {
-            '.cad': Loaders.camcadLoader.CamCadLoader,
-            '.gcd': Loaders.gencadLoader.GenCadLoader,
-            '.tgz': Loaders.odbPlusPlusLoader.ODBPlusPlusLoader
+            '.cad': camcadLoader.CamCadLoader,
+            '.gcd': gencadLoader.GenCadLoader,
+            '.tgz': odbPlusPlusLoader.ODBPlusPlusLoader
         }
 
     def loadFile(self, filePath:str) -> board.Board:
