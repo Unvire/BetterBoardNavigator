@@ -97,16 +97,28 @@ class Line:
         return result1 or result2
 
 class Arc:
+    IS_Y_INVERTED = False
     def __init__(self, startPoint:Point, endPoint:Point, rotationPoint:Point):
         self.startPoint = startPoint
         self.endPoint = endPoint
         self.rotationPoint = rotationPoint
+
+        self.radius = self._calculateRadius()
     
     def __str__(self):
         return f'Arc: start point=({self.startPoint}), end point=({self.endPoint}), rotation point=({self.rotationPoint})'
     
     def __eq__(self, arc:'Arc'):
         return self.rotationPoint == arc.rotationPoint and self.startPoint == arc.startPoint and self.endPoint == arc.endPoint
+    
+    def _calculateRadius(self) -> float:
+        x0, y0 = self.startPoint.getXY()
+        xRot, yRot = self.rotationPoint.getXY()
+        return ((x0 - xRot) ** 2 + (y0 - yRot) ** 2) ** 0.5
+    
+    def getAsCenterRadiusAngles(self):
+        ...
+
 
 class Circle:
     def __init__(self, centerPoint:Point, radius:float):
