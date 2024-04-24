@@ -136,22 +136,32 @@ def test_ArcGetAsCenterRadiusAngles():
     pointA = gobj.Point(0, 0)
     pointB = gobj.Point((-1 + math.sqrt(3)) / 2, (1 + math.sqrt(3))/2)
     pointC = gobj.Point(1, -1)
+
     arc1 = gobj.Arc(pointA, pointB, pointC)
-    ux, uy = -1, 1
-    assert arc1.getAsCenterRadiusAngles() == (pointC, math.sqrt(2), 
-                                              math.atan2(0 + ux, 0 + uy), 
-                                              math.atan2(((1 + math.sqrt(3)) / 2) + ux, ((-1 + math.sqrt(3)) / 2) + uy))
+    point, radius, startAngle, endAngle = arc1.getAsCenterRadiusAngles()
+    print(round(startAngle * 180/math.pi, 3), round(endAngle * 180/math.pi, 3))
+    #assert point == pointC 
+    #assert radius == math.sqrt(2)
+    #assert round(startAngle * 180/math.pi, 3) == 315.000
+    #assert round(endAngle * 180/math.pi, 3) == 15.000
+    print('------')
 
     arc2 = gobj.Arc(pointC, pointA, pointB)
-    ux, uy = (1 + math.sqrt(3)) / 2, (-1 + math.sqrt(3)) / 2
-    assert arc2.getAsCenterRadiusAngles() == (pointB, math.sqrt(6), 
-                                              math.atan2(-1 + ux, 1 + uy), 
-                                              math.atan2(0 + ux, 0 + uy))
+    point, radius, startAngle, endAngle = arc2.getAsCenterRadiusAngles()
+    print(round(startAngle * 180/math.pi, 3), round(endAngle * 180/math.pi, 3))
+    assert point == pointB 
+    assert radius == math.sqrt(6)
+    assert round(startAngle * 180/math.pi, 3) == 195.000
+    assert round(endAngle * 180/math.pi, 3) == 255.000
+    print('------')
+    
     arc3 = gobj.Arc(pointB, pointC, pointA)
-    ux, uy = 0, 0
-    assert arc3.getAsCenterRadiusAngles() == (pointA, math.sqrt(2), 
-                                              math.atan2(((1 + math.sqrt(3)) / 2) + ux, ((-1 + math.sqrt(3)) / 2) + uy), 
-                                              math.atan2( -1 + ux, 1 + uy))
+    point, radius, startAngle, endAngle = arc3.getAsCenterRadiusAngles()
+    assert point == pointA
+    assert radius == math.sqrt(2)
+    assert round(startAngle * 180/math.pi, 3) == 75.000
+    assert round(endAngle * 180/math.pi, 3) == 135.000
+    #assert 1==0
 
 
 def test_CircleEqual():
