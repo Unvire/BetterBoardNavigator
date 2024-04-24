@@ -115,11 +115,11 @@ class Arc:
     def _calculateRadius(self) -> float:
         x0, y0 = self.startPoint.getXY()
         xRot, yRot = self.rotationPoint.getXY()
-        return ((x0 - xRot) **2 + (y0 - yRot) ** 2) ** 0.5
+        return math.sqrt((x0 - xRot)**2 + (y0 - yRot)**2)
 
     def _calculateAngleRad(self, point:Point, referencePoint:Point) -> float:
         xVector, yVector = referencePoint.getXY()
-        x, y = point.getX() - xVector, point.getY() - yVector
+        x, y = point.getX() + xVector, point.getY() + yVector
         return math.atan2(y, x)
     
     def getAsCenterRadiusAngles(self) -> tuple[Point, float, float, float]:
