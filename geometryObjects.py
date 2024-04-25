@@ -119,14 +119,10 @@ class Arc:
 
     def _calculateAngleRad(self, point:Point, referencePoint:Point) -> float:
         xVector, yVector = referencePoint.getXY()
-        print('ref ', referencePoint.getXY())
-        print('before translation ', point.getXY())
-        x, y = point.getX() + xVector, point.getY() + yVector
+        x, y = point.getX() - xVector, point.getY() - yVector
         angle = math.atan2(y, x)
         if angle < 0:
             angle += math.pi * 2
-        print('points ', x, y)
-        print('angles ', math.atan2(y, x)* 180/math.pi)
         return angle
     
     def getAsCenterRadiusAngles(self) -> tuple[Point, float, float, float]:

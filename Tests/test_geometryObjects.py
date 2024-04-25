@@ -135,33 +135,28 @@ def test_ArcEqual():
 def test_ArcGetAsCenterRadiusAngles():
     pointA = gobj.Point(0, 0)
     pointB = gobj.Point((-1 + math.sqrt(3)) / 2, (1 + math.sqrt(3))/2)
-    pointC = gobj.Point(1, -1)
+    pointC = gobj.Point(-1, 1)
 
     arc1 = gobj.Arc(pointA, pointB, pointC)
     point, radius, startAngle, endAngle = arc1.getAsCenterRadiusAngles()
-    print(round(startAngle * 180/math.pi, 3), round(endAngle * 180/math.pi, 3))
-    #assert point == pointC 
-    #assert radius == math.sqrt(2)
-    #assert round(startAngle * 180/math.pi, 3) == 315.000
-    #assert round(endAngle * 180/math.pi, 3) == 15.000
-    print('------')
+    assert point == pointC 
+    assert radius == math.sqrt(2)
+    assert round(startAngle * 180/math.pi, 3) == 315.000
+    assert round(endAngle * 180/math.pi, 3) == 15.000
 
     arc2 = gobj.Arc(pointC, pointA, pointB)
     point, radius, startAngle, endAngle = arc2.getAsCenterRadiusAngles()
-    print(round(startAngle * 180/math.pi, 3), round(endAngle * 180/math.pi, 3))
     assert point == pointB 
-    assert radius == math.sqrt(6)
+    assert radius == math.sqrt(2)
     assert round(startAngle * 180/math.pi, 3) == 195.000
     assert round(endAngle * 180/math.pi, 3) == 255.000
-    print('------')
-    
+
     arc3 = gobj.Arc(pointB, pointC, pointA)
     point, radius, startAngle, endAngle = arc3.getAsCenterRadiusAngles()
     assert point == pointA
     assert radius == math.sqrt(2)
     assert round(startAngle * 180/math.pi, 3) == 75.000
     assert round(endAngle * 180/math.pi, 3) == 135.000
-    #assert 1==0
 
 
 def test_CircleEqual():
