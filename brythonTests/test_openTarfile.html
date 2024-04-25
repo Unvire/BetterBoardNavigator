@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wczytanie pliku TAR w Brython</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
+</head>
+<body onload="brython()">
+    <input type="file" id="fileInput">
+    <button id="loadButton">Wczytaj Plik</button>
+    <script type="text/python">
+        from browser import document, window
+
+        def load_file(ev):
+            file_input = document['fileInput']
+            if file_input.files.length == 0:
+                print("Nie wybrano pliku.")
+                return
+
+            file = file_input.files[0]
+            reader = window.FileReader.new()
+            
+            def onload(event):
+                array_buffer = reader.result  # Zawartość pliku jako ArrayBuffer
+                print("Plik wczytany, długość danych w bajtach:", array_buffer.byteLength)
+                # Tutaj można by rozpakować plik używając zewnętrznej biblioteki JavaScript
+
+            reader.bind('load', onload)
+            reader.readAsArrayBuffer(file)  # Czytaj plik jako ArrayBuffer
+
+        document['loadButton'].bind('click', load_file)
+    </script>
+</body>
+</html>
