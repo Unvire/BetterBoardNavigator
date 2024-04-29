@@ -19,7 +19,7 @@ class ODBPlusPlusLoader():
         return fileLines
 
     def processFile(self, fileLines:list[str]) -> board.Board:
-        self._spliFileLinesToSections(fileLines)
+        self._getSectionsFromFileLines(fileLines)
         self._getBoardOutlineFromProfileFile(self.fileLines['profile'], self.boardData)
         packageIDToComponentNameDict, componentIDToNameDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
         packagesDict = self._getPackagesFromEda(self.fileLines['eda'])
@@ -36,17 +36,29 @@ class ODBPlusPlusLoader():
             allTarPaths = file.getnames()
         
         tarPaths = self._getTarPathsToEdaComponents(allTarPaths)
-        fileLinesKeys = list(self.fileLines.keys())
+
         fileLines = []
+        endLineNumber = -1
+        lastLineSectionNumbers = ''
         for path in tarPaths:
-            fileLines.append(f':file:{fileLinesKeys.pop(0)}')
-            lines = self._extractFileInsideTar(path)
-            fileLines += lines
+            if path:
+                startLineNumber = endLineNumber + 1
+                lines = self._extractFileInsideTar(path)
+                fileLines += lines
+                endLineNumber = startLineNumber + len(lines) - 1
+                lastLineSectionNumbers += f'{startLineNumber};{endLineNumber};'
+            else:
+                lastLineSectionNumbers += '0;0;'
+        fileLines.append(lastLineSectionNumbers)
+
         return fileLines
     
-    def _spliFileLinesToSections(self, fileLines:list[str]):
-        ...
-        
+    def _getSectionsFromFileLines(self, fileLines:list[str]):
+        *sectionsStartEnd, _ = [val for val in fileLines[-1].split(';')] # last item is always ''
+        for key in self.fileLines:
+            sectionStart = int(sectionsStartEnd.pop(0))
+            sectionEnd = int(sectionsStartEnd.pop(0)) + 1
+            self.fileLines[key] = fileLines[sectionStart:sectionEnd + 1]
 
     def _getComponentsFromCompBotTopFiles(self, botFileLines:list[str], topFileLines:list[str], boardInstance:board.Board) -> tuple[dict, dict]:
         packageIDToComponentNameDict = {}
@@ -289,4 +301,5 @@ class ODBPlusPlusLoader():
 
 if __name__ == '__main__':
     loader = ODBPlusPlusLoader()
-    loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\m10.tgz')
+    fileLines = loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\DEL2114.tgz')
+    loader.processFile(fileLines)
