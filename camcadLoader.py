@@ -9,9 +9,12 @@ class CamCadLoader:
         self.boardData = board.Board()
         self.sectionsLineNumbers = {'BOARDINFO':[], 'PARTLIST':[], 'PNDATA':[], 'NETLIST':[], 'PAD':[], 'PACKAGES':[], 'BOARDOUTLINE':[]}
 
-    def loadFile(self, filePath:str):
+    def loadFile(self, filePath:str) -> list[str]:
         self._setFilePath(filePath)
-        fileLines = self._getFileLines()        
+        fileLines = self._getFileLines()
+        return fileLines
+
+    def processFile(self, fileLines:list[str]) -> board.Board:       
         self._getSectionsLinesBeginEnd(fileLines)
 
         ## boardData is modified globally inside these functions

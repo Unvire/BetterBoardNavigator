@@ -13,31 +13,36 @@ class ODBPlusPlusLoader():
                             'SQ':gobj.getSquareAndAreaFromValArray, 'OS':gobj.getLineAndAreaFromNumArray, 
                             'OC':gobj.getArcAndAreaFromValArray}
 
-    def loadFile(self, filePath:str):
+    def loadFile(self, filePath:str) -> dict:
         self._setFilePath(filePath)
-        self._getFileLinesFromTar()
+        fileLinesDict = self._getFileLinesFromTar()
+        return fileLinesDict
+
+    def processFile(self, fileLinesDict:dict) -> board.Board:
+        self.fileLines = fileLinesDict
         self._getBoardOutlineFromProfileFile(self.fileLines['profile'], self.boardData)
         packageIDToComponentNameDict, componentIDToNameDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
         packagesDict = self._getPackagesFromEda(self.fileLines['eda'])
         netsDict = self._getNetsFromEda(self.fileLines['eda'])
         self._assignPackagesToComponents(packageIDToComponentNameDict, packagesDict, self.boardData)
         self._assignNetsAndPins(componentIDToNameDict, netsDict, self.boardData)
-
         return self.boardData
 
     def _setFilePath(self, filePath:str):
         self.filePath = filePath
 
-    def _getFileLinesFromTar(self):
+    def _getFileLinesFromTar(self) -> dict:
         with tarfile.open(self.filePath, 'r') as file:
             allTarPaths = file.getnames()
-
+        
         tarPaths = self._getTarPathsToEdaComponents(allTarPaths)
         fileLinesKeys = list(self.fileLines.keys())
+        fileLinesDict = {}
         for key, path in zip(fileLinesKeys, tarPaths):
             lines = self._extractFileInsideTar(path)
-            self.fileLines[key] = lines
-    
+            fileLinesDict[key] = lines
+        return fileLinesDict
+
     def _getComponentsFromCompBotTopFiles(self, botFileLines:list[str], topFileLines:list[str], boardInstance:board.Board) -> tuple[dict, dict]:
         packageIDToComponentNameDict = {}
         componentIDToNameDict = {}

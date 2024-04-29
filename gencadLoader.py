@@ -11,9 +11,12 @@ class GenCadLoader:
         self.handleShape = {'LINE':gobj.getLineAndAreaFromNumArray, 'ARC':gobj.getArcAndAreaFromValArray, 
                             'CIRCLE':gobj.getCircleAndAreaFromValArray, 'RECTANGLE':gobj.getRectangleAndAreaFromValArray}
     
-    def loadFile(self, filePath:str):
+    def loadFile(self, filePath:str) -> list[str]:
         self._setFilePath(filePath)
-        fileLines = self._getFileLines()        
+        fileLines = self._getFileLines()
+        return fileLines
+    
+    def processFile(self, fileLines:list[str]) -> board.Board:
         self._getSectionsLinesBeginEnd(fileLines)
         padsDict = self._getPadsFromPADS(fileLines)
         padstackDict = self._getPadstacksFromPADSTACKS(fileLines, padsDict)
@@ -22,7 +25,6 @@ class GenCadLoader:
         self._addShapePadDataToComponent(self.boardData, shapeToComponentsDict, shapesDict, padstackDict)
         self._getNetsFromSIGNALS(fileLines, self.boardData)
         self._getTracksFromROUTES(fileLines, self.boardData)
-
         return self.boardData
     
     def _setFilePath(self, filePath:str):
