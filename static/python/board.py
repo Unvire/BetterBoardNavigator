@@ -1,4 +1,3 @@
-import pin
 import geometryObjects as gobj
 import component as comp
 
