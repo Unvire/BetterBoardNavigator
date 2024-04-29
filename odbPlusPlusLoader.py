@@ -13,13 +13,13 @@ class ODBPlusPlusLoader():
                             'SQ':gobj.getSquareAndAreaFromValArray, 'OS':gobj.getLineAndAreaFromNumArray, 
                             'OC':gobj.getArcAndAreaFromValArray}
 
-    def loadFile(self, filePath:str) -> dict:
+    def loadFile(self, filePath:str) -> list[str]:
         self._setFilePath(filePath)
-        fileLinesDict = self._getFileLinesFromTar()
-        return fileLinesDict
+        fileLines = self._getFileLinesFromTar()
+        return fileLines
 
-    def processFile(self, fileLinesDict:dict) -> board.Board:
-        self.fileLines = fileLinesDict
+    def processFile(self, fileLines:list[str]) -> board.Board:
+        self._spliFileLinesToSections(fileLines)
         self._getBoardOutlineFromProfileFile(self.fileLines['profile'], self.boardData)
         packageIDToComponentNameDict, componentIDToNameDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
         packagesDict = self._getPackagesFromEda(self.fileLines['eda'])
@@ -37,11 +37,16 @@ class ODBPlusPlusLoader():
         
         tarPaths = self._getTarPathsToEdaComponents(allTarPaths)
         fileLinesKeys = list(self.fileLines.keys())
-        fileLinesDict = {}
-        for key, path in zip(fileLinesKeys, tarPaths):
+        fileLines = []
+        for path in tarPaths:
+            fileLines.append(f':file:{fileLinesKeys.pop(0)}')
             lines = self._extractFileInsideTar(path)
-            fileLinesDict[key] = lines
-        return fileLinesDict
+            fileLines += lines
+        return fileLines
+    
+    def _spliFileLinesToSections(self, fileLines:list[str]):
+        ...
+        
 
     def _getComponentsFromCompBotTopFiles(self, botFileLines:list[str], topFileLines:list[str], boardInstance:board.Board) -> tuple[dict, dict]:
         packageIDToComponentNameDict = {}
@@ -266,15 +271,8 @@ class ODBPlusPlusLoader():
             if re.match(pattern, name):
                 result.append(name)
             if len(result) == 4:
-                return sorted(result)
-        
-        result.sort()
-        if 'top' in result[1]:
-            result.insert(1, []) # comp_+_bot is missing
-            return result
-        if 'top' not in result[2]:
-            result.insert(2, [])  # comp_+_top is missing
-            return result
+                break
+        return sorted(result)
     
     def _extractFileInsideTar(self, pathInTar) -> list[str]:
         with tarfile.open(self.filePath, 'r') as file:
