@@ -32,7 +32,7 @@ class CamCadLoader:
     def _getFileLines(self) -> list[str]:
         with open(self.filePath, 'r') as file:
             fileLines = file.readlines()
-        return [line.replace('\n') for line in fileLines]
+        return [line.replace('\n', '') for line in fileLines]
 
     def _getSectionsLinesBeginEnd(self, fileLines:list[str]):
         for i, line in enumerate(fileLines):
@@ -219,5 +219,6 @@ if __name__ == '__main__':
     #filePath = r'C:\Users\krzys\Documents\GitHub\boardNavigator\Schematic\lvm Core.cad'
     filePath = r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm Core.cad'
     loader = CamCadLoader()
-    loader.loadFile(filePath)
+    fileLines = loader.loadFile(filePath)
+    loader.processFile(fileLines)
     print(loader.boardData.area[0], loader.boardData.area[1])  
