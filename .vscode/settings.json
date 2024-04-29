@@ -1,7 +1,8 @@
 {
     "python.testing.pytestArgs": [
-        "static/python/Tests", "-s", "--capture=sys", 
+        "-s", "--capture=sys", 
     ],
+    "python.testing.cwd": "${workspaceFolder}/static/python/",
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
 }
