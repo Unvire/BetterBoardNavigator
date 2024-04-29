@@ -282,9 +282,18 @@ class ODBPlusPlusLoader():
         for name in tarPaths:
             if re.match(pattern, name):
                 result.append(name)
-            if len(result) == 4:
-                break
-        return sorted(result)
+        
+        result.sort()
+        if len(result) == 4:
+            return result
+        
+        if 'comp_+_bot' not in result[1]:
+            result.insert(1, [])
+            return result
+        
+        if 'comp_+_top' not in result[2]:
+            result.insert(2, [])
+            return result
     
     def _extractFileInsideTar(self, pathInTar) -> list[str]:
         with tarfile.open(self.filePath, 'r') as file:
