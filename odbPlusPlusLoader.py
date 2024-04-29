@@ -57,8 +57,8 @@ class ODBPlusPlusLoader():
         *sectionsStartEnd, _ = [val for val in fileLines[-1].split(';')] # last item is always ''
         for key in self.fileLines:
             sectionStart = int(sectionsStartEnd.pop(0))
-            sectionEnd = int(sectionsStartEnd.pop(0)) + 1
-            self.fileLines[key] = fileLines[sectionStart:sectionEnd + 1]
+            sectionEnd = int(sectionsStartEnd.pop(0))
+            self.fileLines[key] = fileLines[sectionStart:sectionEnd + 1] if bool(sectionStart) or bool(sectionEnd) else []
 
     def _getComponentsFromCompBotTopFiles(self, botFileLines:list[str], topFileLines:list[str], boardInstance:board.Board) -> tuple[dict, dict]:
         packageIDToComponentNameDict = {}
