@@ -6,14 +6,24 @@
         <script type="text/javascript" src="static/js/brython_stdlib.js"></script>
         <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>        
         <script type="text/python" src="static/brython/drawFunctions.py" id="drawFunctions"></script>
-        <script type="text/python" src="static/python/geometryObjects.py" id="gobj"></script>
+        <script type="text/python" src="static/python/geometryObjects.py" id="geometryObjects"></script>
+        <script type="text/python" src="static/python/abstractShape.py" id="abstractShape"></script>   
+        <script type="text/python" src="static/python/pin.py" id="pin"></script>     
+        <script type="text/python" src="static/python/component.py" id="component"></script>
+        <script type="text/python" src="static/python/board.py" id="board"></script>
+        <script type="text/python" src="static/python/camcadLoader.py" id="camcadLoader"></script>
+        <script type="text/python" src="static/python/gencadLoader.py" id="gencadLoader"></script>
+        <script type="text/python" src="static/python/unlzw3.py" id="unlzw3"></script>
+        <script type="text/python" src="static/python/odbPlusPlusLoader.py" id="odbPlusPlusLoader"></script>
+        <script type="text/python" src="static/python/loaderSelectorFactory.py" id="loaderSelectorFactory"></script>
     </head>
 
     <body onload="brython(1)">        
         <canvas id="myCanvas" width="1500" height="700" style="border:1px solid #000000;"></canvas>
         <script type="text/python">
             from browser import document
-            import drawFunctions, gobj
+            import drawFunctions
+            import geometryObjects as gobj
 
             canvas = document['myCanvas']
             context = canvas.getContext('2d')
