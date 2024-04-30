@@ -30,6 +30,13 @@ class Shape():
     def getShapePoints(self) -> tuple[gobj.Point]:
         return self.shapeData.getPoints()
     
+    def getShapeDataAsXYsList(self) -> list[tuple[int|float]]:
+        pointList = self.getShapePoints()
+        result = []
+        for point in pointList:
+            result.append(point.getXY())
+        return result
+    
     def setCoords(self, coords:gobj.Point):
         self.coords = coords
     
