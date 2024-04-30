@@ -6,7 +6,7 @@ def drawLine(context:'canvas.getContext()', startPointTuple:tuple[int, int], end
     context.beginPath()
     context.moveTo(x0, y0)
     context.lineTo(x1, y1)
-    _setCommonParameters(context, color, lineWidth, False)
+    _setCommonParameters(context, color, lineWidth)
 
 def drawRectangle(context:'canvas.getContext()', bottomLeftPoint:tuple[int, int], topRightPoint:tuple[int, int], color:str, lineWidth:int, isFill:bool=False, fillColor:str='red'):
     x0, y0 = bottomLeftPoint
@@ -16,7 +16,7 @@ def drawRectangle(context:'canvas.getContext()', bottomLeftPoint:tuple[int, int]
     context.rect(x0, y0, width, height)
     context.strokeStyle = color
     context.lineWidth = lineWidth
-    _setCommonParameters(context, color, lineWidth, isFill)
+    _setCommonParameters(context, color, lineWidth, isFill, fillColor)
 
 def drawCircle(context:'canvas.getContext()', centerPoint:tuple[int, int], radius:float|int, color:str, lineWidth:int, isFill:bool=False, fillColor:str='red'):
     drawArc(context, centerPoint, radius, 0, 2 * window.Math.PI, color, lineWidth, isFill, fillColor)
@@ -25,12 +25,12 @@ def drawArc(context:'canvas.getContext()', centerPoint:tuple[int, int], radius:f
     x0, y0 = centerPoint
     context.beginPath()
     context.arc(x0, y0, radius, startAngleRad, endAngleRad)
-    _setCommonParameters(context, color, lineWidth, isFill)
+    _setCommonParameters(context, color, lineWidth, isFill, fillColor)
 
 def _setCommonParameters(context:'canvas.getContext()', color:str, lineWidth:int, isFill:bool=False, fillColor:str='red'):
     context.strokeStyle = color
     context.lineWidth = lineWidth
-    context.stroke()
     if isFill:
         context.fillStyle = fillColor
         context.fill()
+    context.stroke()
