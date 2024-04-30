@@ -19,8 +19,11 @@
     </head>
 
     <body onload="brython(1)">        
+        <input type="file" id="fileInput">
+        <button id="loadButton">Wczytaj Plik</button>
         <canvas id="myCanvas" width="1500" height="700" style="border:1px solid #000000;"></canvas>
-        <script type="text/python">
+        <div id="fileContent"></div>
+        <script type="text/python" id="drawTest">
             from browser import document
             import drawFunctions
             import geometryObjects as gobj
@@ -33,7 +36,38 @@
             drawFunctions.drawArc(context, (380, 150), 100, 5.497787143782138, 0.2617993877991494, 'blue', 2, True, 'red')
             drawFunctions.drawPolygon(context, [(600, 300), (720, 400), (200, 230)], 'black', 2, True, 'green')
             document <= gobj.Point(10, 10).__str__()
-
+        </script>        
+        <script type="text/python">
+            from browser import document, window, alert
+            from loaderSelectorFactory import LoaderSelectorFactory
+            from board import Board
+            
+            def read_file(ev):
+                file_input = document['fileInput']
+                if file_input.files.length == 0:
+                    alert("Proszę wybrać plik tekstowy.")
+                    return
+    
+                file = file_input.files[0]                
+                reader = window.FileReader.new()
+                print(file.name)
+    
+                def onload(event):                
+                    file_content = document['fileContent']
+                    fileLines = reader.result.split('\r\n')
+                    file_content.text = fileLines
+                    boardLoader = LoaderSelectorFactory(file.name)
+                    boardInstance = boardLoader.processFileLines(fileLines)
+                    #file_content.text = len(boardInstance.getComponents())  # Wstaw zawartość pliku do diva
+    
+                def onerror(event):
+                    alert("Nie można odczytać pliku.")
+    
+                reader.bind('load', onload)
+                reader.bind('error', onerror)
+                reader.readAsText(file)  # Odczytaj plik jako tekst
+    
+            document['fileInput'].bind('change', read_file)  # Automatyczne ładowanie po wybraniu pliku
         </script>
     </body>
 </html>

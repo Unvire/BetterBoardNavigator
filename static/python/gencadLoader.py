@@ -16,7 +16,7 @@ class GenCadLoader:
         fileLines = self._getFileLines()
         return fileLines
     
-    def processFile(self, fileLines:list[str]) -> board.Board:
+    def processFileLines(self, fileLines:list[str]) -> board.Board:
         self._getSectionsLinesBeginEnd(fileLines)
         padsDict = self._getPadsFromPADS(fileLines)
         padstackDict = self._getPadstacksFromPADSTACKS(fileLines, padsDict)
@@ -337,4 +337,4 @@ class GenCadLoader:
 if __name__ == '__main__':
     loader = GenCadLoader()
     fileLines = loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\jaguar REV.GCD')
-    loader.processFile(fileLines)
+    loader.processFileLines(fileLines)

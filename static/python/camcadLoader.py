@@ -14,7 +14,7 @@ class CamCadLoader:
         fileLines = self._getFileLines()
         return fileLines
 
-    def processFile(self, fileLines:list[str]) -> board.Board:       
+    def processFileLines(self, fileLines:list[str]) -> board.Board:       
         self._getSectionsLinesBeginEnd(fileLines)
 
         ## boardData is modified globally inside these functions
@@ -220,5 +220,5 @@ if __name__ == '__main__':
     filePath = r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm Core.cad'
     loader = CamCadLoader()
     fileLines = loader.loadFile(filePath)
-    loader.processFile(fileLines)
+    loader.processFileLines(fileLines)
     print(loader.boardData.area[0], loader.boardData.area[1])  

@@ -18,7 +18,7 @@ class ODBPlusPlusLoader():
         fileLines = self._getFileLinesFromTar()
         return fileLines
 
-    def processFile(self, fileLines:list[str]) -> board.Board:
+    def processFileLines(self, fileLines:list[str]) -> board.Board:
         self._getSectionsFromFileLines(fileLines)
         self._getBoardOutlineFromProfileFile(self.fileLines['profile'], self.boardData)
         packageIDToComponentNameDict, componentIDToNameDict = self._getComponentsFromCompBotTopFiles(self.fileLines['comp_+_bot'], self.fileLines['comp_+_top'], self.boardData)
@@ -311,4 +311,4 @@ class ODBPlusPlusLoader():
 if __name__ == '__main__':
     loader = ODBPlusPlusLoader()
     fileLines = loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\DEL2114.tgz')
-    loader.processFile(fileLines)
+    loader.processFileLines(fileLines)
