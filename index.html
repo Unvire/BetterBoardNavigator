@@ -6,13 +6,14 @@
         <script type="text/javascript" src="static/js/brython_stdlib.js"></script>
         <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>        
         <script type="text/python" src="static/brython/drawFunctions.py" id="drawFunctions"></script>
+        <script type="text/python" src="static/python/geometryObjects.py" id="gobj"></script>
     </head>
 
     <body onload="brython(1)">        
-        <canvas id="myCanvas" width="1500" height="1000" style="border:1px solid #000000;"></canvas>
+        <canvas id="myCanvas" width="1500" height="700" style="border:1px solid #000000;"></canvas>
         <script type="text/python">
             from browser import document
-            import drawFunctions
+            import drawFunctions, gobj
 
             canvas = document['myCanvas']
             context = canvas.getContext('2d')
@@ -20,6 +21,8 @@
             drawFunctions.drawRectangle(context, (50, 50), (250, 150), 'blue', 5)
             drawFunctions.drawCircle(context, (150, 450), 50, 'red', 3, True, 'yellow')
             drawFunctions.drawArc(context, (380, 150), 100, 5.497787143782138, 0.2617993877991494, 'blue', 2, True, 'red')
+            document <= gobj.Point(10, 10).__str__()
+
         </script>
     </body>
 </html>
