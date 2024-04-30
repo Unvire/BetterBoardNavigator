@@ -248,7 +248,7 @@ class ODBPlusPlusLoader():
         newPin.setCoords(centerPoint)
         return newPin
     
-    def _getShapesAndPointsFromConturSection(self, fileLines:list[str], i:int, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[list[gobj.Point|gobj.Arc|gobj.Circle|gobj.Rectangle], int, gobj.Point, gobj.Point]:
+    def _getShapesAndPointsFromConturSection(self, fileLines:list[str], i:int, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[list['gobj.Point|gobj.Arc|gobj.Circle|gobj.Rectangle'], int, gobj.Point, gobj.Point]:
         shapes = []
 
         _, x, y, *_ = fileLines[i].split(' ')

@@ -46,5 +46,5 @@ class Board:
     def getTracks(self) -> dict:
         return self.tracks
     
-    def getTrack(self, side:str, netName:str) -> list[gobj.Line|gobj.Rectangle|gobj.Arc|gobj.Circle]:
+    def getTrack(self, side:str, netName:str) -> list['gobj.Line|gobj.Rectangle|gobj.Arc|gobj.Circle']:
         return self.tracks[netName][side]
