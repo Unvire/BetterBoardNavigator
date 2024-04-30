@@ -43,31 +43,31 @@
             from board import Board
             
             def read_file(ev):
-                file_input = document['fileInput']
+                def onload(event):
+                    fileLines = reader.result.split('\r\n')
+                    file_content.text = fileLines
+                    boardLoader = LoaderSelectorFactory(file.name)
+                    boardInstance = boardLoader.processFileLines(fileLines)
+                    file_content.text += f' number of components: {len(boardInstance.getComponents())}'
+    
+                def onerror(event):
+                    alert("Nie można odczytać pliku.")
+                
                 if file_input.files.length == 0:
                     alert("Proszę wybrać plik tekstowy.")
                     return
     
                 file = file_input.files[0]                
-                reader = window.FileReader.new()
+                reader = window.FileReader.new()                
+                reader.readAsText(file)  # Odczytaj plik jako tekst
                 print(file.name)
-    
-                def onload(event):                
-                    file_content = document['fileContent']
-                    fileLines = reader.result.split('\r\n')
-                    file_content.text = fileLines
-                    boardLoader = LoaderSelectorFactory(file.name)
-                    boardInstance = boardLoader.processFileLines(fileLines)
-                    #file_content.text = file_content.text + len(boardInstance.getComponents())  # Wstaw zawartość pliku do diva
-    
-                def onerror(event):
-                    alert("Nie można odczytać pliku.")
     
                 reader.bind('load', onload)
                 reader.bind('error', onerror)
-                reader.readAsText(file)  # Odczytaj plik jako tekst
-    
-            document['fileInput'].bind('change', read_file)  # Automatyczne ładowanie po wybraniu pliku
+
+            file_input = document['fileInput']
+            file_content = document['fileContent']
+            file_input.bind('change', read_file)  # Automatyczne ładowanie po wybraniu pliku
         </script>
     </body>
 </html>
