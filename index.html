@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <script type="text/javascript" src="static/js/brython.js"></script>
+        <script type="text/javascript" src="static/js/brython_stdlib.js"></script>
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+    </head>
+
+    <body onload="brython(1)">
+        <script type="text/python">
+            from browser import document
+
+            document <= "Hello"
+        </script>
+    </body>
+</html>
