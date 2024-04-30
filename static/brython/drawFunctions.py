@@ -18,6 +18,16 @@ def drawRectangle(context:'canvas.getContext()', bottomLeftXY:tuple[int, int], t
     context.lineWidth = lineWidth
     _setCommonParameters(context, color, lineWidth, isFill, fillColor)
 
+def drawPolygon(context:'canvas.getContext()', pointXYList:list[tuple[int, int]], color:str, lineWidth:int, isFill:bool=False, fillColor:str='red'):
+    x0, y0 = pointXYList.pop(0)
+    context.beginPath()
+    context.moveTo(x0, y0)
+    for x, y in pointXYList:
+        context.lineTo(x, y)
+    context.closePath()
+    _setCommonParameters(context, color, lineWidth, isFill, fillColor)
+
+
 def drawCircle(context:'canvas.getContext()', centerXY:tuple[int, int], radius:float|int, color:str, lineWidth:int, isFill:bool=False, fillColor:str='red'):
     drawArc(context, centerXY, radius, 0, 2 * window.Math.PI, color, lineWidth, isFill, fillColor)
 
