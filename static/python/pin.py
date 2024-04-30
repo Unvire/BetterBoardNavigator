@@ -1,4 +1,3 @@
-import geometryObjects as gobj 
 import abstractShape
 
 class Pin(abstractShape.Shape):
