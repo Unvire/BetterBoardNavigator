@@ -4,14 +4,18 @@
         <meta charset="utf-8"/>
         <script type="text/javascript" src="static/js/brython.js"></script>
         <script type="text/javascript" src="static/js/brython_stdlib.js"></script>
-        <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>        
+        <script type="text/python" src="static/brython/testDraw.py" id="testDraw"></script>
     </head>
 
-    <body onload="brython(1)">
+    <body onload="brython(1)">        
+        <canvas id="myCanvas" width="1500" height="1000" style="border:1px solid #000000;"></canvas>
         <script type="text/python">
             from browser import document
+            import testDraw
 
-            document <= "Hello"
+            canvas = document['myCanvas']
+            testDraw.drawOnCanvas(canvas)
         </script>
     </body>
 </html>
