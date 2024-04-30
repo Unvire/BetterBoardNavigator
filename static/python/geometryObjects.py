@@ -170,7 +170,7 @@ class Rectangle:
 def floatOrNone(x:str):
     try:
         x = float(x)
-    except ValueError:
+    except  (TypeError, ValueError):
         x = None
     return x    
 

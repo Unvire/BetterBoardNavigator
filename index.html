@@ -58,7 +58,7 @@
                     file_content.text = fileLines
                     boardLoader = LoaderSelectorFactory(file.name)
                     boardInstance = boardLoader.processFileLines(fileLines)
-                    #file_content.text = len(boardInstance.getComponents())  # Wstaw zawartość pliku do diva
+                    #file_content.text = file_content.text + len(boardInstance.getComponents())  # Wstaw zawartość pliku do diva
     
                 def onerror(event):
                     alert("Nie można odczytać pliku.")
