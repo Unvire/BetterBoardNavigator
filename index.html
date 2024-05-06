@@ -45,7 +45,7 @@
             
             ## component base data
             componentCoords = gobj.Point(1.578, -1.249)
-            componentShapePointsList = [gobj.Point(1.548, -1.261), gobj.Point(1.608, -1.261), gobj.Point(1.608, -1.237), gobj.Point(1.548, -1.237)]
+            componentShapePointsList = [gobj.Point(1.590, -1.298), gobj.Point(1.590, -1.238), gobj.Point(1.566, -1.238), gobj.Point(1.566, -1.298)]
             pin1ShapePointsList = [gobj.Point(1.568, -1.258), gobj.Point(1.588, -1.258), gobj.Point(1.588, -1.240), gobj.Point(1.568, -1.240)]
             pin2ShapePointsList = [gobj.Point(1.568, -1.296), gobj.Point(1.588, -1.296), gobj.Point(1.588, -1.278), gobj.Point(1.568, -1.278)]
 
@@ -65,7 +65,7 @@
             print(componentShapePointsList, pin1ShapePointsList, pin2ShapePointsList)
 
             drawFunctions.drawPolygon(context, generatePointXYList(componentShapePointsList), 'green', 2, False)
-            drawFunctions.drawPolygon(context, generatePointXYList(pin1ShapePointsList), 'black', 2, False)
+            drawFunctions.drawPolygon(context, generatePointXYList(pin1ShapePointsList), 'red', 2, False)
             drawFunctions.drawPolygon(context, generatePointXYList(pin2ShapePointsList), 'black', 2, False)
         </script>
     </body>
