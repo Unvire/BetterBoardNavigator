@@ -102,6 +102,14 @@ class Line:
         result2 = self.startPoint == line.endPoint and self.endPoint == line.startPoint
         return result1 or result2
 
+    def getPoints(self) -> tuple[Point, Point]:
+        return self.startPoint, self.endPoint
+    
+    def getPointsAsXYTuple(self) -> tuple['int|float', 'int|float', 'int|float', 'int|float']:
+        x0, y0 = self.startPoint.getXY()
+        x1, y1 = self.endPoint.getXY()
+        return x0, y0, x1, y1
+
 class Arc:
     def __init__(self, startPoint:Point, endPoint:Point, rotationPoint:Point):
         self.startPoint = startPoint
