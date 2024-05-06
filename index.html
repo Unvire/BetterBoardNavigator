@@ -19,7 +19,7 @@
     </head>
 
     <body onload="brython(1)">
-        <canvas id="myCanvas" width="1500" height="700" style="border:1px solid #000000;"></canvas>
+        <canvas id="myCanvas" width="1200" height="700" style="border:1px solid #000000;"></canvas>
         <div id="fileContent"></div>
         <script type="text/python" id="drawTest">
             from browser import document
@@ -45,20 +45,23 @@
             
             ## component base data
             componentCoords = gobj.Point(1.578, -1.249)
-            componentShapePointsList = [gobj.Point(1.548, -1261), gobj.Point(1.608, -1.261), gobj.Point(1.608, -1.237), gobj.Point(1.548, -1.237)]
-            pin1ShapePointsList = [gobj.Point(1.568, -1258), gobj.Point(1.588, -1.258), gobj.Point(1.588, -1.240), gobj.Point(1.568, -1.240)]
-            pin2ShapePointsList = [gobj.Point(1.568, -1296), gobj.Point(1.588, -1.296), gobj.Point(1.588, -1.278), gobj.Point(1.568, -1.278)]
+            componentShapePointsList = [gobj.Point(1.548, -1.261), gobj.Point(1.608, -1.261), gobj.Point(1.608, -1.237), gobj.Point(1.548, -1.237)]
+            pin1ShapePointsList = [gobj.Point(1.568, -1.258), gobj.Point(1.588, -1.258), gobj.Point(1.588, -1.240), gobj.Point(1.568, -1.240)]
+            pin2ShapePointsList = [gobj.Point(1.568, -1.296), gobj.Point(1.588, -1.296), gobj.Point(1.588, -1.278), gobj.Point(1.568, -1.278)]
 
-            customScale = 100
+            customScale = 4000
+            componentCoords.scaleInPlace(customScale)
+            xComp, yComp = componentCoords.getXY()
             scalePointList(componentShapePointsList, customScale)
             scalePointList(pin1ShapePointsList, customScale)
             scalePointList(pin2ShapePointsList, customScale)
 
-            moveVector = [592.2, 364.9]
+            moveVector = [1200//2 - xComp, 700//2 - yComp]
             movePointListByVector(componentShapePointsList, moveVector)
             movePointListByVector(pin1ShapePointsList, moveVector)
             movePointListByVector(pin2ShapePointsList, moveVector)
-
+            
+            print(xComp, yComp)
             print(componentShapePointsList, pin1ShapePointsList, pin2ShapePointsList)
 
             drawFunctions.drawPolygon(context, generatePointXYList(componentShapePointsList), 'green', 2, False)

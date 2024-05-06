@@ -197,6 +197,7 @@ class CamCadLoader:
                 packageBottomLeftPoint, packageTopRightPoint = self._calculatePackageBottomRightAndTopLeftPoints(componentInstance, dimensions)
                 componentInstance.setArea(packageBottomLeftPoint, packageTopRightPoint)                               
                 componentInstance.setMountingType(package['pinType'])
+                componentInstance.
                 componentInstance.caluclateShapeData()
 
         return list(noPackagesMatch)
