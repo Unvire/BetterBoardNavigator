@@ -75,14 +75,15 @@ class Component(abstractShape.Shape):
             bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, centerPoint)
         return bottomLeftPoint, topRightPoint
     
-    def rotateInPlaceAroundCoords(self, angleDeg:float|int):
+    def rotateInPlaceAroundCoords(self, angleDeg:float|int, isRotatePins:bool=True):
         rotationPoint = self.getCoords()
-        self.rotateInPlace(rotationPoint, angleDeg)
+        self.rotateInPlace(rotationPoint, angleDeg, isRotatePins)
 
-    def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:float|int):
+    def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:float|int, isRotatePins:bool=True):
         super().rotateInPlace(rotationPoint, angleDeg)
-        for _, pinInstance in self.pins.items():
-            pinInstance.rotateInPlace(rotationPoint, angleDeg)
+        if isRotatePins:
+            for _, pinInstance in self.pins.items():
+                pinInstance.rotateInPlace(rotationPoint, angleDeg)
         self.normalizeArea(self.getArea() + self.getShapePoints())
     
     def translateInPlace(self, vector:list[int|float, int|float]):
