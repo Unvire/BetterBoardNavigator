@@ -1,0 +1,22 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      js-untar:
+        specifier: ^2.0.0
+        version: 2.0.0
+
+packages:
+
+  js-untar@2.0.0:
+    resolution: {integrity: sha512-7CsDLrYQMbLxDt2zl9uKaPZSdmJMvGGQ7wo9hoB3J+z/VcO2w63bXFgHVnjF1+S9wD3zAu8FBVj7EYWjTQ3Z7g==}
+
+snapshots:
+
+  js-untar@2.0.0: {}
