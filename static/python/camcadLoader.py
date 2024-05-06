@@ -212,13 +212,13 @@ class CamCadLoader:
     
     def _calculatePackageBottomRightAndTopLeftPoints(self, componentInstance:comp.Component, dimesions:tuple[float, float]) -> tuple[gobj.Point, gobj.Point]:
         width, height = dimesions
-        x0, y0 = self._calculateMoveVectorFromWidthHeight(width, height, 3)
+        x0, y0 = self._calculateMoveVectorFromWidthHeight(width, height)
         packageBottomLeftPoint = gobj.Point.translate(componentInstance.coords, (x0, y0))
         packageTopRightPoint = gobj.Point.translate(componentInstance.coords, (-x0, -y0))
         return packageBottomLeftPoint, packageTopRightPoint
     
-    def _calculateMoveVectorFromWidthHeight(self, width:float, height:float, roundDigits:int) -> tuple[float, float]:
-        return round(-width / 2, roundDigits), round(-height / 2, roundDigits)
+    def _calculateMoveVectorFromWidthHeight(self, width:float, height:float) -> tuple[float, float]:
+        return round(-width / 2, gobj.Point.DECIMAL_POINT_PRECISION), round(-height / 2, gobj.Point.DECIMAL_POINT_PRECISION)
 
     def _calculateRange(self, sectionName:str) -> range:
         return range(self.sectionsLineNumbers[sectionName][0], self.sectionsLineNumbers[sectionName][1])
