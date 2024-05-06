@@ -68,10 +68,9 @@ class CamCadLoader:
         for i in partlistRange:
             if ',' in fileLines[i]:
                 line = fileLines[i]
-                _, name, partNumber, x, y, side, angle = [parameter.strip() for parameter in line.split(',')]
+                _, name, partNumber, _, _, side, angle = [parameter.strip() for parameter in line.split(',')]
                 side = sideDict[side]
-                x, y  = gobj.floatOrNone(x), gobj.floatOrNone(y)
-                newComponent = self._createComponent(name, x, y, float(angle), side)
+                newComponent = self._createComponent(name, float(angle), side)
                 components[name] = newComponent
 
                 if not partNumber in partNumberToComponents:
@@ -105,7 +104,7 @@ class CamCadLoader:
                 pad = self._calculatePinCoordsAndAddNet(padsDict[padID], pinX, pinY, netName)
                 
                 if componentName not in components:
-                    newComponent = self._createComponent(componentName, None, None, 0, side)
+                    newComponent = self._createComponent(componentName, 0, side)
                     boardInstance.addComponent(componentName, newComponent)                
                 
                 componentOnNet = boardInstance.getElementByName('components', componentName)
@@ -133,12 +132,11 @@ class CamCadLoader:
                 componentInstance.calculateCenterFromPins()
                 componentInstance.calculateAreaFromPins()
                 componentInstance.caluclateShapeData()
-            componentInstance.rotateInPlaceAroundCoords(componentInstance.angle)
+            componentInstance.rotateInPlaceAroundCoords(componentInstance.angle, isRotatePins=False)
     
-    def _createComponent(self, name:str, x:float|None, y:float|None, angle:float, side:str) -> comp.Component:
+    def _createComponent(self, name:str, angle:float, side:str) -> comp.Component:
         newComponent = comp.Component(name)
-        center = gobj.Point(x, y)
-        newComponent.setCoords(center)
+        newComponent.setCoords(gobj.Point(None, None))
         newComponent.setAngle(float(angle))
         newComponent.setSide(side)
         newComponent.setShape('RECT')
@@ -231,5 +229,5 @@ if __name__ == '__main__':
     filePath = r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm Core.cad'
     loader = CamCadLoader()
     fileLines = loader.loadFile(filePath)
-    loader.processFileLines(fileLines)
-    print(loader.boardData.area[0], loader.boardData.area[1])  
+    boardData = loader.processFileLines(fileLines)
+    print(boardData.area)
