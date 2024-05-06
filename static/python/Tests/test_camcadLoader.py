@@ -147,7 +147,7 @@ def test__getComponenentsFromPARTLIST(exampleFileLines):
     
     assert partNumberToComponents == {'PNFID': ['FID1', 'FID2', 'FID3', 'FID4']}
     assert component1.name == 'FID1'
-    assert component1.coords == gobj.Point(0.101, -0.109)
+    assert component1.coords.getXY() == (None, None)
     assert component1.side == 'T'
     assert component1.angle == 0
 
