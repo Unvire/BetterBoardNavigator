@@ -23,6 +23,7 @@ class CamCadLoader:
         padsDict = self._getPadsFromPAD(fileLines)
         self._getNetsFromNETLIST(fileLines, padsDict, self.boardData)
         self._getPackages(fileLines, partNumberToComponents, self.boardData)
+        self._rotateComponents(self.boardData)
 
         return self.boardData
 
@@ -123,6 +124,16 @@ class CamCadLoader:
             componentInstance = boardInstance.getElementByName('components', compName)
             componentInstance.calculateAreaFromPins()
             componentInstance.caluclateShapeData()
+        
+    def _rotateComponents(self, boardInstance:board.Board):
+        componentsDict = boardInstance.getComponents()
+        for _, componentInstance in componentsDict.items():
+            coords = componentInstance.getCoords()
+            if None in coords.getXY():
+                componentInstance.calculateCenterFromPins()
+                componentInstance.calculateAreaFromPins()
+                componentInstance.caluclateShapeData()
+            componentInstance.rotateInPlaceAroundCoords(componentInstance.angle)
     
     def _createComponent(self, name:str, x:float|None, y:float|None, angle:float, side:str) -> comp.Component:
         newComponent = comp.Component(name)
@@ -197,7 +208,6 @@ class CamCadLoader:
                 packageBottomLeftPoint, packageTopRightPoint = self._calculatePackageBottomRightAndTopLeftPoints(componentInstance, dimensions)
                 componentInstance.setArea(packageBottomLeftPoint, packageTopRightPoint)                               
                 componentInstance.setMountingType(package['pinType'])
-                componentInstance.
                 componentInstance.caluclateShapeData()
 
         return list(noPackagesMatch)
