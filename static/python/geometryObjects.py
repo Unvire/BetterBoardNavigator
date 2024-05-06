@@ -94,6 +94,9 @@ class Line:
     def __str__(self):
         return f'Line: point1=({self.startPoint}), point2=({self.endPoint})'
     
+    def __repr__(self):
+        return self.__str__()
+    
     def __eq__(self, line:'Line'):
         result1 = self.startPoint == line.startPoint and self.endPoint == line.endPoint
         result2 = self.startPoint == line.endPoint and self.endPoint == line.startPoint
@@ -111,6 +114,9 @@ class Arc:
     
     def __str__(self):
         return f'Arc: start point=({self.startPoint}), end point=({self.endPoint}), rotation point=({self.rotationPoint})'
+    
+    def __repr__(self):
+        return self.__str__()
     
     def __eq__(self, arc:'Arc'):
         return self.rotationPoint == arc.rotationPoint and self.startPoint == arc.startPoint and self.endPoint == arc.endPoint
@@ -140,6 +146,9 @@ class Circle:
     def __str__(self):
         return f'Circle: center point=({self.centerPoint}), radius=({self.radius})'
     
+    def __repr__(self):
+        return self.__str__()
+    
     def __eq__(self, circle:'Circle'):
         return self.radius == circle.radius and self.centerPoint == circle.centerPoint
 
@@ -158,6 +167,9 @@ class Rectangle:
     
     def __str__(self):
         return f'Rectangle: bottom-left point=({self.bottomLeftPoint}), top-right point=({self.topRightPoint})'
+    
+    def __repr__(self):
+        return self.__str__()
     
     def __eq__(self, rectangle:'Rectangle'):
         bottomLeftEqual = self.bottomLeftPoint == rectangle.bottomLeftPoint
