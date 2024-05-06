@@ -44,29 +44,31 @@
             context = canvas.getContext('2d')
             
             ## component base data
-            componentCoords = gobj.Point(1.578, -1.249)
-            componentShapePointsList = [gobj.Point(1.590, -1.298), gobj.Point(1.590, -1.238), gobj.Point(1.566, -1.238), gobj.Point(1.566, -1.298)]
-            pin1ShapePointsList = [gobj.Point(1.568, -1.258), gobj.Point(1.588, -1.258), gobj.Point(1.588, -1.240), gobj.Point(1.568, -1.240)]
-            pin2ShapePointsList = [gobj.Point(1.568, -1.296), gobj.Point(1.588, -1.296), gobj.Point(1.588, -1.278), gobj.Point(1.568, -1.278)]
-
-            customScale = 4000
-            componentCoords.scaleInPlace(customScale)
-            xComp, yComp = componentCoords.getXY()
-            scalePointList(componentShapePointsList, customScale)
-            scalePointList(pin1ShapePointsList, customScale)
-            scalePointList(pin2ShapePointsList, customScale)
-
-            moveVector = [1200//2 - xComp, 700//2 - yComp]
-            movePointListByVector(componentShapePointsList, moveVector)
-            movePointListByVector(pin1ShapePointsList, moveVector)
-            movePointListByVector(pin2ShapePointsList, moveVector)
+            areaCenterCoords = gobj.Point(1.888,-1.776)
+            outlinePointsList = [gobj.Point(0.000, -3.551), gobj.Point(0.000, 0.000), gobj.Point(0.000, 0.000), gobj.Point(3.776, 0.000), 
+                                 gobj.Point(3.776, 0.000), gobj.Point(3.776, -3.551), gobj.Point(3.776, -3.551), gobj.Point(0.000, -3.551)]
             
-            print(xComp, yComp)
-            print(componentShapePointsList, pin1ShapePointsList, pin2ShapePointsList)
 
-            drawFunctions.drawPolygon(context, generatePointXYList(componentShapePointsList), 'green', 2, False)
-            drawFunctions.drawPolygon(context, generatePointXYList(pin1ShapePointsList), 'red', 2, False)
-            drawFunctions.drawPolygon(context, generatePointXYList(pin2ShapePointsList), 'black', 2, False)
+            customScale = 100
+            areaCenterCoords.scaleInPlace(customScale)
+            xCenter, yCenter = areaCenterCoords.getXY()
+            scalePointList(outlinePointsList, customScale)
+
+            moveVector = [1200//2 - xCenter, 700//2 - yCenter]
+            movePointListByVector(outlinePointsList, moveVector)
+            
+            print(xCenter, yCenter)
+            print(outlinePointsList)
+
+            linesList = []
+            while outlinePointsList:
+                point1 = outlinePointsList.pop(0)
+                point2 = outlinePointsList.pop(0)
+                linesList.append(gobj.Line(point1, point2))
+            
+            for line in linesList:
+                x0, y0, x1, y1 = line.getPointsAsXYTuple() 
+                drawFunctions.drawLine(context, (x0, y0), (x1, y1), 'green', 2)
         </script>
     </body>
 </html>
