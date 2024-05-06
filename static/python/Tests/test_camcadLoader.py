@@ -105,6 +105,28 @@ def packagesFileLines():
     ]
     return fileLinesMock
 
+@pytest.fixture
+def rotateFileLines():
+    fileLinesMock = [
+        ':PARTLIST',
+        '0 ,C10 ,15015596 ,1.578 ,-1.249 ,B,90',
+        ':ENDPARTLIST',
+        ':NETLIST',
+        '0 ,TEST_MODE ,C10 ,2 ,1.578 ,-1.287 ,B,1032',
+        '381 ,VDD_ARM_CAP ,C10 ,1 ,1.578 ,-1.249 ,B,1032',
+        ':ENDNETLIST',
+        ':PAD',
+        '1032 ,AP_rect20x18 ,RECT ,0.020 ,0.018 ,0.010 ,0.009',
+        ':ENDPAD',
+        ':PNDATA',
+        '15015596 ,0 ,15015596 ,15 ,.0 ,0 ,0 , 0402_M',
+        ':ENDPNDATA',
+        ':PACKAGES',
+        '0402_M ,SMD ,0.060 ,0.024 ,0.000',
+        ':ENDPACKAGES',
+    ]
+    return fileLinesMock
+
 
 def test__getSectionsLinesBeginEnd(exampleFileLines):
     instance = CamCadLoader()
@@ -241,3 +263,31 @@ def test__getPackages(packagesFileLines):
     assert boardComponents['LD1'].shape == 'RECT'
     assert boardComponents['LD1'].getShapePoints() == [gobj.Point(0.843, 1.941), gobj.Point(1.021, 1.941), 
                                                        gobj.Point(1.021, 2.019), gobj.Point(0.843, 2.019)]
+
+def test__rotateComponents(rotateFileLines):
+    gobj.Point.DECIMAL_POINT_PRECISION = 3
+    instance = CamCadLoader()
+    instance._getSectionsLinesBeginEnd(rotateFileLines)
+    partNumberToComponents = instance._getComponenentsFromPARTLIST(rotateFileLines, instance.boardData)
+    padsDict = instance._getPadsFromPAD(rotateFileLines)
+    instance._getNetsFromNETLIST(rotateFileLines, padsDict, instance.boardData)
+    instance._getPackages(rotateFileLines, partNumberToComponents, instance.boardData)
+    instance._rotateComponents(instance.boardData)
+
+    componentInstance = instance.boardData.getElementByName('components', 'C10')
+    assert componentInstance.getCoords() == gobj.Point(1.578, -1.268)
+    assert componentInstance.getArea() == [gobj.Point(1.566, -1.298), gobj.Point(1.590, -1.238)]
+    assert componentInstance.getShapePoints() == [gobj.Point(1.590, -1.298), gobj.Point(1.590, -1.238), 
+                                                  gobj.Point(1.566, -1.238), gobj.Point(1.566, -1.298)]
+    
+    pin1 = componentInstance.getPinByName('1')
+    assert pin1.getCoords() == gobj.Point(1.578, -1.249)
+    assert pin1.getArea() == [gobj.Point(1.568, -1.258), gobj.Point(1.588, -1.240)]
+    assert pin1.getShapePoints() == [gobj.Point(1.568, -1.258), gobj.Point(1.588, -1.258), 
+                                     gobj.Point(1.588, -1.240), gobj.Point(1.568, -1.240)]
+    
+    pin2 = componentInstance.getPinByName('2')
+    assert pin2.getCoords() == gobj.Point(1.578 ,-1.287)
+    assert pin2.getArea() == [gobj.Point(1.568, -1.296), gobj.Point(1.588, -1.278)]
+    assert pin2.getShapePoints() == [gobj.Point(1.568, -1.296), gobj.Point(1.588, -1.296), 
+                                     gobj.Point(1.588, -1.278), gobj.Point(1.568, -1.278)]
