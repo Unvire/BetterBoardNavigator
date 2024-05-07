@@ -8,13 +8,14 @@ class BoardCanvasWrapper():
         self.width = width
         self.height = height
         self.baseBoard = None
+        self.baseScale = 0.0
 
     def loadAndSetBaseBoard(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
         self._setBaseBoard(boardInstance)
     
     def normalizeBoard(self):
-        pass
+        self._calculateBaseScale(self.baseBoard.getArea())
 
     def _loadBaseBoard(self, filePath:str) -> board.Board:
         fileExtension  = filePath.split('.')[-1]
@@ -32,8 +33,21 @@ class BoardCanvasWrapper():
 
         areaWidth = abs(x1 - x0)
         areaHeight = abs(y1 - y0)
-        print(areaWidth, areaHeight)
-
+        
+        FITNESS_SCALE_FACTOR = 0.9
+        minCanvasDimension = FITNESS_SCALE_FACTOR * min(self.width, self.height)
+        maxBoardDimension = max(areaWidth, areaHeight)
+        baseScale = minCanvasDimension / maxBoardDimension
+        self._setBaseScale(baseScale)
+    
+    def _setBaseScale(self, baseScale:float):
+        self.baseScale = baseScale
+        
     def _cacluclateBaseOffset(self):
         pass
+
+if __name__ == '__main__':
+    normalizedBoard = BoardCanvasWrapper(1200, 700)
+    normalizedBoard.loadAndSetBaseBoard(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm Core.cad')
+    normalizedBoard.normalizeBoard()
 
