@@ -42,7 +42,7 @@ class BoardCanvasWrapper():
     def _setBaseScale(self, baseScale:float):
         self.baseScale = baseScale
         
-    def _cacluclateAndSetBaseOffset(self, boardArea:tuple[gobj.Point, gobj.Point]):
+    def _calcuclateAndSetBaseOffset(self, boardArea:tuple[gobj.Point, gobj.Point]):
         x0, y0, x1, y1 = self._getBoardAreaCoordsAsXYXY(boardArea)
         
         xMidScaled = (x1 + x0) / 2 * self.baseScale
