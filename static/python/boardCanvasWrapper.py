@@ -18,6 +18,8 @@ class BoardCanvasWrapper():
     def normalizeBoard(self):
         self._calculateAndSetBaseScale(self.baseBoard.getArea())
         self._calculateAndSetBaseOffset(self.baseBoard.getArea())
+        print(self.baseScale, self.baseMoveOffset, self.baseBoard.area)
+        self._resizeAndMoveOutlines(self.baseBoard.getOutlines())
 
     def _loadBaseBoard(self, filePath:str) -> board.Board:
         fileExtension  = filePath.split('.')[-1]
@@ -61,9 +63,14 @@ class BoardCanvasWrapper():
         xBL, yBL = bottomLeftPoint.getXY()
         xTR, yTR = topRightPoint.getXY()
         return xBL, yBL, xTR, yTR
+    
+    def _resizeAndMoveOutlines(self, shapesList:list):
+        for shape in shapesList:
+            pass
+            #print(shape)
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)
-    normalizedBoard.loadAndSetBaseBoard(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm Core.cad')
+    normalizedBoard.loadAndSetBaseBoard(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\cerm.cad')
     normalizedBoard.normalizeBoard()
 
