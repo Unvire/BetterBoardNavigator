@@ -9,6 +9,12 @@ class BoardCanvasWrapper():
         self.height = height
         self.baseBoard = None
 
+    def loadBaseBoard(self, filePath:str):
+        fileExtension  = filePath.split('.')[-1]
+        loader = loaderSelectorFactory.LoaderSelectorFactory(fileExtension)
+        fileLines = loader.loadFile(filePath)
+        return loader.processFileLines(fileLines)
+
     def setBaseBoard(self, boardInstace:board.Board):
         self.baseBoard = boardInstace
 
