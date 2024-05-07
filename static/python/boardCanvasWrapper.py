@@ -9,6 +9,7 @@ class BoardCanvasWrapper():
         self.height = height
         self.baseBoard = None
         self.baseScale = 0.0
+        self.baseMoveOffset = [0.0, 0.0]
 
     def loadAndSetBaseBoard(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
@@ -16,6 +17,7 @@ class BoardCanvasWrapper():
     
     def normalizeBoard(self):
         self._calculateBaseScale(self.baseBoard.getArea())
+        self._cacluclateBaseOffset(self.baseBoard.getArea())
 
     def _loadBaseBoard(self, filePath:str) -> board.Board:
         fileExtension  = filePath.split('.')[-1]
@@ -27,10 +29,7 @@ class BoardCanvasWrapper():
         self.baseBoard = boardInstace
 
     def _calculateBaseScale(self, boardArea:tuple[gobj.Point, gobj.Point]):
-        bottomLeftPoint, topRightPoint = boardArea
-        x0, y0 = bottomLeftPoint.getXY()
-        x1, y1 = topRightPoint.getXY()
-
+        x0, y0, x1, y1 = self._getBoardAreaCoordsAsXYXY(boardArea)
         areaWidth = abs(x1 - x0)
         areaHeight = abs(y1 - y0)
         
@@ -43,8 +42,25 @@ class BoardCanvasWrapper():
     def _setBaseScale(self, baseScale:float):
         self.baseScale = baseScale
         
-    def _cacluclateBaseOffset(self):
-        pass
+    def _cacluclateBaseOffset(self, boardArea:tuple[gobj.Point, gobj.Point]):
+        x0, y0, x1, y1 = self._getBoardAreaCoordsAsXYXY(boardArea)
+        
+        xMidScaled = (x1 + x0) / 2 * self.baseScale
+        yMidScaled = (y1 + y0) / 2 * self.baseScale
+        xTarget = self.width // 2
+        yTarget = self.height // 2
+
+        xMove, yMove = xTarget - xMidScaled, yTarget - yMidScaled
+        self._setBaseMoveOffset(xMove, yMove)
+
+    def _setBaseMoveOffset(self, x:float, y:float):
+        self.baseMoveOffset = [x, y]
+    
+    def _getBoardAreaCoordsAsXYXY(self, boardArea:tuple[gobj.Point, gobj.Point]) -> tuple[float, float, float, float]:
+        bottomLeftPoint, topRightPoint = boardArea
+        xBL, yBL = bottomLeftPoint.getXY()
+        xTR, yTR = topRightPoint.getXY()
+        return xBL, yBL, xTR, yTR
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)
