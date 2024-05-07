@@ -2,17 +2,39 @@ import pytest
 from boardCanvasWrapper import BoardCanvasWrapper
 import geometryObjects as gobj
 
-@pytest.mark.parametrize('inputData, expected', [([gobj.Point(0, 0), gobj.Point(10, 10)], 63), ([gobj.Point(-10, 0), gobj.Point(0, 10)], 63),
-                                                ([gobj.Point(-10, -10), gobj.Point(0, 0)], 63), ([gobj.Point(0, -10), gobj.Point(10, 0)], 63),
-                                                ([gobj.Point(0, 0), gobj.Point(0.1, 0.1)], 6300), ([gobj.Point(-0.1, 0), gobj.Point(0, 0.1)], 6300),
-                                                ([gobj.Point(-0.1, -0.1), gobj.Point(0, 0)], 6300),([gobj.Point(0, -0.1), gobj.Point(0.1, 0)], 6300),
-                                                ([gobj.Point(0, 0), gobj.Point(10000, 10000)], 0.063), ([gobj.Point(-10000, 0), gobj.Point(0, 10000)], 0.063),
-                                                ([gobj.Point(-10000, -10000), gobj.Point(0, 0)], 0.063), ([gobj.Point(0, -10000), gobj.Point(10000, 0)], 0.063),
-                                                ([gobj.Point(-10, -10), gobj.Point(10, 10)], 31.5), 
-                                                ([gobj.Point(-0.1, -0.1), gobj.Point(0.1, 0.1)], 3150),
-                                                ([gobj.Point(-10000, -10000), gobj.Point(10000, 10000)], 0.0315)
-                                                ])
-def test_calculateAndSetBaseScale(inputData, expected):
+@pytest.fixture
+def scaleAndOffsetCalculationData():
+    inputData = [[gobj.Point(0, 0), gobj.Point(10, 10)], 
+                [gobj.Point(-10, 0), gobj.Point(0, 10)],
+                [gobj.Point(-10, -10), gobj.Point(0, 0)],
+                [gobj.Point(0, -10), gobj.Point(10, 0)],
+                [gobj.Point(0, 0), gobj.Point(0.1, 0.1)],
+                [gobj.Point(-0.1, 0), gobj.Point(0, 0.1)],
+                [gobj.Point(-0.1, -0.1), gobj.Point(0, 0)],
+                [gobj.Point(0, -0.1), gobj.Point(0.1, 0)], 
+                [gobj.Point(0, 0), gobj.Point(10000, 10000)],
+                [gobj.Point(-10000, 0), gobj.Point(0, 10000)],
+                [gobj.Point(-10000, -10000), gobj.Point(0, 0)],
+                [gobj.Point(0, -10000), gobj.Point(10000, 0)],
+                [gobj.Point(-10, -10), gobj.Point(10, 10)],
+                [gobj.Point(-0.1, -0.1), gobj.Point(0.1, 0.1)],
+                [gobj.Point(-10000, -10000), gobj.Point(10000, 10000)]]
+    return inputData
+
+def test_calculateAndSetBaseScale(scaleAndOffsetCalculationData):
+    expected = [63, 63, 63, 63, 6300, 6300, 6300, 6300, 0.063, 0.063, 0.063, 0.063, 31.5, 3150, 0.0315]
     instance = BoardCanvasWrapper(1200, 700)
-    instance._calculateAndSetBaseScale(inputData)
-    assert instance.baseScale == expected
+    for area, result in zip(scaleAndOffsetCalculationData, expected):
+        instance._calculateAndSetBaseScale(area)
+        assert instance.baseScale == result
+
+def test_calculateAndSetBaseOffset(scaleAndOffsetCalculationData):
+    expected = [[285, 35], [915, 35], [915, 665], [285, 665],
+                [285, 35], [915, 35], [915, 665], [285, 665],
+                [285, 35], [915, 35], [915, 665], [285, 665],
+                [600, 350], [600, 350], [600, 350]]
+    instance = BoardCanvasWrapper(1200, 700)
+    for area, result in zip(scaleAndOffsetCalculationData, expected):
+        instance._calculateAndSetBaseScale(area)
+        instance._calculateAndSetBaseOffset(area)
+        assert instance.baseMoveOffset == result
