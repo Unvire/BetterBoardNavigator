@@ -15,8 +15,14 @@ class BoardCanvasWrapper():
     def normalizeBoard(self):
         pass
 
-    def _calculateBaseScale(self):
-        pass
+    def _calculateBaseScale(self, boardArea:tuple[gobj.Point, gobj.Point]):
+        bottomLeftPoint, topRightPoint = boardArea
+        x0, y0 = bottomLeftPoint.getXY()
+        x1, y1 = topRightPoint.getXY()
+
+        areaWidth = abs(x1 - x0)
+        areaHeight = abs(y1 - y0)
+        print(areaWidth, areaHeight)
 
     def _cacluclateBaseOffset(self):
         pass
