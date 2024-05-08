@@ -13,6 +13,8 @@ class BoardCanvasWrapper():
         self.baseScale = 0.0
         self.baseMoveOffsetXY = [0.0, 0.0]
         self.hitMap = {}
+        self.sideComponents = {'B':[], 'T':[]}
+        self.commonTypeComponents = {'B':{}, 'T':{}}
 
     def loadAndSetBaseBoard(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
@@ -23,6 +25,7 @@ class BoardCanvasWrapper():
         self._calculateAndSetBaseScale(self.baseBoard.getArea())
         self._calculateAndSetBaseOffsetXY(self.baseBoard.getArea())
         self._resizeAndMoveOutlines(self.baseBoard.getOutlines())
+        self._recalculateAndGroupComponents(self.baseBoard.getComponents())
 
     def _loadBaseBoard(self, filePath:str) -> board.Board:
         fileExtension  = filePath.split('.')[-1]
@@ -63,13 +66,7 @@ class BoardCanvasWrapper():
 
     def _setBaseMoveOffsetXY(self, x:float, y:float):
         self.baseMoveOffsetXY = [x, y]
-    
-    def _getBoardAreaCoordsAsXYXY(self, boardArea:tuple[gobj.Point, gobj.Point]) -> tuple[float, float, float, float]:
-        bottomLeftPoint, topRightPoint = boardArea
-        xBL, yBL = bottomLeftPoint.getXY()
-        xTR, yTR = topRightPoint.getXY()
-        return xBL, yBL, xTR, yTR
-    
+
     def _resizeAndMoveOutlines(self, shapesList:list):
         for shape in shapesList:
             pointList = shape.getPoints()
@@ -78,6 +75,32 @@ class BoardCanvasWrapper():
                 point.translateInPlace(self.baseMoveOffsetXY)
             if isinstance(shape, gobj.Arc):
                 shape.calculateAngleRadRepresentation
+    
+    def _recalculateAndGroupComponents(self, componentsDict:dict):
+        for _, componentInstance in componentsDict.items():
+            self._recalculateComponent(componentInstance)
+            self._addComponentToHitMap(componentInstance)
+            self._addComponentToSideComponents(componentInstance)
+            self._addComponentToCommonTypeComponents(componentInstance)
+    
+    def _recalculateComponent(self, componentInstance:comp.Component):
+        pass
+
+    def _addComponentToHitMap(self, componentInstance:comp.Component):
+        pass
+
+    def _addComponentToSideComponents(self, componentInstance:comp.Component):
+        pass
+
+    def _addComponentToCommonTypeComponents(self, componentInstance:comp.Component):
+        pass
+
+    def _getBoardAreaCoordsAsXYXY(self, boardArea:tuple[gobj.Point, gobj.Point]) -> tuple[float, float, float, float]:
+        bottomLeftPoint, topRightPoint = boardArea
+        xBL, yBL = bottomLeftPoint.getXY()
+        xTR, yTR = topRightPoint.getXY()
+        return xBL, yBL, xTR, yTR
+    
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)
