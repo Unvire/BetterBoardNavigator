@@ -18,6 +18,7 @@ class GenCadLoader:
     
     def processFileLines(self, fileLines:list[str]) -> board.Board:
         self._getSectionsLinesBeginEnd(fileLines)
+        self._getBoardDimensions(fileLines, self.boardData)
         padsDict = self._getPadsFromPADS(fileLines)
         padstackDict = self._getPadstacksFromPADSTACKS(fileLines, padsDict)
         shapeToComponentsDict = self._getComponentsFromCOMPONENTS(fileLines, self.boardData)
@@ -49,6 +50,8 @@ class GenCadLoader:
         for i in boardOutlineRange:
             if ' ' in fileLines[i]:
                 keyWord, *line  = fileLines[i].split(' ')
+                while '' in line:
+                    line.remove('')
                 if keyWord == 'ARTWORK':
                     break
                 shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](line, bottomLeftPoint, topRightPoint)
