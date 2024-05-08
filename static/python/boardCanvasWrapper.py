@@ -8,8 +8,8 @@ class BoardCanvasWrapper():
     def __init__(self, width:int, height:int):
         self.width = width
         self.height = height
-        self.baseBoard = None
-        self.baseBoardBackup = None
+        self.board = None
+        self.boardBackup = None
         self.baseScale = 0.0
         self.baseMoveOffsetXY = [0.0, 0.0]
         self.sideComponents = {'B':[], 'T':[]}
@@ -27,17 +27,20 @@ class BoardCanvasWrapper():
                 for h in rangeHeight:
                     self.hitMap[side][w][h] = []
 
-    def loadAndSetBaseBoard(self, filePath:str):
+    def loadAndSetBoard(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
-        self._setBaseBoard(boardInstance)
-        self._setBaseBoardBackup()
+        self._setBoard(boardInstance)
+        self._setBoardBackup()
     
     def normalizeBoard(self):
-        self._calculateAndSetBaseScale(self.baseBoard.getArea())
-        self._calculateAndSetBaseOffsetXY(self.baseBoard.getArea())
-        self._resizeAndMoveShapes(self.baseBoard.getOutlines())
-        self._recalculateAndGroupComponents(self.baseBoard.getComponents())
-        self._resizeAndMoveTracks(self.baseBoard.getTracks())
+        self._calculateAndSetBaseScale(self.board.getArea())
+        self._calculateAndSetBaseOffsetXY(self.board.getArea())
+        self._resizeAndMoveShapes(self.board.getOutlines())
+        try:
+            self._recalculateAndGroupComponents(self.board.getComponents())
+        except KeyError:
+            print('recalculations...')
+        self._resizeAndMoveTracks(self.board.getTracks())
 
     def _loadBaseBoard(self, filePath:str) -> board.Board:
         fileExtension  = filePath.split('.')[-1]
@@ -45,11 +48,11 @@ class BoardCanvasWrapper():
         fileLines = loader.loadFile(filePath)
         return loader.processFileLines(fileLines)
 
-    def _setBaseBoard(self, boardInstace:board.Board):
-        self.baseBoard = boardInstace
+    def _setBoard(self, boardInstace:board.Board):
+        self.board = boardInstace
     
-    def _setBaseBoardBackup(self):
-        self.baseBoardBackup = copy.deepcopy(self.baseBoard)
+    def _setBoardBackup(self):
+        self.boardBackup = copy.deepcopy(self.board)
 
     def _calculateAndSetBaseScale(self, boardArea:tuple[gobj.Point, gobj.Point]):
         x0, y0, x1, y1 = self._getBoardAreaCoordsAsXYXY(boardArea)
@@ -142,6 +145,6 @@ class BoardCanvasWrapper():
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)
-    normalizedBoard.loadAndSetBaseBoard(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.gcd')
+    normalizedBoard.loadAndSetBoard(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.gcd')
     normalizedBoard.normalizeBoard()
 
