@@ -116,9 +116,7 @@ class Arc:
         self.endPoint = endPoint
         self.rotationPoint = rotationPoint
 
-        self.radius = self._calculateRadius()
-        self.startAngle = self._calculateAngleRad(self.startPoint, self.rotationPoint)        
-        self.endAngle = self._calculateAngleRad(self.endPoint, self.rotationPoint)
+        self.calculateAngleRadRepresentation()
     
     def __str__(self):
         return f'Arc: start point=({self.startPoint}), end point=({self.endPoint}), rotation point=({self.rotationPoint})'
@@ -128,6 +126,11 @@ class Arc:
     
     def __eq__(self, arc:'Arc'):
         return self.rotationPoint == arc.rotationPoint and self.startPoint == arc.startPoint and self.endPoint == arc.endPoint
+    
+    def calculateAngleRadRepresentation(self):
+        self.radius = self._calculateRadius()
+        self.startAngle = self._calculateAngleRad(self.startPoint, self.rotationPoint)        
+        self.endAngle = self._calculateAngleRad(self.endPoint, self.rotationPoint)
     
     def _calculateRadius(self) -> float:
         x0, y0 = self.startPoint.getXY()
@@ -144,6 +147,9 @@ class Arc:
     
     def getAsCenterRadiusAngles(self) -> tuple[Point, float, float, float]:
         return self.rotationPoint, self.radius, self.startAngle, self.endAngle
+    
+    def getPoints(self) -> tuple[Point, Point, Point]:
+        return self.startPoint, self.endPoint, self.rotationPoint
 
 
 class Circle:
