@@ -273,27 +273,29 @@ class ODBPlusPlusLoader():
         return shapes, i, bottomLeftPoint, topRightPoint
 
     def _getTarPathsToEdaComponents(self, tarPaths:list[str]) -> list[str]:
-        componentsFilePattern = '^[\w+\s\-]+\/steps\/[\w+\s\-]+\/layers\/comp_\+_(bot|top)\/components(.(z|Z))?$' # matches comp_+_bot and comp_+_top files both zipped and uzipped
-        edaFilePattern = '^[\w+\s\-]+\/steps\/[\w+\s\-]+\/eda\/data(.(z|Z))?$' # matches eda path both zipped and unzipped
-        profileFilePattern = '^[\w+\s\-]+\/steps\/[\w+\s\-]+\/profile(.(z|Z))?$'  # matches profile path both zipped and unzipped
-        pattern = f'{componentsFilePattern}|{edaFilePattern}|{profileFilePattern}'
+        def findMatchingStrings(pattern:str, strings:list[str]) -> list[str]:
+            result = []
+            for s in strings:
+                if re.match(pattern, s):
+                    result.append(s)
+            return result
+
+        commonPattern = '^[\w+\s\-]+\/steps\/[\w+\s\-]+\/'
+        botComponentsFilePattern = commonPattern + 'layers\/comp_\+_bot\/components(.(z|Z))?$' # matches comp_+_bot files both zipped and uzipped
+        topComponentsFilePattern = commonPattern + 'layers\/comp_\+_top\/components(.(z|Z))?$' # matches comp_+_top files both zipped and uzipped
+        edaFilePattern = commonPattern + 'eda\/data(.(z|Z))?$' # matches eda path both zipped and unzipped
+        profileFilePattern = commonPattern + 'profile(.(z|Z))?$'  # matches profile path both zipped and unzipped
+
+        matchingEdaPaths = findMatchingStrings(edaFilePattern, tarPaths)
+        matchingBotComponentPaths = findMatchingStrings(botComponentsFilePattern, tarPaths)
+        matchingTopComponentsPaths = findMatchingStrings(topComponentsFilePattern, tarPaths)
+        matchingProfilePaths = findMatchingStrings(profileFilePattern, tarPaths)
 
         result = []
-        for name in tarPaths:
-            if re.match(pattern, name):
-                result.append(name)
-        
-        result.sort()
-        if len(result) == 4:
-            return result
-        
-        if 'comp_+_bot' not in result[1]:
-            result.insert(1, [])
-            return result
-        
-        if 'comp_+_top' not in result[2]:
-            result.insert(2, [])
-            return result
+        for pathsList in [matchingEdaPaths, matchingBotComponentPaths, matchingTopComponentsPaths, matchingProfilePaths]:
+            subList = [] if not pathsList else pathsList[0]
+            result.append(subList)
+        return result
     
     def _extractFileInsideTar(self, pathInTar) -> list[str]:
         with tarfile.open(self.filePath, 'r') as file:
