@@ -82,7 +82,12 @@ class BoardCanvasWrapper():
         self._setBaseMoveOffsetXY(xMove, yMove)
 
     def _setBaseMoveOffsetXY(self, x:float, y:float):
-        self.baseMoveOffsetXY = [x, y]
+        self.baseMoveOffsetXY = [x, y]    
+    
+    def _resizeAndMoveTracks(self, tracksDict:dict):
+        for _, sidesDict in tracksDict.items():
+            for _, shapesList in sidesDict.items():
+                self._resizeAndMoveShapes(shapesList)
 
     def _resizeAndMoveShapes(self, shapesList:list):
         for shape in shapesList:
@@ -100,8 +105,6 @@ class BoardCanvasWrapper():
             self._addComponentToSideComponents(componentInstance)
             self._addComponentToCommonTypeComponents(componentInstance)
     
-    def _resizeAndMoveTracks(self, tracksDict:dict):
-        pass
 
     def _recalculateComponent(self, componentInstance:comp.Component):
         componentInstance.scaleInPlace(self.baseScale)
