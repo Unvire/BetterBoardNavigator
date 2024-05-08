@@ -35,7 +35,7 @@ class BoardCanvasWrapper():
     def normalizeBoard(self):
         self._calculateAndSetBaseScale(self.baseBoard.getArea())
         self._calculateAndSetBaseOffsetXY(self.baseBoard.getArea())
-        self._resizeAndMoveOutlines(self.baseBoard.getOutlines())
+        self._resizeAndMoveShapes(self.baseBoard.getOutlines())
         self._recalculateAndGroupComponents(self.baseBoard.getComponents())
 
     def _loadBaseBoard(self, filePath:str) -> board.Board:
@@ -78,7 +78,7 @@ class BoardCanvasWrapper():
     def _setBaseMoveOffsetXY(self, x:float, y:float):
         self.baseMoveOffsetXY = [x, y]
 
-    def _resizeAndMoveOutlines(self, shapesList:list):
+    def _resizeAndMoveShapes(self, shapesList:list):
         for shape in shapesList:
             pointList = shape.getPoints()
             for point in pointList:
