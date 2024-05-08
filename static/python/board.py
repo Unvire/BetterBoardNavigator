@@ -48,3 +48,10 @@ class Board:
     
     def getTrack(self, side:str, netName:str) -> list['gobj.Line|gobj.Rectangle|gobj.Arc|gobj.Circle']:
         return self.tracks[netName][side]
+    
+    def calculateAreaFromComponents(self):
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+        for _, componentInstance in self.components.items():
+            for point in componentInstance.getArea():
+                bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
+        self.setArea(bottomLeftPoint, topRightPoint)
