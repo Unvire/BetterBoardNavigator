@@ -84,7 +84,8 @@ class BoardCanvasWrapper():
             self._addComponentToCommonTypeComponents(componentInstance)
     
     def _recalculateComponent(self, componentInstance:comp.Component):
-        pass
+        componentInstance.scaleInPlace(self.baseScale)
+        componentInstance.translateInPlace(self.baseMoveOffsetXY)
 
     def _addComponentToHitMap(self, componentInstance:comp.Component):
         pass
@@ -104,6 +105,6 @@ class BoardCanvasWrapper():
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)
-    normalizedBoard.loadAndSetBaseBoard(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\cerm.cad')
+    normalizedBoard.loadAndSetBaseBoard(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm core.cad')
     normalizedBoard.normalizeBoard()
 

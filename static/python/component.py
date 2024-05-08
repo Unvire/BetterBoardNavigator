@@ -93,3 +93,11 @@ class Component(abstractShape.Shape):
     def translatePinsInPlace(self, vector:list[int|float, int|float]):
         for _, pinInstance in self.pins.items():
             pinInstance.translateInPlace(vector)
+    
+    def scaleInPlace(self, scaleFactor: float):
+        super().scaleInPlace(scaleFactor)
+        self._scalePinsInPlace(scaleFactor)
+    
+    def _scalePinsInPlace(self, scaleFactor:float):        
+        for _, pinInstance in self.pins.items():
+                pinInstance.scaleInPlace(scaleFactor)
