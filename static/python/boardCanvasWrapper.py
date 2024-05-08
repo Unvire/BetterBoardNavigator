@@ -93,8 +93,8 @@ class BoardCanvasWrapper():
             self._addComponentToHitMap(componentInstance)
             self._addComponentToSideComponents(componentInstance)
             self._addComponentToCommonTypeComponents(componentInstance)
-        print(self.hitMap)
-    
+        print(self.sideComponents)
+
     def _recalculateComponent(self, componentInstance:comp.Component):
         componentInstance.scaleInPlace(self.baseScale)
         componentInstance.translateInPlace(self.baseMoveOffsetXY)
@@ -107,7 +107,13 @@ class BoardCanvasWrapper():
             self.hitMap[side][keyX][keyY].append(componentInstance.name)        
 
     def _addComponentToSideComponents(self, componentInstance:comp.Component):
-        pass
+        side = componentInstance.getSide()
+        mountType = componentInstance.getMountingType()
+        if mountType == 'TH':
+            self.sideComponents['B'].append(componentInstance.name)
+            self.sideComponents['T'].append(componentInstance.name)
+        else:
+            self.sideComponents[side].append(componentInstance.name)
 
     def _addComponentToCommonTypeComponents(self, componentInstance:comp.Component):
         pass
