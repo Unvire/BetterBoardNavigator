@@ -93,7 +93,6 @@ class BoardCanvasWrapper():
             self._addComponentToHitMap(componentInstance)
             self._addComponentToSideComponents(componentInstance)
             self._addComponentToCommonTypeComponents(componentInstance)
-        print(self.sideComponents)
 
     def _recalculateComponent(self, componentInstance:comp.Component):
         componentInstance.scaleInPlace(self.baseScale)
@@ -116,7 +115,19 @@ class BoardCanvasWrapper():
             self.sideComponents[side].append(componentInstance.name)
 
     def _addComponentToCommonTypeComponents(self, componentInstance:comp.Component):
-        pass
+        def findNonNumericPrefix(s:str) -> str:
+            result = ''
+            for char in s:
+                if char.isnumeric():
+                    return result
+                result += char
+            
+        prefix = findNonNumericPrefix(componentInstance.name)
+        self.commonTypeComponents['B'].setdefault(prefix, [])
+        self.commonTypeComponents['T'].setdefault(prefix, [])
+
+        side = componentInstance.getSide()
+        self.commonTypeComponents[side][prefix].append(componentInstance.name)
 
     def _getBoardAreaCoordsAsXYXY(self, boardArea:tuple[gobj.Point, gobj.Point]) -> tuple[float, float, float, float]:
         bottomLeftPoint, topRightPoint = boardArea
