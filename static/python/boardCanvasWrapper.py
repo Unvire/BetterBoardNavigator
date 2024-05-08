@@ -1,3 +1,4 @@
+import copy
 import geometryObjects as gobj
 import component as comp
 import pin, board
@@ -8,12 +9,14 @@ class BoardCanvasWrapper():
         self.width = width
         self.height = height
         self.baseBoard = None
+        self.baseBoardBackup = None
         self.baseScale = 0.0
         self.baseMoveOffset = [0.0, 0.0]
 
     def loadAndSetBaseBoard(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
         self._setBaseBoard(boardInstance)
+        self._setBaseBoardBackup()
     
     def normalizeBoard(self):
         self._calculateAndSetBaseScale(self.baseBoard.getArea())
@@ -29,6 +32,9 @@ class BoardCanvasWrapper():
 
     def _setBaseBoard(self, boardInstace:board.Board):
         self.baseBoard = boardInstace
+    
+    def _setBaseBoardBackup(self):
+        self.baseBoardBackup = copy.deepcopy(self.baseBoard)
 
     def _calculateAndSetBaseScale(self, boardArea:tuple[gobj.Point, gobj.Point]):
         x0, y0, x1, y1 = self._getBoardAreaCoordsAsXYXY(boardArea)
