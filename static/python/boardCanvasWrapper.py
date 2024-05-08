@@ -37,6 +37,7 @@ class BoardCanvasWrapper():
         self._calculateAndSetBaseOffsetXY(self.baseBoard.getArea())
         self._resizeAndMoveShapes(self.baseBoard.getOutlines())
         self._recalculateAndGroupComponents(self.baseBoard.getComponents())
+        self._resizeAndMoveTracks(self.baseBoard.getTracks())
 
     def _loadBaseBoard(self, filePath:str) -> board.Board:
         fileExtension  = filePath.split('.')[-1]
@@ -93,6 +94,9 @@ class BoardCanvasWrapper():
             self._addComponentToHitMap(componentInstance)
             self._addComponentToSideComponents(componentInstance)
             self._addComponentToCommonTypeComponents(componentInstance)
+    
+    def _resizeAndMoveTracks(self, tracksDict:dict):
+        pass
 
     def _recalculateComponent(self, componentInstance:comp.Component):
         componentInstance.scaleInPlace(self.baseScale)
@@ -138,6 +142,6 @@ class BoardCanvasWrapper():
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)
-    normalizedBoard.loadAndSetBaseBoard(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm core.cad')
+    normalizedBoard.loadAndSetBaseBoard(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.gcd')
     normalizedBoard.normalizeBoard()
 
