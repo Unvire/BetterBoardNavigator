@@ -35,13 +35,14 @@ class BoardCanvasWrapper():
     def normalizeBoard(self):
         self._calculateAndSetBaseScale(self.board.getArea())
         self._calculateAndSetBaseOffsetXY(self.board.getArea())
-        self._resizeAndMoveShapes(self.board.getOutlines())
         try:
             self._recalculateAndGroupComponents(self.board.getComponents())
         except KeyError:
             self.board = copy.deepcopy(self.boardBackup)
             self.board.calculateAreaFromComponents()
             self.normalizeBoard()
+        
+        self._resizeAndMoveShapes(self.board.getOutlines())
         self._resizeAndMoveTracks(self.board.getTracks())
 
     def _loadBaseBoard(self, filePath:str) -> board.Board:
