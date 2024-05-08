@@ -39,7 +39,9 @@ class BoardCanvasWrapper():
         try:
             self._recalculateAndGroupComponents(self.board.getComponents())
         except KeyError:
-            print('recalculations...')
+            self.board = copy.deepcopy(self.boardBackup)
+            self.board.calculateAreaFromComponents()
+            self.normalizeBoard()
         self._resizeAndMoveTracks(self.board.getTracks())
 
     def _loadBaseBoard(self, filePath:str) -> board.Board:
