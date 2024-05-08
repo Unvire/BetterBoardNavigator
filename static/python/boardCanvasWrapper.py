@@ -12,9 +12,20 @@ class BoardCanvasWrapper():
         self.baseBoardBackup = None
         self.baseScale = 0.0
         self.baseMoveOffsetXY = [0.0, 0.0]
-        self.hitMap = {}
         self.sideComponents = {'B':[], 'T':[]}
         self.commonTypeComponents = {'B':{}, 'T':{}}
+        self.hitMap = {'B':{}, 'T':{}}
+        self._initHitmap()
+    
+    def _initHitmap(self):
+        rangeWidth = range(int(self.width / 100))
+        rangeHeight = range(int(self.height / 100))
+        for side in ['T', 'B']:
+            self.hitMap[side] = {}
+            for w in rangeWidth:
+                self.hitMap[side][w] = {}
+                for h in rangeHeight:
+                    self.hitMap[side][w][h] = []
 
     def loadAndSetBaseBoard(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
@@ -82,13 +93,18 @@ class BoardCanvasWrapper():
             self._addComponentToHitMap(componentInstance)
             self._addComponentToSideComponents(componentInstance)
             self._addComponentToCommonTypeComponents(componentInstance)
+        print(self.hitMap)
     
     def _recalculateComponent(self, componentInstance:comp.Component):
         componentInstance.scaleInPlace(self.baseScale)
         componentInstance.translateInPlace(self.baseMoveOffsetXY)
 
     def _addComponentToHitMap(self, componentInstance:comp.Component):
-        pass
+        for point in componentInstance.getArea():
+            x, y  = point.getXY()
+            keyX, keyY = int(x / 100),  int(y / 100)
+            side = componentInstance.getSide()
+            self.hitMap[side][keyX][keyY].append(componentInstance.name)        
 
     def _addComponentToSideComponents(self, componentInstance:comp.Component):
         pass
