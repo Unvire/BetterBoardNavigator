@@ -104,3 +104,9 @@ class Shape():
             bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
         self.setArea(bottomLeftPoint, topRightPoint)
     
+    def scaleInPlace(self, scaleFactor:float):
+        pointList = [self.coords] + self.area
+        for point in pointList:
+            point.scaleInPlace(scaleFactor)
+        self.caluclateShapeData()
+    
