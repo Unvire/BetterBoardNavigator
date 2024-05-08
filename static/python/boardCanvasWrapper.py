@@ -11,7 +11,8 @@ class BoardCanvasWrapper():
         self.baseBoard = None
         self.baseBoardBackup = None
         self.baseScale = 0.0
-        self.baseMoveOffset = [0.0, 0.0]
+        self.baseMoveOffsetXY = [0.0, 0.0]
+        self.hitMap = {}
 
     def loadAndSetBaseBoard(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
@@ -20,8 +21,7 @@ class BoardCanvasWrapper():
     
     def normalizeBoard(self):
         self._calculateAndSetBaseScale(self.baseBoard.getArea())
-        self._calculateAndSetBaseOffset(self.baseBoard.getArea())
-        print(self.baseScale, self.baseMoveOffset, self.baseBoard.area)
+        self._calculateAndSetBaseOffsetXY(self.baseBoard.getArea())
         self._resizeAndMoveOutlines(self.baseBoard.getOutlines())
 
     def _loadBaseBoard(self, filePath:str) -> board.Board:
@@ -50,7 +50,7 @@ class BoardCanvasWrapper():
     def _setBaseScale(self, baseScale:float):
         self.baseScale = baseScale
         
-    def _calculateAndSetBaseOffset(self, boardArea:tuple[gobj.Point, gobj.Point]):
+    def _calculateAndSetBaseOffsetXY(self, boardArea:tuple[gobj.Point, gobj.Point]):
         x0, y0, x1, y1 = self._getBoardAreaCoordsAsXYXY(boardArea)
         
         xMidScaled = (x1 + x0) / 2 * self.baseScale
@@ -59,10 +59,10 @@ class BoardCanvasWrapper():
         yTarget = self.height // 2
 
         xMove, yMove = xTarget - xMidScaled, yTarget - yMidScaled
-        self._setBaseMoveOffset(xMove, yMove)
+        self._setBaseMoveOffsetXY(xMove, yMove)
 
-    def _setBaseMoveOffset(self, x:float, y:float):
-        self.baseMoveOffset = [x, y]
+    def _setBaseMoveOffsetXY(self, x:float, y:float):
+        self.baseMoveOffsetXY = [x, y]
     
     def _getBoardAreaCoordsAsXYXY(self, boardArea:tuple[gobj.Point, gobj.Point]) -> tuple[float, float, float, float]:
         bottomLeftPoint, topRightPoint = boardArea
@@ -72,8 +72,12 @@ class BoardCanvasWrapper():
     
     def _resizeAndMoveOutlines(self, shapesList:list):
         for shape in shapesList:
-            pass
-            #print(shape)
+            pointList = shape.getPoints()
+            for point in pointList:
+                point.scaleInPlace(self.baseScale)   
+                point.translateInPlace(self.baseMoveOffsetXY)
+            if isinstance(shape, gobj.Arc):
+                shape.calculateAngleRadRepresentation
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)
