@@ -54,6 +54,8 @@ class GenCadLoader:
                     line.remove('')
                 if keyWord == 'ARTWORK':
                     break
+                if keyWord not in self.handleShape:
+                    continue
                 shape, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](line, bottomLeftPoint, topRightPoint)
                 shapes.append(shape)
         
@@ -339,5 +341,5 @@ class GenCadLoader:
     
 if __name__ == '__main__':
     loader = GenCadLoader()
-    fileLines = loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\jaguar REV.GCD')
+    fileLines = loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.GCD')
     loader.processFileLines(fileLines)
