@@ -138,7 +138,11 @@ class CamCadLoader:
         newComponent = comp.Component(name)
         newComponent.setCoords(gobj.Point(None, None))
         newComponent.setAngle(float(angle))
-        newComponent.setSide(side)
+        if side == 'A':
+            newComponent.setSide('B')
+            newComponent.setMountingType('TH')
+        else:
+            newComponent.setSide(side)
         newComponent.setShape('RECT')
         return newComponent
     
