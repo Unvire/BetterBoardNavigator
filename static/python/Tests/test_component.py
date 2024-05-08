@@ -101,11 +101,9 @@ def test_translateInPlace(componentForRotateTranslate):
     assert pin2.getShapePoints() == [gobj.Point(11.5, 10.5), gobj.Point(12.5, 10.5), gobj.Point(12.5, 11.5), gobj.Point(11.5, 11.5)]
 
 def test_rotateInPlace(componentForRotateTranslate):
-    gobj.Point.DECIMAL_POINT_PRECISION = 3
-    for point in componentForRotateTranslate.getPinByName('2').getShapePoints():
-        print(point)
-    
+    gobj.Point.DECIMAL_POINT_PRECISION = 3    
     componentForRotateTranslate.rotateInPlace(gobj.Point(1, 1), 30)
+
     assert componentForRotateTranslate.getCoords() == gobj.Point(0.634, -0.366)
     assert componentForRotateTranslate.getArea() == [gobj.Point(-3.830, -4.098), gobj.Point(5.098, 3.366)]
     assert componentForRotateTranslate.getShapePoints() == [gobj.Point(-1.830, -4.098), gobj.Point(5.098, -0.098), 
@@ -127,3 +125,22 @@ def test_getPinByName(componentForPinsCalculation):
 
     testPin = componentForPinsCalculation.getPinByName('13')
     assert testPin == None
+
+def test_scaleInPlace(componentForRotateTranslate):
+    gobj.Point.DECIMAL_POINT_PRECISION = 3    
+    componentForRotateTranslate.scaleInPlace(100)
+
+    assert componentForRotateTranslate.getCoords() == gobj.Point(0, 0)
+    assert componentForRotateTranslate.getArea() == [gobj.Point(-400, -200), gobj.Point(400, 200)]
+    assert componentForRotateTranslate.getShapePoints() == [gobj.Point(-400, -200), gobj.Point(400, -200), 
+                                                            gobj.Point(400, 200), gobj.Point(-400, 200)]
+
+    pin1 = componentForRotateTranslate.getPinByName('1')
+    assert pin1.getCoords() == gobj.Point(-200, -100)
+    assert pin1.getArea() == [gobj.Point(-250, -150), gobj.Point(-150, -50)]
+    assert pin1.getShapePoints() == [gobj.Point(-250, -150), gobj.Point(-150, -150), gobj.Point(-150, -50), gobj.Point(-250, -50)]
+
+    pin2 = componentForRotateTranslate.getPinByName('2')
+    assert pin2.getCoords() == gobj.Point(200, 100)
+    assert pin2.getArea() == [gobj.Point(150, 50), gobj.Point(250, 150)]
+    assert pin2.getShapePoints() == [gobj.Point(150, 50), gobj.Point(250, 50), gobj.Point(250, 150), gobj.Point(150, 150)]
