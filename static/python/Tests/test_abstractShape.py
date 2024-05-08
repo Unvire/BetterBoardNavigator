@@ -71,3 +71,14 @@ def test_rotateInPlace_normalizeShapePoints(shape1):
     assert shape1.getCoords() == gobj.Point(0, 0)
     assert shape1.getArea() == [gobj.Point(-2.121, -2.121), gobj.Point(2.121, 2.121)]
     assert shape1.getShapePoints() == [gobj.Point(0.707, -2.121), gobj.Point(2.121, -0.707), gobj.Point(-0.707, 2.121), gobj.Point(-2.121, 0.707)]
+
+def test_scaleInPlace(shape1):
+    gobj.Point.DECIMAL_POINT_PRECISION = 3    
+    shape1.calculateAreaFromWidthHeightCoords()    
+    shape1.setShape('RECT')
+    shape1.caluclateShapeData()
+    
+    shape1.scaleInPlace(2)
+    assert shape1.getCoords() == gobj.Point(0, 0)
+    assert shape1.getArea() == [gobj.Point(-2, -4), gobj.Point(2, 4)]
+    assert shape1.getShapePoints() == [gobj.Point(-2, -4), gobj.Point(2, -4), gobj.Point(2, 4), gobj.Point(-2, 4)]
