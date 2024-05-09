@@ -18,6 +18,10 @@ def drawArc(surface:pygame.Surface, color:tuple[int, int, int], arcInstance:gobj
     endAngle, startAngle = arcInstance.getAsCenterRadiusAngles()[-2:] # y axis is mirrored so angles are swapped    
     pygame.draw.arc(surface, color, (x0, y0, x1 - x0, y1 - y0), startAngle, endAngle, width)
 
+def drawCircle(surface:pygame.Surface, color:tuple[int, int, int], circleInstance:gobj.Circle, width:int=1):
+    centerPoint, radius = circleInstance.getCenterRadius()
+    pygame.draw.circle(surface, color, centerPoint.getXY(), radius, width=1)
+
 if __name__ == '__main__':
     WIDTH, HEIGHT = 1200, 700
     FPS = 60
@@ -36,6 +40,7 @@ if __name__ == '__main__':
     
     lineInstance = gobj.Line(gobj.Point(100, 100), gobj.Point(1000, 630))
     arcInstance = gobj.Arc(gobj.Point(200, 200), gobj.Point(400, 400) ,gobj.Point(400, 200))
+    circleInstance = gobj.Circle(gobj.Point(500, 500), 50)
 
     run = True
     while run:
@@ -54,7 +59,7 @@ if __name__ == '__main__':
             elif event.type == pygame.KEYDOWN:
                pass
             
-        drawArc(boardLayer, (255, 255, 255), arcInstance)
+        drawCircle(boardLayer, (255, 255, 255), circleInstance)
 
         ## display image
         drawBoardLayer(WIN, [boardLayer])
