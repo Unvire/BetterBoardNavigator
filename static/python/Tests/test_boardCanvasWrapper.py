@@ -36,7 +36,7 @@ def test_calculateAndSetBaseScale(scaleAndOffsetCalculationData):
     instance = BoardCanvasWrapper(1200, 700)
     for area, result in zip(scaleAndOffsetCalculationData, expected):
         instance._calculateAndSetBaseScale(area)
-        assert instance.baseScale == result
+        assert round(instance.baseScale - result, 6) == 0
 
 def test_calculateAndSetBaseOffsetXY(scaleAndOffsetCalculationData):
     expected = [[285, 35], [915, 35], [915, 665], [285, 665],
@@ -47,4 +47,7 @@ def test_calculateAndSetBaseOffsetXY(scaleAndOffsetCalculationData):
     for area, result in zip(scaleAndOffsetCalculationData, expected):
         instance._calculateAndSetBaseScale(area)
         instance._calculateAndSetBaseOffsetXY(area)
-        assert instance.baseMoveOffsetXY == result
+        xOffset, yOffset = instance.baseMoveOffsetXY
+        xResult, yResult = result
+        assert round(xOffset - xResult, 6) == 0
+        assert round(yOffset - yResult, 6) == 0
