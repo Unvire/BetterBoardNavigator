@@ -25,7 +25,7 @@ class GenCadLoader:
         shapesDict = self._getAreaPinsfromSHAPES(fileLines)
         self._addShapePadDataToComponent(self.boardData, shapeToComponentsDict, shapesDict, padstackDict)
         self._getNetsFromSIGNALS(fileLines, self.boardData)
-        self._getTracksFromROUTES(fileLines, self.boardData)
+        #self._getTracksFromROUTES(fileLines, self.boardData)
         return self.boardData
     
     def _setFilePath(self, filePath:str):
