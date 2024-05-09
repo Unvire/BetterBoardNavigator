@@ -16,7 +16,6 @@ class BoardCanvasWrapper():
         self.commonTypeComponents = {}
         self.hitMap = {}
         self._resetGroupsToDefault()
-        
 
     def loadAndSetBoard(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
@@ -54,9 +53,9 @@ class BoardCanvasWrapper():
         areaHeight = abs(y1 - y0)
         
         FITNESS_SCALE_FACTOR = 0.9
-        minCanvasDimension = FITNESS_SCALE_FACTOR * min(self.width, self.height)
-        maxBoardDimension = max(areaWidth, areaHeight)
-        baseScale = minCanvasDimension / maxBoardDimension
+        scaleX = self.width / areaWidth
+        scaleY = self.height / areaHeight
+        baseScale = min(scaleX, scaleY) * FITNESS_SCALE_FACTOR 
         self._setBaseScale(baseScale)
     
     def _setBaseScale(self, baseScale:float):
