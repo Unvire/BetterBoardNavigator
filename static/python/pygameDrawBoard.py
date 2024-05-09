@@ -6,21 +6,22 @@ class DrawBoardEngine:
     def __init__(self, width:int, height:int):
         self.boardData = None
         self.boardLayer = pygame.Surface((width, height))
+        self.drawHandler = {'Line': self.drawLine,
+                            'Arc': self.drawArc}
 
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
     
-    def drawOutlines(self, side):
-        shapesList = self.boardData.getOutlines()
-        print(str(type(shapesList)))
+    def drawOutlines(self, side:str, color:tuple[int, int, int], width:int=1):
+        # handle side mirroring
+        for shape in self.boardData.getOutlines():
+            shapeType = shape.getType()
+            if shapeType == 'Arc':
+                print(shape)
+            self.drawHandler[shapeType](color, shape, width)
 
     def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface):
         targetSurface.blit(self.boardLayer, (0, 0))
-
-    def drawBoardOutlines(self, boardInstace:board.Board, side:str):
-        outlines = boardInstace.getOutlines()
-        for shape in outlines:
-            print(type(shape))
 
     def drawLine(self, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
         startPoint, endPoint = lineInstance.getPoints()
@@ -30,7 +31,8 @@ class DrawBoardEngine:
         startPoint, endPoint = arcInstance.getPoints()[:2]
         x0, y0, = startPoint.getXY()
         x1, y1 = endPoint.getXY()
-        endAngle, startAngle = arcInstance.getAsCenterRadiusAngles()[-2:] # y axis is mirrored so angles are swapped    
+        endAngle, startAngle = arcInstance.getAsCenterRadiusAngles()[-2:] # y axis is mirrored so angles are swapped 
+        endAngle, startAngle = startAngle, endAngle
         pygame.draw.arc(self.boardLayer, color, (x0, y0, x1 - x0, y1 - y0), startAngle, endAngle, width)
 
     def drawCircle(self, color:tuple[int, int, int], circleInstance:gobj.Circle, width:int=1):
@@ -52,7 +54,7 @@ if __name__ == '__main__':
     boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.GCD')
     boardInstance = boardWrapper.normalizeBoard()
 
-    engine = DrawBoardEngine()
+    engine = DrawBoardEngine(WIDTH, HEIGHT)
     engine.setBoardData(boardInstance)
 
     ## pygame
@@ -76,9 +78,11 @@ if __name__ == '__main__':
 
             elif event.type == pygame.KEYDOWN:
                pass
-
+        
         ## display image
-        engine.drawBoardLayer(WIN, [boardLayer])
+        
+        engine.drawOutlines('B', (255, 255, 255))
+        engine.blitBoardLayerIntoTarget(WIN)
         pygame.display.update()
         #run = False
 
