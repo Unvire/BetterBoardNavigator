@@ -17,10 +17,14 @@ class BoardCanvasWrapper():
         self.hitMap = {}
         self._resetGroupsToDefault()
 
-    def loadAndSetBoard(self, filePath:str):
+    def loadAndSetBoardFromFilePath(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
         self._setBoard(boardInstance)
-        self._setBoardBackup()
+    
+    def loadAndSetBoardFromFileLines(self, fileName:str, fileLines:list[str]):
+        loader = loaderSelectorFactory.LoaderSelectorFactory(fileName)
+        boardInstace = loader.processFileLines(fileLines)
+        self._setBoard(boardInstace)
     
     def normalizeBoard(self):
         self._calculateAndSetBaseScale(self.board.getArea())
@@ -30,6 +34,7 @@ class BoardCanvasWrapper():
             self._resizeAndMoveShapes(self.board.getOutlines())
             self._resizeAndMoveTracks(self.board.getTracks())
         except KeyError:
+            print('again')
             self.board = copy.deepcopy(self.boardBackup)
             self.board.calculateAreaFromComponents()
             self._resetGroupsToDefault()
@@ -43,9 +48,7 @@ class BoardCanvasWrapper():
 
     def _setBoard(self, boardInstace:board.Board):
         self.board = boardInstace
-    
-    def _setBoardBackup(self):
-        self.boardBackup = copy.deepcopy(self.board)
+        self.boardBackup = copy.deepcopy(self.board)        
 
     def _calculateAndSetBaseScale(self, boardArea:tuple[gobj.Point, gobj.Point]):
         x0, y0, x1, y1 = self._getBoardAreaCoordsAsXYXY(boardArea)
@@ -157,6 +160,5 @@ class BoardCanvasWrapper():
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)
-    normalizedBoard.loadAndSetBoard(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.gcd')
+    normalizedBoard.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm core.cad')
     normalizedBoard.normalizeBoard()
-
