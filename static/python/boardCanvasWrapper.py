@@ -34,11 +34,20 @@ class BoardCanvasWrapper():
             self._resizeAndMoveShapes(self.board.getOutlines())
             self._resizeAndMoveTracks(self.board.getTracks())
         except KeyError:
-            print('again')
             self.board = copy.deepcopy(self.boardBackup)
             self.board.calculateAreaFromComponents()
             self._resetGroupsToDefault()
             self.normalizeBoard()
+        return self.board
+    
+    def getHitMap(self) -> dict:
+        return copy.deepcopy(self.hitMap)
+    
+    def getSideComponents(self) -> dict:
+        return self.sideComponents
+    
+    def getCommonTypeComponents(self) -> dict:
+        return self.commonTypeComponents
         
     def _loadBaseBoard(self, filePath:str) -> board.Board:
         fileExtension  = filePath.split('.')[-1]
