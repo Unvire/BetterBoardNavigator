@@ -3,6 +3,7 @@ import math
 class Point:
     DECIMAL_POINT_PRECISION = 6
     def __init__(self, x:float|int, y:float|int):
+        self.type = 'Point'
         self.x = x
         self.y = y
     
@@ -32,6 +33,9 @@ class Point:
     def getXY(self) -> tuple[float, float]:
         return self.x, self.y
     
+    def getType(self) -> str:
+        return self.type
+
     def rotate(self, rotationPoint:'Point', angleDeg:float):
         xMove, yMove = rotationPoint.getX(), rotationPoint.getY()
         angleRad = math.radians(angleDeg)
@@ -88,6 +92,7 @@ class Point:
 
 class Line:
     def __init__(self, startPoint:Point, endPoint:Point):
+        self.type = 'Line'
         self.startPoint = startPoint
         self.endPoint = endPoint
     
@@ -101,6 +106,9 @@ class Line:
         result1 = self.startPoint == line.startPoint and self.endPoint == line.endPoint
         result2 = self.startPoint == line.endPoint and self.endPoint == line.startPoint
         return result1 or result2
+    
+    def getType(self) -> str:
+        return self.type
 
     def getPoints(self) -> tuple[Point, Point]:
         return self.startPoint, self.endPoint
@@ -112,6 +120,7 @@ class Line:
 
 class Arc:
     def __init__(self, startPoint:Point, endPoint:Point, rotationPoint:Point):
+        self.type = 'Arc'
         self.startPoint = startPoint
         self.endPoint = endPoint
         self.rotationPoint = rotationPoint
@@ -126,6 +135,9 @@ class Arc:
     
     def __eq__(self, arc:'Arc'):
         return self.rotationPoint == arc.rotationPoint and self.startPoint == arc.startPoint and self.endPoint == arc.endPoint
+    
+    def getType(self) -> str:
+        return self.type
     
     def calculateAngleRadRepresentation(self):
         self.radius = self._calculateRadius()
@@ -154,6 +166,7 @@ class Arc:
 
 class Circle:
     def __init__(self, centerPoint:Point, radius:float):
+        self.type = 'Circle'
         self.centerPoint = centerPoint
         self.radius = radius
     
@@ -165,6 +178,9 @@ class Circle:
     
     def __eq__(self, circle:'Circle'):
         return self.radius == circle.radius and self.centerPoint == circle.centerPoint
+    
+    def getType(self) -> str:
+        return self.type
 
     def getPoints(self) -> list[Point]:
         ''' [centerPoint] ''' 
@@ -175,6 +191,7 @@ class Circle:
     
 class Rectangle:
     def __init__(self, bottomLeftPoint:Point, topRightPoint:Point):
+        self.type = 'Rectangle'
         self.bottomLeftPoint = bottomLeftPoint
         self.topRightPoint = topRightPoint
         xBL, yBL = self.bottomLeftPoint.getXY()
