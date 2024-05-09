@@ -12,20 +12,11 @@ class BoardCanvasWrapper():
         self.boardBackup = None
         self.baseScale = 0.0
         self.baseMoveOffsetXY = [0.0, 0.0]
-        self.sideComponents = {'B':[], 'T':[]}
-        self.commonTypeComponents = {'B':{}, 'T':{}}
-        self.hitMap = {'B':{}, 'T':{}}
-        self._initHitmap()
-    
-    def _initHitmap(self):
-        rangeWidth = range(int(self.width / 100))
-        rangeHeight = range(int(self.height / 100))
-        for side in ['T', 'B']:
-            self.hitMap[side] = {}
-            for w in rangeWidth:
-                self.hitMap[side][w] = {}
-                for h in rangeHeight:
-                    self.hitMap[side][w][h] = []
+        self.sideComponents = {}
+        self.commonTypeComponents = {}
+        self.hitMap = {}
+        self._resetGroupsToDefault()
+        
 
     def loadAndSetBoard(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
@@ -37,14 +28,14 @@ class BoardCanvasWrapper():
         self._calculateAndSetBaseOffsetXY(self.board.getArea())
         try:
             self._recalculateAndGroupComponents(self.board.getComponents())
+            self._resizeAndMoveShapes(self.board.getOutlines())
+            self._resizeAndMoveTracks(self.board.getTracks())
         except KeyError:
             self.board = copy.deepcopy(self.boardBackup)
             self.board.calculateAreaFromComponents()
+            self._resetGroupsToDefault()
             self.normalizeBoard()
         
-        self._resizeAndMoveShapes(self.board.getOutlines())
-        self._resizeAndMoveTracks(self.board.getTracks())
-
     def _loadBaseBoard(self, filePath:str) -> board.Board:
         fileExtension  = filePath.split('.')[-1]
         loader = loaderSelectorFactory.LoaderSelectorFactory(fileExtension)
@@ -147,6 +138,22 @@ class BoardCanvasWrapper():
         xBL, yBL = bottomLeftPoint.getXY()
         xTR, yTR = topRightPoint.getXY()
         return xBL, yBL, xTR, yTR
+    
+    def _resetGroupsToDefault(self):
+        self.sideComponents = {'B':[], 'T':[]}
+        self.commonTypeComponents = {'B':{}, 'T':{}}
+        self.hitMap = {'B':{}, 'T':{}}
+        self._initHitmap()
+    
+    def _initHitmap(self):
+        rangeWidth = range(int(self.width / 100))
+        rangeHeight = range(int(self.height / 100))
+        for side in ['T', 'B']:
+            self.hitMap[side] = {}
+            for w in rangeWidth:
+                self.hitMap[side][w] = {}
+                for h in rangeHeight:
+                    self.hitMap[side][w][h] = []
     
 
 if __name__ == '__main__':
