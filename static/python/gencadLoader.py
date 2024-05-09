@@ -159,7 +159,7 @@ class GenCadLoader:
                 componentInstance = components[componentName]
                 pins = shapesDict[shapeName]['PIN']
                 packageType = shapesDict[shapeName]['INSERT'][0][0]
-                componentArea = shapesDict[shapeName]['AREA']
+                componentArea = copy.deepcopy(shapesDict[shapeName]['AREA'])
                 componentAreaType = shapesDict[shapeName]['AREA_NAME']
                 
                 for pinNumber, padstackName, pinX, pinY, _, pinAngle, _ in pins:
