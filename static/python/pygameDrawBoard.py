@@ -20,7 +20,11 @@ def drawArc(surface:pygame.Surface, color:tuple[int, int, int], arcInstance:gobj
 
 def drawCircle(surface:pygame.Surface, color:tuple[int, int, int], circleInstance:gobj.Circle, width:int=1):
     centerPoint, radius = circleInstance.getCenterRadius()
-    pygame.draw.circle(surface, color, centerPoint.getXY(), radius, width=1)
+    pygame.draw.circle(surface, color, centerPoint.getXY(), radius, width)
+
+def drawPolygon(surface:pygame.Surface, color:tuple[int, int, int], pointsList:list[gobj.Point], width:int=1):
+    pointsXYList = [point.getXY() for point in pointsList]
+    pygame.draw.polygon(surface, color, pointsXYList, width)
 
 if __name__ == '__main__':
     WIDTH, HEIGHT = 1200, 700
@@ -41,6 +45,7 @@ if __name__ == '__main__':
     lineInstance = gobj.Line(gobj.Point(100, 100), gobj.Point(1000, 630))
     arcInstance = gobj.Arc(gobj.Point(200, 200), gobj.Point(400, 400) ,gobj.Point(400, 200))
     circleInstance = gobj.Circle(gobj.Point(500, 500), 50)
+    polygonInstance = [gobj.Point(100, 100), gobj.Point(200, 100), gobj.Point(300, 300)]
 
     run = True
     while run:
@@ -59,7 +64,7 @@ if __name__ == '__main__':
             elif event.type == pygame.KEYDOWN:
                pass
             
-        drawCircle(boardLayer, (255, 255, 255), circleInstance)
+        drawPolygon(boardLayer, (255, 255, 255), polygonInstance)
 
         ## display image
         drawBoardLayer(WIN, [boardLayer])
