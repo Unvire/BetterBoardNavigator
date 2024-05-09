@@ -170,6 +170,9 @@ class Circle:
         ''' [centerPoint] ''' 
         return [self.centerPoint]
     
+    def getCenterRadius(self) -> tuple[Point, float]:
+        return self.centerPoint, self.radius
+    
 class Rectangle:
     def __init__(self, bottomLeftPoint:Point, topRightPoint:Point):
         self.bottomLeftPoint = bottomLeftPoint
