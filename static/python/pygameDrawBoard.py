@@ -14,14 +14,16 @@ class DrawBoardEngine:
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
     
-    def drawOutlines(self, side:str, color:tuple[int, int, int], width:int=1):
+    def drawOutlines(self, color:tuple[int, int, int], width:int=1):
         # handle side mirroring
         for i, shape in enumerate(self.boardData.getOutlines()):
             shapeType = shape.getType()
             self.drawHandler[shapeType](color, shape, width)
 
-    def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface):
-        targetSurface.blit(self.boardLayer, (0, 0))
+    def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface, side:str):    
+        targetSurface.blit(self.boardLayer, (0, 0))  
+        if side == 'B':  
+            pygame.transform.flip(targetSurface, True, False)
 
     def drawLine(self, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
         startPoint, endPoint = lineInstance.getPoints()
@@ -84,8 +86,8 @@ if __name__ == '__main__':
                pass
         
         ## display image
-        engine.drawOutlines('B', (255, 255, 255))
-        engine.blitBoardLayerIntoTarget(WIN)
+        engine.drawOutlines((255, 255, 255))
+        engine.blitBoardLayerIntoTarget(WIN, side)
 
         pygame.display.update()
         #run = False
