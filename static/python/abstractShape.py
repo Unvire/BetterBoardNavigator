@@ -90,12 +90,12 @@ class Shape():
             point.translateInPlace(vector)
     
     def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:int|float):
-        self.coords.rotate(rotationPoint, angleDeg)
+        self.coords.rotateInPlace(rotationPoint, angleDeg)
         for point in self.shapeData.getPoints():
-            point.rotate(rotationPoint, angleDeg)
+            point.rotateInPlace(rotationPoint, angleDeg)
         
         for point in self.getArea():
-            point.rotate(rotationPoint, angleDeg)
+            point.rotateInPlace(rotationPoint, angleDeg)
         self.normalizeArea(self.getArea())
     
     def normalizeArea(self, pointList:list[gobj.Point]):

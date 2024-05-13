@@ -36,7 +36,7 @@ class Point:
     def getType(self) -> str:
         return self.type
 
-    def rotate(self, rotationPoint:'Point', angleDeg:float):
+    def rotateInPlace(self, rotationPoint:'Point', angleDeg:float):
         xMove, yMove = rotationPoint.getX(), rotationPoint.getY()
         angleRad = math.radians(angleDeg)
         

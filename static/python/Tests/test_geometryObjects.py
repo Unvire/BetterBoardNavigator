@@ -21,7 +21,7 @@ def test_PointRotate(inputData, expected):
     rotationPoint = gobj.Point(xRotation, yRotation)
 
     A = gobj.Point(1, 1)
-    A.rotate(rotationPoint, angleDeg)
+    A.rotateInPlace(rotationPoint, angleDeg)
     assert A == expected
 
 def test_minXYCoords():
