@@ -99,7 +99,7 @@ class BoardCanvasWrapper():
                 point.scaleInPlace(self.baseScale)   
                 point.translateInPlace(self.baseMoveOffsetXY)
             if isinstance(shape, gobj.Arc):
-                shape.calculateAngleRadRepresentation
+                shape.calculateAngleRadRepresentation()
     
     def _recalculateAndGroupComponents(self, componentsDict:dict):
         for _, componentInstance in componentsDict.items():

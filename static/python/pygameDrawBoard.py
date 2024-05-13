@@ -1,4 +1,4 @@
-import pygame
+import pygame, math
 import boardCanvasWrapper, component, pin, board
 import geometryObjects as gobj
 
@@ -8,16 +8,16 @@ class DrawBoardEngine:
         self.boardLayer = pygame.Surface((width, height))
         self.drawHandler = {'Line': self.drawLine,
                             'Arc': self.drawArc}
+        self.width = width
+        self.height = height
 
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
     
     def drawOutlines(self, side:str, color:tuple[int, int, int], width:int=1):
         # handle side mirroring
-        for shape in self.boardData.getOutlines():
+        for i, shape in enumerate(self.boardData.getOutlines()):
             shapeType = shape.getType()
-            if shapeType == 'Arc':
-                print(shape)
             self.drawHandler[shapeType](color, shape, width)
 
     def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface):
@@ -28,12 +28,17 @@ class DrawBoardEngine:
         pygame.draw.line(self.boardLayer, color, startPoint.getXY(), endPoint.getXY())
 
     def drawArc(self, color:tuple[int, int, int], arcInstance:gobj.Arc, width:int=1):
-        startPoint, endPoint = arcInstance.getPoints()[:2]
-        x0, y0, = startPoint.getXY()
-        x1, y1 = endPoint.getXY()
-        endAngle, startAngle = arcInstance.getAsCenterRadiusAngles()[-2:] # y axis is mirrored so angles are swapped 
-        endAngle, startAngle = startAngle, endAngle
-        pygame.draw.arc(self.boardLayer, color, (x0, y0, x1 - x0, y1 - y0), startAngle, endAngle, width)
+        def inversedAxisAngle(angleRad:float):
+            return 2 * math.pi - angleRad
+
+        rotationPoint, radius, startAngle, endAngle = arcInstance.getAsCenterRadiusAngles()
+        x0, y0 = rotationPoint.getXY()
+        x0 -= radius
+        y0 -= radius
+
+        endAngle, startAngle = arcInstance.getAsCenterRadiusAngles()[-2:] # y axis is mirrored so angles are substracted from 2*pi 
+        startAngle, endAngle = inversedAxisAngle(startAngle), inversedAxisAngle(endAngle)
+        pygame.draw.arc(self.boardLayer, color, (x0, y0, 2 * radius, 2 * radius), startAngle, endAngle, width)
 
     def drawCircle(self, color:tuple[int, int, int], circleInstance:gobj.Circle, width:int=1):
         centerPoint, radius = circleInstance.getCenterRadius()
@@ -61,7 +66,6 @@ if __name__ == '__main__':
     WIN = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
 
-
     run = True
     while run:
         clock.tick(FPS)
@@ -71,7 +75,7 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 run = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                pass
+                print(pygame.mouse.get_pos())
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 pass
@@ -80,9 +84,9 @@ if __name__ == '__main__':
                pass
         
         ## display image
-        
         engine.drawOutlines('B', (255, 255, 255))
         engine.blitBoardLayerIntoTarget(WIN)
+
         pygame.display.update()
         #run = False
 
