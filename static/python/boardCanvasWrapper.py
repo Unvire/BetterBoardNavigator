@@ -38,6 +38,8 @@ class BoardCanvasWrapper():
             self.board.calculateAreaFromComponents()
             self._resetGroupsToDefault()
             self.normalizeBoard()
+        
+        self.board.setGroups(self.sideComponents, self.commonTypeComponents, self.hitMap)
         return self.board
     
     def getHitMap(self) -> dict:
