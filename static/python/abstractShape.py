@@ -27,6 +27,9 @@ class Shape():
         else:
             self.shapeData = gobj.Rectangle(bottomLeftPoint, topRightPoint)
     
+    def getShapeData(self) -> gobj.Rectangle|gobj.Circle:
+        return self.shapeData
+    
     def getShapePoints(self) -> tuple[gobj.Point]:
         return self.shapeData.getPoints()
     
