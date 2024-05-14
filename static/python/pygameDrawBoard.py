@@ -1,6 +1,7 @@
 import pygame, math
-import boardCanvasWrapper, component, pin, board
+import boardCanvasWrapper, pin, board
 import geometryObjects as gobj
+import component as comp
 
 class DrawBoardEngine:
     def __init__(self, width:int, height:int):
@@ -16,9 +17,32 @@ class DrawBoardEngine:
     
     def drawOutlines(self, color:tuple[int, int, int], width:int=1):
         # handle side mirroring
-        for i, shape in enumerate(self.boardData.getOutlines()):
+        for shape in self.boardData.getOutlines():
             shapeType = shape.getType()
             self.drawHandler[shapeType](color, shape, width)
+    
+    def drawComponents(self, color:tuple[int, int, int], side:str, width:int=1):
+        componentNames = self.boardData.getSideGroupedComponents()[side]
+        for componentName in componentNames:
+            componentInstance = self.boardData.getElementByName('components', componentName)
+            pinsDict = componentInstance.getPins()
+            numOfPins = len(pinsDict)
+            if numOfPins == 1:
+                pinName = list(pinsDict.keys())[0]
+                pinInstance = pinsDict[pinName]
+                self.drawInstanceAsCirlceOrPolygon(pinInstance, color, width)
+            else:
+                self.drawInstanceAsCirlceOrPolygon(componentInstance, color, width)
+                for pinName, pinInstance in pinsDict.items():
+                    self.drawInstanceAsCirlceOrPolygon(pinInstance, color, width)
+    
+    def drawInstanceAsCirlceOrPolygon(self, instance: pin.Pin|comp.Component, color:tuple[int, int, int], width:int=1):
+        if  instance.getShape() == 'CIRCLE':
+            shape = instance.getShapeData()
+            self.drawCircle(color, shape, width)
+        else:
+            pointsList = instance.getShapePoints()
+            self.drawPolygon(color, pointsList, width)
 
     def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface, side:str):    
         targetSurface.blit(self.boardLayer, (0, 0))  
@@ -87,6 +111,7 @@ if __name__ == '__main__':
         
         ## display image
         engine.drawOutlines((255, 255, 255))
+        engine.drawComponents((255, 255, 255), 'T')
         engine.blitBoardLayerIntoTarget(WIN, side)
 
         pygame.display.update()
