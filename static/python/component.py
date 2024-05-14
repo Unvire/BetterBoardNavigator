@@ -19,6 +19,9 @@ class Component(abstractShape.Shape):
     
     def getPinByName(self, pinName:str) -> pin.Pin|None:
         return self.pins.get(pinName, None)
+    
+    def getPins(self) -> dict:
+        return self.pins
 
     def getCoordsAsTranslationVector(self):
         return [self.coords.getX(), self.coords.getY()]
