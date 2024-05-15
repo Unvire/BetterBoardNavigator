@@ -44,10 +44,10 @@ class DrawBoardEngine:
             pointsList = instance.getShapePoints()
             self.drawPolygon(color, pointsList, width)
 
-    def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface, side:str):    
+    def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface, side:str):            
+        if side == 'T':  
+            self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
         targetSurface.blit(self.boardLayer, (0, 0))  
-        if side == 'B':  
-            pygame.transform.flip(targetSurface, True, False)
 
     def drawLine(self, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
         startPoint, endPoint = lineInstance.getPoints()
@@ -92,6 +92,11 @@ if __name__ == '__main__':
     WIN = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
 
+    
+    engine.drawOutlines((255, 255, 255))
+    engine.drawComponents((255, 255, 255), 'T')
+    engine.blitBoardLayerIntoTarget(WIN, 'T')
+
     run = True
     while run:
         clock.tick(FPS)
@@ -110,9 +115,6 @@ if __name__ == '__main__':
                pass
         
         ## display image
-        engine.drawOutlines((255, 255, 255))
-        engine.drawComponents((255, 255, 255), 'T')
-        engine.blitBoardLayerIntoTarget(WIN, side)
 
         pygame.display.update()
         #run = False
