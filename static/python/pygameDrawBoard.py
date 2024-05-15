@@ -40,7 +40,7 @@ class DrawBoardEngine:
     def drawPins(self, componentInstance:comp.Component, color:tuple[int, int, int], side:str, width:int=1):
         pinsDict = componentInstance.getPins()
         for _, pinInstance in pinsDict.items():
-                self.drawInstanceAsCirlceOrPolygon(pinInstance, color, width)
+            self.drawInstanceAsCirlceOrPolygon(pinInstance, color, width)
     
     def drawInstanceAsCirlceOrPolygon(self, instance: pin.Pin|comp.Component, color:tuple[int, int, int], width:int=1):
         if  instance.getShape() == 'CIRCLE':
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     side = sideQueue[1]
 
     boardWrapper = boardCanvasWrapper.BoardCanvasWrapper(WIDTH, HEIGHT)
-    boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.gcd')
+    boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\gemis2.cad')
     boardInstance = boardWrapper.normalizeBoard()
 
     engine = DrawBoardEngine(WIDTH, HEIGHT)
