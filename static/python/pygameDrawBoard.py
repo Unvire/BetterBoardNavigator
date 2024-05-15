@@ -16,7 +16,6 @@ class DrawBoardEngine:
         self.boardData = boardData
     
     def drawOutlines(self, color:tuple[int, int, int], width:int=1):
-        # handle side mirroring
         for shape in self.boardData.getOutlines():
             shapeType = shape.getType()
             self.drawHandler[shapeType](color, shape, width)
@@ -35,7 +34,7 @@ class DrawBoardEngine:
             isDrawComponent = not (isSkipComponentSMT or isSkipComponentTH)
             if isDrawComponent:
                 self.drawInstanceAsCirlceOrPolygon(componentInstance, color, width)
-                
+
             self.drawPins(componentInstance, color, side, width)
     
     def drawPins(self, componentInstance:comp.Component, color:tuple[int, int, int], side:str, width:int=1):
