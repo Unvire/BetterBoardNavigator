@@ -25,20 +25,23 @@ class DrawBoardEngine:
         componentNames = self.boardData.getSideGroupedComponents()[side]
         for componentName in componentNames:
             componentInstance = self.boardData.getElementByName('components', componentName)
+            mountingType = componentInstance.getMountingType()
+            componentSide = componentInstance.getSide()
             pinsDict = componentInstance.getPins()
+
             numOfPins = len(pinsDict)
-            if numOfPins > 1:
-                mountingType = componentInstance.getMountingType()
-                if mountingType == 'SMT':
-                    self.drawInstanceAsCirlceOrPolygon(componentInstance, color, width)
-                elif side == componentInstance.getSide():
-                    self.drawInstanceAsCirlceOrPolygon(componentInstance, color, width)
+            isSkipComponentSMT = mountingType == 'SMT' and componentSide == side and numOfPins == 1
+            isSkipComponentTH = mountingType == 'TH' and componentSide != side
+            isDrawComponent = not (isSkipComponentSMT or isSkipComponentTH)
+            if isDrawComponent:
+                self.drawInstanceAsCirlceOrPolygon(componentInstance, color, width)
+                
             self.drawPins(componentInstance, color, side, width)
     
     def drawPins(self, componentInstance:comp.Component, color:tuple[int, int, int], side:str, width:int=1):
         pinsDict = componentInstance.getPins()
         for _, pinInstance in pinsDict.items():
-                    self.drawInstanceAsCirlceOrPolygon(pinInstance, color, width)
+                self.drawInstanceAsCirlceOrPolygon(pinInstance, color, width)
     
     def drawInstanceAsCirlceOrPolygon(self, instance: pin.Pin|comp.Component, color:tuple[int, int, int], width:int=1):
         if  instance.getShape() == 'CIRCLE':
@@ -86,7 +89,7 @@ if __name__ == '__main__':
     side = sideQueue[1]
 
     boardWrapper = boardCanvasWrapper.BoardCanvasWrapper(WIDTH, HEIGHT)
-    boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.GCD')
+    boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.gcd')
     boardInstance = boardWrapper.normalizeBoard()
 
     engine = DrawBoardEngine(WIDTH, HEIGHT)
