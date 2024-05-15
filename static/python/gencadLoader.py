@@ -271,7 +271,7 @@ class GenCadLoader:
     
     def _caclulatePinToBasePosition(self, pinInstance:pin.Pin, angle:float|int, translationVector:list[float|int, float|int]):
         pinInstance.caluclateShapeData()
-        if angle % 90 == 0:
+        if angle % 180 != 0:
             pinInstance.rotateInPlace(pinInstance.getCoords(), angle)
         pinInstance.translateInPlace(translationVector)
     
