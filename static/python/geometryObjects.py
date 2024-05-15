@@ -179,6 +179,12 @@ class Circle:
     def __eq__(self, circle:'Circle'):
         return self.radius == circle.radius and self.centerPoint == circle.centerPoint
     
+    def setRadius(self, radius:float):
+        self.radius = radius
+    
+    def getRadius(self) -> float:
+        return self.radius
+    
     def getType(self) -> str:
         return self.type
 

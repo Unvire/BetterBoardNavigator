@@ -112,4 +112,7 @@ class Shape():
         pointList = [self.coords] + self.area + shapePoints
         for point in pointList:
             point.scaleInPlace(scaleFactor)
-    
+
+        if self.shape == 'CIRCLE':
+            scaledRadius = self.shapeData.getRadius() * scaleFactor
+            self.shapeData.setRadius(scaledRadius)
