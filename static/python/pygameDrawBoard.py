@@ -27,13 +27,17 @@ class DrawBoardEngine:
             componentInstance = self.boardData.getElementByName('components', componentName)
             pinsDict = componentInstance.getPins()
             numOfPins = len(pinsDict)
-            if numOfPins == 1:
-                pinName = list(pinsDict.keys())[0]
-                pinInstance = pinsDict[pinName]
-                self.drawInstanceAsCirlceOrPolygon(pinInstance, color, width)
-            else:
-                self.drawInstanceAsCirlceOrPolygon(componentInstance, color, width)
-                for pinName, pinInstance in pinsDict.items():
+            if numOfPins > 1:
+                mountingType = componentInstance.getMountingType()
+                if mountingType == 'SMT':
+                    self.drawInstanceAsCirlceOrPolygon(componentInstance, color, width)
+                elif side == componentInstance.getSide():
+                    self.drawInstanceAsCirlceOrPolygon(componentInstance, color, width)
+            self.drawPins(componentInstance, color, side, width)
+    
+    def drawPins(self, componentInstance:comp.Component, color:tuple[int, int, int], side:str, width:int=1):
+        pinsDict = componentInstance.getPins()
+        for _, pinInstance in pinsDict.items():
                     self.drawInstanceAsCirlceOrPolygon(pinInstance, color, width)
     
     def drawInstanceAsCirlceOrPolygon(self, instance: pin.Pin|comp.Component, color:tuple[int, int, int], width:int=1):
@@ -79,7 +83,7 @@ if __name__ == '__main__':
     FPS = 60
 
     sideQueue = ['B', 'T']
-    side = sideQueue[0]
+    side = sideQueue[1]
 
     boardWrapper = boardCanvasWrapper.BoardCanvasWrapper(WIDTH, HEIGHT)
     boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.GCD')
@@ -94,8 +98,8 @@ if __name__ == '__main__':
 
     
     engine.drawOutlines((255, 255, 255))
-    engine.drawComponents((255, 255, 255), 'T')
-    engine.blitBoardLayerIntoTarget(WIN, 'T')
+    engine.drawComponents((255, 255, 255), side)
+    engine.blitBoardLayerIntoTarget(WIN, side)
 
     run = True
     while run:
