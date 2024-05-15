@@ -170,7 +170,7 @@ class GenCadLoader:
                     self._calculatePinToComponentPosition(pinInstance, pinNumber, componentInstance)
                 
                 self._addAreaAndMountingData(componentInstance, componentAreaType, componentArea, packageType)
-                componentInstance.rotateInPlaceAroundCoords(componentInstance.getAngle())
+                componentInstance.rotateInPlaceAroundCoords(componentInstance.getAngle(), isRotatePins=True)
     
     def _getNetsFromSIGNALS(self, fileLines:list[str], boardInstance:board.Board):
         i, iEnd = self.sectionsLineNumbers['SIGNALS']
@@ -271,7 +271,8 @@ class GenCadLoader:
     
     def _caclulatePinToBasePosition(self, pinInstance:pin.Pin, angle:float|int, translationVector:list[float|int, float|int]):
         pinInstance.caluclateShapeData()
-        pinInstance.rotateInPlace(pinInstance.getCoords(), angle)
+        if angle % 90 == 0:
+            pinInstance.rotateInPlace(pinInstance.getCoords(), angle)
         pinInstance.translateInPlace(translationVector)
     
     def _calculatePinToComponentPosition(self, pinInstance:pin.Pin, pinName:str, componentInstance:comp.Component):

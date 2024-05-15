@@ -108,8 +108,8 @@ class Shape():
         self.setArea(bottomLeftPoint, topRightPoint)
     
     def scaleInPlace(self, scaleFactor:float):
-        pointList = [self.coords] + self.area
+        shapePoints = self.getShapePoints()
+        pointList = [self.coords] + self.area + shapePoints
         for point in pointList:
             point.scaleInPlace(scaleFactor)
-        self.caluclateShapeData()
     

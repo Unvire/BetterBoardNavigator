@@ -171,5 +171,5 @@ class BoardCanvasWrapper():
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)
-    normalizedBoard.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm core.cad')
+    normalizedBoard.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.gcd')
     normalizedBoard.normalizeBoard()
