@@ -259,10 +259,10 @@ class GenCadLoader:
         return componentInstance, pinInstance
     
     def _addAreaAndMountingData(self, componentInstance:comp.Component, componentAreaType:str, componentArea:list[gobj.Point, gobj.Point], componentMountingType:str):
-        mountingTypeDict = {'smt':'SMT', 'thmt':'TH'}
+        mountingTypeDict = {'smt':'SMT', 'smd':'SMT', 'thmt':'TH', 'th':'TH'}
         componentAreaX, componentAreaY = componentArea
         componentInstance.setShape(componentAreaType)
-        componentInstance.setMountingType(mountingTypeDict[componentMountingType])
+        componentInstance.setMountingType(mountingTypeDict[componentMountingType.lower()])
 
         moveVector = componentInstance.getCoordsAsTranslationVector()
         componentAreaX.translateInPlace(moveVector)
