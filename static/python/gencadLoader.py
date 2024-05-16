@@ -172,15 +172,13 @@ class GenCadLoader:
                     shapeParameters[keyWord].append(parameters)
                     i += 1
                     isEndOfShapeSection = 'SHAPE' == fileLines[i][:5] or i >= iEnd
+                    
                 shapeName = shapeParameters['SHAPE'][0][0]
                 self._calculateShapeAreaInPlace(shapeParameters)
                 if abs(shapeParameters['AREA'][0].getX()) == float('Inf'):
                     shapeParameters.update({'CIRCLE':[], 'RECTANGLE':[], 'LINE':[], 'ARC':[]})
                     for artwork, *_ in shapeParameters['ARTWORK']:
-                        shapeParameters['CIRCLE'] += artworksDict[artwork].get('CIRCLE', [])
-                        shapeParameters['ARC'] +=  artworksDict[artwork].get('ARC', [])
-                        shapeParameters['RECTANGLE'] += artworksDict[artwork].get('RECTANGLE', [])
-                        shapeParameters['LINE'] += artworksDict[artwork].get('LINE', [])
+                        self._mergeShapesSectionToDictInPlace(shapeParameters, artworksDict[artwork])
                     self._calculateShapeAreaInPlace(shapeParameters)
                 shapesDict[shapeName] = shapeParameters
                 continue
@@ -286,6 +284,12 @@ class GenCadLoader:
         newComponent.setSide(side)
         newComponent.setAngle(angle)
         return newComponent
+    
+    def _mergeShapesSectionToDictInPlace(self,  targetDict:dict, sourceDict:dict):
+        targetDict['CIRCLE'] += sourceDict.get('CIRCLE', [])
+        targetDict['ARC'] +=  sourceDict.get('ARC', [])
+        targetDict['RECTANGLE'] += sourceDict.get('RECTANGLE', [])
+        targetDict['LINE'] += sourceDict.get('LINE', [])
 
     def _getComponentAndPinByNames(self, boardInstance:board.Board, componentName:str, pinName:str) -> tuple[comp.Component, pin.Pin]:
         componentInstance = boardInstance.getElementByName('components', componentName)
