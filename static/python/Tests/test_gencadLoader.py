@@ -315,9 +315,12 @@ def test__getPadstacksFromPADSTACKS(padsTest):
     instance._getSectionsLinesBeginEnd(padsTest)
     padsDict = instance._getPadsFromPADS(padsTest)
     padstackDict = instance._getPadstacksFromPADSTACKS(padsTest, padsDict)
-    assert list(padstackDict.keys()) == ['026VIA', 'Smd 0.95x1.45 mm_TOP']
+    assert list(padstackDict.keys()) == ['026VIA', 'Smd 0.95x1.45 mm_TOP', 'Round 32', 'Oblong 3.2x5.2', 'Rectangle;1.15x1.65']
     assert padstackDict['026VIA'] is padsDict['Round 32']
     assert padstackDict['Smd 0.95x1.45 mm_TOP'] is padsDict['Rectangle;1.15x1.65']
+    assert padstackDict['Round 32'] is padsDict['Round 32']
+    assert padstackDict['Oblong 3.2x5.2'] is padsDict['Oblong 3.2x5.2']
+    assert padstackDict['Rectangle;1.15x1.65'] is padsDict['Rectangle;1.15x1.65']
 
 def test__getComponentsFromCOMPONENTS(componentTest):
     instance = GenCadLoader()

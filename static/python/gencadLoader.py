@@ -101,6 +101,7 @@ class GenCadLoader:
             
                 padstackDict[padstackName] = padsDict[padName]
             i += 1
+        padstackDict.update(padsDict)
         return padstackDict
     
     def _getComponentsFromCOMPONENTS(self, fileLines:list[str], boardInstance:board.Board) -> dict:
