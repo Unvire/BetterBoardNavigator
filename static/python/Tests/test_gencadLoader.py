@@ -107,6 +107,28 @@ def shapesTest():
     return fileLinesMock
 
 @pytest.fixture
+def artWorkTest():
+    fileLinesMock = [
+        '$ARTWORKS',
+        'ARTWORK artwork1850',
+        'LAYER LAYER0',
+        'TRACK 0',
+        'LINE -0.984 -41.339 -0.984 41.339',
+        'ARC 16.732 41.339 -0.984 41.339 7.874 41.339',
+        'LINE 16.732 41.339 16.732 -41.339',
+        'ARC -0.984 -41.339 16.732 -41.339 7.874 -41.339',
+        'ARTWORK artwork1851',
+        'LAYER LAYER0',
+        'TRACK 0',
+        'LINE 10.827 -41.339 10.827 41.339',
+        'ARC 28.543 41.339 10.827 41.339 19.685 41.339',
+        'LINE 28.543 41.339 28.543 -41.339',
+        'ARC 10.827 -41.339 28.543 -41.339 19.685 -41.339',
+        '$ENDARTWORKS'
+    ]
+    return fileLinesMock
+
+@pytest.fixture
 def fullComponentTest():
     fileLinesMock = [
         '$SHAPES',
@@ -309,6 +331,20 @@ def test__getPadsFromPADS(padsTest):
     assert padsDict['Rectangle;1.15x1.65'].coords == gobj.Point(0, 0)
     assert padsDict['Rectangle;1.15x1.65'].width == 1.150
     assert padsDict['Rectangle;1.15x1.65'].height == 1.650
+
+def test__getArtWorksFromARTWORKS(artWorkTest):
+    instance = GenCadLoader()
+    instance._getSectionsLinesBeginEnd(artWorkTest)
+    artworksDict = instance._getArtWorksFromARTWORKS(artWorkTest)
+
+    assert list(artworksDict.keys()) == ['artwork1850', 'artwork1851']
+    assert artworksDict['artwork1850']['LINE'] == [['-0.984', '-41.339', '-0.984', '41.339'], ['16.732', '41.339', '16.732', '-41.339']]
+    assert artworksDict['artwork1850']['ARC'] == [['16.732', '41.339', '-0.984', '41.339', '7.874', '41.339'], 
+                                                  ['-0.984', '-41.339', '16.732', '-41.339', '7.874', '-41.339']]
+    
+    assert artworksDict['artwork1851']['LINE'] == [['10.827', '-41.339', '10.827', '41.339'], ['28.543', '41.339', '28.543', '-41.339']]
+    assert artworksDict['artwork1851']['ARC'] == [['28.543', '41.339', '10.827', '41.339', '19.685', '41.339'], 
+                                                  ['10.827', '-41.339', '28.543', '-41.339', '19.685', '-41.339']]
 
 def test__getPadstacksFromPADSTACKS(padsTest):
     instance = GenCadLoader()
