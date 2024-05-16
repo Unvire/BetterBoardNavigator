@@ -6,14 +6,20 @@ import component as comp
 class DrawBoardEngine:
     def __init__(self, width:int, height:int):
         self.boardData = None
-        self.boardLayer = pygame.Surface((width, height))
         self.drawHandler = {'Line': self.drawLine,
                             'Arc': self.drawArc}
         self.width = width
         self.height = height
+        self.boardLayer = self._getEmptySurfce()
 
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
+    
+    def drawBoard(self, targetSurface:pygame.Surface, side:str):
+        self.boardLayer = self._getEmptySurfce()
+        self.drawOutlines((255, 255, 255))
+        self.drawComponents((255, 255, 255), side)
+        self.blitBoardLayerIntoTarget(targetSurface, side)
     
     def drawOutlines(self, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
@@ -79,29 +85,29 @@ class DrawBoardEngine:
     def drawPolygon(self, color:tuple[int, int, int], pointsList:list[gobj.Point], width:int=1):
         pointsXYList = [point.getXY() for point in pointsList]
         pygame.draw.polygon(self.boardLayer, color, pointsXYList, width)
+    
+    def _getEmptySurfce(self) -> pygame.Surface:
+        return pygame.Surface((self.width, self.height))
 
 if __name__ == '__main__':
     WIDTH, HEIGHT = 1200, 700
     FPS = 60
 
     sideQueue = ['B', 'T']
-    side = sideQueue[1]
+    side = 'T'
 
     boardWrapper = boardCanvasWrapper.BoardCanvasWrapper(WIDTH, HEIGHT)
-    boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\gemis2.cad')
+    boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\board2.GCD')
     boardInstance = boardWrapper.normalizeBoard()
-
-    engine = DrawBoardEngine(WIDTH, HEIGHT)
-    engine.setBoardData(boardInstance)
 
     ## pygame
     WIN = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
 
     
-    engine.drawOutlines((255, 255, 255))
-    engine.drawComponents((255, 255, 255), side)
-    engine.blitBoardLayerIntoTarget(WIN, side)
+    engine = DrawBoardEngine(WIDTH, HEIGHT)
+    engine.setBoardData(boardInstance)
+    engine.drawBoard(WIN, side)
 
     run = True
     while run:
@@ -118,8 +124,10 @@ if __name__ == '__main__':
                 pass
 
             elif event.type == pygame.KEYDOWN:
-               pass
-        
+                if event.key == pygame.K_SEMICOLON:
+                    side = sideQueue.pop(0)
+                    sideQueue.append(side)
+                    engine.drawBoard(WIN, side)
         ## display image
 
         pygame.display.update()
