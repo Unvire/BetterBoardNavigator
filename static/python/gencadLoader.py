@@ -7,7 +7,7 @@ class GenCadLoader:
     def __init__(self):        
         self.filePath = None
         self.boardData = board.Board()
-        self.sectionsLineNumbers = {'BOARD':[], 'PADS':[], 'SHAPES':[], 'COMPONENTS':[], 'SIGNALS':[], 'ROUTES':[], 'MECH':[], 'PADSTACKS':[]}
+        self.sectionsLineNumbers = {'BOARD':[], 'PADS':[], 'SHAPES':[], 'COMPONENTS':[], 'SIGNALS':[], 'ROUTES':[], 'MECH':[], 'PADSTACKS':[], 'ARTWORKS':[]}
         self.handleShape = {'LINE':gobj.getLineAndAreaFromNumArray, 'ARC':gobj.getArcAndAreaFromValArray, 
                             'CIRCLE':gobj.getCircleAndAreaFromValArray, 'RECTANGLE':gobj.getRectangleAndAreaFromValArray}
     
@@ -20,9 +20,10 @@ class GenCadLoader:
         self._getSectionsLinesBeginEnd(fileLines)
         self._getBoardDimensions(fileLines, self.boardData)
         padsDict = self._getPadsFromPADS(fileLines)
+        artworksDict = self._getArtWorksFromARTWORKS(fileLines)
         padstackDict = self._getPadstacksFromPADSTACKS(fileLines, padsDict)
         shapeToComponentsDict = self._getComponentsFromCOMPONENTS(fileLines, self.boardData)
-        shapesDict = self._getAreaPinsfromSHAPES(fileLines)
+        shapesDict = self._getAreaPinsfromSHAPES_ARTWORKS(fileLines, artworksDict)
         self._addShapePadDataToComponent(self.boardData, shapeToComponentsDict, shapesDict, padstackDict)
         self._getNetsFromSIGNALS(fileLines, self.boardData)
         #self._getTracksFromROUTES(fileLines, self.boardData)
@@ -83,6 +84,31 @@ class GenCadLoader:
             i += 1
         return padsDict
     
+    def _getArtWorksFromARTWORKS(self, fileLines:list[str]) -> dict:
+        i, iEnd = self.sectionsLineNumbers['ARTWORKS']
+        artworksDict = {}
+
+        while i <= iEnd:
+            artWorkParameters = {}
+            if ' ' in fileLines[i] and 'ARTWORK' in fileLines[i]:
+                line = fileLines[i]
+                _, artworkName, *_  = self._splitButNotBetweenCharacter(line)
+
+                isEndOfShapeSection = False                
+                while not isEndOfShapeSection:
+                    line = fileLines[i]
+                    keyWord, *parameters = self._splitButNotBetweenCharacter(line)
+                    if not keyWord in artWorkParameters:
+                        artWorkParameters[keyWord] = []
+                    artWorkParameters[keyWord].append(parameters)
+                    i += 1
+                    isEndOfShapeSection = 'ARTWORK' == fileLines[i][:7] or i >= iEnd
+                                   
+                artworksDict[artworkName] = artWorkParameters
+                continue
+            i += 1
+        return artworksDict
+    
     def _getPadstacksFromPADSTACKS(self, fileLines:list[str], padsDict:dict) -> dict:
         i, iEnd = self.sectionsLineNumbers['PADSTACKS']
         padstackDict = {}
@@ -130,7 +156,7 @@ class GenCadLoader:
             i += 1
         return shapeDict
     
-    def _getAreaPinsfromSHAPES(self, fileLines:list[str]) -> dict:
+    def _getAreaPinsfromSHAPES_ARTWORKS(self, fileLines:list[str], artworksDict:dict) -> dict:
         i, iEnd = self.sectionsLineNumbers['SHAPES']
 
         shapesDict = {}
@@ -148,6 +174,14 @@ class GenCadLoader:
                     isEndOfShapeSection = 'SHAPE' == fileLines[i][:5] or i >= iEnd
                 shapeName = shapeParameters['SHAPE'][0][0]
                 self._calculateShapeAreaInPlace(shapeParameters)
+                if abs(shapeParameters['AREA'][0].getX()) == float('Inf'):
+                    shapeParameters.update({'CIRCLE':[], 'RECTANGLE':[], 'LINE':[], 'ARC':[]})
+                    for artwork, *_ in shapeParameters['ARTWORK']:
+                        shapeParameters['CIRCLE'] += artworksDict[artwork].get('CIRCLE', [])
+                        shapeParameters['ARC'] +=  artworksDict[artwork].get('ARC', [])
+                        shapeParameters['RECTANGLE'] += artworksDict[artwork].get('RECTANGLE', [])
+                        shapeParameters['LINE'] += artworksDict[artwork].get('LINE', [])
+                    self._calculateShapeAreaInPlace(shapeParameters)
                 shapesDict[shapeName] = shapeParameters
                 continue
             i += 1
@@ -344,5 +378,5 @@ class GenCadLoader:
     
 if __name__ == '__main__':
     loader = GenCadLoader()
-    fileLines = loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.GCD')
+    fileLines = loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\wallbox som.GCD')
     loader.processFileLines(fileLines)
