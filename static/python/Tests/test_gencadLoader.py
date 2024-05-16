@@ -133,7 +133,7 @@ def fullComponentTest():
     fileLinesMock = [
         '$SHAPES',
         'SHAPE IND_0603_T_3',
-        'RECTANGLE -0.03149606 -0.01574803 0.06299213 0.03149606',
+        'ARTWORK artwork1850 0 0 0 0',
         'INSERT smt',
         'HEIGHT 0.035000',
         'PIN 1 padstack12 0.03098425 0 TOP 0 MIRRORY',
@@ -155,6 +155,12 @@ def fullComponentTest():
         'PAD rect48x52 RECTANGULAR 0',
         'RECTANGLE -0.024 -0.026 0.048 0.052',
         '$ENDPADS',
+        '$ARTWORKS',
+        'ARTWORK artwork1850',
+        'LAYER LAYER0',
+        'TRACK 0',
+        'RECTANGLE -0.03149606 -0.01574803 0.06299213 0.03149606',
+        '$ENDARTWORKS',
     ]
     return fileLinesMock
 
@@ -445,9 +451,10 @@ def test__addShapePadDataToComponent(fullComponentTest):
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(fullComponentTest)
     padsDict = instance._getPadsFromPADS(fullComponentTest)
+    artworksDict = instance._getArtWorksFromARTWORKS(fullComponentTest)
     padstackDict = instance._getPadstacksFromPADSTACKS(fullComponentTest, padsDict)
     shapeToComponentsDict = instance._getComponentsFromCOMPONENTS(fullComponentTest, instance.boardData)
-    shapesDict = instance._getAreaPinsfromSHAPES_ARTWORKS(fullComponentTest, {})
+    shapesDict = instance._getAreaPinsfromSHAPES_ARTWORKS(fullComponentTest, artworksDict)
     instance._addShapePadDataToComponent(instance.boardData, shapeToComponentsDict, shapesDict, padstackDict)
 
     componentInstance = instance.boardData.getElementByName('components', 'L8')
