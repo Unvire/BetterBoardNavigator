@@ -97,7 +97,7 @@ if __name__ == '__main__':
     side = 'T'
 
     boardWrapper = boardCanvasWrapper.BoardCanvasWrapper(WIDTH, HEIGHT)
-    boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.gcd')
+    boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\gemis2.cad')
     boardInstance = boardWrapper.normalizeBoard()
 
     ## pygame

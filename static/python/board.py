@@ -30,6 +30,9 @@ class Board:
     def getComponents(self) -> dict:
         return self.components
     
+    def removeComponent(self, componentName:str):
+        self.components.pop(componentName, None)
+    
     def setNets(self, netsDict:dict):
         self.nets = netsDict
     

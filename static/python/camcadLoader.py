@@ -21,9 +21,10 @@ class CamCadLoader:
         self._getBoardDimensions(fileLines, self.boardData)
         partNumberToComponents = self._getComponenentsFromPARTLIST(fileLines, self.boardData)
         padsDict = self._getPadsFromPAD(fileLines)
-        self._getNetsFromNETLIST(fileLines, padsDict, self.boardData)
+        matchedComponents = self._getNetsFromNETLIST(fileLines, padsDict, self.boardData)
         self._getPackages(fileLines, partNumberToComponents, self.boardData)
         self._rotateComponents(self.boardData)
+        self._removeNotMatchedComponents(self.boardData, matchedComponents)
 
         return self.boardData
 
@@ -95,6 +96,7 @@ class CamCadLoader:
     def _getNetsFromNETLIST(self, fileLines:list[str], padsDict:dict, boardInstance:board.Board):
         netlistRange = self._calculateRange('NETLIST')
         nets = {}
+        matchedComponentsSet = set()
         for i in netlistRange:
             if ',' in fileLines[i]:
                 line = fileLines[i]
@@ -112,7 +114,10 @@ class CamCadLoader:
 
                 nets[netName][componentName]['componentInstance'] = componentOnNet
                 nets[netName][componentName]['pins'].append(pinName)
-            boardInstance.setNets(nets)
+                matchedComponentsSet.add(componentName)
+        
+        boardInstance.setNets(nets)
+        return matchedComponentsSet
     
     def _getPackages(self, fileLines:list[str], partNumberToComponents:dict, boardInstance:board.Board):
         packagesDict = self._getPackagesfromPACKAGE(fileLines)
@@ -151,6 +156,12 @@ class CamCadLoader:
         newPin.setShape(shape)
         newPin.setDimensions(width, height)
         return newPin
+    
+    def _removeNotMatchedComponents(self, boardInstance:board.Board, matchedComponentsSet:set):
+        boardComponentsSet = set(boardInstance.getComponents().keys())
+        removeComponents = list(boardComponentsSet - matchedComponentsSet)
+        for componentName in removeComponents:
+            boardInstance.removeComponent(componentName)
 
     def _calculatePinCoordsAndAddNet(self, pad:dict, pinX:str, pinY:str, netName:str) -> pin.Pin:
         pad = copy.deepcopy(pad)
@@ -230,8 +241,9 @@ class CamCadLoader:
 
 if __name__ == '__main__':
     #filePath = r'C:\Users\krzys\Documents\GitHub\boardNavigator\Schematic\lvm Core.cad'
-    filePath = r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\lvm Core.cad'
+    filePath = r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\gemis2.cad'
     loader = CamCadLoader()
     fileLines = loader.loadFile(filePath)
     boardData = loader.processFileLines(fileLines)
-    print(boardData.area)
+    for componentName, component in boardData.components.items():
+        print(componentName, component.area)
