@@ -50,9 +50,7 @@ class GenCadLoader:
 
         for i in boardOutlineRange:
             if ' ' in fileLines[i]:
-                keyWord, *line  = fileLines[i].split(' ')
-                while '' in line:
-                    line.remove('')
+                keyWord, *line  = self._splitButNotBetweenCharacter(fileLines[i])
                 if keyWord == 'ARTWORK':
                     break
                 if keyWord not in self.handleShape:
@@ -75,7 +73,7 @@ class GenCadLoader:
                 
                 while 'PAD' not in fileLines[i + 1]:
                     i += 1
-                    keyWord, *line  = fileLines[i].split(' ')
+                    keyWord, *line  =  self._splitButNotBetweenCharacter(fileLines[i])
                     _, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](line, bottomLeftPoint, topRightPoint)
                 
                 keyWord = 'RECT' if keyWord != 'CIRCLE' else keyWord
@@ -96,8 +94,7 @@ class GenCadLoader:
 
                 isEndOfShapeSection = False                
                 while not isEndOfShapeSection:
-                    line = fileLines[i]
-                    keyWord, *parameters = self._splitButNotBetweenCharacter(line)
+                    keyWord, *parameters = self._splitButNotBetweenCharacter(fileLines[i])
                     if not keyWord in artWorkParameters:
                         artWorkParameters[keyWord] = []
                     artWorkParameters[keyWord].append(parameters)
@@ -139,8 +136,7 @@ class GenCadLoader:
                 componentParameters = {}
                 isEndOfComponentSection = False
                 while not isEndOfComponentSection:
-                    line = fileLines[i]
-                    keyWord, *parameters = self._splitButNotBetweenCharacter(line)
+                    keyWord, *parameters = self._splitButNotBetweenCharacter(fileLines[i])
                     componentParameters[keyWord] = parameters
                     i += 1
                     isEndOfComponentSection = 'COMPONENT' == fileLines[i][:9] or i >= iEnd
@@ -165,8 +161,7 @@ class GenCadLoader:
                 shapeParameters = {}                
                 isEndOfShapeSection = False                
                 while not isEndOfShapeSection:
-                    line = fileLines[i]
-                    keyWord, *parameters = self._splitButNotBetweenCharacter(line)
+                    keyWord, *parameters = self._splitButNotBetweenCharacter(fileLines[i])
                     if not keyWord in shapeParameters:
                         shapeParameters[keyWord] = []
                     shapeParameters[keyWord].append(parameters)
