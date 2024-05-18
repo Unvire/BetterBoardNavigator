@@ -3,6 +3,7 @@ import tarfile,  unlzw3
 import geometryObjects as gobj
 import component as comp
 import board, pin
+from abstractShape import Shape
 
 class ODBPlusPlusLoader():
     def __init__(self):
@@ -27,6 +28,7 @@ class ODBPlusPlusLoader():
         self._assignPackagesToComponents(packageIDToComponentNameDict, packagesDict, self.boardData)
         self._assignNetsAndPins(componentIDToNameDict, netsDict, self.boardData)
         self._fixRotationOfComponents(self.boardData)
+        self._fixComponentsAreaScale(self.boardData)
         return self.boardData
 
     def _setFilePath(self, filePath:str):
@@ -186,6 +188,16 @@ class ODBPlusPlusLoader():
             componentInstance.rotatePinsAroundCoords(componentInstance.getCoords(), angle)
             for _, pinInstance in componentInstance.getPins().items():
                 pinInstance.rotateInPlaceAroundCoords(angle)
+    
+    def _fixComponentsAreaScale(self, boardInstance:board.Board):
+        boardArea = boardInstance.getArea()
+        boardWidth, boardHeight = Shape.getAreaWidthHeight(boardArea)
+
+        componentsArea = boardInstance.calculateAreaFromComponents()
+        componentsWidth, componentsHeight = Shape.getAreaWidthHeight(componentsArea)
+
+        rescaleFactor = min(boardWidth / componentsWidth, boardHeight / componentsHeight)
+        self._rescaleOutlinesArea(boardInstance, rescaleFactor)
 
     def _addAreaShapeToComponent(self, componentInstance:comp.Component, packageData:dict):
         area = packageData['Area']
@@ -202,10 +214,9 @@ class ODBPlusPlusLoader():
         
     def _addAreaShapeToAbstractShape(self, instance:comp.Component|pin.Pin, area:list[gobj.Point, gobj.Point], shapeName:str):
         xCoords, yCoords = instance.getCoordsAsTranslationVector()
+        xAreaCenter, yAreaCenter = Shape.calculateAreaCenterXY(area)
 
         bottomLeftPoint, topRightPoint = area
-        xAreaCenter, yAreaCenter = self._calculateAreaCenter(bottomLeftPoint, topRightPoint)
-
         for point in [bottomLeftPoint, topRightPoint]:
             moveVector = [xCoords - xAreaCenter, yCoords - yAreaCenter]
             point.translateInPlace(moveVector)
@@ -214,12 +225,16 @@ class ODBPlusPlusLoader():
 
         instance.setShape(shapeName)
         instance.caluclateShapeData()
-    
-    def _calculateAreaCenter(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[float|int, float|int]:
-        xBL, yBL = bottomLeftPoint.getXY()
-        xTR, yTR = topRightPoint.getXY()
-        xAreaCenter, yAreaCenter = (xBL + xTR) / 2, (yBL + yTR) / 2
-        return xAreaCenter, yAreaCenter
+
+    def _rescaleOutlinesArea(self, boardInstance:board.Board, scaleFactor:float):
+        outlines = boardInstance.getOutlines()
+        for shape in outlines:
+            for point in shape.getPoints():
+                point.scaleInPlace(1 / scaleFactor)
+        
+        area = boardInstance.getArea()
+        for point in area:
+            point.scaleInPlace(1 / scaleFactor)
 
     def _getShapeData(self, fileLines:list[str], i:int) -> tuple[int, str, gobj.Point, gobj.Point]:
         shapeName = 'RECT'
