@@ -1,8 +1,7 @@
 import copy
 import geometryObjects as gobj
 import component as comp
-import pin, board
-import loaderSelectorFactory
+import board, loaderSelectorFactory
 
 class BoardCanvasWrapper():
     def __init__(self, width:int, height:int):
