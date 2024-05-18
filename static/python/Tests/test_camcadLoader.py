@@ -66,6 +66,7 @@ def netlistFileLines():
         ';0 ,TP100 ,PNxx , , ,M,0',        
         ';0 ,C47 ,PNxx , , ,M,0',
         ';0 ,TP135 ,PNxx , , ,M,0',
+        ';0 ,TP136 ,PNxx , , ,M,0',
         ':ENDPARTLIST',
         ':PAD',
         '222 ,AP_ap_smd_r0402+1_1359_2869477608 ,RECT ,0.020 ,0.020 ,0.010 ,0.010',
@@ -196,13 +197,15 @@ def test__getNetsFromNETLIST(netlistFileLines):
     instance._getSectionsLinesBeginEnd(netlistFileLines)
     instance._getComponenentsFromPARTLIST(netlistFileLines, instance.boardData)   
     padsDict = instance._getPadsFromPAD(netlistFileLines)
-    instance._getNetsFromNETLIST(netlistFileLines, padsDict, instance.boardData)
+    matchedComponents = instance._getNetsFromNETLIST(netlistFileLines, padsDict, instance.boardData)
     
     boardNets = instance.boardData.getNets()    
     boardComponents = instance.boardData.getComponents()
 
-    ## name of nets
+    ## name of nets and components
+    print(list(boardComponents.keys()))
     assert list(boardNets.keys()) == ['NetC41_1' , 'NetC47_2', 'NetC47_1']
+    assert list(boardComponents.keys()) == ['TP100', 'C47', 'TP135', 'TP136']
 
     ## components in the nets
     assert 'TP100' in boardNets['NetC41_1'] 
@@ -235,6 +238,17 @@ def test__getNetsFromNETLIST(netlistFileLines):
     assert boardComponents['C47'].pins['2'].area == [gobj.Point(770.831 ,342.894), gobj.Point(770.847 ,342.910)]    
     assert boardComponents['C47'].pins['2'].shape == 'CIRCLE'
     assert boardComponents['C47'].pins['2'].getShapePoints() == [gobj.Point(770.839 ,342.902)]
+
+    assert boardNets['NetC47_2']['TP135']['componentInstance'] is boardComponents['TP135']
+    assert boardNets['NetC47_2']['TP135']['pins'] == ['1']
+    assert boardComponents['TP135'].pins['1'].net == 'NetC47_2'
+    assert boardComponents['TP135'].pins['1'].coords == gobj.Point(769.467, 341.937)
+    assert boardComponents['TP135'].pins['1'].area == [gobj.Point(769.457, 341.927), gobj.Point(769.477, 341.947)]
+    assert boardComponents['TP135'].pins['1'].shape == 'RECT'
+    assert boardComponents['TP135'].pins['1'].getShapePoints() == [gobj.Point(769.457, 341.927), gobj.Point(769.477, 341.927),
+                                                                   gobj.Point(769.477, 341.947), gobj.Point(769.457, 341.947)]
+
+    assert matchedComponents == {'C47', 'TP100', 'TP135'}
 
 def test__getPackages(packagesFileLines):
     gobj.Point.DECIMAL_POINT_PRECISION = 3
