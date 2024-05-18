@@ -2,6 +2,7 @@ import copy
 import geometryObjects as gobj
 import component as comp
 import board, loaderSelectorFactory
+from abstractShape import Shape
 
 class BoardCanvasWrapper():
     def __init__(self, width:int, height:int):
@@ -62,9 +63,7 @@ class BoardCanvasWrapper():
         self.boardBackup = copy.deepcopy(self.board)        
 
     def _calculateAndSetBaseScale(self, boardArea:tuple[gobj.Point, gobj.Point]):
-        x0, y0, x1, y1 = self._getBoardAreaCoordsAsXYXY(boardArea)
-        areaWidth = abs(x1 - x0)
-        areaHeight = abs(y1 - y0)
+        areaWidth, areaHeight = Shape.getAreaWidthHeight(boardArea)
         
         FITNESS_SCALE_FACTOR = 0.9
         scaleX = self.width / areaWidth
@@ -76,7 +75,7 @@ class BoardCanvasWrapper():
         self.baseScale = baseScale
         
     def _calculateAndSetBaseOffsetXY(self, boardArea:tuple[gobj.Point, gobj.Point]):
-        x0, y0, x1, y1 = self._getBoardAreaCoordsAsXYXY(boardArea)
+        x0, y0, x1, y1 = Shape.getAreaAsXYXY(boardArea)
         
         xMidScaled = (x1 + x0) / 2 * self.baseScale
         yMidScaled = (y1 + y0) / 2 * self.baseScale
@@ -145,12 +144,6 @@ class BoardCanvasWrapper():
 
         side = componentInstance.getSide()
         self.commonTypeComponents[side][prefix].append(componentInstance.name)
-
-    def _getBoardAreaCoordsAsXYXY(self, boardArea:tuple[gobj.Point, gobj.Point]) -> tuple[float, float, float, float]:
-        bottomLeftPoint, topRightPoint = boardArea
-        xBL, yBL = bottomLeftPoint.getXY()
-        xTR, yTR = topRightPoint.getXY()
-        return xBL, yBL, xTR, yTR
     
     def _resetGroupsToDefault(self):
         self.sideComponents = {'B':[], 'T':[]}

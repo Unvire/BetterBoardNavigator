@@ -120,3 +120,18 @@ class Shape():
         if self.shape == 'CIRCLE':
             scaledRadius = self.shapeData.getRadius() * scaleFactor
             self.shapeData.setRadius(scaledRadius)
+    
+    @staticmethod
+    def getAreaWidthHeight(area:tuple[gobj.Point, gobj.Point]) -> tuple[float, float]:
+        x0, y0, x1, y1 = Shape.getAreaAsXYXY(area)
+        areaWidth = abs(x1 - x0)
+        areaHeight = abs(y1 - y0)
+        return areaWidth, areaHeight
+    
+    @staticmethod
+    def getAreaAsXYXY(area:tuple[gobj.Point, gobj.Point]) -> tuple[float, float, float, float]:
+        bottomLeftPoint, topRightPoint = area
+        xBL, yBL = bottomLeftPoint.getXY()
+        xTR, yTR = topRightPoint.getXY()
+        return xBL, yBL, xTR, yTR
+
