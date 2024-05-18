@@ -85,9 +85,12 @@ class Component(abstractShape.Shape):
     def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:float|int, isRotatePins:bool=True):
         super().rotateInPlace(rotationPoint, angleDeg)
         if isRotatePins:
-            for _, pinInstance in self.pins.items():
+            self.rotatePinsAroundCoords(rotationPoint, angleDeg)
+        self.normalizeAndSetArea(self.getArea() + self.getShapePoints())
+    
+    def rotatePinsAroundCoords(self, rotationPoint:gobj.Point, angleDeg:float|int):
+        for _, pinInstance in self.pins.items():
                 pinInstance.rotateInPlace(rotationPoint, angleDeg)
-        self.normalizeArea(self.getArea() + self.getShapePoints())
     
     def translateInPlace(self, vector:list[int|float, int|float]):
         super().translateInPlace(vector)
