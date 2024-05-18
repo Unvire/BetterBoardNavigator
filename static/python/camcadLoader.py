@@ -138,7 +138,12 @@ class CamCadLoader:
                 componentInstance.calculateCenterFromPins()
                 componentInstance.calculateAreaFromPins()
                 componentInstance.caluclateShapeData()
-            componentInstance.rotateInPlaceAroundCoords(componentInstance.angle, isRotatePins=False)
+            
+            angle = componentInstance.getAngle()
+            componentInstance.rotateInPlaceAroundCoords(angle, isRotatePins=False)
+            if angle % 180 == 0:
+                for _, pinInstance in componentInstance.getPins().items():
+                    pinInstance.rotateInPlaceAroundCoords(90)
     
     def _createComponent(self, name:str, angle:float, side:str) -> comp.Component:
         newComponent = comp.Component(name)
