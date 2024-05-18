@@ -197,7 +197,8 @@ class ODBPlusPlusLoader():
         componentsWidth, componentsHeight = Shape.getAreaWidthHeight(componentsArea)
 
         rescaleFactor = min(boardWidth / componentsWidth, boardHeight / componentsHeight)
-        self._rescaleOutlinesArea(boardInstance, rescaleFactor)
+        if abs(rescaleFactor - 1) >= 0.01:
+            self._rescaleOutlinesArea(boardInstance, rescaleFactor)
 
     def _addAreaShapeToComponent(self, componentInstance:comp.Component, packageData:dict):
         area = packageData['Area']
