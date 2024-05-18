@@ -69,9 +69,9 @@ class Board:
     def getHitMap(self) -> dict:
         return self.hitMap
     
-    def calculateAreaFromComponents(self):
+    def calculateAreaFromComponents(self) -> tuple[gobj.Point, gobj.Point]:
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
         for _, componentInstance in self.components.items():
             for point in componentInstance.getArea():
                 bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
-        self.setArea(bottomLeftPoint, topRightPoint)
+        return bottomLeftPoint, topRightPoint

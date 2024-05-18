@@ -35,7 +35,8 @@ class BoardCanvasWrapper():
             self._resizeAndMoveTracks(self.board.getTracks())
         except KeyError:
             self.board = copy.deepcopy(self.boardBackup)
-            self.board.calculateAreaFromComponents()
+            bottomLeftPoint, topRightPoint = self.board.calculateAreaFromComponents()
+            self.board.setArea(bottomLeftPoint, topRightPoint)
             self._resetGroupsToDefault()
             self.normalizeBoard()
         
