@@ -90,14 +90,20 @@ class DrawBoardEngine:
         return pygame.Surface((self.width, self.height))
 
 if __name__ == '__main__':
+    def openSchematicFile() -> str:        
+        from tkinter import filedialog
+        filePath = filedialog.askopenfile(mode='r', filetypes=[('*', '*')])
+        return filePath.name
+    
     WIDTH, HEIGHT = 1200, 700
     FPS = 60
 
     sideQueue = ['B', 'T']
     side = 'T'
 
+    filePath = openSchematicFile()
     boardWrapper = boardCanvasWrapper.BoardCanvasWrapper(WIDTH, HEIGHT)
-    boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\phoenix_mb_r6_2.tgz')
+    boardWrapper.loadAndSetBoardFromFilePath(filePath)
     boardInstance = boardWrapper.normalizeBoard()
 
     ## pygame
