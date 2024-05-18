@@ -26,6 +26,7 @@ class ODBPlusPlusLoader():
         netsDict = self._getNetsFromEda(self.fileLines['eda'])
         self._assignPackagesToComponents(packageIDToComponentNameDict, packagesDict, self.boardData)
         self._assignNetsAndPins(componentIDToNameDict, netsDict, self.boardData)
+        self._fixRotationOfComponents(self.boardData)
         return self.boardData
 
     def _setFilePath(self, filePath:str):
@@ -178,6 +179,14 @@ class ODBPlusPlusLoader():
                 netsDict[netName][componentName] = subnet
         boardInstance.setNets(netsDict)
 
+    def _fixRotationOfComponents(self, boardInstance:board.Board):
+        components = boardInstance.getComponents()
+        for _, componentInstance in components.items():
+            angle = componentInstance.getAngle()
+            componentInstance.rotatePinsAroundCoords(componentInstance.getCoords(), angle)
+            for _, pinInstance in componentInstance.getPins().items():
+                pinInstance.rotateInPlaceAroundCoords(angle)
+
     def _addAreaShapeToComponent(self, componentInstance:comp.Component, packageData:dict):
         area = packageData['Area']
         shapeName = packageData['Shape']
@@ -192,15 +201,25 @@ class ODBPlusPlusLoader():
                 self._addAreaShapeToAbstractShape(pinInstance, area, shapeName)
         
     def _addAreaShapeToAbstractShape(self, instance:comp.Component|pin.Pin, area:list[gobj.Point, gobj.Point], shapeName:str):
-        moveVector = instance.getCoordsAsTranslationVector()
+        xCoords, yCoords = instance.getCoordsAsTranslationVector()
+
         bottomLeftPoint, topRightPoint = area
+        xAreaCenter, yAreaCenter = self._calculateAreaCenter(bottomLeftPoint, topRightPoint)
+
         for point in [bottomLeftPoint, topRightPoint]:
+            moveVector = [xCoords - xAreaCenter, yCoords - yAreaCenter]
             point.translateInPlace(moveVector)
-        instance.setArea(bottomLeftPoint, topRightPoint)
+        instance.normalizeAndSetArea([bottomLeftPoint, topRightPoint])
         instance.calculateDimensionsFromArea()
 
         instance.setShape(shapeName)
         instance.caluclateShapeData()
+    
+    def _calculateAreaCenter(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[float|int, float|int]:
+        xBL, yBL = bottomLeftPoint.getXY()
+        xTR, yTR = topRightPoint.getXY()
+        xAreaCenter, yAreaCenter = (xBL + xTR) / 2, (yBL + yTR) / 2
+        return xAreaCenter, yAreaCenter
 
     def _getShapeData(self, fileLines:list[str], i:int) -> tuple[int, str, gobj.Point, gobj.Point]:
         shapeName = 'RECT'

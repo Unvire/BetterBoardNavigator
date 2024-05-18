@@ -97,7 +97,7 @@ if __name__ == '__main__':
     side = 'T'
 
     boardWrapper = boardCanvasWrapper.BoardCanvasWrapper(WIDTH, HEIGHT)
-    boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\SOM programmer.tgz')
+    boardWrapper.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\phoenix_mb_r6_2.tgz')
     boardInstance = boardWrapper.normalizeBoard()
 
     ## pygame
