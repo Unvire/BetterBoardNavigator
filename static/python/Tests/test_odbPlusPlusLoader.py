@@ -466,14 +466,14 @@ def test__assignPackagesToComponents(exampleComponentMatchLines):
     assert pin1 is not pin2
 
     assert pin1.getCoords() == gobj.Point(-0.139567, 0.904331) # (-0.046063, 0.9978346) before rotation
-    assert pin1.getArea() == [gobj.Point(-0.182867, 0.791227), gobj.Point(-0.096267, 0.830427)] # (-0.159167, 0.954535), (-0.119967, 1.041135) before rotation
-    assert pin1.getShapePoints() == [gobj.Point(-0.096267, 0.791227), gobj.Point(-0.096267, 0.830427),
-                                     gobj.Point(-0.182867, 0.830427), gobj.Point(-0.182867, 0.791227)]
+    assert pin1.getArea() == [gobj.Point(-0.182867, 0.884731), gobj.Point(-0.096267, 0.923931)] # (-0.159167, 0.954535), (-0.119967, 1.041135) before rotation
+    assert pin1.getShapePoints() == [gobj.Point(-0.096267, 0.884731), gobj.Point(-0.096267, 0.923931),
+                                     gobj.Point(-0.182867, 0.923931), gobj.Point(-0.182867, 0.884731)]
     
     assert pin2.getCoords() == gobj.Point(0.047441, 0.904331) # (-0.046063, 0.810827) before rotation
-    assert pin2.getArea() == [gobj.Point(0.004141, 0.978235), gobj.Point(0.090741, 1.017435)] # (0.027841, 0.767527), (0.067041, 0.854127) before rotation
-    assert pin2.getShapePoints() == [gobj.Point(0.090741, 0.978235), gobj.Point(0.090741, 1.017435),
-                                     gobj.Point(0.004141, 1.017435), gobj.Point(0.004141, 0.978235)]
+    assert pin2.getArea() == [gobj.Point(0.004141, 0.884731), gobj.Point(0.090741, 0.923931)] # (0.027841, 0.767527), (0.067041, 0.854127) before rotation
+    assert pin2.getShapePoints() == [gobj.Point(0.090741, 0.884731), gobj.Point(0.090741, 0.923931),
+                                     gobj.Point(0.004141, 0.923931), gobj.Point(0.004141, 0.884731)]
     
 def test__assignNetsAndPins(exampleNetPinsMatchLines):
     bottomComponentLines, topComponentLines, netsLines = exampleNetPinsMatchLines
