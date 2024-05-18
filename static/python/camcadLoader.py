@@ -103,18 +103,19 @@ class CamCadLoader:
                 _, netName, componentName, pinName , pinX, pinY, side, padID = [parameter.strip() for parameter in line.split(',')]
                 self._addBlankNet(nets, netName, componentName)     
                 components = boardInstance.getComponents()
-                pad = self._calculatePinCoordsAndAddNet(padsDict[padID], pinX, pinY, netName)
-                
-                if componentName not in components:
-                    newComponent = self._createComponent(componentName, 0, side)
-                    boardInstance.addComponent(componentName, newComponent)                
-                
-                componentOnNet = boardInstance.getElementByName('components', componentName)
-                componentOnNet.addPin(pinName, pad)
 
-                nets[netName][componentName]['componentInstance'] = componentOnNet
-                nets[netName][componentName]['pins'].append(pinName)
-                matchedComponentsSet.add(componentName)
+                if padID in padsDict:
+                    pad = self._calculatePinCoordsAndAddNet(padsDict[padID], pinX, pinY, netName)
+                    if componentName not in components:
+                        newComponent = self._createComponent(componentName, 0, side)
+                        boardInstance.addComponent(componentName, newComponent)                
+                    
+                    componentOnNet = boardInstance.getElementByName('components', componentName)
+                    componentOnNet.addPin(pinName, pad)
+
+                    nets[netName][componentName]['componentInstance'] = componentOnNet
+                    nets[netName][componentName]['pins'].append(pinName)
+                    matchedComponentsSet.add(componentName)
         
         boardInstance.setNets(nets)
         return matchedComponentsSet
