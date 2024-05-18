@@ -92,6 +92,10 @@ class Shape():
         for point in self.getArea():
             point.translateInPlace(vector)
     
+    def rotateInPlaceAroundCoords(self, angleDeg:float|int):
+        rotationPoint = self.getCoords()
+        self.rotateInPlace(rotationPoint, angleDeg)
+    
     def rotateInPlace(self, rotationPoint:gobj.Point, angleDeg:int|float):
         self.coords.rotateInPlace(rotationPoint, angleDeg)
         for point in self.shapeData.getPoints():
