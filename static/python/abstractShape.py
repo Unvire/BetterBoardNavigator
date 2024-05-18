@@ -122,6 +122,14 @@ class Shape():
             self.shapeData.setRadius(scaledRadius)
     
     @staticmethod
+    def calculateAreaCenterXY(area:tuple[gobj.Point, gobj.Point]) -> tuple[float|int, float|int]:
+        bottomLeftPoint, topRightPoint = area
+        xBL, yBL = bottomLeftPoint.getXY()
+        xTR, yTR = topRightPoint.getXY()
+        xAreaCenter, yAreaCenter = (xBL + xTR) / 2, (yBL + yTR) / 2
+        return xAreaCenter, yAreaCenter
+    
+    @staticmethod
     def getAreaWidthHeight(area:tuple[gobj.Point, gobj.Point]) -> tuple[float, float]:
         x0, y0, x1, y1 = Shape.getAreaAsXYXY(area)
         areaWidth = abs(x1 - x0)
@@ -134,4 +142,3 @@ class Shape():
         xBL, yBL = bottomLeftPoint.getXY()
         xTR, yTR = topRightPoint.getXY()
         return xBL, yBL, xTR, yTR
-
