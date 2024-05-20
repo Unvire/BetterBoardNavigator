@@ -17,15 +17,15 @@ class DrawBoardEngine:
     
     def drawBoard(self, side:str):
         self.boardLayer = self._getEmptySurfce()
-        self.drawOutlines((255, 255, 255))
-        self.drawComponents((255, 255, 255), side)
+        self.drawOutlines((255, 255, 255), width=3)
+        self.drawComponents((43, 194, 48), (252, 186, 3), side)
     
     def drawOutlines(self, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
             shapeType = shape.getType()
             self.drawHandler[shapeType](color, shape, width)
     
-    def drawComponents(self, color:tuple[int, int, int], side:str, width:int=1):
+    def drawComponents(self, componentColor:tuple[int, int, int], pinColor:tuple[int, int, int], side:str, width:int=1):
         componentNames = self.boardData.getSideGroupedComponents()[side]
         for componentName in componentNames:
             componentInstance = self.boardData.getElementByName('components', componentName)
@@ -38,9 +38,9 @@ class DrawBoardEngine:
             isSkipComponentTH = mountingType == 'TH' and componentSide != side
             isDrawComponent = not (isSkipComponentSMT or isSkipComponentTH)
             if isDrawComponent:
-                self.drawInstanceAsCirlceOrPolygon(componentInstance, color, width)
+                self.drawInstanceAsCirlceOrPolygon(componentInstance, componentColor, width + 1)
 
-            self.drawPins(componentInstance, color, side, width)
+            self.drawPins(componentInstance, pinColor, side, width)
     
     def drawPins(self, componentInstance:comp.Component, color:tuple[int, int, int], side:str, width:int=1):
         pinsDict = componentInstance.getPins()
