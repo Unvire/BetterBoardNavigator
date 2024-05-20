@@ -75,3 +75,10 @@ class Board:
             for point in componentInstance.getArea():
                 bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
         return bottomLeftPoint, topRightPoint
+    
+    def scaleBoard(self, factor:int|float):
+        for _, componentInstance in self.components:
+            componentInstance.scaleInPlace(factor)
+        
+        for shape in self.outlines:
+            shape.scaleInPlace(factor)
