@@ -230,8 +230,7 @@ class ODBPlusPlusLoader():
     def _rescaleOutlinesArea(self, boardInstance:board.Board, scaleFactor:float):
         outlines = boardInstance.getOutlines()
         for shape in outlines:
-            for point in shape.getPoints():
-                point.scaleInPlace(1 / scaleFactor)
+            shape.scaleInPlace(1 / scaleFactor)
         
         area = boardInstance.getArea()
         for point in area:

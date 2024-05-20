@@ -95,12 +95,8 @@ class BoardCanvasWrapper():
 
     def _resizeAndMoveShapes(self, shapesList:list):
         for shape in shapesList:
-            pointList = shape.getPoints()
-            for point in pointList:
-                point.scaleInPlace(self.baseScale)   
-                point.translateInPlace(self.baseMoveOffsetXY)
-            if isinstance(shape, gobj.Arc):
-                shape.calculateAngleRadRepresentation()
+            shape.scaleInPlace(self.baseScale)   
+            shape.translateInPlace(self.baseMoveOffsetXY)
     
     def _recalculateAndGroupComponents(self, componentsDict:dict):
         for _, componentInstance in componentsDict.items():
