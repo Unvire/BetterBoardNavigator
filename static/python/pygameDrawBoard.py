@@ -97,6 +97,7 @@ class DrawBoardEngine:
     def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface, side:str):            
         if side == 'T':  
             self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
+        targetSurface.fill((0, 0, 0))
         targetSurface.blit(self.boardLayer, (0, 0))  
 
     def drawLine(self, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
