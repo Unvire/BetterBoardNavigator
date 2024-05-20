@@ -166,6 +166,15 @@ if __name__ == '__main__':
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     print(pygame.mouse.get_pos())
+            elif event.type == pygame.MOUSEWHEEL:
+                if event.y > 0:
+                    engine.scaleUp()
+                    engine.drawBoard(side)                    
+                    engine.blitBoardLayerIntoTarget(WIN, side)
+                else:
+                    engine.scaleDown()
+                    engine.drawBoard(side)                    
+                    engine.blitBoardLayerIntoTarget(WIN, side)
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 pass
@@ -176,17 +185,7 @@ if __name__ == '__main__':
                     sideQueue.append(side)
                     engine.drawBoard(side)                    
                     engine.blitBoardLayerIntoTarget(WIN, side)
-
-                elif event.key == pygame.K_PAGEUP:
-                    engine.scaleUp()
-                    engine.drawBoard(side)                    
-                    engine.blitBoardLayerIntoTarget(WIN, side)
                     
-                elif event.key == pygame.K_PAGEDOWN:
-                    engine.scaleDown()
-                    engine.drawBoard(side)                    
-                    engine.blitBoardLayerIntoTarget(WIN, side)
-
         ## display image
         
         pygame.display.update()
