@@ -62,7 +62,7 @@ class DrawBoardEngine:
 
     def drawLine(self, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
         startPoint, endPoint = lineInstance.getPoints()
-        pygame.draw.line(self.boardLayer, color, startPoint.getXY(), endPoint.getXY())
+        pygame.draw.line(self.boardLayer, color, startPoint.getXY(), endPoint.getXY(), width)
 
     def drawArc(self, color:tuple[int, int, int], arcInstance:gobj.Arc, width:int=1):
         def inversedAxisAngle(angleRad:float):
