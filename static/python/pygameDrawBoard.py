@@ -15,11 +15,10 @@ class DrawBoardEngine:
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
     
-    def drawBoard(self, targetSurface:pygame.Surface, side:str):
+    def drawBoard(self, side:str):
         self.boardLayer = self._getEmptySurfce()
         self.drawOutlines((255, 255, 255))
         self.drawComponents((255, 255, 255), side)
-        self.blitBoardLayerIntoTarget(targetSurface, side)
     
     def drawOutlines(self, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
@@ -113,7 +112,8 @@ if __name__ == '__main__':
     
     engine = DrawBoardEngine(WIDTH, HEIGHT)
     engine.setBoardData(boardInstance)
-    engine.drawBoard(WIN, side)
+    engine.drawBoard(side)
+    engine.blitBoardLayerIntoTarget(WIN, side)
 
     run = True
     while run:
@@ -133,9 +133,10 @@ if __name__ == '__main__':
                 if event.key == pygame.K_SEMICOLON:
                     side = sideQueue.pop(0)
                     sideQueue.append(side)
-                    engine.drawBoard(WIN, side)
+                    engine.drawBoard(side)                    
+                    engine.blitBoardLayerIntoTarget(WIN, side)
         ## display image
-
+        
         pygame.display.update()
         #run = False
 
