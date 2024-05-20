@@ -20,6 +20,11 @@ class DrawBoardEngine:
         self.drawOutlines((255, 255, 255), width=3)
         self.drawComponents((43, 194, 48), (252, 186, 3), side)
     
+    def scaleBoard(self, factor:float|int):
+        self.boardData.scaleBoard(factor)
+        self.width *= factor
+        self.height *= factor
+    
     def drawOutlines(self, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
             shapeType = shape.getType()
