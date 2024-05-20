@@ -77,7 +77,7 @@ class Board:
         return bottomLeftPoint, topRightPoint
     
     def scaleBoard(self, factor:int|float):
-        for _, componentInstance in self.components:
+        for _, componentInstance in self.components.items():
             componentInstance.scaleInPlace(factor)
         
         for shape in self.outlines:
