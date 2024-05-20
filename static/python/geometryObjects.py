@@ -1,4 +1,5 @@
 import math
+from abc import ABC, abstractmethod
 
 class Point:
     DECIMAL_POINT_PRECISION = 6
@@ -89,8 +90,24 @@ class Point:
         yPoint = point.y * coefficient
         return Point(round(xPoint, Point.DECIMAL_POINT_PRECISION), round(yPoint, Point.DECIMAL_POINT_PRECISION))
 
+class AbstractBaseShape(ABC):
+    @abstractmethod
+    def __eq__(self):
+        pass
+    
+    @abstractmethod
+    def getPoints(self):
+        pass
+    
+    def scaleInPlace(self, factor:float|int):
+        for point in self.getPoints():
+            point.scaleInPlace(factor)
+    
+    def translateInPlace(self, vector:list[int|float, int|float]):
+        for point in self.getPoints():
+            point.translateInPlace(vector)
 
-class Line:
+class Line(AbstractBaseShape):
     def __init__(self, startPoint:Point, endPoint:Point):
         self.type = 'Line'
         self.startPoint = startPoint
@@ -118,7 +135,7 @@ class Line:
         x1, y1 = self.endPoint.getXY()
         return x0, y0, x1, y1
 
-class Arc:
+class Arc(AbstractBaseShape):
     def __init__(self, startPoint:Point, endPoint:Point, rotationPoint:Point):
         self.type = 'Arc'
         self.startPoint = startPoint
@@ -162,9 +179,13 @@ class Arc:
     
     def getPoints(self) -> tuple[Point, Point, Point]:
         return self.startPoint, self.endPoint, self.rotationPoint
+    
+    def scaleInPlace(self, factor: float | int):
+        super().scaleInPlace(factor)
+        self.radius *= factor
 
 
-class Circle:
+class Circle(AbstractBaseShape):
     def __init__(self, centerPoint:Point, radius:float):
         self.type = 'Circle'
         self.centerPoint = centerPoint
@@ -195,7 +216,11 @@ class Circle:
     def getCenterRadius(self) -> tuple[Point, float]:
         return self.centerPoint, self.radius
     
-class Rectangle:
+    def scaleInPlace(self, factor: float | int):
+        super().scaleInPlace(factor)
+        self.radius *= factor
+    
+class Rectangle(AbstractBaseShape):
     def __init__(self, bottomLeftPoint:Point, topRightPoint:Point):
         self.type = 'Rectangle'
         self.bottomLeftPoint = bottomLeftPoint
