@@ -4,6 +4,10 @@ import geometryObjects as gobj
 import component as comp
 
 class DrawBoardEngine:
+    MIN_SCALE_FACTOR = 0.4
+    MAX_SCALE_FACTOR = 6
+    STEP_FACTOR = 0.2
+
     def __init__(self, width:int, height:int):
         self.boardData = None
         self.drawHandler = {'Line': self.drawLine,
@@ -11,19 +15,49 @@ class DrawBoardEngine:
         self.width = width
         self.height = height
         self.boardLayer = self._getEmptySurfce()
+        self.scale = 1
 
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
+    
+    def setScale(self, factor:int|float):
+        self.scale = factor
+    
+    def scaleUp(self):
+        if self.scale < DrawBoardEngine.MAX_SCALE_FACTOR:
+            if self.scale < 1:
+                scaleFactor = 1 / self.scale
+                self.scale += DrawBoardEngine.STEP_FACTOR
+            else:
+                self.scale += DrawBoardEngine.STEP_FACTOR
+                scaleFactor = self.scale
+            
+            self._scaleWidthHeightByFactor(scaleFactor)
+            self.boardData.scaleBoard(scaleFactor)
+
+    def scaleDown(self):
+        if self.scale > DrawBoardEngine.MIN_SCALE_FACTOR:
+            if self.scale > 1:
+                scaleFactor = 1 / self.scale
+                self.scale -= DrawBoardEngine.STEP_FACTOR
+            else:
+                self.scale -= DrawBoardEngine.STEP_FACTOR
+                scaleFactor = self.scale
+            
+            self._scaleWidthHeightByFactor(scaleFactor)
+            self.boardData.scaleBoard(scaleFactor)
+    
+    def _scaleWidthHeightByFactor(self, factor:int|float):
+        self.width *= factor
+        self.height *=  factor
+    
+    def getScaleFactor(self) -> int|float:
+        return self.scale
     
     def drawBoard(self, side:str):
         self.boardLayer = self._getEmptySurfce()
         self.drawOutlines((255, 255, 255), width=3)
         self.drawComponents((43, 194, 48), (252, 186, 3), side)
-    
-    def scaleBoard(self, factor:float|int):
-        self.boardData.scaleBoard(factor)
-        self.width *= factor
-        self.height *= factor
     
     def drawOutlines(self, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
@@ -129,7 +163,8 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 run = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                print(pygame.mouse.get_pos())
+                if event.button == 1:
+                    print(pygame.mouse.get_pos())
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 pass
@@ -140,6 +175,17 @@ if __name__ == '__main__':
                     sideQueue.append(side)
                     engine.drawBoard(side)                    
                     engine.blitBoardLayerIntoTarget(WIN, side)
+
+                elif event.key == pygame.K_PAGEUP:
+                    engine.scaleUp()
+                    engine.drawBoard(side)                    
+                    engine.blitBoardLayerIntoTarget(WIN, side)
+                    
+                elif event.key == pygame.K_PAGEDOWN:
+                    engine.scaleDown()
+                    engine.drawBoard(side)                    
+                    engine.blitBoardLayerIntoTarget(WIN, side)
+
         ## display image
         
         pygame.display.update()
