@@ -5,7 +5,7 @@ import component as comp
 
 class DrawBoardEngine:
     MIN_SCALE_FACTOR = 0.4
-    MAX_SCALE_FACTOR = 6
+    MAX_SCALE_FACTOR = 2
     STEP_FACTOR = 0.2
 
     def __init__(self, width:int, height:int):
@@ -13,9 +13,11 @@ class DrawBoardEngine:
         self.drawHandler = {'Line': self.drawLine,
                             'Arc': self.drawArc}
         self.width = width
-        self.height = height
+        self.height = height        
+        self.targetSurfaceDimensions = [width, height]
         self.boardLayer = self._getEmptySurfce()
         self.scale = 1
+        self.translationVector = 0, 0
 
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
@@ -23,7 +25,10 @@ class DrawBoardEngine:
     def setScale(self, factor:int|float):
         self.scale = factor
     
-    def scaleUp(self):
+    def setTranslationVector(self, vector:tuple[int, int]):
+        self.translationVector = vector
+    
+    def scaleUp(self, zoomingPoint:tuple[int, int]):
         if self.scale < DrawBoardEngine.MAX_SCALE_FACTOR:
             if self.scale < 1:
                 scaleFactor = 1 / self.scale
@@ -33,9 +38,10 @@ class DrawBoardEngine:
                 scaleFactor = self.scale
             
             self._scaleWidthHeightByFactor(scaleFactor)
+            self._calculateAndSetZoomTranslationVector(zoomingPoint)
             self.boardData.scaleBoard(scaleFactor)
 
-    def scaleDown(self):
+    def scaleDown(self, zoomingPoint:tuple[int, int]):
         if self.scale > DrawBoardEngine.MIN_SCALE_FACTOR:
             if self.scale > 1:
                 scaleFactor = 1 / self.scale
@@ -45,12 +51,21 @@ class DrawBoardEngine:
                 scaleFactor = self.scale
             
             self._scaleWidthHeightByFactor(scaleFactor)
+            self._calculateAndSetZoomTranslationVector(zoomingPoint)
             self.boardData.scaleBoard(scaleFactor)
     
     def _scaleWidthHeightByFactor(self, factor:int|float):
         self.width *= factor
         self.height *=  factor
     
+    def _calculateAndSetZoomTranslationVector(self, zoomingPoint:tuple[int, int]):
+        xTarget, yTarget = [val/2 for val in self.targetSurfaceDimensions]
+        xCurrentArea, yCurrentArea = self.width / 2, self.height / 2
+        x = xTarget - xCurrentArea
+        y = yTarget - yCurrentArea
+        xZoom, yZoom = zoomingPoint
+        self.setTranslationVector((x, y))
+        
     def getScaleFactor(self) -> int|float:
         return self.scale
     
@@ -98,7 +113,7 @@ class DrawBoardEngine:
         if side == 'T':  
             self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
         targetSurface.fill((0, 0, 0))
-        targetSurface.blit(self.boardLayer, (0, 0))  
+        targetSurface.blit(self.boardLayer, self.translationVector)  
 
     def drawLine(self, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
         startPoint, endPoint = lineInstance.getPoints()
@@ -168,11 +183,11 @@ if __name__ == '__main__':
                     print(pygame.mouse.get_pos())
             elif event.type == pygame.MOUSEWHEEL:
                 if event.y > 0:
-                    engine.scaleUp()
+                    engine.scaleUp(pygame.mouse.get_pos())
                     engine.drawBoard(side)                    
                     engine.blitBoardLayerIntoTarget(WIN, side)
                 else:
-                    engine.scaleDown()
+                    engine.scaleDown(pygame.mouse.get_pos())
                     engine.drawBoard(side)                    
                     engine.blitBoardLayerIntoTarget(WIN, side)
 
@@ -185,7 +200,7 @@ if __name__ == '__main__':
                     sideQueue.append(side)
                     engine.drawBoard(side)                    
                     engine.blitBoardLayerIntoTarget(WIN, side)
-                    
+
         ## display image
         
         pygame.display.update()
