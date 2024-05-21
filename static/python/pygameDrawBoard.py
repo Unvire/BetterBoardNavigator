@@ -5,8 +5,8 @@ import component as comp
 
 class DrawBoardEngine:
     MIN_SCALE_FACTOR = 0.4
-    MAX_SCALE_FACTOR = 2
-    STEP_FACTOR = 0.2
+    MAX_SCALE_FACTOR = 2.3
+    STEP_FACTOR = 0.3
 
     def __init__(self, width:int, height:int):
         self.boardData = None
@@ -17,7 +17,8 @@ class DrawBoardEngine:
         self.targetSurfaceDimensions = [width, height]
         self.boardLayer = self._getEmptySurfce()
         self.scale = 1
-        self.translationVector = 0, 0
+        self.zoomOffsetVector = [0, 0]
+        self.moveOffsetVector = [100, 100]
 
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
@@ -25,8 +26,8 @@ class DrawBoardEngine:
     def setScale(self, factor:int|float):
         self.scale = factor
     
-    def setTranslationVector(self, vector:tuple[int, int]):
-        self.translationVector = vector
+    def setzoomOffsetVector(self, vector:tuple[int, int]):
+        self.zoomOffsetVector = vector
     
     def scaleUp(self, zoomingPoint:tuple[int, int]):
         if self.scale < DrawBoardEngine.MAX_SCALE_FACTOR:
@@ -59,13 +60,21 @@ class DrawBoardEngine:
         self.height *=  factor
     
     def _calculateAndSetZoomTranslationVector(self, zoomingPoint:tuple[int, int]):
-        xTarget, yTarget = [val/2 for val in self.targetSurfaceDimensions]
-        xCurrentArea, yCurrentArea = self.width / 2, self.height / 2
-        x = xTarget - xCurrentArea
-        y = yTarget - yCurrentArea
-        xZoom, yZoom = zoomingPoint
-        self.setTranslationVector((x, y))
+        x, y = self._calculateNewAreaOffsetVector(zoomingPoint)
+        self.setzoomOffsetVector((x, y))
+    
+    def _calculateNewAreaOffsetVector(self, zoomingPoint:tuple[int, int]):
+        targetSurfaceWidth, _ = self.targetSurfaceDimensions
+        xCursor, yCursor = zoomingPoint        
+        scaleFactor = self.width / targetSurfaceWidth
         
+        xCursorScaled = round(xCursor * scaleFactor)
+        yCursorScaled = round(yCursor * scaleFactor)
+
+        x = xCursor - xCursorScaled
+        y = yCursor - yCursorScaled
+        return x, y
+    
     def getScaleFactor(self) -> int|float:
         return self.scale
     
@@ -113,7 +122,10 @@ class DrawBoardEngine:
         if side == 'T':  
             self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
         targetSurface.fill((0, 0, 0))
-        targetSurface.blit(self.boardLayer, self.translationVector)  
+
+        xZoom, yZoom = self.zoomOffsetVector
+        xMove, yMove = self.moveOffsetVector
+        targetSurface.blit(self.boardLayer, (xMove + xZoom, yMove + yZoom))  
 
     def drawLine(self, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
         startPoint, endPoint = lineInstance.getPoints()
