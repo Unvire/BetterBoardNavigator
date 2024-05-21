@@ -17,8 +17,7 @@ class DrawBoardEngine:
         self.targetSurfaceDimensions = [width, height]
         self.boardLayer = self._getEmptySurfce()
         self.scale = 1
-        self.zoomOffsetVector = [0, 0]
-        self.moveOffsetVector = [0, 0]
+        self.offsetVector = [-50, -50]
 
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
@@ -26,13 +25,13 @@ class DrawBoardEngine:
     def setScale(self, factor:int|float):
         self.scale = factor
     
-    def setZoomOffsetVector(self, vector:tuple[int, int]):
-        self.zoomOffsetVector = vector
+    def setOffsetVector(self, vector:tuple[int, int]):
+        self.offsetVector = vector
     
-    def updateMoveOffsetVector(self, relativeVector:tuple[int, int]):
-        xMove, yMove = self.moveOffsetVector
+    def updateOffsetVector(self, relativeVector:tuple[int, int]):
+        xMove, yMove = self.offsetVector
         dx, dy = relativeVector
-        self.moveOffsetVector = [xMove + dx, yMove + dy]
+        self.offsetVector = [xMove + dx, yMove + dy]
     
     def scaleUp(self, zoomingPoint:tuple[int, int]):
         if self.scale < DrawBoardEngine.MAX_SCALE_FACTOR:
@@ -65,19 +64,39 @@ class DrawBoardEngine:
         self.height *=  factor
     
     def _calculateAndSetZoomTranslationVector(self, zoomingPoint:tuple[int, int]):
+        zoomingPoint = 300, 300
         x, y = self._calculateNewAreaOffsetVector(zoomingPoint)
-        self.setZoomOffsetVector((x, y))
+        self.setOffsetVector((x, y))
     
     def _calculateNewAreaOffsetVector(self, zoomingPoint:tuple[int, int]):
         targetSurfaceWidth, _ = self.targetSurfaceDimensions
         xCursor, yCursor = zoomingPoint        
         scaleFactor = self.width / targetSurfaceWidth
-        
-        xCursorScaled = round(xCursor * scaleFactor)
-        yCursorScaled = round(yCursor * scaleFactor)
 
-        x = xCursor - xCursorScaled
-        y = yCursor - yCursorScaled
+        print(f'zooming point on target surface: {zoomingPoint}; offset vector: {self.offsetVector}; scale factor:{scaleFactor}; scale step: {self.scale}')
+
+        xMove, yMove = self.offsetVector
+        x = xCursor - xMove
+        y = yCursor - yMove
+        print(f'zooming point with reversed linear translation: {x} {y}')
+        
+        x /= scaleFactor
+        y /= scaleFactor
+        print(f'zooming point rescaled to basic scale: {x} {y}')
+        
+        xCursorScaled = round(x * scaleFactor)
+        yCursorScaled = round(y * scaleFactor)
+        print(f'zooming point in zoomed surface: {xCursorScaled} {yCursorScaled}')
+        x -= xCursorScaled
+        y -= yCursorScaled
+        print(f'zooming point in zoomed surface: {x} {y}')
+
+        xMoveScaled = round(xMove * scaleFactor)
+        yMoveScaled = round(yMove * scaleFactor)
+        x += xMoveScaled
+        y += yMoveScaled
+        print(f'zooming point in zoomed surface with linear translation: {x} {y}')
+
         return x, y
     
     def getScaleFactor(self) -> int|float:
@@ -130,9 +149,7 @@ class DrawBoardEngine:
     def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface, side:str):    
         targetSurface.fill((0, 0, 0))     
 
-        xZoom, yZoom = self.zoomOffsetVector
-        xMove, yMove = self.moveOffsetVector
-        targetSurface.blit(self.boardLayer, (xMove + xZoom, yMove + yZoom))  
+        targetSurface.blit(self.boardLayer, self.offsetVector)  
 
     def drawLine(self, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
         startPoint, endPoint = lineInstance.getPoints()
@@ -212,7 +229,7 @@ if __name__ == '__main__':
                 if isMousePressed:
                     dx, dy = pygame.mouse.get_rel()
                     if not isMovingCalledFirstTime:
-                        engine.updateMoveOffsetVector((dx, dy))                    
+                        engine.updateOffsetVector((dx, dy))                    
                         engine.blitBoardLayerIntoTarget(WIN, side)
                     else:
                         isMovingCalledFirstTime = False
