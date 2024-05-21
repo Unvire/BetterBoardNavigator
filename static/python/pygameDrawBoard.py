@@ -18,7 +18,7 @@ class DrawBoardEngine:
         self.boardLayer = self._getEmptySurfce()
         self.scale = 1
         self.zoomOffsetVector = [0, 0]
-        self.moveOffsetVector = [100, 100]
+        self.moveOffsetVector = [0, 0]
 
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
@@ -26,8 +26,13 @@ class DrawBoardEngine:
     def setScale(self, factor:int|float):
         self.scale = factor
     
-    def setzoomOffsetVector(self, vector:tuple[int, int]):
+    def setZoomOffsetVector(self, vector:tuple[int, int]):
         self.zoomOffsetVector = vector
+    
+    def updateMoveOffsetVector(self, relativeVector:tuple[int, int]):
+        xMove, yMove = self.moveOffsetVector
+        dx, dy = relativeVector
+        self.moveOffsetVector = [xMove + dx, yMove + dy]
     
     def scaleUp(self, zoomingPoint:tuple[int, int]):
         if self.scale < DrawBoardEngine.MAX_SCALE_FACTOR:
@@ -61,7 +66,7 @@ class DrawBoardEngine:
     
     def _calculateAndSetZoomTranslationVector(self, zoomingPoint:tuple[int, int]):
         x, y = self._calculateNewAreaOffsetVector(zoomingPoint)
-        self.setzoomOffsetVector((x, y))
+        self.setZoomOffsetVector((x, y))
     
     def _calculateNewAreaOffsetVector(self, zoomingPoint:tuple[int, int]):
         targetSurfaceWidth, _ = self.targetSurfaceDimensions
@@ -77,6 +82,10 @@ class DrawBoardEngine:
     
     def getScaleFactor(self) -> int|float:
         return self.scale
+    
+    def flipSurfaceIfTopSide(self, side:str):   
+        if side == 'T':  
+            self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
     
     def drawBoard(self, side:str):
         self.boardLayer = self._getEmptySurfce()
@@ -118,10 +127,8 @@ class DrawBoardEngine:
             pointsList = instance.getShapePoints()
             self.drawPolygon(color, pointsList, width)
 
-    def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface, side:str):            
-        if side == 'T':  
-            self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
-        targetSurface.fill((0, 0, 0))
+    def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface, side:str):    
+        targetSurface.fill((0, 0, 0))     
 
         xZoom, yZoom = self.zoomOffsetVector
         xMove, yMove = self.moveOffsetVector
@@ -166,6 +173,8 @@ if __name__ == '__main__':
 
     sideQueue = ['B', 'T']
     side = 'T'
+    isMousePressed = False
+    isMovingCalledFirstTime = True
 
     filePath = openSchematicFile()
     boardWrapper = boardCanvasWrapper.BoardCanvasWrapper(WIDTH, HEIGHT)
@@ -192,7 +201,23 @@ if __name__ == '__main__':
                 run = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    isMousePressed = True
+                    isMovingCalledFirstTime = True
                     print(pygame.mouse.get_pos())
+            
+            elif event.type == pygame.MOUSEBUTTONUP:
+                isMousePressed = False
+
+            elif event.type == pygame.MOUSEMOTION:
+                if isMousePressed:
+                    dx, dy = pygame.mouse.get_rel()
+                    if not isMovingCalledFirstTime:
+                        engine.updateMoveOffsetVector((dx, dy))                    
+                        engine.blitBoardLayerIntoTarget(WIN, side)
+                    else:
+                        isMovingCalledFirstTime = False
+                
+            
             elif event.type == pygame.MOUSEWHEEL:
                 if event.y > 0:
                     engine.scaleUp(pygame.mouse.get_pos())
@@ -203,14 +228,12 @@ if __name__ == '__main__':
                     engine.drawBoard(side)                    
                     engine.blitBoardLayerIntoTarget(WIN, side)
 
-            elif event.type == pygame.MOUSEBUTTONUP:
-                pass
-
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SEMICOLON:
                     side = sideQueue.pop(0)
                     sideQueue.append(side)
-                    engine.drawBoard(side)                    
+                    engine.drawBoard(side)
+                    engine.flipSurfaceIfTopSide(side)                    
                     engine.blitBoardLayerIntoTarget(WIN, side)
 
         ## display image
