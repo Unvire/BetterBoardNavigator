@@ -50,7 +50,7 @@ class DrawBoardEngine:
             scaleFactor = self.scale
         
         self._scaleWidthHeightByFactor(scaleFactor)
-        newOffset = self._calculateNewAreaOffsetVector(zoomingPoint, previousScaleFactor)
+        newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
         self.setOffsetVector(newOffset)
         self.boardData.scaleBoard(scaleFactor)
 
@@ -66,7 +66,7 @@ class DrawBoardEngine:
                 scaleFactor = self.scale
             
             self._scaleWidthHeightByFactor(scaleFactor)
-            newOffset = self._calculateNewAreaOffsetVector(zoomingPoint, previousScaleFactor)
+            newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
             self.setOffsetVector(newOffset)
             self.boardData.scaleBoard(scaleFactor)
     
@@ -74,7 +74,7 @@ class DrawBoardEngine:
         self.width *= factor
         self.height *=  factor
     
-    def _calculateNewAreaOffsetVector(self, zoomingPoint:tuple[int, int], previousScaleFactor:float):
+    def _calculateOffsetVectorForScaledSurface(self, zoomingPoint:tuple[int, int], previousScaleFactor:float):
         def reverseSurfaceLinearTranslation(screenCoords:list[int, int], offset:list[int, int]) -> tuple[int, int]:
             xScreen, yScreen = screenCoords
             xMove, yMove = offset
