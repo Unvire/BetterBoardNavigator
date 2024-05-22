@@ -38,7 +38,6 @@ class DrawBoardEngine:
         isHeightTooBig = self.height > DrawBoardEngine.MAX_SURFACE_DIMENSION
         if isWidthTooBig or isHeightTooBig:
             return
-
         
         previousScaleFactor = self._getScaleFactorFromSurfaceDimensions()
         if self.scale < 1:
@@ -103,6 +102,11 @@ class DrawBoardEngine:
         pointRelativeToSurface = calculatePointCoordsRelativeToSurfaceDimensions(pointMoveReversed, originSurfaceDimensions)
         pointInScaledSurface = calcluatePointInScaledSurface([self.width, self.height], pointRelativeToSurface)
         resultOffset = translateScaledPointToCursorPosition(pointInScaledSurface, zoomingPoint)
+        print(1, pointMoveReversed, originSurfaceDimensions)
+        print(2, pointRelativeToSurface)
+        print(3, pointInScaledSurface)
+        print(4, resultOffset)
+        print(self.width, self.height)
         return resultOffset
     
     def getScaleFactor(self) -> int|float:
