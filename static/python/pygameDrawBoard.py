@@ -4,7 +4,7 @@ import geometryObjects as gobj
 import component as comp
 
 class DrawBoardEngine:
-    MIN_SCALE_FACTOR = 0.2
+    MIN_SURFACE_DIMENSION = 100
     STEP_FACTOR = 0.05
     MAX_SURFACE_DIMENSION = 10000
 
@@ -34,14 +34,13 @@ class DrawBoardEngine:
         self.offsetVector = [xMove + dx, yMove + dy]
     
     def scaleUp(self, zoomingPoint:tuple[int, int]):
-        previousScaleFactor = self._getScaleFactorFromSurfaceDimensions()
-
-        screenWidth, screenHeight = self.targetSurfaceDimensions
-        isWidthTooBig = previousScaleFactor * screenWidth > DrawBoardEngine.MAX_SURFACE_DIMENSION
-        isHeightTooBig = previousScaleFactor * screenHeight > DrawBoardEngine.MAX_SURFACE_DIMENSION
+        isWidthTooBig = self.width > DrawBoardEngine.MAX_SURFACE_DIMENSION
+        isHeightTooBig = self.height > DrawBoardEngine.MAX_SURFACE_DIMENSION
         if isWidthTooBig or isHeightTooBig:
             return
 
+        
+        previousScaleFactor = self._getScaleFactorFromSurfaceDimensions()
         if self.scale < 1:
             scaleFactor = 1 / self.scale
             self.scale += DrawBoardEngine.STEP_FACTOR
@@ -55,20 +54,23 @@ class DrawBoardEngine:
         self.boardData.scaleBoard(scaleFactor)
 
     def scaleDown(self, zoomingPoint:tuple[int, int]):
-        previousScaleFactor = self._getScaleFactorFromSurfaceDimensions()
+        isWidthTooSmall = self.width < DrawBoardEngine.MIN_SURFACE_DIMENSION
+        isHeightTooSmall = self.height < DrawBoardEngine.MIN_SURFACE_DIMENSION
+        if isWidthTooSmall or isHeightTooSmall:
+            return
 
-        if self.scale > DrawBoardEngine.MIN_SCALE_FACTOR:
-            if self.scale > 1:
-                scaleFactor = 1 / self.scale
-                self.scale -= DrawBoardEngine.STEP_FACTOR
-            else:
-                self.scale -= DrawBoardEngine.STEP_FACTOR
-                scaleFactor = self.scale
-            
-            self._scaleWidthHeightByFactor(scaleFactor)
-            newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
-            self.setOffsetVector(newOffset)
-            self.boardData.scaleBoard(scaleFactor)
+        previousScaleFactor = self._getScaleFactorFromSurfaceDimensions()
+        if self.scale > 1:
+            scaleFactor = 1 / self.scale
+            self.scale -= DrawBoardEngine.STEP_FACTOR
+        else:
+            self.scale -= DrawBoardEngine.STEP_FACTOR
+            scaleFactor = self.scale
+        
+        self._scaleWidthHeightByFactor(scaleFactor)
+        newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
+        self.setOffsetVector(newOffset)
+        self.boardData.scaleBoard(scaleFactor)
     
     def _scaleWidthHeightByFactor(self, factor:int|float):
         self.width *= factor
