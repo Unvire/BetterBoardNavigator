@@ -2,6 +2,7 @@ import copy
 import geometryObjects as gobj
 import component as comp
 import board, pin
+from abstractShape import Shape
 
 class GenCadLoader:
     def __init__(self):        
@@ -194,9 +195,10 @@ class GenCadLoader:
                     if not padstackName in padstackDict:
                         padstackName = list(padstackDict.keys())[0]
                     pinInstance = copy.deepcopy(padstackDict[padstackName])
+                    self._addPinAreaIfUnknown(pinInstance, componentArea)
                     self._caclulatePinToBasePosition(pinInstance, float(pinAngle), [float(pinX), float(pinY)])
                     self._calculatePinToComponentPosition(pinInstance, pinNumber, componentInstance)
-                
+
                 self._addAreaAndMountingData(componentInstance, componentAreaType, componentArea, packageType)
                 componentInstance.rotateInPlaceAroundCoords(componentInstance.getAngle(), isRotatePins=True)
     
@@ -303,6 +305,19 @@ class GenCadLoader:
         componentInstance.setArea(componentAreaX, componentAreaY)
         componentInstance.caluclateShapeData()
     
+    def _addPinAreaIfUnknown(self, pinInstance:pin.Pin, componentArea:tuple[gobj.Point, gobj.Point]):
+        bottomLeftPoint, topRightPoint = pinInstance.getArea()
+        areaValues = Shape.getAreaAsXYXY((bottomLeftPoint, topRightPoint))
+        if float('Inf') in areaValues or float('-Inf') in areaValues:            
+            PIN_AREA_AS_A_FRACTION_OF_COMPONENT_AREA = 0.07
+            componentBottomLeftPoint, componentTopRightPoint = componentArea
+
+            newBottomLeftPoint = gobj.Point.scale(componentBottomLeftPoint, PIN_AREA_AS_A_FRACTION_OF_COMPONENT_AREA)
+            newTopRightPoint = gobj.Point.scale(componentTopRightPoint, PIN_AREA_AS_A_FRACTION_OF_COMPONENT_AREA)
+            pinInstance.setArea(newBottomLeftPoint, newTopRightPoint)
+            pinInstance.setShape('RECT')
+            pinInstance.calculateCenterDimensionsFromArea()
+    
     def _caclulatePinToBasePosition(self, pinInstance:pin.Pin, angle:float|int, translationVector:list[float|int, float|int]):
         pinInstance.caluclateShapeData()
         if angle % 90 == 0:
@@ -377,5 +392,5 @@ class GenCadLoader:
     
 if __name__ == '__main__':
     loader = GenCadLoader()
-    fileLines = loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\wallbox som.GCD')
+    fileLines = loader.loadFile(r'C:\Users\kbalcerzak\Documents\schematy z Q\Schematic\Colossus-Stork.gcd')
     loader.processFileLines(fileLines)
