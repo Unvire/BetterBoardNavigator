@@ -6,7 +6,7 @@ import component as comp
 class DrawBoardEngine:
     MIN_SCALE_FACTOR = 0.2
     STEP_FACTOR = 0.05
-    MAX_SURFACE_DIMENSION = 7000
+    MAX_SURFACE_DIMENSION = 10000
 
     def __init__(self, width:int, height:int):
         self.boardData = None
@@ -37,8 +37,8 @@ class DrawBoardEngine:
         previousScaleFactor = self._getScaleFactorFromSurfaceDimensions()
 
         screenWidth, screenHeight = self.targetSurfaceDimensions
-        isWidthTooBig = previousScaleFactor * screenWidth < DrawBoardEngine.MAX_SURFACE_DIMENSION
-        isHeightTooBig = previousScaleFactor * screenHeight < DrawBoardEngine.MAX_SURFACE_DIMENSION
+        isWidthTooBig = previousScaleFactor * screenWidth > DrawBoardEngine.MAX_SURFACE_DIMENSION
+        isHeightTooBig = previousScaleFactor * screenHeight > DrawBoardEngine.MAX_SURFACE_DIMENSION
         if isWidthTooBig or isHeightTooBig:
             return
 
@@ -247,7 +247,6 @@ if __name__ == '__main__':
                     engine.scaleUp(pygame.mouse.get_pos())
                     engine.drawBoard(side)
                     engine.blitBoardLayerIntoTarget(WIN)
-                    print(engine.width, engine.height)
                 else:
                     engine.scaleDown(pygame.mouse.get_pos())
                     engine.drawBoard(side)                    
