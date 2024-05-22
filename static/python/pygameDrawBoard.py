@@ -102,11 +102,6 @@ class DrawBoardEngine:
         pointRelativeToSurface = calculatePointCoordsRelativeToSurfaceDimensions(pointMoveReversed, originSurfaceDimensions)
         pointInScaledSurface = calcluatePointInScaledSurface([self.width, self.height], pointRelativeToSurface)
         resultOffset = translateScaledPointToCursorPosition(pointInScaledSurface, zoomingPoint)
-        print(1, pointMoveReversed, originSurfaceDimensions)
-        print(2, pointRelativeToSurface)
-        print(3, pointInScaledSurface)
-        print(4, resultOffset)
-        print(self.width, self.height)
         return resultOffset
     
     def getScaleFactor(self) -> int|float:
