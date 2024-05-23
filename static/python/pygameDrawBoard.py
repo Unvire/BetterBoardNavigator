@@ -102,6 +102,12 @@ class DrawBoardEngine:
         self.setOffsetVector(newOffset)
         BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
     
+    def findComponentByClick(self, cursorXY:list[int, int], side:str):
+        x, y = cursorXY
+        xOffset, yOffset = self.offsetVector
+        clickedPoint = gobj.Point(x - xOffset, y - yOffset)
+        return self.boardData.findComponentByClick(clickedPoint, side)
+    
     def _scaleSurfaceDimensionsByFactor(self, factor:int|float):
         self.boardSurfaceDimensions = [val * factor for val in self.boardSurfaceDimensions]
     
@@ -246,6 +252,7 @@ if __name__ == '__main__':
     side = 'T'
     isMousePressed = False
     isMovingCalledFirstTime = True
+    isFindComponentByClickActive = False
 
     filePath = openSchematicFile()
     boardWrapper = BoardCanvasWrapper(WIDTH, HEIGHT)
@@ -273,8 +280,12 @@ if __name__ == '__main__':
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     isMousePressed = True
-                    isMovingCalledFirstTime = True
+                    isMovingCalledFirstTime = True                    
                     print(pygame.mouse.get_pos())
+
+                    if isFindComponentByClickActive:
+                        foundComponents = engine.findComponentByClick(pygame.mouse.get_pos(), side)
+                        print(f'clicked component: {foundComponents}')
             
             elif event.type == pygame.MOUSEBUTTONUP:
                 isMousePressed = False
@@ -318,6 +329,9 @@ if __name__ == '__main__':
                     engine.drawBoard(side)
                     engine.blitBoardLayerIntoTarget(WIN)
                 
+                elif event.key == pygame.K_z:
+                    isFindComponentByClickActive = not isFindComponentByClickActive
+                    print(f'Find component using clck mode active: {isFindComponentByClickActive}')
                 
 
         ## display image
