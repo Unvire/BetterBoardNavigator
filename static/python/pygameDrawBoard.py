@@ -15,8 +15,7 @@ class DrawBoardEngine:
         self.boardDataBackup = None
         self.drawHandler = {'Line': self.drawLine,
                             'Arc': self.drawArc}
-        self.width = width
-        self.height = height        
+        self.boardSurfaceDimensions = width, height
         self.screenDimensions = [width, height]
         self.boardLayer = self._getEmptySurfce()
         self.scale = 1
@@ -39,11 +38,11 @@ class DrawBoardEngine:
     
     def rotate(self, isClockwise:bool):
         angle = DrawBoardEngine.DELTA_ROTATION_ANGLE_DEG * (-1) ** int(isClockwise)
-        
     
     def scaleUp(self, zoomingPoint:tuple[int, int]):
-        isWidthTooBig = self.width > DrawBoardEngine.MAX_SURFACE_DIMENSION
-        isHeightTooBig = self.height > DrawBoardEngine.MAX_SURFACE_DIMENSION
+        surfaceWidth, surfaceHeight = self.boardSurfaceDimensions
+        isWidthTooBig = surfaceWidth > DrawBoardEngine.MAX_SURFACE_DIMENSION
+        isHeightTooBig = surfaceHeight > DrawBoardEngine.MAX_SURFACE_DIMENSION
         if isWidthTooBig or isHeightTooBig:
             return
         
@@ -55,14 +54,15 @@ class DrawBoardEngine:
             self.scale += DrawBoardEngine.STEP_FACTOR
             scaleFactor = self.scale
         
-        self._scaleWidthHeightByFactor(scaleFactor)
+        self._scaleSurfaceDimensionsByFactor(scaleFactor)
         newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
         self.setOffsetVector(newOffset)
         BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
 
-    def scaleDown(self, zoomingPoint:tuple[int, int]):
-        isWidthTooSmall = self.width < DrawBoardEngine.MIN_SURFACE_DIMENSION
-        isHeightTooSmall = self.height < DrawBoardEngine.MIN_SURFACE_DIMENSION
+    def scaleDown(self, zoomingPoint:tuple[int, int]):        
+        surfaceWidth, surfaceHeight = self.boardSurfaceDimensions
+        isWidthTooSmall = surfaceWidth < DrawBoardEngine.MIN_SURFACE_DIMENSION
+        isHeightTooSmall = surfaceHeight < DrawBoardEngine.MIN_SURFACE_DIMENSION
         if isWidthTooSmall or isHeightTooSmall:
             return
 
@@ -74,14 +74,13 @@ class DrawBoardEngine:
             self.scale -= DrawBoardEngine.STEP_FACTOR
             scaleFactor = self.scale
         
-        self._scaleWidthHeightByFactor(scaleFactor)
+        self._scaleSurfaceDimensionsByFactor(scaleFactor)
         newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
         self.setOffsetVector(newOffset)
         BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
     
-    def _scaleWidthHeightByFactor(self, factor:int|float):
-        self.width *= factor
-        self.height *=  factor
+    def _scaleSurfaceDimensionsByFactor(self, factor:int|float):
+        self.boardSurfaceDimensions = [val * factor for val in self.boardSurfaceDimensions]
     
     def _calculateOffsetVectorForScaledSurface(self, zoomingPoint:tuple[int, int], previousScaleFactor:float):
         def reverseSurfaceLinearTranslation(screenCoords:list[int, int], offset:list[int, int]) -> tuple[int, int]:
@@ -108,7 +107,7 @@ class DrawBoardEngine:
 
         pointMoveReversed = reverseSurfaceLinearTranslation(zoomingPoint, self.offsetVector)
         pointRelativeToSurface = calculatePointCoordsRelativeToSurfaceDimensions(pointMoveReversed, originSurfaceDimensions)
-        pointInScaledSurface = calcluatePointInScaledSurface([self.width, self.height], pointRelativeToSurface)
+        pointInScaledSurface = calcluatePointInScaledSurface(self.boardSurfaceDimensions, pointRelativeToSurface)
         resultOffset = translateScaledPointToCursorPosition(pointInScaledSurface, zoomingPoint)
         return resultOffset
     
@@ -188,11 +187,11 @@ class DrawBoardEngine:
         pygame.draw.polygon(self.boardLayer, color, pointsXYList, width)
     
     def _getEmptySurfce(self) -> pygame.Surface:
-        return pygame.Surface((self.width, self.height))
+        return pygame.Surface(self.boardSurfaceDimensions)
     
     def _getScaleFactorFromSurfaceDimensions(self) -> float:
         screenWidth, _ = self.screenDimensions
-        surfaceWidth = self.width
+        surfaceWidth, _ = self.boardSurfaceDimensions
         return surfaceWidth / screenWidth
 
 if __name__ == '__main__':
