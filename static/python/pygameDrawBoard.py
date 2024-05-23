@@ -1,4 +1,4 @@
-import pygame, math
+import pygame, math, copy
 import boardCanvasWrapper, pin, board
 import geometryObjects as gobj
 import component as comp
@@ -11,6 +11,7 @@ class DrawBoardEngine:
 
     def __init__(self, width:int, height:int):
         self.boardData = None
+        self.boardDataBackup = None
         self.drawHandler = {'Line': self.drawLine,
                             'Arc': self.drawArc}
         self.width = width
@@ -22,6 +23,7 @@ class DrawBoardEngine:
 
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
+        self.boardDataBackup = copy.deepcopy(boardData)
     
     def setScale(self, factor:int|float):
         self.scale = factor
