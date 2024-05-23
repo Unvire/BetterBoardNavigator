@@ -15,7 +15,7 @@ class DrawBoardEngine:
         self.boardDataBackup = None
         self.drawHandler = {'Line': self.drawLine,
                             'Arc': self.drawArc}
-        self.boardSurfaceDimensions = width, height
+        self.boardSurfaceDimensions = [width, height]
         self.screenDimensions = [width, height]
         self.boardLayer = self._getEmptySurfce()
         self.scale = 1
@@ -24,6 +24,27 @@ class DrawBoardEngine:
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
         self.boardDataBackup = copy.deepcopy(boardData)
+        self._adjustBoardDimensionsForScaling()
+        
+    def _adjustBoardDimensionsForScaling(self):
+        def calculateDiagonal(dimensions:list[int|float]) -> float:
+            width, height = dimensions
+            return math.sqrt(width ** 2 + height ** 2)
+        
+        def calculateScalingFactor(boardAreaDiagonal:float) -> float:
+            SCALE_FACTOR = 1.05
+            scaleFactor = 1
+            for dimension in self.boardSurfaceDimensions:
+                if boardAreaDiagonal / dimension > 1:
+                    scaleFactor = max(scaleFactor, boardAreaDiagonal / dimension * SCALE_FACTOR)
+            return scaleFactor
+        
+        boardAreaDiagonal = calculateDiagonal(self.boardData.getWidthHeight())
+        scaleFactor = calculateScalingFactor(boardAreaDiagonal)
+        BoardCanvasWrapper.scaleBoardInPlace(self.boardData, 1/scaleFactor)
+        return
+        self._scaleSurfaceDimensionsByFactor(scaleFactor)
+        self._centerBoardInAdjustedSurface()
     
     def setScale(self, factor:int|float):
         self.scale = factor
@@ -84,6 +105,15 @@ class DrawBoardEngine:
     
     def _scaleSurfaceDimensionsByFactor(self, factor:int|float):
         self.boardSurfaceDimensions = [val * factor for val in self.boardSurfaceDimensions]
+    
+    def _centerBoardInAdjustedSurface(self):
+        surfaceWidth, surfaceHeight = self.boardSurfaceDimensions
+        screenWidth, screenHeight = self.screenDimensions
+
+        xOffset = (screenWidth - surfaceWidth) / 2
+        yOffset = (screenHeight - surfaceHeight) / 2
+        self.offsetVector = [xOffset, yOffset]
+        BoardCanvasWrapper.translateBoardInPlace(self.boardData, [-xOffset, -yOffset]) #'-' because board must be moved away from its center 
     
     def _calculateOffsetVectorForScaledSurface(self, zoomingPoint:tuple[int, int], previousScaleFactor:float):
         def reverseSurfaceLinearTranslation(screenCoords:list[int, int], offset:list[int, int]) -> tuple[int, int]:
