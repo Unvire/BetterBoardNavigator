@@ -41,8 +41,6 @@ class DrawBoardEngine:
         
         boardAreaDiagonal = calculateDiagonal(self.boardData.getWidthHeight())
         scaleFactor = calculateScalingFactor(boardAreaDiagonal)
-        BoardCanvasWrapper.scaleBoardInPlace(self.boardData, 1/scaleFactor)
-        return
         self._scaleSurfaceDimensionsByFactor(scaleFactor)
         self._centerBoardInAdjustedSurface()
     
