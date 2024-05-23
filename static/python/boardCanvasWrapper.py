@@ -38,7 +38,7 @@ class BoardCanvasWrapper():
             bottomLeftPoint, topRightPoint = self.board.calculateAreaFromComponents()
             self.board.setArea(bottomLeftPoint, topRightPoint)
             self._resetGroupsToDefault()
-            
+
             self._calculateAndSetBaseScale(self.board.getArea())
             self._calculateAndSetBaseOffsetXY(self.board.getArea())
             self._normalizeComponentsAreaTracks()
@@ -50,6 +50,7 @@ class BoardCanvasWrapper():
         self._recalculateAndGroupComponents(self.board.getComponents())
         self._resizeAndMoveShapes(self.board.getOutlines())
         self._resizeAndMoveTracks(self.board.getTracks())
+        self._scaleAndMoveAreaPoints(self.board.getArea())
     
     def getSideComponents(self) -> dict:
         return self.sideComponents
@@ -97,6 +98,11 @@ class BoardCanvasWrapper():
         for _, sidesDict in tracksDict.items():
             for _, shapesList in sidesDict.items():
                 self._resizeAndMoveShapes(shapesList)
+    
+    def _scaleAndMoveAreaPoints(self, pointList:list[gobj.Point]):
+        for point in pointList:
+            point.scaleInPlace(self.baseScale)
+            point.translateInPlace(self.baseMoveOffsetXY)
 
     def _resizeAndMoveShapes(self, shapesList:list):
         for shape in shapesList:
