@@ -8,7 +8,7 @@ class DrawBoardEngine:
     MIN_SURFACE_DIMENSION = 100
     STEP_FACTOR = 0.05
     MAX_SURFACE_DIMENSION = 10000
-    DELTA_ROTATION_ANGLE_DEG = 45
+    DELTA_ROTATION_ANGLE_DEG = 5
 
     def __init__(self, width:int, height:int):
         self.boardData = None
@@ -36,8 +36,11 @@ class DrawBoardEngine:
         dx, dy = relativeVector
         self.offsetVector = [xMove + dx, yMove + dy]
     
-    def rotate(self, isClockwise:bool):
+    def rotate(self, rotationXY:tuple[int, int], isClockwise:bool):
         angle = DrawBoardEngine.DELTA_ROTATION_ANGLE_DEG * (-1) ** int(isClockwise)
+        xRot, yRot = rotationXY
+        rotationPoint = gobj.Point(xRot, yRot)
+        BoardCanvasWrapper.rotateBoardInPlace(self.boardData, rotationPoint, angle)
     
     def scaleUp(self, zoomingPoint:tuple[int, int]):
         surfaceWidth, surfaceHeight = self.boardSurfaceDimensions
@@ -268,11 +271,15 @@ if __name__ == '__main__':
                     engine.blitBoardLayerIntoTarget(WIN)
                 
                 elif event.key == pygame.K_n:
-                    engine.rotate(isClockwise=True)       
+                    rotationXY = [val / 2 for val in engine.boardSurfaceDimensions]
+                    engine.rotate(rotationXY, isClockwise=True)     
+                    engine.drawBoard(side)
                     engine.blitBoardLayerIntoTarget(WIN)
                 
                 elif event.key == pygame.K_m:
-                    engine.rotate(isClockwise=False)          
+                    rotationXY = [val / 2 for val in engine.boardSurfaceDimensions]
+                    engine.rotate(rotationXY, isClockwise=False)     
+                    engine.drawBoard(side)
                     engine.blitBoardLayerIntoTarget(WIN)
                 
                 

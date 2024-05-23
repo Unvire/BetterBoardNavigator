@@ -89,6 +89,5 @@ class Board:
         
     def _normalizeAndSetArea(self):
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
-        for point in self.area:
-            bottomLeftPoint, topRightPoint = gobj.updateBottomLeftTopRightPoints(bottomLeftPoint, topRightPoint, point)
+        bottomLeftPoint, topRightPoint = gobj.updateBottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], self.area)
         self.area = [bottomLeftPoint, topRightPoint]
