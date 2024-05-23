@@ -7,6 +7,7 @@ class DrawBoardEngine:
     MIN_SURFACE_DIMENSION = 100
     STEP_FACTOR = 0.05
     MAX_SURFACE_DIMENSION = 10000
+    DELTA_ROTATION_ANGLE_DEG = 45
 
     def __init__(self, width:int, height:int):
         self.boardData = None
@@ -32,6 +33,10 @@ class DrawBoardEngine:
         xMove, yMove = self.offsetVector
         dx, dy = relativeVector
         self.offsetVector = [xMove + dx, yMove + dy]
+    
+    def rotate(self, isClockwise:bool):
+        angle = DrawBoardEngine.DELTA_ROTATION_ANGLE_DEG * (-1) ** int(isClockwise)
+        
     
     def scaleUp(self, zoomingPoint:tuple[int, int]):
         isWidthTooBig = self.width > DrawBoardEngine.MAX_SURFACE_DIMENSION
@@ -168,7 +173,6 @@ class DrawBoardEngine:
         x0 -= radius
         y0 -= radius
 
-        endAngle, startAngle = arcInstance.getAsCenterRadiusAngles()[-2:] # y axis is mirrored so angles are substracted from 2*pi 
         startAngle, endAngle = inversedAxisAngle(startAngle), inversedAxisAngle(endAngle)
         pygame.draw.arc(self.boardLayer, color, (x0, y0, 2 * radius, 2 * radius), startAngle, endAngle, width)
 
@@ -260,6 +264,16 @@ if __name__ == '__main__':
                     engine.drawBoard(side)
                     engine.flipSurfaceIfTopSide(side)                    
                     engine.blitBoardLayerIntoTarget(WIN)
+                
+                elif event.key == pygame.K_n:
+                    engine.rotate(isClockwise=True)       
+                    engine.blitBoardLayerIntoTarget(WIN)
+                
+                elif event.key == pygame.K_m:
+                    engine.rotate(isClockwise=False)          
+                    engine.blitBoardLayerIntoTarget(WIN)
+                
+                
 
         ## display image
         pygame.display.update()
