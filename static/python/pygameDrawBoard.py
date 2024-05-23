@@ -150,16 +150,22 @@ class DrawBoardEngine:
             self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
     
     def drawBoard(self, side:str):
+        WHITE = 255, 255, 255
+        GREEN = 8, 212, 15
+        BLUE = 21, 103, 235
+        YELLOW = 240, 187, 12
         self.boardLayer = self._getEmptySurfce()
-        self.drawOutlines((255, 255, 255), width=3)
-        self.drawComponents((43, 194, 48), (252, 186, 3), side)
+        self.drawOutlines(WHITE, width=3)
+        self.drawComponents(componentColor=GREEN, smtPinColor=YELLOW, thPinColor=BLUE, side=side)
     
     def drawOutlines(self, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
             shapeType = shape.getType()
             self.drawHandler[shapeType](color, shape, width)
     
-    def drawComponents(self, componentColor:tuple[int, int, int], pinColor:tuple[int, int, int], side:str, width:int=1):
+    def drawComponents(self, componentColor:tuple[int, int, int], smtPinColor:tuple[int, int, int], thPinColor:tuple[int, int, int], side:str, width:int=1):
+        pinColorDict = {'SMT':smtPinColor, 'TH':thPinColor}
+        
         componentNames = self.boardData.getSideGroupedComponents()[side]
         for componentName in componentNames:
             componentInstance = self.boardData.getElementByName('components', componentName)
@@ -174,9 +180,10 @@ class DrawBoardEngine:
             if isDrawComponent:
                 self.drawInstanceAsCirlceOrPolygon(componentInstance, componentColor, width + 1)
 
-            self.drawPins(componentInstance, pinColor, side, width)
+            pinsColor = pinColorDict[componentInstance.getMountingType()]
+            self.drawPins(componentInstance, pinsColor, width)
     
-    def drawPins(self, componentInstance:comp.Component, color:tuple[int, int, int], side:str, width:int=1):
+    def drawPins(self, componentInstance:comp.Component, color:tuple[int, int, int], width:int=1):
         pinsDict = componentInstance.getPins()
         for _, pinInstance in pinsDict.items():
             self.drawInstanceAsCirlceOrPolygon(pinInstance, color, width)
