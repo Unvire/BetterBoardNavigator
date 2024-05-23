@@ -24,9 +24,9 @@ class DrawBoardEngine:
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
         self.boardDataBackup = copy.deepcopy(boardData)
-        self._adjustBoardDimensionsForScaling()
+        self._adjustBoardDimensionsForRotating()
         
-    def _adjustBoardDimensionsForScaling(self):
+    def _adjustBoardDimensionsForRotating(self):
         def calculateDiagonal(dimensions:list[int|float]) -> float:
             width, height = dimensions
             return math.sqrt(width ** 2 + height ** 2)
