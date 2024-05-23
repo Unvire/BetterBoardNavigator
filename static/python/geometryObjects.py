@@ -228,6 +228,12 @@ class Circle(AbstractBaseShape):
         super().scaleInPlace(factor)
         self.radius *= factor
     
+    def checkIfPointInside(self, point:Point):
+        x, y = point.getXY()
+        xCenter, yCenter = self.centerPoint.getXY()
+        distanceFromCenter = math.sqrt((x - xCenter) ** 2 + (y - yCenter) ** 2)
+        return distanceFromCenter <= self.radius
+    
 class Rectangle(AbstractBaseShape):
     def __init__(self, bottomLeftPoint:Point, topRightPoint:Point):
         self.type = 'Rectangle'
@@ -254,6 +260,12 @@ class Rectangle(AbstractBaseShape):
     def getPoints(self) -> list[Point, Point, Point, Point]:
         ''' [bottomLeftPoint, bottomRightPoint, topRightPoint, topLeftPoint] '''
         return [self.bottomLeftPoint, self.bottomRightPoint, self.topRightPoint, self.topLeftPoint]
+
+    def checkIfPointInside(self, clickedPoint:Point):
+        return False
+    
+    def _getNormalizedPoints(self) -> list[Point, Point, Point, Point]:
+        pass
     
 def floatOrNone(x:str):
     try:
