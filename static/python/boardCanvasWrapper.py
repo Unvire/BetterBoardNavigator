@@ -32,7 +32,7 @@ class BoardCanvasWrapper():
         self._calculateAndSetBaseScale(self.board.getArea())
         self._calculateAndSetBaseOffsetXY(self.board.getArea())
         try:
-            self._normalizeComponentsAreaTracks()
+            self._normalizeAreaComponentsShapes()
         except NormalizingError:
             self.board = copy.deepcopy(self.boardBackup)
             bottomLeftPoint, topRightPoint = self.board.calculateAreaFromComponents()
