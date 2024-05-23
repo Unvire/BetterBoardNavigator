@@ -1,5 +1,6 @@
 import geometryObjects as gobj
 import component as comp
+from abstractShape import Shape
 
 class Board:
     def __init__(self):
@@ -16,6 +17,10 @@ class Board:
     
     def getArea(self) -> list[gobj.Point]:
         return self.area
+
+    def getWidthHeight(self) -> list[float|int, float|int]:
+        xBL, yBL, xTR, yTR = Shape.getAreaAsXYXY(self.area)
+        return abs(xTR - xBL), abs(yTR - yBL)
     
     def setOutlines(self, outlinesList:list[gobj.Point|gobj.Arc]):
         self.outlines = outlinesList
