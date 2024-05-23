@@ -147,6 +147,10 @@ class BoardCanvasWrapper():
         self.sideComponents = {'B':[], 'T':[]}
         self.commonTypeComponents = {'B':{}, 'T':{}}
     
+    @staticmethod
+    def scaleBoardInPlace(board:board.Board, scaleFactor:float):
+        board.scaleBoard(scaleFactor)
+    
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)

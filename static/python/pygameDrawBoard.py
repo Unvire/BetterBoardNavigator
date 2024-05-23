@@ -1,5 +1,6 @@
 import pygame, math, copy
-import boardCanvasWrapper, pin, board
+import pin, board
+from boardCanvasWrapper import BoardCanvasWrapper
 import geometryObjects as gobj
 import component as comp
 
@@ -57,7 +58,7 @@ class DrawBoardEngine:
         self._scaleWidthHeightByFactor(scaleFactor)
         newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
         self.setOffsetVector(newOffset)
-        self.boardData.scaleBoard(scaleFactor)
+        BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
 
     def scaleDown(self, zoomingPoint:tuple[int, int]):
         isWidthTooSmall = self.width < DrawBoardEngine.MIN_SURFACE_DIMENSION
@@ -76,7 +77,7 @@ class DrawBoardEngine:
         self._scaleWidthHeightByFactor(scaleFactor)
         newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
         self.setOffsetVector(newOffset)
-        self.boardData.scaleBoard(scaleFactor)
+        BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
     
     def _scaleWidthHeightByFactor(self, factor:int|float):
         self.width *= factor
@@ -209,7 +210,7 @@ if __name__ == '__main__':
     isMovingCalledFirstTime = True
 
     filePath = openSchematicFile()
-    boardWrapper = boardCanvasWrapper.BoardCanvasWrapper(WIDTH, HEIGHT)
+    boardWrapper = BoardCanvasWrapper(WIDTH, HEIGHT)
     boardWrapper.loadAndSetBoardFromFilePath(filePath)
     boardInstance = boardWrapper.normalizeBoard()
 
