@@ -142,9 +142,3 @@ class Shape():
         xBL, yBL = bottomLeftPoint.getXY()
         xTR, yTR = topRightPoint.getXY()
         return xBL, yBL, xTR, yTR
-
-    @staticmethod
-    def checkIfPointInsideArea(area:tuple[gobj.Point, gobj.Point], clickedPoint:gobj.Point) -> bool:
-        xBL, yBL, xTR, yTR = Shape.getAreaAsXYXY(area)
-        x, y = clickedPoint.getXY()
-        return xBL <= x <= xTR and yBL <= y <= yTR
