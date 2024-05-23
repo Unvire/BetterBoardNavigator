@@ -38,6 +38,9 @@ class BoardCanvasWrapper():
             bottomLeftPoint, topRightPoint = self.board.calculateAreaFromComponents()
             self.board.setArea(bottomLeftPoint, topRightPoint)
             self._resetGroupsToDefault()
+            
+            self._calculateAndSetBaseScale(self.board.getArea())
+            self._calculateAndSetBaseOffsetXY(self.board.getArea())
             self._normalizeComponentsAreaTracks()
         
         self.board.setGroups(self.sideComponents, self.commonTypeComponents)
