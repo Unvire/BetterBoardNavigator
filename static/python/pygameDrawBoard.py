@@ -20,6 +20,7 @@ class DrawBoardEngine:
         self.boardLayer = self._getEmptySurfce()
         self.scale = 1
         self.offsetVector = [0, 0]
+        self.sideForFlipX = 'T'
 
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
@@ -146,7 +147,7 @@ class DrawBoardEngine:
         return self.scale
     
     def flipSurfaceIfTopSide(self, side:str):   
-        if side == 'T':  
+        if side == self.sideForFlipX:  
             self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
     
     def drawBoard(self, side:str):
@@ -164,7 +165,7 @@ class DrawBoardEngine:
             self.drawHandler[shapeType](color, shape, width)
     
     def drawComponents(self, componentColor:tuple[int, int, int], smtPinColor:tuple[int, int, int], thPinColor:tuple[int, int, int], side:str, width:int=1):
-        pinColorDict = {'SMT':smtPinColor, 'TH':thPinColor}
+        pinColorDict = {'SMT':smtPinColor, 'SMD':smtPinColor, 'TH':thPinColor}
         
         componentNames = self.boardData.getSideGroupedComponents()[side]
         for componentName in componentNames:
