@@ -106,7 +106,7 @@ class DrawBoardEngine:
         x, y = cursorXY
         xOffset, yOffset = self.offsetVector
         clickedPoint = gobj.Point(x - xOffset, y - yOffset)
-        return self.boardData.findComponentByClick(clickedPoint, side)
+        return self.boardData.findComponentByCoords(clickedPoint, side)
     
     def _scaleSurfaceDimensionsByFactor(self, factor:int|float):
         self.boardSurfaceDimensions = [val * factor for val in self.boardSurfaceDimensions]

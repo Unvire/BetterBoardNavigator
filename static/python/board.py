@@ -83,9 +83,17 @@ class Board:
         
         if functionName == 'rotateInPlace':
             self._normalizeAndSetArea()
-
         
     def _normalizeAndSetArea(self):
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
         bottomLeftPoint, topRightPoint = gobj.updateBottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], self.area)
         self.area = [bottomLeftPoint, topRightPoint]
+    
+    def findComponentByCoords(self, clickedPoint:gobj.Point, side:str) -> str:
+        componentNames = self.sideGroupedComponents[side]
+        for componentName in componentNames:
+            componentInstance = self.getElementByName('components', componentName)
+            shape = componentInstance.getShapeData()
+            if shape.checkIfPointInside(clickedPoint):
+                return componentName
+        return ''
