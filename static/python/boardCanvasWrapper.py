@@ -4,6 +4,9 @@ import component as comp
 import board, loaderSelectorFactory
 from abstractShape import Shape
 
+class NormalizingError(Exception):
+    pass
+
 class BoardCanvasWrapper():
     def __init__(self, width:int, height:int):
         self.width = width
@@ -14,17 +17,16 @@ class BoardCanvasWrapper():
         self.baseMoveOffsetXY = [0.0, 0.0]
         self.sideComponents = {}
         self.commonTypeComponents = {}
-        self.hitMap = {}
         self._resetGroupsToDefault()
 
     def loadAndSetBoardFromFilePath(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
-        self._setBoard(boardInstance)
+        self.setBoard(boardInstance)
     
     def loadAndSetBoardFromFileLines(self, fileName:str, fileLines:list[str]):
         loader = loaderSelectorFactory.LoaderSelectorFactory(fileName)
         boardInstace = loader.processFileLines(fileLines)
-        self._setBoard(boardInstace)
+        self.setBoard(boardInstace)
     
     def normalizeBoard(self):
         self._calculateAndSetBaseScale(self.board.getArea())
@@ -33,18 +35,15 @@ class BoardCanvasWrapper():
             self._recalculateAndGroupComponents(self.board.getComponents())
             self._resizeAndMoveShapes(self.board.getOutlines())
             self._resizeAndMoveTracks(self.board.getTracks())
-        except KeyError:
+        except NormalizingError:
             self.board = copy.deepcopy(self.boardBackup)
             bottomLeftPoint, topRightPoint = self.board.calculateAreaFromComponents()
             self.board.setArea(bottomLeftPoint, topRightPoint)
             self._resetGroupsToDefault()
             self.normalizeBoard()
         
-        self.board.setGroups(self.sideComponents, self.commonTypeComponents, self.hitMap)
+        self.board.setGroups(self.sideComponents, self.commonTypeComponents)
         return self.board
-    
-    def getHitMap(self) -> dict:
-        return copy.deepcopy(self.hitMap)
     
     def getSideComponents(self) -> dict:
         return self.sideComponents
@@ -58,7 +57,7 @@ class BoardCanvasWrapper():
         fileLines = loader.loadFile(filePath)
         return loader.processFileLines(fileLines)
 
-    def _setBoard(self, boardInstace:board.Board):
+    def setBoard(self, boardInstace:board.Board):
         self.board = boardInstace
         self.boardBackup = copy.deepcopy(self.board)        
 
@@ -101,7 +100,7 @@ class BoardCanvasWrapper():
     def _recalculateAndGroupComponents(self, componentsDict:dict):
         for _, componentInstance in componentsDict.items():
             self._recalculateComponent(componentInstance)
-            self._addComponentToHitMap(componentInstance)
+            self._checkIfComponentCoordsArePositive(componentInstance)
             self._addComponentToSideComponents(componentInstance)
             self._addComponentToCommonTypeComponents(componentInstance)
     
@@ -110,12 +109,12 @@ class BoardCanvasWrapper():
         componentInstance.scaleInPlace(self.baseScale)
         componentInstance.translateInPlace(self.baseMoveOffsetXY)
 
-    def _addComponentToHitMap(self, componentInstance:comp.Component):
+    def _checkIfComponentCoordsArePositive(self, componentInstance:comp.Component):
         for point in componentInstance.getArea():
             x, y  = point.getXY()
             keyX, keyY = int(x / 100),  int(y / 100)
-            side = componentInstance.getSide()
-            self.hitMap[side][keyX][keyY].append(componentInstance.name)        
+            if keyX < 0 or keyY < 0:
+                raise NormalizingError    
 
     def _addComponentToSideComponents(self, componentInstance:comp.Component):
         side = componentInstance.getSide()
@@ -144,18 +143,7 @@ class BoardCanvasWrapper():
     def _resetGroupsToDefault(self):
         self.sideComponents = {'B':[], 'T':[]}
         self.commonTypeComponents = {'B':{}, 'T':{}}
-        self.hitMap = {'B':{}, 'T':{}}
         self._initHitmap()
-    
-    def _initHitmap(self):
-        rangeWidth = range(int(self.width / 100))
-        rangeHeight = range(int(self.height / 100))
-        for side in ['T', 'B']:
-            self.hitMap[side] = {}
-            for w in rangeWidth:
-                self.hitMap[side][w] = {}
-                for h in rangeHeight:
-                    self.hitMap[side][w][h] = []
     
 
 if __name__ == '__main__':

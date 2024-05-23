@@ -10,7 +10,6 @@ class Board:
         self.tracks = {}
         self.sideGroupedComponents = {}
         self.commonTypeGroupedComponents = {}
-        self.hitMap = {}
     
     def setArea(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
         self.area = [bottomLeftPoint, topRightPoint]
@@ -55,19 +54,15 @@ class Board:
     def getTrack(self, side:str, netName:str) -> list['gobj.Line|gobj.Rectangle|gobj.Arc|gobj.Circle']:
         return self.tracks[netName][side]
     
-    def setGroups(self, sideGroupedComponents:dict, commonTypeGroupedComponents:dict, hitMap:dict):
+    def setGroups(self, sideGroupedComponents:dict, commonTypeGroupedComponents:dict):
         self.sideGroupedComponents = sideGroupedComponents
         self.commonTypeGroupedComponents = commonTypeGroupedComponents
-        self.hitMap = hitMap
 
     def getSideGroupedComponents(self) -> dict:
         return self.sideGroupedComponents
     
     def getCommonTypeGroupedComponents(self) -> dict:
         return self.commonTypeGroupedComponents
-
-    def getHitMap(self) -> dict:
-        return self.hitMap
     
     def calculateAreaFromComponents(self) -> tuple[gobj.Point, gobj.Point]:
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
