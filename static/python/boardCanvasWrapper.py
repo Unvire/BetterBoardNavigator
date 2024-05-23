@@ -157,15 +157,15 @@ class BoardCanvasWrapper():
     
     @staticmethod
     def scaleBoardInPlace(board:board.Board, scaleFactor:float):
-        board.scaleBoard(scaleFactor)
+        board.translateRotateScaleBoard('scaleInPlace', scaleFactor)
     
     @staticmethod
     def rotateBoardInPlace(board:board.Board, rotationPoint:gobj.Point, angle:float):
-        board.rotateBoard(rotationPoint, angle)
+        board.translateRotateScaleBoard('rotateInPlace', rotationPoint, angle)
     
     @staticmethod
     def translateBoardInPlace(board:board.Board, moveVector:list[float|int, float|int]):
-        board.translateBoard(moveVector)
+        board.translateRotateScaleBoard('translateInPlace', moveVector)
     
 
 if __name__ == '__main__':

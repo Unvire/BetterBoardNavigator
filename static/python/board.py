@@ -66,36 +66,24 @@ class Board:
                 bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
         return bottomLeftPoint, topRightPoint
     
-    def scaleBoard(self, factor:int|float):
-        for point in self.area:
-            point.scaleInPlace(factor)
+    def translateRotateScaleBoard(self, functionName:str, *args):
+        '''
+        Calls translateInPlace, rotateInPlace or scaleInPlace on area, shapes and components.
+        functionName must be: translateInPlace, rotateInPlace or scaleInPlace
+        Arguments for functions:
+            translateInPlace -> moveVector:list[int|float, int|float]
+            rotateInPlace -> rotationPoint:geometryObjects.Point, angleDeg:int|float
+            scaleInPlace -> factor:int|float
+        '''
+        components = [componentInstance for _, componentInstance in self.components.items()]
+        objList = self.area + self.outlines + components
+        for obj in objList:
+            func = getattr(obj, functionName)
+            func(*args)
         
-        for shape in self.outlines:
-            shape.scaleInPlace(factor)
+        if functionName == 'rotateInPlace':
+            self._normalizeAndSetArea()
 
-        for _, componentInstance in self.components.items():
-            componentInstance.scaleInPlace(factor)
-    
-    def rotateBoard(self, rotationPoint:gobj.Point, angleDeg:float):
-        for point in self.area:
-            point.rotateInPlace(rotationPoint, angleDeg)
-        
-        for shape in self.outlines:
-            shape.rotateInPlace(rotationPoint, angleDeg)
-        
-        for _, componentInstance in self.components.items():
-            componentInstance.rotateInPlace(rotationPoint, angleDeg)
-        self._normalizeAndSetArea()
-    
-    def translateBoard(self, moveVector:list[float|int, float|int]):
-        for point in self.area:
-            point.translateInPlace(moveVector)
-        
-        for shape in self.outlines:
-            shape.translateInPlace(moveVector)
-
-        for _, componentInstance in self.components.items():
-            componentInstance.translateInPlace(moveVector)
         
     def _normalizeAndSetArea(self):
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
