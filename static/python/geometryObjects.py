@@ -106,6 +106,10 @@ class AbstractBaseShape(ABC):
     def translateInPlace(self, vector:list[int|float, int|float]):
         for point in self.getPoints():
             point.translateInPlace(vector)
+    
+    def rotateInPlace(self, rotationPoint:Point, angleDeg:float):
+        for point in self.getPoints():
+            point.rotateInPlace(rotationPoint, angleDeg)
 
 class Line(AbstractBaseShape):
     def __init__(self, startPoint:Point, endPoint:Point):
