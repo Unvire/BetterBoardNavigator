@@ -151,6 +151,10 @@ class BoardCanvasWrapper():
     def scaleBoardInPlace(board:board.Board, scaleFactor:float):
         board.scaleBoard(scaleFactor)
     
+    @staticmethod
+    def rotateBoardInPlace(board:board.Board, rotationPoint:gobj.Point, angle:float):
+        board.rotateBoard(rotationPoint, angle)
+    
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)

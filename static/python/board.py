@@ -77,3 +77,20 @@ class Board:
         
         for shape in self.outlines:
             shape.scaleInPlace(factor)
+    
+    def rotateBoard(self, rotationPoint:gobj.Point, angleDeg:float):
+        for point in self.area:
+            point.rotateInPlace(rotationPoint, angleDeg)
+        self._normalizeAndSetArea()
+        
+        for shape in self.outlines:
+            shape.rotateInPlace(rotationPoint, angleDeg)
+        
+        for _, componentInstance in self.components.items():
+            componentInstance.rotateInPlace(rotationPoint, angleDeg)
+        
+    def _normalizeAndSetArea(self):
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+        for point in self.area:
+            bottomLeftPoint, topRightPoint = gobj.updateBottomLeftTopRightPoints(bottomLeftPoint, topRightPoint, point)
+        self.area = [bottomLeftPoint, topRightPoint]
