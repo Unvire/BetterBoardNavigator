@@ -187,7 +187,11 @@ class Arc(AbstractBaseShape):
     def scaleInPlace(self, factor: float | int):
         super().scaleInPlace(factor)
         self.radius *= factor
-
+    
+    def rotateInPlace(self, rotationPoint: Point, angleDeg: float):
+        super().rotateInPlace(rotationPoint, angleDeg)
+        self.startAngle = self._calculateAngleRad(self.startPoint, self.rotationPoint)        
+        self.endAngle = self._calculateAngleRad(self.endPoint, self.rotationPoint)
 
 class Circle(AbstractBaseShape):
     def __init__(self, centerPoint:Point, radius:float):
