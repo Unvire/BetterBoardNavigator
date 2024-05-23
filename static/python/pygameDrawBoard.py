@@ -206,7 +206,7 @@ class DrawBoardEngine:
         x0 -= radius
         y0 -= radius
 
-        startAngle, endAngle = inversedAxisAngle(startAngle), inversedAxisAngle(endAngle)
+        startAngle, endAngle = inversedAxisAngle(endAngle), inversedAxisAngle(startAngle)
         pygame.draw.arc(self.boardLayer, color, (x0, y0, 2 * radius, 2 * radius), startAngle, endAngle, width)
 
     def drawCircle(self, color:tuple[int, int, int], circleInstance:gobj.Circle, width:int=1):
