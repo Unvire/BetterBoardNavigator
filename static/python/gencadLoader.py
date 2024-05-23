@@ -27,7 +27,6 @@ class GenCadLoader:
         shapesDict = self._getAreaPinsfromSHAPES_ARTWORKS(fileLines, artworksDict)
         self._addShapePadDataToComponent(self.boardData, shapeToComponentsDict, shapesDict, padstackDict)
         self._getNetsFromSIGNALS(fileLines, self.boardData)
-        #self._getTracksFromROUTES(fileLines, self.boardData)
         return self.boardData
     
     def _setFilePath(self, filePath:str):
@@ -230,37 +229,6 @@ class GenCadLoader:
                 continue
             i += 1
         boardInstance.setNets(netsDict)
-    
-    def _getTracksFromROUTES(self, fileLines:list[str], boardInstance:board.Board):
-        i, iEnd = self.sectionsLineNumbers['ROUTES']
-        sideDict = {'TOP': 'T', 'BOTTOM': 'B'}
-        point1, point2 = gobj.getDefaultBottomLeftTopRightPoints()
-        currentSide = None
-        tracksDict = {}
-
-        while i <= iEnd:
-            if ' ' in fileLines[i] and 'ROUTE' in fileLines[i][:5]:
-                line = fileLines[i]
-                _, netName = self._splitButNotBetweenCharacter(line)
-                tracksDict[netName] = {'B':[], 'T':[]}
-                i += 1
-
-                isEndOfRoutesSection = False
-                while not isEndOfRoutesSection:
-                    line = fileLines[i]
-                    keyWord, *parameters = self._splitButNotBetweenCharacter(line)
-                    if keyWord == 'LAYER':
-                        currentSide = sideDict.get(parameters[0], None)
-                        
-                    if currentSide and keyWord in self.handleShape:
-                        shape, *_ = self.handleShape[keyWord](parameters, point1, point2)
-                        tracksDict[netName][currentSide].append(shape)
-                    
-                    i += 1
-                    isEndOfRoutesSection = 'ROUTE' == fileLines[i][:5] or i >= iEnd
-                continue
-            i += 1
-        boardInstance.setTracks(tracksDict)
 
     def _createPin(self, name:str, shape:str, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> pin.Pin:
         newPin = pin.Pin(name)

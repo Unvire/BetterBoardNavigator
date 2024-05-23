@@ -41,16 +41,15 @@ class BoardCanvasWrapper():
 
             self._calculateAndSetBaseScale(self.board.getArea())
             self._calculateAndSetBaseOffsetXY(self.board.getArea())
-            self._normalizeComponentsAreaTracks()
+            self._normalizeAreaComponentsShapes()
         
         self.board.setGroups(self.sideComponents, self.commonTypeComponents)
         return self.board
 
-    def _normalizeComponentsAreaTracks(self):
+    def _normalizeAreaComponentsShapes(self):
+        self._scaleAndMoveAreaPoints(self.board.getArea())
         self._recalculateAndGroupComponents(self.board.getComponents())
         self._resizeAndMoveShapes(self.board.getOutlines())
-        self._resizeAndMoveTracks(self.board.getTracks())
-        self._scaleAndMoveAreaPoints(self.board.getArea())
     
     def getSideComponents(self) -> dict:
         return self.sideComponents

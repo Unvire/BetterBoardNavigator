@@ -8,7 +8,6 @@ class Board:
         self.outlines = []
         self.components = {}
         self.nets = []
-        self.tracks = {}
         self.sideGroupedComponents = {}
         self.commonTypeGroupedComponents = {}
     
@@ -50,15 +49,6 @@ class Board:
         matchDict = {'components':self.components, 'nets':self.nets}
         return matchDict[groupName].get(elementName, None)
     
-    def setTracks(self, tracksDict:dict):
-        self.tracks = tracksDict
-    
-    def getTracks(self) -> dict:
-        return self.tracks
-    
-    def getTrack(self, side:str, netName:str) -> list['gobj.Line|gobj.Rectangle|gobj.Arc|gobj.Circle']:
-        return self.tracks[netName][side]
-    
     def setGroups(self, sideGroupedComponents:dict, commonTypeGroupedComponents:dict):
         self.sideGroupedComponents = sideGroupedComponents
         self.commonTypeGroupedComponents = commonTypeGroupedComponents
@@ -77,6 +67,9 @@ class Board:
         return bottomLeftPoint, topRightPoint
     
     def scaleBoard(self, factor:int|float):
+        for point in self.area:
+            point.scaleInPlace(factor)
+
         for _, componentInstance in self.components.items():
             componentInstance.scaleInPlace(factor)
         

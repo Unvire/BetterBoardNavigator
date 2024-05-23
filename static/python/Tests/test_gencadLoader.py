@@ -258,26 +258,6 @@ def netsTest():
     ]
     return fileLinesMock
 
-@pytest.fixture
-def tracksTest():
-    fileLinesMock = [
-        '$ROUTES',
-        'ROUTE GND',
-        'TRACK 79',
-        'LAYER TOP',
-        'LINE 1898.622 519.528 1907.913 510.236',
-        'LINE 1907.913 510.236 1949.213 510.236',
-        'LAYER BOTTOM',
-        'LINE 609.843 294.882 591.339 313.386',
-        'LINE 591.339 313.386 591.339 349.449',
-        'ROUTE N16780000',
-        'LAYER BOTTOM',
-        'TRACK r11.811',
-        'LINE 5.245827 3.013543 5.220472 2.988189',
-        '$ENDROUTES',
-    ]
-    return fileLinesMock
-
 def test__getSectionsLinesBeginEnd(sectionsRangeTest):
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(sectionsRangeTest)
@@ -522,18 +502,3 @@ def test__getNetsFromSIGNALS(netsTest):
     assert boardNets['N16516693']['L9']['componentInstance'] is boardComponents['L9']
     assert boardNets['N16516693']['L9']['pins'] == ['1']
     assert boardComponents['L9'].getPinByName('1').getNet() == 'N16516693'
-
-def test__getTracksFromROUTES(tracksTest):
-    instance = GenCadLoader()      
-    instance._getSectionsLinesBeginEnd(tracksTest)
-    instance._getTracksFromROUTES(tracksTest, instance.boardData)
-
-    boardTracks = instance.boardData.getTracks()
-    assert list(boardTracks.keys()) == ['GND', 'N16780000']
-    assert boardTracks['GND']['T'] == [gobj.Line(gobj.Point(1898.622, 519.528), gobj.Point(1907.913, 510.236)),
-                                       gobj.Line(gobj.Point(1907.913, 510.236), gobj.Point(1949.213, 510.236))]
-    assert boardTracks['GND']['B'] == [gobj.Line(gobj.Point(609.843, 294.882), gobj.Point(591.339, 313.386)),
-                                       gobj.Line(gobj.Point(591.339, 313.386), gobj.Point(591.339, 349.449))]
-    
-    assert boardTracks['N16780000']['T'] == []
-    assert boardTracks['N16780000']['B'] == [gobj.Line(gobj.Point(5.245827, 3.013543), gobj.Point(5.220472, 2.988189))]
