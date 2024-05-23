@@ -32,18 +32,21 @@ class BoardCanvasWrapper():
         self._calculateAndSetBaseScale(self.board.getArea())
         self._calculateAndSetBaseOffsetXY(self.board.getArea())
         try:
-            self._recalculateAndGroupComponents(self.board.getComponents())
-            self._resizeAndMoveShapes(self.board.getOutlines())
-            self._resizeAndMoveTracks(self.board.getTracks())
+            self._normalizeComponentsAreaTracks()
         except NormalizingError:
             self.board = copy.deepcopy(self.boardBackup)
             bottomLeftPoint, topRightPoint = self.board.calculateAreaFromComponents()
             self.board.setArea(bottomLeftPoint, topRightPoint)
             self._resetGroupsToDefault()
-            self.normalizeBoard()
+            self._normalizeComponentsAreaTracks()
         
         self.board.setGroups(self.sideComponents, self.commonTypeComponents)
         return self.board
+
+    def _normalizeComponentsAreaTracks(self):
+        self._recalculateAndGroupComponents(self.board.getComponents())
+        self._resizeAndMoveShapes(self.board.getOutlines())
+        self._resizeAndMoveTracks(self.board.getTracks())
     
     def getSideComponents(self) -> dict:
         return self.sideComponents
@@ -143,7 +146,6 @@ class BoardCanvasWrapper():
     def _resetGroupsToDefault(self):
         self.sideComponents = {'B':[], 'T':[]}
         self.commonTypeComponents = {'B':{}, 'T':{}}
-        self._initHitmap()
     
 
 if __name__ == '__main__':
