@@ -17,7 +17,7 @@ class DrawBoardEngine:
                             'Arc': self.drawArc}
         self.width = width
         self.height = height        
-        self.targetSurfaceDimensions = [width, height]
+        self.screenDimensions = [width, height]
         self.boardLayer = self._getEmptySurfce()
         self.scale = 1
         self.offsetVector = [0, 0]
@@ -104,7 +104,7 @@ class DrawBoardEngine:
             xCursor, yCursor = cursorPosition
             return xCursor - x, yCursor - y
 
-        originSurfaceDimensions = [val * previousScaleFactor for val in self.targetSurfaceDimensions]
+        originSurfaceDimensions = [val * previousScaleFactor for val in self.screenDimensions]
 
         pointMoveReversed = reverseSurfaceLinearTranslation(zoomingPoint, self.offsetVector)
         pointRelativeToSurface = calculatePointCoordsRelativeToSurfaceDimensions(pointMoveReversed, originSurfaceDimensions)
@@ -191,7 +191,7 @@ class DrawBoardEngine:
         return pygame.Surface((self.width, self.height))
     
     def _getScaleFactorFromSurfaceDimensions(self) -> float:
-        screenWidth, _ = self.targetSurfaceDimensions
+        screenWidth, _ = self.screenDimensions
         surfaceWidth = self.width
         return surfaceWidth / screenWidth
 
