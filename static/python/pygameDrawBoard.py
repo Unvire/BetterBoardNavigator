@@ -20,6 +20,7 @@ class DrawBoardEngine:
         self.boardLayer = self._getEmptySurfce()
         self.selectedComponentsSurface = self._getEmptySurfce()
         self.selectedNetSurface = self._getEmptySurfce()
+        self.selectedComponentsSet = set()
         self.scale = 1
         self.offsetVector = [0, 0]
         self.sideForFlipX = 'T'
@@ -112,6 +113,16 @@ class DrawBoardEngine:
         clickedPoint = gobj.Point(x - xOffset, y - yOffset)
         return self.boardData.findComponentByCoords(clickedPoint, side)
     
+    def findComponentByName(self, componentName:str):
+        componentInstance = self.boardData.getElementByName('components', componentName)
+        if not componentInstance:
+            return
+        
+        if componentInstance in self.selectedComponentsSet:
+            self.selectedComponentsSet.remove(componentInstance)
+        else:
+            self.selectedComponentsSet.add(componentInstance)
+    
     def _scaleSurfaceDimensionsByFactor(self, factor:int|float):
         self.surfaceDimensions = [val * factor for val in self.surfaceDimensions]
     
@@ -165,9 +176,13 @@ class DrawBoardEngine:
         GREEN = 8, 212, 15
         BLUE = 21, 103, 235
         YELLOW = 240, 187, 12
+        RED = 255, 0, 0
         self.boardLayer = self._getEmptySurfce()
+        self.selectedComponentsSurface = self._getEmptySurfce()
+        self.selectedNetSurface = self._getEmptySurfce()
         self.drawOutlines(WHITE, width=3)
         self.drawComponents(componentColor=GREEN, smtPinColor=YELLOW, thPinColor=BLUE, side=side)
+        self.drawMarkers(color=RED, side=side)
     
     def drawOutlines(self, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
@@ -194,6 +209,15 @@ class DrawBoardEngine:
             pinsColor = pinColorDict[componentInstance.getMountingType()]
             self.drawPins(componentInstance, pinsColor, width)
     
+    def drawMarkers(self, color:tuple[int, int, int], side:str):
+        componentsList = list(self.selectedComponentsSet)
+        for componentInstance in componentsList:
+            componentSide = componentInstance.getSide()
+            if componentSide != side:
+                continue
+            centerPoint = componentInstance.getCoords()
+            self._drawMarker(centerPoint.getXY(), color)
+
     def drawPins(self, componentInstance:comp.Component, color:tuple[int, int, int], width:int=1):
         pinsDict = componentInstance.getPins()
         for _, pinInstance in pinsDict.items():
@@ -207,10 +231,10 @@ class DrawBoardEngine:
             pointsList = instance.getShapePoints()
             self.drawPolygon(color, pointsList, width)
 
-    def _drawMarker(self, coordsXY:list[int, int]):
+    def _drawMarker(self, coordsXY:list[int, int], color:tuple[int, int, int]):
         x, y = coordsXY
         markerCoords = [(x, y), (x - 4, y - 6), (x - 2, y - 6), (x - 2, y - 40), (x + 2, y - 40), (x + 2, y - 6), (x + 4, y - 6)]
-        pygame.draw.polygon(self.selectedComponentsSurface, (255, 0, 0), markerCoords, width=0)
+        pygame.draw.polygon(self.selectedComponentsSurface, color, markerCoords, width=0)
 
     def blitBoardSurfacesIntoTarget(self, targetSurface:pygame.Surface):    
         targetSurface.fill((0, 0, 0))
@@ -280,7 +304,6 @@ if __name__ == '__main__':
     engine = DrawBoardEngine(WIDTH, HEIGHT)
     engine.setBoardData(boardInstance)
     engine.drawBoard(side)
-    engine._drawMarker((600, 600))
     engine.blitBoardSurfacesIntoTarget(WIN)
 
     print('Pygame draw PCB engine')
