@@ -28,6 +28,8 @@ class DrawBoardEngine:
         self.boardData = boardData
         self.boardDataBackup = copy.deepcopy(boardData)
         self._adjustBoardDimensionsForRotating()
+        self.selectedComponentsSurface = self._getEmptySurfce()
+        self.selectedNetSurface = self._getEmptySurfce()
         
     def _adjustBoardDimensionsForRotating(self):
         def calculateDiagonal(dimensions:list[int|float]) -> float:
@@ -205,9 +207,18 @@ class DrawBoardEngine:
             pointsList = instance.getShapePoints()
             self.drawPolygon(color, pointsList, width)
 
+    def _drawMarker(self, coordsXY:list[int, int]):
+        x, y = coordsXY
+        markerCoords = [(x, y), (x - 4, y - 6), (x - 2, y - 6), (x - 2, y - 40), (x + 2, y - 40), (x + 2, y - 6), (x + 4, y - 6)]
+        pygame.draw.polygon(self.selectedComponentsSurface, (255, 0, 0), markerCoords, width=0)
+
     def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface):    
         targetSurface.fill((0, 0, 0))
-        targetSurface.blit(self.boardLayer, self.offsetVector)  
+        self.selectedComponentsSurface.set_colorkey((0, 0, 0)) 
+        self.selectedNetSurface.set_colorkey((0, 0, 0))
+        targetSurface.blit(self.boardLayer, self.offsetVector)
+        targetSurface.blit(self.selectedComponentsSurface, self.offsetVector)
+        targetSurface.blit(self.selectedNetSurface, self.offsetVector)
 
     def drawLine(self, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
         startPoint, endPoint = lineInstance.getPoints()
@@ -269,6 +280,7 @@ if __name__ == '__main__':
     engine = DrawBoardEngine(WIDTH, HEIGHT)
     engine.setBoardData(boardInstance)
     engine.drawBoard(side)
+    engine._drawMarker((600, 600))
     engine.blitBoardLayerIntoTarget(WIN)
 
     print('Pygame draw PCB engine')
