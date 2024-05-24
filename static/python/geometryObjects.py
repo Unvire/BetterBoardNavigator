@@ -229,10 +229,11 @@ class Circle(AbstractBaseShape):
         self.radius *= factor
     
     def checkIfPointInside(self, point:Point):
+        TOLERANCE = 1.02
         x, y = point.getXY()
         xCenter, yCenter = self.centerPoint.getXY()
         distanceFromCenter = math.sqrt((x - xCenter) ** 2 + (y - yCenter) ** 2)
-        return distanceFromCenter <= self.radius
+        return distanceFromCenter <= self.radius * TOLERANCE
     
 class Rectangle(AbstractBaseShape):
     def __init__(self, bottomLeftPoint:Point, topRightPoint:Point):
@@ -262,7 +263,7 @@ class Rectangle(AbstractBaseShape):
         return [self.bottomLeftPoint, self.bottomRightPoint, self.topRightPoint, self.topLeftPoint]
 
     def checkIfPointInside(self, pointP:Point):
-        TOLERANCE = 1.05
+        TOLERANCE = 1.02
         pointA, pointB, pointC, pointD = self.getPoints()
         
         areaRectangle = self._calculateRectangleAreaWith2VectorsABAC(pointB, pointA, pointC)
