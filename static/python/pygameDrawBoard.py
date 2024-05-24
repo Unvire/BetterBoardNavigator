@@ -312,6 +312,7 @@ if __name__ == '__main__':
     print('Change side - ;')
     print('Rotate - n, m')
     print('Select component by click mode - z')
+    print('Find component by name - x')
     print('====================================')
 
     run = True
@@ -375,6 +376,12 @@ if __name__ == '__main__':
                 elif event.key == pygame.K_z:
                     isFindComponentByClickActive = not isFindComponentByClickActive
                     print(f'Find component using clck mode active: {isFindComponentByClickActive}')
+                
+                elif event.key == pygame.K_x:
+                    componentName = input('Component name: ')
+                    engine.findComponentByName(componentName)
+                    engine.drawBoard(side)
+                    engine.blitBoardSurfacesIntoTarget(WIN)
                 
 
         ## display image
