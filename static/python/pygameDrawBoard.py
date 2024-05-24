@@ -120,10 +120,10 @@ class DrawBoardEngine:
         if not componentInstance:
             return
         
-        if componentInstance in self.selectedComponentsSet:
-            self.selectedComponentsSet.remove(componentInstance)
+        if componentInstance.name in self.selectedComponentsSet:
+            self.selectedComponentsSet.remove(componentInstance.name)
         else:
-            self.selectedComponentsSet.add(componentInstance)
+            self.selectedComponentsSet.add(componentInstance.name)
     
     def selectNet(self, netName:str):
         net = self.boardData.getElementByName('nets', netName)
