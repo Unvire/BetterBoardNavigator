@@ -224,8 +224,13 @@ def test_getSquareAndAreaFromValArray():
     assert bottomLeftPoint == gobj.Point(-0.025, -0.025)
     assert topRightPoint == gobj.Point(0.025, 0.025)
 
-def test_Circle_checkIfPointInside():
-    pass
+@pytest.mark.parametrize('inputData, expected', [(gobj.Point(0, 0), True), (gobj.Point(1, 0), True), (gobj.Point(1.5, 0), False), 
+                                                 (gobj.Point(-1, -1), False), (gobj.Point(2, 2), False), (gobj.Point(0.3, -0.3), True)])
+def test_Circle_checkIfPointInside(inputData, expected):
+    circle = gobj.Circle(gobj.Point(0, 0), 1)
+
+    isInside = circle.checkIfPointInside(inputData)
+    assert isInside == expected
 
 @pytest.mark.parametrize('inputData, expected', [((gobj.Point(0, -2), gobj.Point(1, 0), gobj.Point(0, 2)), 4),
                                                  ((gobj.Point(0, 1), gobj.Point(0, 0), gobj.Point(1, 0)), 1),
