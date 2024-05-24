@@ -189,6 +189,7 @@ class DrawBoardEngine:
         YELLOW = 240, 187, 12
         RED = 255, 0, 0
         VIOLET = 171, 24, 149
+
         self.boardLayer = self._getEmptySurfce()
         self.selectedComponentsSurface = self._getEmptySurfce()
         self.selectedNetSurface = self._getEmptySurfce()
@@ -196,6 +197,7 @@ class DrawBoardEngine:
         self.drawComponents(surface=self.boardLayer, componentColor=GREEN, smtPinColor=YELLOW, thPinColor=BLUE, side=side)
         self.drawMarkers(surface=self.selectedComponentsSurface, componentNamesSet=self.selectedComponentsSet, color=RED, side=side)
         self.drawMarkers(surface=self.selectedNetSurface, componentNamesSet=self.selectedNetComponentsSet, color=VIOLET, side=side)
+        self.drawSelectedPins(surface=self.selectedNetSurface, color=VIOLET, side=side)
     
     def drawOutlines(self, surface:pygame.Surface, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
@@ -230,6 +232,14 @@ class DrawBoardEngine:
                 continue
             centerPoint = componentInstance.getCoords()
             self._drawMarker(surface, centerPoint.getXY(), color)
+    
+    def drawSelectedPins(self, surface:pygame.Surface, color:tuple[int, int, int], side:str):
+        for componentName, pinsList in self.selectedNet.items():
+            componentInstance = self.boardData.getElementByName('components', componentName)
+            pinsInstancesList = [componentInstance.getPinByName(pinName) for pinName in pinsList]
+            for pinInstance in pinsInstancesList:
+                if componentInstance.getSide() == side:
+                    self.drawInstanceAsCirlceOrPolygon(surface, pinInstance, color, width=0)
 
     def drawPins(self, surface:pygame.Surface, componentInstance:comp.Component, color:tuple[int, int, int], width:int=1):
         pinsDict = componentInstance.getPins()
