@@ -25,7 +25,7 @@ class DrawBoardEngine:
         self.selectedNet = dict()
         self.scale = 1
         self.offsetVector = [0, 0]
-        self.sideForFlipX = 'T'
+        self.sidesForFlipX = {'T'}
 
     def setBoardData(self, boardData:board.Board):
         self.boardData = boardData
@@ -111,6 +111,9 @@ class DrawBoardEngine:
     
     def findComponentByClick(self, cursorXY:list[int, int], side:str):
         x, y = cursorXY
+        if side in self.sidesForFlipX:
+            screenWidth, _ = self.screenDimensions
+            x = screenWidth - x
         xOffset, yOffset = self.offsetVector
         clickedPoint = gobj.Point(x - xOffset, y - yOffset)
         return self.boardData.findComponentByCoords(clickedPoint, side)
@@ -248,7 +251,7 @@ class DrawBoardEngine:
             self.drawInstanceAsCirlceOrPolygon(surface, pinInstance, color, width)
     
     def _flipSurfaceXAxis(self, side:str):   
-        if side == self.sideForFlipX:  
+        if side in self.sidesForFlipX:  
             self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
             self.selectedComponentsSurface = pygame.transform.flip(self.selectedComponentsSurface, True, False)
             self.selectedNetSurface = pygame.transform.flip(self.selectedNetSurface, True, False)
