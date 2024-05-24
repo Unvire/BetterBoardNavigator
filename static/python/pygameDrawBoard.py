@@ -192,17 +192,17 @@ class DrawBoardEngine:
         self.boardLayer = self._getEmptySurfce()
         self.selectedComponentsSurface = self._getEmptySurfce()
         self.selectedNetSurface = self._getEmptySurfce()
-        self.drawOutlines(WHITE, width=3)
-        self.drawComponents(componentColor=GREEN, smtPinColor=YELLOW, thPinColor=BLUE, side=side)
+        self.drawOutlines(surface=self.boardLayer, color=WHITE, width=3)
+        self.drawComponents(surface=self.boardLayer, componentColor=GREEN, smtPinColor=YELLOW, thPinColor=BLUE, side=side)
         self.drawMarkers(surface=self.selectedComponentsSurface, componentNamesSet=self.selectedComponentsSet, color=RED, side=side)
         self.drawMarkers(surface=self.selectedNetSurface, componentNamesSet=self.selectedNetComponentsSet, color=VIOLET, side=side)
     
-    def drawOutlines(self, color:tuple[int, int, int], width:int=1):
+    def drawOutlines(self, surface:pygame.Surface, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
             shapeType = shape.getType()
-            self.drawHandler[shapeType](color, shape, width)
+            self.drawHandler[shapeType](surface, color, shape, width)
     
-    def drawComponents(self, componentColor:tuple[int, int, int], smtPinColor:tuple[int, int, int], thPinColor:tuple[int, int, int], side:str, width:int=1):
+    def drawComponents(self, surface:pygame.Surface, componentColor:tuple[int, int, int], smtPinColor:tuple[int, int, int], thPinColor:tuple[int, int, int], side:str, width:int=1):
         pinColorDict = {'SMT':smtPinColor, 'SMD':smtPinColor, 'TH':thPinColor}
         
         componentNames = self.boardData.getSideGroupedComponents()[side]
@@ -217,12 +217,12 @@ class DrawBoardEngine:
             isSkipComponentTH = mountingType == 'TH' and componentSide != side
             isDrawComponent = not (isSkipComponentSMT or isSkipComponentTH)
             if isDrawComponent:
-                self.drawInstanceAsCirlceOrPolygon(componentInstance, componentColor, width + 1)
+                self.drawInstanceAsCirlceOrPolygon(surface, componentInstance, componentColor, width + 1)
 
             pinsColor = pinColorDict[componentInstance.getMountingType()]
-            self.drawPins(componentInstance, pinsColor, width)
+            self.drawPins(surface, componentInstance, pinsColor, width)
     
-    def drawMarkers(self, componentNamesSet:set, surface:pygame.Surface, color:tuple[int, int, int], side:str):
+    def drawMarkers(self, surface:pygame.Surface, componentNamesSet:set, color:tuple[int, int, int], side:str):
         componentsList = [self.boardData.getElementByName('components', componentName) for componentName in list(componentNamesSet)]
         for componentInstance in componentsList:
             componentSide = componentInstance.getSide()
@@ -231,23 +231,18 @@ class DrawBoardEngine:
             centerPoint = componentInstance.getCoords()
             self._drawMarker(surface, centerPoint.getXY(), color)
 
-    def drawPins(self, componentInstance:comp.Component, color:tuple[int, int, int], width:int=1):
+    def drawPins(self, surface:pygame.Surface, componentInstance:comp.Component, color:tuple[int, int, int], width:int=1):
         pinsDict = componentInstance.getPins()
         for _, pinInstance in pinsDict.items():
-            self.drawInstanceAsCirlceOrPolygon(pinInstance, color, width)
+            self.drawInstanceAsCirlceOrPolygon(surface, pinInstance, color, width)
     
-    def drawInstanceAsCirlceOrPolygon(self, instance: pin.Pin|comp.Component, color:tuple[int, int, int], width:int=1):
+    def drawInstanceAsCirlceOrPolygon(self, surface:pygame.Surface, instance: pin.Pin|comp.Component, color:tuple[int, int, int], width:int=1):
         if  instance.getShape() == 'CIRCLE':
             shape = instance.getShapeData()
-            self.drawCircle(color, shape, width)
+            self.drawCircle(surface, color, shape, width)
         else:
             pointsList = instance.getShapePoints()
-            self.drawPolygon(color, pointsList, width)
-
-    def _drawMarker(self, surface:pygame.Surface, coordsXY:list[int, int], color:tuple[int, int, int]):
-        x, y = coordsXY
-        markerCoords = [(x, y), (x - 4, y - 6), (x - 2, y - 6), (x - 2, y - 40), (x + 2, y - 40), (x + 2, y - 6), (x + 4, y - 6)]
-        pygame.draw.polygon(surface, color, markerCoords, width=0)
+            self.drawPolygon(surface, color, pointsList, width)
         
     def blitBoardSurfacesIntoTarget(self, targetSurface:pygame.Surface):    
         targetSurface.fill((0, 0, 0))
@@ -257,11 +252,11 @@ class DrawBoardEngine:
         targetSurface.blit(self.selectedComponentsSurface, self.offsetVector)
         targetSurface.blit(self.selectedNetSurface, self.offsetVector)
 
-    def drawLine(self, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
+    def drawLine(self, surface:pygame.Surface, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
         startPoint, endPoint = lineInstance.getPoints()
-        pygame.draw.line(self.boardLayer, color, startPoint.getXY(), endPoint.getXY(), width)
+        pygame.draw.line(surface, color, startPoint.getXY(), endPoint.getXY(), width)
 
-    def drawArc(self, color:tuple[int, int, int], arcInstance:gobj.Arc, width:int=1):
+    def drawArc(self, surface:pygame.Surface, color:tuple[int, int, int], arcInstance:gobj.Arc, width:int=1):
         def inversedAxisAngle(angleRad:float):
             return 2 * math.pi - angleRad
 
@@ -271,15 +266,20 @@ class DrawBoardEngine:
         y0 -= radius
 
         startAngle, endAngle = inversedAxisAngle(endAngle), inversedAxisAngle(startAngle)
-        pygame.draw.arc(self.boardLayer, color, (x0, y0, 2 * radius, 2 * radius), startAngle, endAngle, width)
+        pygame.draw.arc(surface, color, (x0, y0, 2 * radius, 2 * radius), startAngle, endAngle, width)
 
-    def drawCircle(self, color:tuple[int, int, int], circleInstance:gobj.Circle, width:int=1):
+    def drawCircle(self, surface:pygame.Surface, color:tuple[int, int, int], circleInstance:gobj.Circle, width:int=1):
         centerPoint, radius = circleInstance.getCenterRadius()
-        pygame.draw.circle(self.boardLayer, color, centerPoint.getXY(), radius, width)
+        pygame.draw.circle(surface, color, centerPoint.getXY(), radius, width)
 
-    def drawPolygon(self, color:tuple[int, int, int], pointsList:list[gobj.Point], width:int=1):
+    def drawPolygon(self, surface:pygame.Surface, color:tuple[int, int, int], pointsList:list[gobj.Point], width:int=1):
         pointsXYList = [point.getXY() for point in pointsList]
-        pygame.draw.polygon(self.boardLayer, color, pointsXYList, width)
+        pygame.draw.polygon(surface, color, pointsXYList, width)
+    
+    def _drawMarker(self, surface:pygame.Surface, coordsXY:list[int, int], color:tuple[int, int, int]):
+        x, y = coordsXY
+        markerCoords = [(x, y), (x - 4, y - 6), (x - 2, y - 6), (x - 2, y - 40), (x + 2, y - 40), (x + 2, y - 6), (x + 4, y - 6)]
+        pygame.draw.polygon(surface, color, markerCoords, width=0)
     
     def _getEmptySurfce(self) -> pygame.Surface:
         return pygame.Surface(self.surfaceDimensions)
