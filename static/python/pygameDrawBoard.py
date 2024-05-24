@@ -182,10 +182,6 @@ class DrawBoardEngine:
     def getScaleFactor(self) -> int|float:
         return self.scale
     
-    def flipSurfaceIfTopSide(self, side:str):   
-        if side == self.sideForFlipX:  
-            self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
-    
     def drawBoard(self, side:str):
         WHITE = 255, 255, 255
         GREEN = 8, 212, 15
@@ -202,6 +198,7 @@ class DrawBoardEngine:
         self.drawMarkers(surface=self.selectedComponentsSurface, componentNamesSet=self.selectedComponentsSet, color=RED, side=side)
         self.drawMarkers(surface=self.selectedNetSurface, componentNamesSet=self.selectedNetComponentsSet, color=VIOLET, side=side)
         self.drawSelectedPins(surface=self.selectedNetSurface, color=VIOLET, side=side)
+        self._flipSurfaceXAxis(side)     
     
     def drawOutlines(self, surface:pygame.Surface, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
@@ -249,6 +246,12 @@ class DrawBoardEngine:
         pinsDict = componentInstance.getPins()
         for _, pinInstance in pinsDict.items():
             self.drawInstanceAsCirlceOrPolygon(surface, pinInstance, color, width)
+    
+    def _flipSurfaceXAxis(self, side:str):   
+        if side == self.sideForFlipX:  
+            self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
+            self.selectedComponentsSurface = pygame.transform.flip(self.selectedComponentsSurface, True, False)
+            self.selectedNetSurface = pygame.transform.flip(self.selectedNetSurface, True, False)
     
     def drawInstanceAsCirlceOrPolygon(self, surface:pygame.Surface, instance: pin.Pin|comp.Component, color:tuple[int, int, int], width:int=1):
         if  instance.getShape() == 'CIRCLE':
@@ -387,8 +390,7 @@ if __name__ == '__main__':
                 if event.key == pygame.K_SEMICOLON:
                     side = sideQueue.pop(0)
                     sideQueue.append(side)
-                    engine.drawBoard(side)
-                    engine.flipSurfaceIfTopSide(side)                    
+                    engine.drawBoard(side)           
                     engine.blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_n:
