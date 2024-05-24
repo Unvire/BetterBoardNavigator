@@ -212,7 +212,7 @@ class DrawBoardEngine:
         markerCoords = [(x, y), (x - 4, y - 6), (x - 2, y - 6), (x - 2, y - 40), (x + 2, y - 40), (x + 2, y - 6), (x + 4, y - 6)]
         pygame.draw.polygon(self.selectedComponentsSurface, (255, 0, 0), markerCoords, width=0)
 
-    def blitBoardLayerIntoTarget(self, targetSurface:pygame.Surface):    
+    def blitBoardSurfacesIntoTarget(self, targetSurface:pygame.Surface):    
         targetSurface.fill((0, 0, 0))
         self.selectedComponentsSurface.set_colorkey((0, 0, 0)) 
         self.selectedNetSurface.set_colorkey((0, 0, 0))
@@ -281,7 +281,7 @@ if __name__ == '__main__':
     engine.setBoardData(boardInstance)
     engine.drawBoard(side)
     engine._drawMarker((600, 600))
-    engine.blitBoardLayerIntoTarget(WIN)
+    engine.blitBoardSurfacesIntoTarget(WIN)
 
     print('Pygame draw PCB engine')
     print('Move - mouse dragging')
@@ -315,7 +315,7 @@ if __name__ == '__main__':
                     dx, dy = pygame.mouse.get_rel()
                     if not isMovingCalledFirstTime:
                         engine.updateOffsetVector((dx, dy))                    
-                        engine.blitBoardLayerIntoTarget(WIN)
+                        engine.blitBoardSurfacesIntoTarget(WIN)
                     else:
                         isMovingCalledFirstTime = False
             
@@ -323,11 +323,11 @@ if __name__ == '__main__':
                 if event.y > 0:
                     engine.scaleUp(pygame.mouse.get_pos())
                     engine.drawBoard(side)
-                    engine.blitBoardLayerIntoTarget(WIN)
+                    engine.blitBoardSurfacesIntoTarget(WIN)
                 else:
                     engine.scaleDown(pygame.mouse.get_pos())
                     engine.drawBoard(side)                    
-                    engine.blitBoardLayerIntoTarget(WIN)
+                    engine.blitBoardSurfacesIntoTarget(WIN)
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SEMICOLON:
@@ -335,19 +335,19 @@ if __name__ == '__main__':
                     sideQueue.append(side)
                     engine.drawBoard(side)
                     engine.flipSurfaceIfTopSide(side)                    
-                    engine.blitBoardLayerIntoTarget(WIN)
+                    engine.blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_n:
                     rotationXY = [val / 2 for val in engine.surfaceDimensions]
                     engine.rotate(rotationXY, isClockwise=True)     
                     engine.drawBoard(side)
-                    engine.blitBoardLayerIntoTarget(WIN)
+                    engine.blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_m:
                     rotationXY = [val / 2 for val in engine.surfaceDimensions]
                     engine.rotate(rotationXY, isClockwise=False)     
                     engine.drawBoard(side)
-                    engine.blitBoardLayerIntoTarget(WIN)
+                    engine.blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_z:
                     isFindComponentByClickActive = not isFindComponentByClickActive
