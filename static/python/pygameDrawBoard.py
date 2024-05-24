@@ -21,6 +21,8 @@ class DrawBoardEngine:
         self.selectedComponentsSurface = self._getEmptySurfce()
         self.selectedNetSurface = self._getEmptySurfce()
         self.selectedComponentsSet = set()
+        self.selectedNetComponentsSet = set()
+        self.selectedNet = dict()
         self.scale = 1
         self.offsetVector = [0, 0]
         self.sideForFlipX = 'T'
@@ -123,6 +125,12 @@ class DrawBoardEngine:
         else:
             self.selectedComponentsSet.add(componentInstance)
     
+    def selectNet(self, netName:str):
+        net = self.boardData.getElementByName('nets', netName)
+        self.selectedNetComponentsSet = set(net)
+        for componentName, parameters in net.items():
+            self.selectedNet[componentName] = parameters['pins']
+    
     def unselectComponents(self):
         self.selectedComponentsSet = set()
     
@@ -180,12 +188,14 @@ class DrawBoardEngine:
         BLUE = 21, 103, 235
         YELLOW = 240, 187, 12
         RED = 255, 0, 0
+        VIOLET = 171, 24, 149
         self.boardLayer = self._getEmptySurfce()
         self.selectedComponentsSurface = self._getEmptySurfce()
         self.selectedNetSurface = self._getEmptySurfce()
         self.drawOutlines(WHITE, width=3)
         self.drawComponents(componentColor=GREEN, smtPinColor=YELLOW, thPinColor=BLUE, side=side)
-        self.drawMarkers(color=RED, side=side)
+        self.drawMarkers(surface=self.selectedComponentsSurface, componentNamesSet=self.selectedComponentsSet, color=RED, side=side)
+        self.drawMarkers(surface=self.selectedNetSurface, componentNamesSet=self.selectedNetComponentsSet, color=VIOLET, side=side)
     
     def drawOutlines(self, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
@@ -212,14 +222,14 @@ class DrawBoardEngine:
             pinsColor = pinColorDict[componentInstance.getMountingType()]
             self.drawPins(componentInstance, pinsColor, width)
     
-    def drawMarkers(self, color:tuple[int, int, int], side:str):
-        componentsList = list(self.selectedComponentsSet)
+    def drawMarkers(self, componentNamesSet:set, surface:pygame.Surface, color:tuple[int, int, int], side:str):
+        componentsList = [self.boardData.getElementByName('components', componentName) for componentName in list(componentNamesSet)]
         for componentInstance in componentsList:
             componentSide = componentInstance.getSide()
             if componentSide != side:
                 continue
             centerPoint = componentInstance.getCoords()
-            self._drawMarker(centerPoint.getXY(), color)
+            self._drawMarker(surface, centerPoint.getXY(), color)
 
     def drawPins(self, componentInstance:comp.Component, color:tuple[int, int, int], width:int=1):
         pinsDict = componentInstance.getPins()
@@ -234,11 +244,11 @@ class DrawBoardEngine:
             pointsList = instance.getShapePoints()
             self.drawPolygon(color, pointsList, width)
 
-    def _drawMarker(self, coordsXY:list[int, int], color:tuple[int, int, int]):
+    def _drawMarker(self, surface:pygame.Surface, coordsXY:list[int, int], color:tuple[int, int, int]):
         x, y = coordsXY
         markerCoords = [(x, y), (x - 4, y - 6), (x - 2, y - 6), (x - 2, y - 40), (x + 2, y - 40), (x + 2, y - 6), (x + 4, y - 6)]
-        pygame.draw.polygon(self.selectedComponentsSurface, color, markerCoords, width=0)
-
+        pygame.draw.polygon(surface, color, markerCoords, width=0)
+        
     def blitBoardSurfacesIntoTarget(self, targetSurface:pygame.Surface):    
         targetSurface.fill((0, 0, 0))
         self.selectedComponentsSurface.set_colorkey((0, 0, 0)) 
@@ -389,6 +399,12 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_c:
                     engine.unselectComponents()
+                    engine.drawBoard(side)
+                    engine.blitBoardSurfacesIntoTarget(WIN)
+                
+                elif event.key == pygame.K_v:
+                    netName = input('Net name: ')
+                    engine.selectNet(netName)
                     engine.drawBoard(side)
                     engine.blitBoardSurfacesIntoTarget(WIN)
                 
