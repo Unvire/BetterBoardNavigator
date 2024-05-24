@@ -15,9 +15,11 @@ class DrawBoardEngine:
         self.boardDataBackup = None
         self.drawHandler = {'Line': self.drawLine,
                             'Arc': self.drawArc}
-        self.boardSurfaceDimensions = [width, height]
+        self.surfaceDimensions = [width, height]
         self.screenDimensions = [width, height]
         self.boardLayer = self._getEmptySurfce()
+        self.selectedComponentsSurface = self._getEmptySurfce()
+        self.selectedNetSurface = self._getEmptySurfce()
         self.scale = 1
         self.offsetVector = [0, 0]
         self.sideForFlipX = 'T'
@@ -35,7 +37,7 @@ class DrawBoardEngine:
         def calculateScalingFactor(boardAreaDiagonal:float) -> float:
             SCALE_FACTOR = 1.05
             scaleFactor = 1
-            for dimension in self.boardSurfaceDimensions:
+            for dimension in self.surfaceDimensions:
                 if boardAreaDiagonal / dimension > 1:
                     scaleFactor = max(scaleFactor, boardAreaDiagonal / dimension * SCALE_FACTOR)
             return scaleFactor
@@ -63,7 +65,7 @@ class DrawBoardEngine:
         BoardCanvasWrapper.rotateBoardInPlace(self.boardData, rotationPoint, angle)
     
     def scaleUp(self, zoomingPoint:tuple[int, int]):
-        surfaceWidth, surfaceHeight = self.boardSurfaceDimensions
+        surfaceWidth, surfaceHeight = self.surfaceDimensions
         isWidthTooBig = surfaceWidth > DrawBoardEngine.MAX_SURFACE_DIMENSION
         isHeightTooBig = surfaceHeight > DrawBoardEngine.MAX_SURFACE_DIMENSION
         if isWidthTooBig or isHeightTooBig:
@@ -83,7 +85,7 @@ class DrawBoardEngine:
         BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
 
     def scaleDown(self, zoomingPoint:tuple[int, int]):        
-        surfaceWidth, surfaceHeight = self.boardSurfaceDimensions
+        surfaceWidth, surfaceHeight = self.surfaceDimensions
         isWidthTooSmall = surfaceWidth < DrawBoardEngine.MIN_SURFACE_DIMENSION
         isHeightTooSmall = surfaceHeight < DrawBoardEngine.MIN_SURFACE_DIMENSION
         if isWidthTooSmall or isHeightTooSmall:
@@ -109,10 +111,10 @@ class DrawBoardEngine:
         return self.boardData.findComponentByCoords(clickedPoint, side)
     
     def _scaleSurfaceDimensionsByFactor(self, factor:int|float):
-        self.boardSurfaceDimensions = [val * factor for val in self.boardSurfaceDimensions]
+        self.surfaceDimensions = [val * factor for val in self.surfaceDimensions]
     
     def _centerBoardInAdjustedSurface(self):
-        surfaceWidth, surfaceHeight = self.boardSurfaceDimensions
+        surfaceWidth, surfaceHeight = self.surfaceDimensions
         screenWidth, screenHeight = self.screenDimensions
 
         xOffset = (screenWidth - surfaceWidth) / 2
@@ -145,7 +147,7 @@ class DrawBoardEngine:
 
         pointMoveReversed = reverseSurfaceLinearTranslation(zoomingPoint, self.offsetVector)
         pointRelativeToSurface = calculatePointCoordsRelativeToSurfaceDimensions(pointMoveReversed, originSurfaceDimensions)
-        pointInScaledSurface = calcluatePointInScaledSurface(self.boardSurfaceDimensions, pointRelativeToSurface)
+        pointInScaledSurface = calcluatePointInScaledSurface(self.surfaceDimensions, pointRelativeToSurface)
         resultOffset = translateScaledPointToCursorPosition(pointInScaledSurface, zoomingPoint)
         return resultOffset
     
@@ -232,11 +234,11 @@ class DrawBoardEngine:
         pygame.draw.polygon(self.boardLayer, color, pointsXYList, width)
     
     def _getEmptySurfce(self) -> pygame.Surface:
-        return pygame.Surface(self.boardSurfaceDimensions)
+        return pygame.Surface(self.surfaceDimensions)
     
     def _getScaleFactorFromSurfaceDimensions(self) -> float:
         screenWidth, _ = self.screenDimensions
-        surfaceWidth, _ = self.boardSurfaceDimensions
+        surfaceWidth, _ = self.surfaceDimensions
         return surfaceWidth / screenWidth
 
 if __name__ == '__main__':
@@ -324,13 +326,13 @@ if __name__ == '__main__':
                     engine.blitBoardLayerIntoTarget(WIN)
                 
                 elif event.key == pygame.K_n:
-                    rotationXY = [val / 2 for val in engine.boardSurfaceDimensions]
+                    rotationXY = [val / 2 for val in engine.surfaceDimensions]
                     engine.rotate(rotationXY, isClockwise=True)     
                     engine.drawBoard(side)
                     engine.blitBoardLayerIntoTarget(WIN)
                 
                 elif event.key == pygame.K_m:
-                    rotationXY = [val / 2 for val in engine.boardSurfaceDimensions]
+                    rotationXY = [val / 2 for val in engine.surfaceDimensions]
                     engine.rotate(rotationXY, isClockwise=False)     
                     engine.drawBoard(side)
                     engine.blitBoardLayerIntoTarget(WIN)
