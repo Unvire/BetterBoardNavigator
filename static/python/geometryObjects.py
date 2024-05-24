@@ -261,11 +261,28 @@ class Rectangle(AbstractBaseShape):
         ''' [bottomLeftPoint, bottomRightPoint, topRightPoint, topLeftPoint] '''
         return [self.bottomLeftPoint, self.bottomRightPoint, self.topRightPoint, self.topLeftPoint]
 
-    def checkIfPointInside(self, clickedPoint:Point):
-        return False
+    def checkIfPointInside(self, pointP:Point):
+        TOLERANCE = 1.05
+        pointA, pointB, pointC, pointD = self.getPoints()
+        
+        areaRectangle = self._calculateRectangleAreaWith2VectorsABAC(pointB, pointA, pointC)
+        areaTriangleABP = self._calculateRectangleAreaWith2VectorsABAC(pointP, pointA, pointB) / 2
+        areaTriangleBCP = self._calculateRectangleAreaWith2VectorsABAC(pointP, pointB, pointC) / 2
+        areaTriangleCDP = self._calculateRectangleAreaWith2VectorsABAC(pointP, pointC, pointD) / 2
+        areaTriangleDAP = self._calculateRectangleAreaWith2VectorsABAC(pointP, pointA, pointD) / 2
+        areaTrianglesSum = areaTriangleABP + areaTriangleBCP + areaTriangleCDP + areaTriangleDAP
+
+        return areaTrianglesSum < areaRectangle * TOLERANCE
     
-    def _getNormalizedPoints(self) -> list[Point, Point, Point, Point]:
-        pass
+    def _calculateRectangleAreaWith2VectorsABAC(self, pointA:Point, pointB:Point, pointC:Point) -> float:
+        xA, yA = pointA.getXY()
+        xB, yB = pointB.getXY()
+        xC, yC = pointC.getXY()
+        
+        vectorAB = xB - xA, yB - yA
+        vectorAC = xC - xA, yC - yA
+        return abs(vectorAB[0] * vectorAC[1] - vectorAB[1] * vectorAC[0])
+
     
 def floatOrNone(x:str):
     try:
