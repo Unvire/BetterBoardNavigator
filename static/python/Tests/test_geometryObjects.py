@@ -223,3 +223,17 @@ def test_getSquareAndAreaFromValArray():
     assert shape == gobj.Rectangle(gobj.Point(-0.025, -0.025), gobj.Point(0.025, 0.025))
     assert bottomLeftPoint == gobj.Point(-0.025, -0.025)
     assert topRightPoint == gobj.Point(0.025, 0.025)
+
+def test_Circle_checkIfPointInside():
+    pass
+
+@pytest.mark.parametrize('inputData, expected', [((gobj.Point(0, -2), gobj.Point(1, 0), gobj.Point(0, 2)), 4),
+                                                 ((gobj.Point(0, 1), gobj.Point(0, 0), gobj.Point(1, 0)), 1),
+                                                 ((gobj.Point(1, 3), gobj.Point(0, 0), gobj.Point(4, 0)), 12)])
+def test_Rectangle__calculateRectangleAreaWith2VectorsABAC(inputData, expected):
+    p1, p2 = gobj.getDefaultBottomLeftTopRightPoints()
+    rect = gobj.Rectangle(p1, p2)
+
+    pointA, pointB, pointC = inputData
+    area = rect._calculateRectangleAreaWith2VectorsABAC(pointB, pointA, pointC)
+    assert area == expected
