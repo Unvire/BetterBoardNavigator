@@ -237,3 +237,16 @@ def test_Rectangle__calculateRectangleAreaWith2VectorsABAC(inputData, expected):
     pointA, pointB, pointC = inputData
     area = rect._calculateRectangleAreaWith2VectorsABAC(pointB, pointA, pointC)
     assert area == expected
+
+@pytest.mark.parametrize('inputData, expected', [(gobj.Point(0, 0), True), (gobj.Point(1, 0), True), (gobj.Point(1.5, 0), True), 
+                                                 (gobj.Point(-1, -1), True), (gobj.Point(2, 2), False), (gobj.Point(1.75, 1.75), False)])
+def test_Rectangle_checkIfPointInside(inputData, expected):
+    p1, p2 = gobj.getDefaultBottomLeftTopRightPoints()
+    rect = gobj.Rectangle(p1, p2)
+    rect.bottomLeftPoint = gobj.Point(-2, 0)
+    rect.bottomRightPoint = gobj.Point(0, -2)
+    rect.topRightPoint = gobj.Point(2, 0)
+    rect.topLeftPoint = gobj.Point(0, 2)
+
+    isInside = rect.checkIfPointInside(inputData)
+    assert isInside == expected
