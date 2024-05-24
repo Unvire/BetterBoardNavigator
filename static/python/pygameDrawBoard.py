@@ -123,6 +123,9 @@ class DrawBoardEngine:
         else:
             self.selectedComponentsSet.add(componentInstance)
     
+    def unselectComponents(self):
+        self.selectedComponentsSet = set()
+    
     def _scaleSurfaceDimensionsByFactor(self, factor:int|float):
         self.surfaceDimensions = [val * factor for val in self.surfaceDimensions]
     
@@ -313,6 +316,7 @@ if __name__ == '__main__':
     print('Rotate - n, m')
     print('Select component by click mode - z')
     print('Find component by name - x')
+    print('Clear arrow markers - c')
     print('====================================')
 
     run = True
@@ -380,6 +384,11 @@ if __name__ == '__main__':
                 elif event.key == pygame.K_x:
                     componentName = input('Component name: ')
                     engine.findComponentByName(componentName)
+                    engine.drawBoard(side)
+                    engine.blitBoardSurfacesIntoTarget(WIN)
+                
+                elif event.key == pygame.K_c:
+                    engine.unselectComponents()
                     engine.drawBoard(side)
                     engine.blitBoardSurfacesIntoTarget(WIN)
                 
