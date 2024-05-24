@@ -269,6 +269,14 @@ if __name__ == '__main__':
     engine.drawBoard(side)
     engine.blitBoardLayerIntoTarget(WIN)
 
+    print('Pygame draw PCB engine')
+    print('Move - mouse dragging')
+    print('Zoom - scroll wheel')    
+    print('Change side - ;')
+    print('Rotate - n, m')
+    print('Select component by click mode - z')
+    print('====================================')
+
     run = True
     while run:
         clock.tick(FPS)
@@ -280,9 +288,7 @@ if __name__ == '__main__':
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     isMousePressed = True
-                    isMovingCalledFirstTime = True                    
-                    print(pygame.mouse.get_pos())
-
+                    isMovingCalledFirstTime = True    
                     if isFindComponentByClickActive:
                         foundComponents = engine.findComponentByClick(pygame.mouse.get_pos(), side)
                         print(f'clicked component: {foundComponents}')
