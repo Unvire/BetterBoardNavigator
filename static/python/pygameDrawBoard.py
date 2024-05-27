@@ -18,6 +18,7 @@ class DrawBoardEngine:
         self.surfaceDimensions = [width, height]
         self.screenDimensions = [width, height]
         self.boardLayer = self._getEmptySurfce()
+        self.commonTypeComponentsSurface = self._getEmptySurfce()
         self.selectedComponentsSurface = self._getEmptySurfce()
         self.selectedNetSurface = self._getEmptySurfce()
         self.selectedComponentsSet = set()
@@ -258,6 +259,7 @@ class DrawBoardEngine:
             self.boardLayer = pygame.transform.flip(self.boardLayer, True, False)
             self.selectedComponentsSurface = pygame.transform.flip(self.selectedComponentsSurface, True, False)
             self.selectedNetSurface = pygame.transform.flip(self.selectedNetSurface, True, False)
+            self.commonTypeComponentsSurface = pygame.transform.flip(self.commonTypeComponentsSurface, True, False)
     
     def drawInstanceAsCirlceOrPolygon(self, surface:pygame.Surface, instance: pin.Pin|comp.Component, color:tuple[int, int, int], width:int=1):
         if  instance.getShape() == 'CIRCLE':
@@ -269,10 +271,15 @@ class DrawBoardEngine:
         
     def blitBoardSurfacesIntoTarget(self, targetSurface:pygame.Surface):    
         targetSurface.fill((0, 0, 0))
-        self.selectedComponentsSurface.set_colorkey((0, 0, 0)) 
-        self.selectedNetSurface.set_colorkey((0, 0, 0))
         targetSurface.blit(self.boardLayer, self.offsetVector)
+
+        self.commonTypeComponentsSurface.set_colorkey((0, 0, 0))
+        targetSurface.blit(self.commonTypeComponentsSurface, self.offsetVector)
+
+        self.selectedComponentsSurface.set_colorkey((0, 0, 0))
         targetSurface.blit(self.selectedComponentsSurface, self.offsetVector)
+        
+        self.selectedNetSurface.set_colorkey((0, 0, 0))
         targetSurface.blit(self.selectedNetSurface, self.offsetVector)
 
     def drawLine(self, surface:pygame.Surface, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
@@ -333,6 +340,7 @@ if __name__ == '__main__':
     boardWrapper = BoardCanvasWrapper(WIDTH, HEIGHT)
     boardWrapper.loadAndSetBoardFromFilePath(filePath)
     boardInstance = boardWrapper.normalizeBoard()
+    print(boardInstance.getCommonTypeGroupedComponents())
 
     ## pygame
     WIN = pygame.display.set_mode((WIDTH, HEIGHT))
