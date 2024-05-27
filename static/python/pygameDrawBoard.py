@@ -215,9 +215,11 @@ class DrawBoardEngine:
         
         def drawCommonTypeComponents(side:str):
             self.commonTypeComponentsSurface = self._getEmptySurfce()
-            componentNames = self.boardData.getCommonTypeGroupedComponents()[side]
-            self.drawComponents(surface=self.commonTypeComponentsSurface, componentNamesList=componentNames, componentColor=GREEN, 
-                                smtPinColor=YELLOW, thPinColor=BLUE, side=side, width=0)
+            prefix = self.selectedCommonTypePrefix
+            if prefix in self.boardData.getCommonTypeGroupedComponents()[side]:
+                componentNames = self.boardData.getCommonTypeGroupedComponents()[side][prefix]
+                self.drawComponents(surface=self.commonTypeComponentsSurface, componentNamesList=componentNames, componentColor=GREEN, 
+                                    smtPinColor=YELLOW, thPinColor=BLUE, side=side, width=0)
         
         def drawSelectedComponents(side:str):
             self.selectedComponentsSurface = self._getEmptySurfce()
@@ -255,7 +257,7 @@ class DrawBoardEngine:
             isSkipComponentTH = mountingType == 'TH' and componentSide != side
             isDrawComponent = not (isSkipComponentSMT or isSkipComponentTH)
             if isDrawComponent:
-                self.drawInstanceAsCirlceOrPolygon(surface, componentInstance, componentColor, width + 1)
+                self.drawInstanceAsCirlceOrPolygon(surface, componentInstance, componentColor, width)
 
             pinsColor = pinColorDict[componentInstance.getMountingType()]
             self.drawPins(surface, componentInstance, pinsColor, width)
@@ -366,7 +368,6 @@ if __name__ == '__main__':
     boardWrapper = BoardCanvasWrapper(WIDTH, HEIGHT)
     boardWrapper.loadAndSetBoardFromFilePath(filePath)
     boardInstance = boardWrapper.normalizeBoard()
-    print(boardInstance.getCommonTypeGroupedComponents())
 
     ## pygame
     WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -389,7 +390,9 @@ if __name__ == '__main__':
     print('Clear arrow markers - c')
     print('Find net by name - v')
     print('Clear selected net - b')
-    print('Clear arrow markers of selected net - n')   
+    print('Clear arrow markers of selected net - n')
+    print('Highlight common type components - a')
+    print('Clear common type components - s')
     print('====================================')
 
     run = True
@@ -477,6 +480,17 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_n:
                     engine.unselectComponentsOnNet()
+                    engine.drawBoard(side)
+                    engine.blitBoardSurfacesIntoTarget(WIN)
+                
+                elif event.key == pygame.K_a:
+                    prefix = input('Common type prefix: ')
+                    engine.selectCommonTypeComponents(side, prefix)
+                    engine.drawBoard(side)
+                    engine.blitBoardSurfacesIntoTarget(WIN)
+                
+                elif event.key == pygame.K_s:
+                    engine.unselectCommonTypeComponents()
                     engine.drawBoard(side)
                     engine.blitBoardSurfacesIntoTarget(WIN)
                 
