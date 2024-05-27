@@ -298,7 +298,9 @@ class DrawBoardEngine:
     
     def _drawMarker(self, surface:pygame.Surface, coordsXY:list[int, int], color:tuple[int, int, int]):
         x, y = coordsXY
-        markerCoords = [(x, y), (x - 4, y - 6), (x - 2, y - 6), (x - 2, y - 40), (x + 2, y - 40), (x + 2, y - 6), (x + 4, y - 6)]
+        k = self._getScaleFactorFromSurfaceDimensions()
+        markerCoords = [(x, y), (x - (4 * k), y - (6 * k)), (x - (2 * k), y - (6 * k)), (x - (2 * k), y - (40 * k)), 
+                        (x + (2 * k), y - (40 * k)), (x + (2 * k), y - (6 * k)), (x + (4 * k), y - (6 * k))]
         pygame.draw.polygon(surface, color, markerCoords, width=0)
     
     def _getEmptySurfce(self) -> pygame.Surface:
