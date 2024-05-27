@@ -93,11 +93,6 @@ class BoardCanvasWrapper():
     def _setBaseMoveOffsetXY(self, x:float, y:float):
         self.baseMoveOffsetXY = [x, y]    
     
-    def _resizeAndMoveTracks(self, tracksDict:dict):
-        for _, sidesDict in tracksDict.items():
-            for _, shapesList in sidesDict.items():
-                self._resizeAndMoveShapes(shapesList)
-    
     def _scaleAndMoveAreaPoints(self, pointList:list[gobj.Point]):
         for point in pointList:
             point.scaleInPlace(self.baseScale)
