@@ -91,6 +91,17 @@ class DrawBoardEngine:
         self._flipUnflipCurrentSide(side)
         self._drawAndBlit(targetSurface, side)
     
+    def changeAreaInterface(self, targetSurface:pygame.Surface, rectangleXYXY:list[tuple[int, int], tuple[int, int]], side:str):
+        BoardCanvasWrapper.removeObjectsOutsideAreaInPlace(self.boardData, rectangleXYXY)
+        
+        screenWidth, screenHeight = self.screenDimensions
+        wrapper = BoardCanvasWrapper(screenWidth, screenHeight)
+        wrapper.setBoard(self.boardData)
+        self.boardData = wrapper.normalizeBoard()
+
+        self.setBoardData()
+        self._drawAndBlit(targetSurface, side)
+    
     def _drawAndBlit(self, targetSurface:pygame.Surface, side:str):
         self._drawBoard(side)
         self._blitBoardSurfacesIntoTarget(targetSurface)
@@ -430,6 +441,8 @@ if __name__ == '__main__':
     isMousePressed = False
     isMovingCalledFirstTime = True
     isFindComponentByClickActive = False
+    isNewArea = False
+    newArea = []
 
     filePath = openSchematicFile()
     boardWrapper = BoardCanvasWrapper(WIDTH, HEIGHT)
@@ -452,6 +465,7 @@ if __name__ == '__main__':
     print('Zoom - scroll wheel')    
     print('Change side - ;')
     print('Rotate - , .')
+    print('Flip unflip current side - m')
     print('Select component by click mode - z')
     print('Find component by name - x')
     print('Clear arrow markers - c')
@@ -460,7 +474,7 @@ if __name__ == '__main__':
     print('Show/hide selected net components - n')
     print('Highlight common type components - a')
     print('Clear common type components - s')
-    print('Flip unflip current side - m')
+    print('Select area for cropping out - d')
     print('====================================')
 
     run = True
@@ -478,6 +492,13 @@ if __name__ == '__main__':
                     if isFindComponentByClickActive:
                         foundComponents = engine.findComponentByClick(pygame.mouse.get_pos(), side)
                         print(f'clicked component: {foundComponents}')
+                    if isNewArea:
+                        newArea.append(pygame.mouse.get_pos())
+                        print(newArea)
+                        if len(newArea) == 2:
+                            isNewArea = False
+                            engine.changeAreaInterface(WIN, newArea, side)
+
             
             elif event.type == pygame.MOUSEBUTTONUP:
                 isMousePressed = False
@@ -541,6 +562,10 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_m:
                     engine.flipUnflipCurrentSideInterface(WIN, side)
+                
+                elif event.key == pygame.K_d:
+                    isNewArea = True
+                    print(f'Select new area:')
                 
 
         ## display image
