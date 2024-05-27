@@ -144,7 +144,12 @@ class BoardCanvasWrapper():
         self.commonTypeComponents['T'].setdefault(prefix, [])
 
         side = componentInstance.getSide()
-        self.commonTypeComponents[side][prefix].append(componentInstance.name)
+        mountingType = componentInstance.getMountingType()
+        if 'SM' == mountingType[:2]:
+            self.commonTypeComponents[side][prefix].append(componentInstance.name)
+        else:
+            self.commonTypeComponents['B'][prefix].append(componentInstance.name)
+            self.commonTypeComponents['T'][prefix].append(componentInstance.name)
     
     def _resetGroupsToDefault(self):
         self.sideComponents = {'B':[], 'T':[]}
