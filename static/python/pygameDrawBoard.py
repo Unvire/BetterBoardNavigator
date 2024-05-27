@@ -197,14 +197,23 @@ class DrawBoardEngine:
         RED = 255, 0, 0
         VIOLET = 171, 24, 149
 
-        self.boardLayer = self._getEmptySurfce()
-        self.selectedComponentsSurface = self._getEmptySurfce()
-        self.selectedNetSurface = self._getEmptySurfce()
-        self.drawOutlines(surface=self.boardLayer, color=WHITE, width=3)
-        self.drawComponents(surface=self.boardLayer, componentColor=GREEN, smtPinColor=YELLOW, thPinColor=BLUE, side=side)
-        self.drawMarkers(surface=self.selectedComponentsSurface, componentNamesSet=self.selectedComponentsSet, color=RED, side=side)
-        self.drawMarkers(surface=self.selectedNetSurface, componentNamesSet=self.selectedNetComponentsSet, color=VIOLET, side=side)
-        self.drawSelectedPins(surface=self.selectedNetSurface, color=VIOLET, side=side)
+        def drawBoardLayer(side:str):
+            self.boardLayer = self._getEmptySurfce()
+            self.drawOutlines(surface=self.boardLayer, color=WHITE, width=3)
+            self.drawComponents(surface=self.boardLayer, componentColor=GREEN, smtPinColor=YELLOW, thPinColor=BLUE, side=side)
+        
+        def drawSelectedComponents(side:str):
+            self.selectedComponentsSurface = self._getEmptySurfce()
+            self.drawMarkers(surface=self.selectedComponentsSurface, componentNamesSet=self.selectedComponentsSet, color=RED, side=side)
+        
+        def drawSelectedNets(side:str):
+            self.selectedNetSurface = self._getEmptySurfce()
+            self.drawMarkers(surface=self.selectedNetSurface, componentNamesSet=self.selectedNetComponentsSet, color=VIOLET, side=side)
+            self.drawSelectedPins(surface=self.selectedNetSurface, color=VIOLET, side=side)
+        
+        drawBoardLayer(side)
+        drawSelectedComponents(side)
+        drawSelectedNets(side)
         self._flipSurfaceXAxis(side)     
     
     def drawOutlines(self, surface:pygame.Surface, color:tuple[int, int, int], width:int=1):
@@ -278,7 +287,7 @@ class DrawBoardEngine:
 
         self.selectedComponentsSurface.set_colorkey((0, 0, 0))
         targetSurface.blit(self.selectedComponentsSurface, self.offsetVector)
-        
+
         self.selectedNetSurface.set_colorkey((0, 0, 0))
         targetSurface.blit(self.selectedNetSurface, self.offsetVector)
 
