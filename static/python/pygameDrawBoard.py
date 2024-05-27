@@ -245,7 +245,7 @@ class DrawBoardEngine:
             componentInstance = self.boardData.getElementByName('components', componentName)
             pinsInstancesList = [componentInstance.getPinByName(pinName) for pinName in pinsList]
             for pinInstance in pinsInstancesList:
-                if componentInstance.getSide() == side:
+                if componentInstance.getMountingType() == 'TH' or componentInstance.getSide() == side:
                     self.drawInstanceAsCirlceOrPolygon(surface, pinInstance, color, width=0)
 
     def drawPins(self, surface:pygame.Surface, componentInstance:comp.Component, color:tuple[int, int, int], width:int=1):
