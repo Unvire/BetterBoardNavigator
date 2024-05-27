@@ -141,6 +141,9 @@ class DrawBoardEngine:
         self.selectedNetComponentsSet = set()
         self.selectedNet = dict()
     
+    def unselectComponentsOnNet(self):
+        self.selectedNetComponentsSet = set()
+    
     def _scaleSurfaceDimensionsByFactor(self, factor:int|float):
         self.surfaceDimensions = [val * factor for val in self.surfaceDimensions]
     
@@ -351,7 +354,8 @@ if __name__ == '__main__':
     print('Find component by name - x')
     print('Clear arrow markers - c')
     print('Find net by name - v')
-    print('Clear selected net - b')    
+    print('Clear selected net - b')
+    print('Clear arrow markers of selected net - n')   
     print('====================================')
 
     run = True
@@ -434,6 +438,11 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_b:
                     engine.unselectNet()
+                    engine.drawBoard(side)
+                    engine.blitBoardSurfacesIntoTarget(WIN)
+                
+                elif event.key == pygame.K_n:
+                    engine.unselectComponentsOnNet()
                     engine.drawBoard(side)
                     engine.blitBoardSurfacesIntoTarget(WIN)
                 
