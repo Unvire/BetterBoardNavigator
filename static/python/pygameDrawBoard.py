@@ -91,10 +91,8 @@ class DrawBoardEngine:
         self._flipUnflipCurrentSide(side)
         self.drawAndBlitInterface(targetSurface, side)
     
-    def changeAreaInterface(self, targetSurface:pygame.Surface, rectanglePointsXY:list[tuple[int, int], tuple[int, int]], side:str):
-        point1XY, point2XY = rectanglePointsXY
-        rectangleXYXY = list(point1XY) + list(point2XY)
-        BoardCanvasWrapper.changeAreaInPlace(self.boardData, rectangleXYXY)
+    def changeAreaInterface(self, targetSurface:pygame.Surface, side:str):
+        BoardCanvasWrapper.useAreaFromComponentsInPlace(self.boardData)
         
         screenWidth, screenHeight = self.screenDimensions
         wrapper = BoardCanvasWrapper(screenWidth, screenHeight)
@@ -443,8 +441,6 @@ if __name__ == '__main__':
     isMousePressed = False
     isMovingCalledFirstTime = True
     isFindComponentByClickActive = False
-    isNewArea = False
-    newAreaQueue = []
 
     filePath = openSchematicFile()
     boardWrapper = BoardCanvasWrapper(WIDTH, HEIGHT)
@@ -493,13 +489,6 @@ if __name__ == '__main__':
                     if isFindComponentByClickActive:
                         foundComponents = engine.findComponentByClick(pygame.mouse.get_pos(), side)
                         print(f'clicked component: {foundComponents}')
-                    if isNewArea:
-                        newAreaQueue.append(pygame.mouse.get_pos())
-                        print(newAreaQueue)
-                        if len(newAreaQueue) == 2:
-                            engine.changeAreaInterface(WIN, newAreaQueue, side)
-                            newAreaQueue = []
-                            isNewArea = False
 
             
             elif event.type == pygame.MOUSEBUTTONUP:
@@ -566,8 +555,7 @@ if __name__ == '__main__':
                     engine.flipUnflipCurrentSideInterface(WIN, side)
                 
                 elif event.key == pygame.K_d:
-                    isNewArea = True
-                    print(f'Select new area:')
+                    engine.changeAreaInterface(WIN, side)
                 
 
         ## display image
