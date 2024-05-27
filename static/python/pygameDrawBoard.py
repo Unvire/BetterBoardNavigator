@@ -40,7 +40,64 @@ class DrawBoardEngine:
         self._adjustBoardDimensionsForRotating()
         self.selectedComponentsSurface = self._getEmptySurfce()
         self.selectedNetSurface = self._getEmptySurfce()
+    
+    def moveBoardInterface(self, targetSurface:pygame.Surface, relativeXY:list[int, int]):
+        self._updateOffsetVector(relativeXY)                    
+        self._blitBoardSurfacesIntoTarget(targetSurface)
+    
+    def scaleUpDownInterface(self, targetSurface:pygame.Surface, isScaleUp:bool, pointXY:list[int, int], side:str):
+        if isScaleUp:
+            self._scaleUp(pointXY)
+        else:
+            self._scaleDown(pointXY)
         
+        self._drawBoard(side)
+        self._blitBoardSurfacesIntoTarget(targetSurface)
+    
+    def changeSideInterface(self, targetSurface:pygame.Surface, side:str):
+        self._drawBoard(side)           
+        self._blitBoardSurfacesIntoTarget(targetSurface)
+    
+    def rotateBoardInterface(self, targetSurface:pygame.Surface, rotationXY:list[int, int], isClockwise:bool, side:str):
+        self._rotate(rotationXY, isClockwise)     
+        self._drawBoard(side)
+        self._blitBoardSurfacesIntoTarget(targetSurface)
+    
+    def findComponentByNameInterface(self, targetSurface:pygame.Surface, componentName:str, side:str):
+        self._findComponentByName(componentName)
+        self._drawBoard(side)
+        self._blitBoardSurfacesIntoTarget(targetSurface)
+    
+    def clearFindComponentByNameInterface(self, targetSurface:pygame.Surface, side:str):
+        self._unselectComponents()
+        self._drawBoard(side)
+        self._blitBoardSurfacesIntoTarget(targetSurface)
+    
+    def selectNetByNameInterface(self, targetSurface:pygame.Surface, netName:str, side:str):
+        self._selectNet(netName)
+        self._drawBoard(side)
+        self._blitBoardSurfacesIntoTarget(targetSurface)
+    
+    def unselectNetByNameInterface(self, targetSurface:pygame.Surface, side:str):
+        self._unselectNet()
+        self._drawBoard(side)
+        self._blitBoardSurfacesIntoTarget(targetSurface)
+    
+    def showHideMarkersForSelectedNetByNameInterface(self, targetSurface:pygame.Surface, side:str):
+        self._showHideNetComponents()
+        self._drawBoard(side)
+        self._blitBoardSurfacesIntoTarget(targetSurface)
+    
+    def showCommonTypeComponentsInterface(self, targetSurface:pygame.Surface, prefix:str, side:str):
+        self._selectCommonTypeComponents(side, prefix)
+        self._drawBoard(side)
+        self._blitBoardSurfacesIntoTarget(targetSurface)
+    
+    def clearCommonTypeComponentsInterface(self, targetSurface:pygame.Surface, side:str):
+        self._unselectCommonTypeComponents()
+        self._drawBoard(side)
+        self._blitBoardSurfacesIntoTarget(targetSurface)
+
     def _adjustBoardDimensionsForRotating(self):
         def calculateDiagonal(dimensions:list[int|float]) -> float:
             width, height = dimensions
@@ -74,7 +131,7 @@ class DrawBoardEngine:
         angle = DrawBoardEngine.DELTA_ROTATION_ANGLE_DEG * (-1) ** int(isClockwise)
         xRot, yRot = rotationXY
         rotationPoint = gobj.Point(xRot, yRot)
-        BoardCanvasWrapper._rotateBoardInPlace(self.boardData, rotationPoint, angle)
+        BoardCanvasWrapper.rotateBoardInPlace(self.boardData, rotationPoint, angle)
     
     def _scaleUp(self, zoomingPoint:tuple[int, int]):
         surfaceWidth, surfaceHeight = self.surfaceDimensions
@@ -116,7 +173,7 @@ class DrawBoardEngine:
         self._setOffsetVector(newOffset)
         BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
     
-    def _findComponentByClick(self, cursorXY:list[int, int], side:str):
+    def findComponentByClick(self, cursorXY:list[int, int], side:str):
         x, y = cursorXY
         if side in self.sidesForFlipX:
             screenWidth, _ = self.screenDimensions
@@ -415,7 +472,7 @@ if __name__ == '__main__':
                     isMousePressed = True
                     isMovingCalledFirstTime = True    
                     if isFindComponentByClickActive:
-                        foundComponents = engine._findComponentByClick(pygame.mouse.get_pos(), side)
+                        foundComponents = engine.findComponentByClick(pygame.mouse.get_pos(), side)
                         print(f'clicked component: {foundComponents}')
             
             elif event.type == pygame.MOUSEBUTTONUP:
@@ -425,39 +482,30 @@ if __name__ == '__main__':
                 if isMousePressed:
                     dx, dy = pygame.mouse.get_rel()
                     if not isMovingCalledFirstTime:
-                        engine._updateOffsetVector((dx, dy))                    
-                        engine._blitBoardSurfacesIntoTarget(WIN)
+                        engine.moveBoardInterface(WIN, [dx, dy])
                     else:
                         isMovingCalledFirstTime = False
             
             elif event.type == pygame.MOUSEWHEEL:
+                pointXY = pygame.mouse.get_pos()
                 if event.y > 0:
-                    engine._scaleUp(pygame.mouse.get_pos())
-                    engine._drawBoard(side)
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.scaleUpDownInterface(WIN, isScaleUp=True, pointXY=pointXY, side=side)
                 else:
-                    engine._scaleDown(pygame.mouse.get_pos())
-                    engine._drawBoard(side)                    
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.scaleUpDownInterface(WIN, isScaleUp=False, pointXY=pointXY, side=side)
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SEMICOLON:
                     side = sideQueue.pop(0)
                     sideQueue.append(side)
-                    engine._drawBoard(side)           
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.changeSideInterface(WIN, side)
                 
                 elif event.key == pygame.K_PERIOD:
                     rotationXY = [val / 2 for val in engine.surfaceDimensions]
-                    engine._rotate(rotationXY, isClockwise=True)     
-                    engine._drawBoard(side)
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.rotateBoardInterface(WIN, rotationXY, isClockwise=True, side=side)
                 
                 elif event.key == pygame.K_COMMA:
                     rotationXY = [val / 2 for val in engine.surfaceDimensions]
-                    engine._rotate(rotationXY, isClockwise=False)     
-                    engine._drawBoard(side)
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.rotateBoardInterface(WIN, rotationXY, isClockwise=True, side=side)
                 
                 elif event.key == pygame.K_z:
                     isFindComponentByClickActive = not isFindComponentByClickActive
@@ -465,41 +513,27 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_x:
                     componentName = input('Component name: ')
-                    engine._findComponentByName(componentName)
-                    engine._drawBoard(side)
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.findComponentByNameInterface(WIN, componentName, side)
                 
                 elif event.key == pygame.K_c:
-                    engine._unselectComponents()
-                    engine._drawBoard(side)
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.clearFindComponentByNameInterface(WIN, side)
                 
                 elif event.key == pygame.K_v:
                     netName = input('Net name: ')
-                    engine._selectNet(netName)
-                    engine._drawBoard(side)
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.selectNetByNameInterface(WIN, netName, side)
                 
                 elif event.key == pygame.K_b:
-                    engine._unselectNet()
-                    engine._drawBoard(side)
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.unselectNetByNameInterface(WIN, side)
                 
                 elif event.key == pygame.K_n:
-                    engine._showHideNetComponents()
-                    engine._drawBoard(side)
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.showHideMarkersForSelectedNetByNameInterface(WIN, side)
                 
                 elif event.key == pygame.K_a:
                     prefix = input('Common type prefix: ')
-                    engine._selectCommonTypeComponents(side, prefix)
-                    engine._drawBoard(side)
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.showCommonTypeComponentsInterface(WIN, prefix, side)
                 
                 elif event.key == pygame.K_s:
-                    engine._unselectCommonTypeComponents()
-                    engine._drawBoard(side)
-                    engine._blitBoardSurfacesIntoTarget(WIN)
+                    engine.clearCommonTypeComponentsInterface()
                 
 
         ## display image
