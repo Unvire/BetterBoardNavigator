@@ -50,7 +50,7 @@ class DrawBoardEngine:
         screenWidth, screenHeight = self.screenDimensions
         self.surfaceDimensions = [screenWidth, screenHeight]
 
-    def setBoardData(self, boardData:board.Board):
+    def setBoardData(self, boardData:board.Board, isMakeBackup:bool=True):
         def resetVariablesAndSurfaces():
             self._resetSelectionCollections()
             self._resetSurfaceVariables()
@@ -61,7 +61,8 @@ class DrawBoardEngine:
         
         resetVariablesAndSurfaces()
         self.boardData = boardData
-        self.boardDataBackup = copy.deepcopy(boardData)
+        if isMakeBackup:
+            self.boardDataBackup = copy.deepcopy(boardData)
         self._adjustBoardDimensionsForRotating()
     
     def moveBoardInterface(self, targetSurface:pygame.Surface, relativeXY:list[int, int]):
@@ -122,7 +123,7 @@ class DrawBoardEngine:
         wrapper.setBoard(self.boardData)
         boardData = wrapper.normalizeBoard()
 
-        self.setBoardData(boardData)
+        self.setBoardData(boardData, isMakeBackup=False)
         self.drawAndBlitInterface(targetSurface, side)
     
     def resetToDefaultViewInterface(self, targetSurface:pygame.Surface, side:str):
