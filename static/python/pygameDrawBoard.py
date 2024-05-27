@@ -332,13 +332,14 @@ if __name__ == '__main__':
     ## pygame
     WIN = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
+    pygame.display.set_caption(filePath)
 
-    
     engine = DrawBoardEngine(WIDTH, HEIGHT)
     engine.setBoardData(boardInstance)
     engine.drawBoard(side)
     engine.blitBoardSurfacesIntoTarget(WIN)
 
+    print('====================================')
     print('Pygame draw PCB engine')
     print('Move - mouse dragging')
     print('Zoom - scroll wheel')    
