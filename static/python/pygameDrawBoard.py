@@ -505,7 +505,7 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_COMMA:
                     rotationXY = [val / 2 for val in engine.surfaceDimensions]
-                    engine.rotateBoardInterface(WIN, rotationXY, isClockwise=True, side=side)
+                    engine.rotateBoardInterface(WIN, rotationXY, isClockwise=False, side=side)
                 
                 elif event.key == pygame.K_z:
                     isFindComponentByClickActive = not isFindComponentByClickActive
@@ -533,7 +533,7 @@ if __name__ == '__main__':
                     engine.showCommonTypeComponentsInterface(WIN, prefix, side)
                 
                 elif event.key == pygame.K_s:
-                    engine.clearCommonTypeComponentsInterface()
+                    engine.clearCommonTypeComponentsInterface(WIN, side)
                 
 
         ## display image
