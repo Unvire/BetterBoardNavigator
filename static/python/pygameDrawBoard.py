@@ -13,8 +13,8 @@ class DrawBoardEngine:
     def __init__(self, width:int, height:int):
         self.boardData = None
         self.boardDataBackup = None
-        self.drawHandler = {'Line': self.drawLine,
-                            'Arc': self.drawArc}
+        self.drawHandler = {'Line': self._drawLine,
+                            'Arc': self._drawArc}
         
         self.surfaceDimensions = [width, height]
         self.screenDimensions = [width, height]
@@ -62,21 +62,21 @@ class DrawBoardEngine:
     def setScale(self, factor:int|float):
         self.scale = factor
     
-    def setOffsetVector(self, vector:tuple[int, int]):
+    def _setOffsetVector(self, vector:tuple[int, int]):
         self.offsetVector = vector
     
-    def updateOffsetVector(self, relativeVector:tuple[int, int]):
+    def _updateOffsetVector(self, relativeVector:tuple[int, int]):
         xMove, yMove = self.offsetVector
         dx, dy = relativeVector
         self.offsetVector = [xMove + dx, yMove + dy]
     
-    def rotate(self, rotationXY:tuple[int, int], isClockwise:bool):
+    def _rotate(self, rotationXY:tuple[int, int], isClockwise:bool):
         angle = DrawBoardEngine.DELTA_ROTATION_ANGLE_DEG * (-1) ** int(isClockwise)
         xRot, yRot = rotationXY
         rotationPoint = gobj.Point(xRot, yRot)
-        BoardCanvasWrapper.rotateBoardInPlace(self.boardData, rotationPoint, angle)
+        BoardCanvasWrapper._rotateBoardInPlace(self.boardData, rotationPoint, angle)
     
-    def scaleUp(self, zoomingPoint:tuple[int, int]):
+    def _scaleUp(self, zoomingPoint:tuple[int, int]):
         surfaceWidth, surfaceHeight = self.surfaceDimensions
         isWidthTooBig = surfaceWidth > DrawBoardEngine.MAX_SURFACE_DIMENSION
         isHeightTooBig = surfaceHeight > DrawBoardEngine.MAX_SURFACE_DIMENSION
@@ -93,10 +93,10 @@ class DrawBoardEngine:
         
         self._scaleSurfaceDimensionsByFactor(scaleFactor)
         newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
-        self.setOffsetVector(newOffset)
+        self._setOffsetVector(newOffset)
         BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
 
-    def scaleDown(self, zoomingPoint:tuple[int, int]):        
+    def _scaleDown(self, zoomingPoint:tuple[int, int]):        
         surfaceWidth, surfaceHeight = self.surfaceDimensions
         isWidthTooSmall = surfaceWidth < DrawBoardEngine.MIN_SURFACE_DIMENSION
         isHeightTooSmall = surfaceHeight < DrawBoardEngine.MIN_SURFACE_DIMENSION
@@ -113,10 +113,10 @@ class DrawBoardEngine:
         
         self._scaleSurfaceDimensionsByFactor(scaleFactor)
         newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
-        self.setOffsetVector(newOffset)
+        self._setOffsetVector(newOffset)
         BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
     
-    def findComponentByClick(self, cursorXY:list[int, int], side:str):
+    def _findComponentByClick(self, cursorXY:list[int, int], side:str):
         x, y = cursorXY
         if side in self.sidesForFlipX:
             screenWidth, _ = self.screenDimensions
@@ -125,7 +125,7 @@ class DrawBoardEngine:
         clickedPoint = gobj.Point(x - xOffset, y - yOffset)
         return self.boardData.findComponentByCoords(clickedPoint, side)
     
-    def findComponentByName(self, componentName:str):
+    def _findComponentByName(self, componentName:str):
         componentInstance = self.boardData.getElementByName('components', componentName)
         if not componentInstance:
             return
@@ -135,29 +135,29 @@ class DrawBoardEngine:
         else:
             self.selectedComponentsSet.add(componentInstance.name)
     
-    def selectNet(self, netName:str):
+    def _selectNet(self, netName:str):
         net = self.boardData.getElementByName('nets', netName)
         self.selectedNetComponentsSet = set(net)
         for componentName, parameters in net.items():
             self.selectedNet[componentName] = parameters['pins']
         self.isHideSelectedNetComponents = False
     
-    def unselectComponents(self):
+    def _unselectComponents(self):
         self.selectedComponentsSet = set()
     
-    def unselectNet(self):        
+    def _unselectNet(self):        
         self.selectedNetComponentsSet = set()
         self.selectedNet = dict()
     
-    def showHideNetComponents(self):
+    def _showHideNetComponents(self):
         self.isHideSelectedNetComponents = not self.isHideSelectedNetComponents
     
-    def selectCommonTypeComponents(self, side:str, prefix:str):
+    def _selectCommonTypeComponents(self, side:str, prefix:str):
         prefix = prefix.upper()
         if prefix in self.boardData.getCommonTypeGroupedComponents()[side]:
             self.selectedCommonTypePrefix = prefix
     
-    def unselectCommonTypeComponents(self):
+    def _unselectCommonTypeComponents(self):
         self.selectedCommonTypePrefix = ''
     
     def _scaleSurfaceDimensionsByFactor(self, factor:int|float):
@@ -204,7 +204,7 @@ class DrawBoardEngine:
     def getScaleFactor(self) -> int|float:
         return self.scale
     
-    def drawBoard(self, side:str):
+    def _drawBoard(self, side:str):
         WHITE = 255, 255, 255
         GREEN = 8, 212, 15
         BLUE = 21, 103, 235
@@ -215,8 +215,8 @@ class DrawBoardEngine:
         def drawBoardLayer(side:str):
             self.boardLayer = self._getEmptySurfce()
             componentNames = self.boardData.getSideGroupedComponents()[side]
-            self.drawOutlines(surface=self.boardLayer, color=WHITE, width=3)
-            self.drawComponents(surface=self.boardLayer, componentNamesList=componentNames, componentColor=GREEN, smtPinColor=YELLOW, 
+            self._drawOutlines(surface=self.boardLayer, color=WHITE, width=3)
+            self._drawComponents(surface=self.boardLayer, componentNamesList=componentNames, componentColor=GREEN, smtPinColor=YELLOW, 
                                 thPinColor=BLUE, side=side)
         
         def drawCommonTypeComponents(side:str):
@@ -224,20 +224,20 @@ class DrawBoardEngine:
             prefix = self.selectedCommonTypePrefix
             if prefix in self.boardData.getCommonTypeGroupedComponents()[side]:
                 componentNames = self.boardData.getCommonTypeGroupedComponents()[side][prefix]
-                self.drawComponents(surface=self.commonTypeComponentsSurface, componentNamesList=componentNames, componentColor=GREEN, 
+                self._drawComponents(surface=self.commonTypeComponentsSurface, componentNamesList=componentNames, componentColor=GREEN, 
                                     smtPinColor=YELLOW, thPinColor=BLUE, side=side, width=0)
         
         def drawSelectedComponents(side:str):
             self.selectedComponentsSurface = self._getEmptySurfce()
             componentNames = list(self.selectedComponentsSet)
-            self.drawMarkers(surface=self.selectedComponentsSurface, componentNamesList=componentNames, color=RED, side=side)
+            self._drawMarkers(surface=self.selectedComponentsSurface, componentNamesList=componentNames, color=RED, side=side)
         
         def drawSelectedNets(side:str):
             self.selectedNetSurface = self._getEmptySurfce()
             componentNames = list(self.selectedNetComponentsSet)
             if not self.isHideSelectedNetComponents:
-                self.drawMarkers(surface=self.selectedNetSurface, componentNamesList=componentNames, color=VIOLET, side=side)
-            self.drawSelectedPins(surface=self.selectedNetSurface, color=VIOLET, side=side)
+                self._drawMarkers(surface=self.selectedNetSurface, componentNamesList=componentNames, color=VIOLET, side=side)
+            self._drawSelectedPins(surface=self.selectedNetSurface, color=VIOLET, side=side)
         
         drawBoardLayer(side)
         drawCommonTypeComponents(side)
@@ -245,12 +245,12 @@ class DrawBoardEngine:
         drawSelectedNets(side)
         self._flipSurfaceXAxis(side)     
     
-    def drawOutlines(self, surface:pygame.Surface, color:tuple[int, int, int], width:int=1):
+    def _drawOutlines(self, surface:pygame.Surface, color:tuple[int, int, int], width:int=1):
         for shape in self.boardData.getOutlines():
             shapeType = shape.getType()
             self.drawHandler[shapeType](surface, color, shape, width)
     
-    def drawComponents(self, surface:pygame.Surface, componentNamesList:list[str], componentColor:tuple[int, int, int], smtPinColor:tuple[int, int, int], thPinColor:tuple[int, int, int], side:str, width:int=1):
+    def _drawComponents(self, surface:pygame.Surface, componentNamesList:list[str], componentColor:tuple[int, int, int], smtPinColor:tuple[int, int, int], thPinColor:tuple[int, int, int], side:str, width:int=1):
         pinColorDict = {'SMT':smtPinColor, 'SMD':smtPinColor, 'TH':thPinColor}
         
         for componentName in componentNamesList:
@@ -264,30 +264,30 @@ class DrawBoardEngine:
             isSkipComponentTH = mountingType == 'TH' and componentSide != side
             isDrawComponent = not (isSkipComponentSMT or isSkipComponentTH)
             if isDrawComponent:
-                self.drawInstanceAsCirlceOrPolygon(surface, componentInstance, componentColor, width)
+                self._drawInstanceAsCirlceOrPolygon(surface, componentInstance, componentColor, width)
 
             pinsColor = pinColorDict[componentInstance.getMountingType()]
-            self.drawPins(surface, componentInstance, pinsColor, width)
+            self._drawPins(surface, componentInstance, pinsColor, width)
     
-    def drawMarkers(self, surface:pygame.Surface, componentNamesList:list[str], color:tuple[int, int, int], side:str):
+    def _drawMarkers(self, surface:pygame.Surface, componentNamesList:list[str], color:tuple[int, int, int], side:str):
         for componentName in componentNamesList:
             componentInstance = self.boardData.getElementByName('components', componentName)
             if componentInstance.getMountingType() == 'TH' or componentInstance.getSide() == side:
                 centerPoint = componentInstance.getCoords()
-                self._drawMarker(surface, centerPoint.getXY(), color)
+                self._drawMarkerArrow(surface, centerPoint.getXY(), color)
     
-    def drawSelectedPins(self, surface:pygame.Surface, color:tuple[int, int, int], side:str):
+    def _drawSelectedPins(self, surface:pygame.Surface, color:tuple[int, int, int], side:str):
         for componentName, pinsList in self.selectedNet.items():
             componentInstance = self.boardData.getElementByName('components', componentName)
             pinsInstancesList = [componentInstance.getPinByName(pinName) for pinName in pinsList]
             for pinInstance in pinsInstancesList:
                 if componentInstance.getMountingType() == 'TH' or componentInstance.getSide() == side:
-                    self.drawInstanceAsCirlceOrPolygon(surface, pinInstance, color, width=0)
+                    self._drawInstanceAsCirlceOrPolygon(surface, pinInstance, color, width=0)
 
-    def drawPins(self, surface:pygame.Surface, componentInstance:comp.Component, color:tuple[int, int, int], width:int=1):
+    def _drawPins(self, surface:pygame.Surface, componentInstance:comp.Component, color:tuple[int, int, int], width:int=1):
         pinsDict = componentInstance.getPins()
         for _, pinInstance in pinsDict.items():
-            self.drawInstanceAsCirlceOrPolygon(surface, pinInstance, color, width)
+            self._drawInstanceAsCirlceOrPolygon(surface, pinInstance, color, width)
     
     def _flipSurfaceXAxis(self, side:str):   
         if side in self.sidesForFlipX:  
@@ -296,15 +296,15 @@ class DrawBoardEngine:
             self.selectedNetSurface = pygame.transform.flip(self.selectedNetSurface, True, False)
             self.commonTypeComponentsSurface = pygame.transform.flip(self.commonTypeComponentsSurface, True, False)
     
-    def drawInstanceAsCirlceOrPolygon(self, surface:pygame.Surface, instance: pin.Pin|comp.Component, color:tuple[int, int, int], width:int=1):
+    def _drawInstanceAsCirlceOrPolygon(self, surface:pygame.Surface, instance: pin.Pin|comp.Component, color:tuple[int, int, int], width:int=1):
         if  instance.getShape() == 'CIRCLE':
             shape = instance.getShapeData()
-            self.drawCircle(surface, color, shape, width)
+            self._drawCircle(surface, color, shape, width)
         else:
             pointsList = instance.getShapePoints()
-            self.drawPolygon(surface, color, pointsList, width)
+            self._drawPolygon(surface, color, pointsList, width)
         
-    def blitBoardSurfacesIntoTarget(self, targetSurface:pygame.Surface):    
+    def _blitBoardSurfacesIntoTarget(self, targetSurface:pygame.Surface):    
         targetSurface.fill((0, 0, 0))
         targetSurface.blit(self.boardLayer, self.offsetVector)
 
@@ -317,11 +317,11 @@ class DrawBoardEngine:
         self.selectedNetSurface.set_colorkey((0, 0, 0))
         targetSurface.blit(self.selectedNetSurface, self.offsetVector)
 
-    def drawLine(self, surface:pygame.Surface, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
+    def _drawLine(self, surface:pygame.Surface, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
         startPoint, endPoint = lineInstance.getPoints()
         pygame.draw.line(surface, color, startPoint.getXY(), endPoint.getXY(), width)
 
-    def drawArc(self, surface:pygame.Surface, color:tuple[int, int, int], arcInstance:gobj.Arc, width:int=1):
+    def _drawArc(self, surface:pygame.Surface, color:tuple[int, int, int], arcInstance:gobj.Arc, width:int=1):
         def inversedAxisAngle(angleRad:float):
             return 2 * math.pi - angleRad
 
@@ -333,15 +333,15 @@ class DrawBoardEngine:
         startAngle, endAngle = inversedAxisAngle(endAngle), inversedAxisAngle(startAngle)
         pygame.draw.arc(surface, color, (x0, y0, 2 * radius, 2 * radius), startAngle, endAngle, width)
 
-    def drawCircle(self, surface:pygame.Surface, color:tuple[int, int, int], circleInstance:gobj.Circle, width:int=1):
+    def _drawCircle(self, surface:pygame.Surface, color:tuple[int, int, int], circleInstance:gobj.Circle, width:int=1):
         centerPoint, radius = circleInstance.getCenterRadius()
         pygame.draw.circle(surface, color, centerPoint.getXY(), radius, width)
 
-    def drawPolygon(self, surface:pygame.Surface, color:tuple[int, int, int], pointsList:list[gobj.Point], width:int=1):
+    def _drawPolygon(self, surface:pygame.Surface, color:tuple[int, int, int], pointsList:list[gobj.Point], width:int=1):
         pointsXYList = [point.getXY() for point in pointsList]
         pygame.draw.polygon(surface, color, pointsXYList, width)
     
-    def _drawMarker(self, surface:pygame.Surface, coordsXY:list[int, int], color:tuple[int, int, int]):
+    def _drawMarkerArrow(self, surface:pygame.Surface, coordsXY:list[int, int], color:tuple[int, int, int]):
         x, y = coordsXY
         k = self._getScaleFactorFromSurfaceDimensions()
         markerCoords = [(x, y), (x - (4 * k), y - (6 * k)), (x - (2 * k), y - (6 * k)), (x - (2 * k), y - (40 * k)), 
@@ -383,8 +383,8 @@ if __name__ == '__main__':
 
     engine = DrawBoardEngine(WIDTH, HEIGHT)
     engine.setBoardData(boardInstance)
-    engine.drawBoard(side)
-    engine.blitBoardSurfacesIntoTarget(WIN)
+    engine._drawBoard(side)
+    engine._blitBoardSurfacesIntoTarget(WIN)
 
     print('====================================')
     print('Pygame draw PCB engine')
@@ -415,7 +415,7 @@ if __name__ == '__main__':
                     isMousePressed = True
                     isMovingCalledFirstTime = True    
                     if isFindComponentByClickActive:
-                        foundComponents = engine.findComponentByClick(pygame.mouse.get_pos(), side)
+                        foundComponents = engine._findComponentByClick(pygame.mouse.get_pos(), side)
                         print(f'clicked component: {foundComponents}')
             
             elif event.type == pygame.MOUSEBUTTONUP:
@@ -425,39 +425,39 @@ if __name__ == '__main__':
                 if isMousePressed:
                     dx, dy = pygame.mouse.get_rel()
                     if not isMovingCalledFirstTime:
-                        engine.updateOffsetVector((dx, dy))                    
-                        engine.blitBoardSurfacesIntoTarget(WIN)
+                        engine._updateOffsetVector((dx, dy))                    
+                        engine._blitBoardSurfacesIntoTarget(WIN)
                     else:
                         isMovingCalledFirstTime = False
             
             elif event.type == pygame.MOUSEWHEEL:
                 if event.y > 0:
-                    engine.scaleUp(pygame.mouse.get_pos())
-                    engine.drawBoard(side)
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._scaleUp(pygame.mouse.get_pos())
+                    engine._drawBoard(side)
+                    engine._blitBoardSurfacesIntoTarget(WIN)
                 else:
-                    engine.scaleDown(pygame.mouse.get_pos())
-                    engine.drawBoard(side)                    
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._scaleDown(pygame.mouse.get_pos())
+                    engine._drawBoard(side)                    
+                    engine._blitBoardSurfacesIntoTarget(WIN)
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SEMICOLON:
                     side = sideQueue.pop(0)
                     sideQueue.append(side)
-                    engine.drawBoard(side)           
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._drawBoard(side)           
+                    engine._blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_PERIOD:
                     rotationXY = [val / 2 for val in engine.surfaceDimensions]
-                    engine.rotate(rotationXY, isClockwise=True)     
-                    engine.drawBoard(side)
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._rotate(rotationXY, isClockwise=True)     
+                    engine._drawBoard(side)
+                    engine._blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_COMMA:
                     rotationXY = [val / 2 for val in engine.surfaceDimensions]
-                    engine.rotate(rotationXY, isClockwise=False)     
-                    engine.drawBoard(side)
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._rotate(rotationXY, isClockwise=False)     
+                    engine._drawBoard(side)
+                    engine._blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_z:
                     isFindComponentByClickActive = not isFindComponentByClickActive
@@ -465,41 +465,41 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_x:
                     componentName = input('Component name: ')
-                    engine.findComponentByName(componentName)
-                    engine.drawBoard(side)
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._findComponentByName(componentName)
+                    engine._drawBoard(side)
+                    engine._blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_c:
-                    engine.unselectComponents()
-                    engine.drawBoard(side)
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._unselectComponents()
+                    engine._drawBoard(side)
+                    engine._blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_v:
                     netName = input('Net name: ')
-                    engine.selectNet(netName)
-                    engine.drawBoard(side)
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._selectNet(netName)
+                    engine._drawBoard(side)
+                    engine._blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_b:
-                    engine.unselectNet()
-                    engine.drawBoard(side)
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._unselectNet()
+                    engine._drawBoard(side)
+                    engine._blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_n:
-                    engine.showHideNetComponents()
-                    engine.drawBoard(side)
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._showHideNetComponents()
+                    engine._drawBoard(side)
+                    engine._blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_a:
                     prefix = input('Common type prefix: ')
-                    engine.selectCommonTypeComponents(side, prefix)
-                    engine.drawBoard(side)
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._selectCommonTypeComponents(side, prefix)
+                    engine._drawBoard(side)
+                    engine._blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_s:
-                    engine.unselectCommonTypeComponents()
-                    engine.drawBoard(side)
-                    engine.blitBoardSurfacesIntoTarget(WIN)
+                    engine._unselectCommonTypeComponents()
+                    engine._drawBoard(side)
+                    engine._blitBoardSurfacesIntoTarget(WIN)
                 
 
         ## display image
