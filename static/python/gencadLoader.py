@@ -262,10 +262,10 @@ class GenCadLoader:
         return componentInstance, pinInstance
     
     def _addAreaAndMountingData(self, componentInstance:comp.Component, componentAreaType:str, componentArea:list[gobj.Point, gobj.Point], componentMountingType:str):
-        mountingTypeDict = {'smt':'SMT', 'smd':'SMT', 'thmt':'TH', 'th':'TH'}
+        componentMountingType = 'TH' if 'TH' in componentMountingType[:2] else 'SMT'
         componentAreaX, componentAreaY = componentArea
         componentInstance.setShape(componentAreaType)
-        componentInstance.setMountingType(mountingTypeDict[componentMountingType.lower()])
+        componentInstance.setMountingType(componentMountingType)
 
         moveVector = componentInstance.getCoordsAsTranslationVector()
         componentAreaX.translateInPlace(moveVector)
@@ -360,5 +360,5 @@ class GenCadLoader:
     
 if __name__ == '__main__':
     loader = GenCadLoader()
-    fileLines = loader.loadFile(r'C:\Users\kbalcerzak\Documents\schematy z Q\Schematic\Colossus-Stork.gcd')
+    fileLines = loader.loadFile(r'C:\Users\kbalcerzak\Documents\schematy z Q\Schematic\CITYVAN-STOPTAIL-LH.gcd')
     loader.processFileLines(fileLines)
