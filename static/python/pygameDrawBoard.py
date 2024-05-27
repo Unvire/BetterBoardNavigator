@@ -15,16 +15,21 @@ class DrawBoardEngine:
         self.boardDataBackup = None
         self.drawHandler = {'Line': self.drawLine,
                             'Arc': self.drawArc}
+        
         self.surfaceDimensions = [width, height]
         self.screenDimensions = [width, height]
+
         self.boardLayer = self._getEmptySurfce()
         self.commonTypeComponentsSurface = self._getEmptySurfce()
         self.selectedComponentsSurface = self._getEmptySurfce()
         self.selectedNetSurface = self._getEmptySurfce()
+
         self.selectedComponentsSet = set()
         self.selectedNetComponentsSet = set()
         self.selectedCommonTypePrefix = ''
         self.selectedNet = dict()
+        self.isHideSelectedNetComponents = False
+
         self.scale = 1
         self.offsetVector = [0, 0]
         self.sidesForFlipX = {'T'}
@@ -135,6 +140,7 @@ class DrawBoardEngine:
         self.selectedNetComponentsSet = set(net)
         for componentName, parameters in net.items():
             self.selectedNet[componentName] = parameters['pins']
+        self.isHideSelectedNetComponents = False
     
     def unselectComponents(self):
         self.selectedComponentsSet = set()
@@ -143,8 +149,8 @@ class DrawBoardEngine:
         self.selectedNetComponentsSet = set()
         self.selectedNet = dict()
     
-    def unselectComponentsOnNet(self):
-        self.selectedNetComponentsSet = set()
+    def showHideNetComponents(self):
+        self.isHideSelectedNetComponents = not self.isHideSelectedNetComponents
     
     def selectCommonTypeComponents(self, side:str, prefix:str):
         prefix = prefix.upper()
@@ -229,7 +235,8 @@ class DrawBoardEngine:
         def drawSelectedNets(side:str):
             self.selectedNetSurface = self._getEmptySurfce()
             componentNames = list(self.selectedNetComponentsSet)
-            self.drawMarkers(surface=self.selectedNetSurface, componentNamesList=componentNames, color=VIOLET, side=side)
+            if not self.isHideSelectedNetComponents:
+                self.drawMarkers(surface=self.selectedNetSurface, componentNamesList=componentNames, color=VIOLET, side=side)
             self.drawSelectedPins(surface=self.selectedNetSurface, color=VIOLET, side=side)
         
         drawBoardLayer(side)
@@ -390,7 +397,7 @@ if __name__ == '__main__':
     print('Clear arrow markers - c')
     print('Find net by name - v')
     print('Clear selected net - b')
-    print('Clear arrow markers of selected net - n')
+    print('Show/hide selected net components - n')
     print('Highlight common type components - a')
     print('Clear common type components - s')
     print('====================================')
@@ -479,7 +486,7 @@ if __name__ == '__main__':
                     engine.blitBoardSurfacesIntoTarget(WIN)
                 
                 elif event.key == pygame.K_n:
-                    engine.unselectComponentsOnNet()
+                    engine.showHideNetComponents()
                     engine.drawBoard(side)
                     engine.blitBoardSurfacesIntoTarget(WIN)
                 
