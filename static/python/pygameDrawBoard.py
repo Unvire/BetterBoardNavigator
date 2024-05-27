@@ -23,6 +23,7 @@ class DrawBoardEngine:
         self.selectedNetSurface = self._getEmptySurfce()
         self.selectedComponentsSet = set()
         self.selectedNetComponentsSet = set()
+        self.selectedCommonTypePrefix = ''
         self.selectedNet = dict()
         self.scale = 1
         self.offsetVector = [0, 0]
@@ -145,6 +146,14 @@ class DrawBoardEngine:
     def unselectComponentsOnNet(self):
         self.selectedNetComponentsSet = set()
     
+    def selectCommonTypeComponents(self, side:str, prefix:str):
+        prefix = prefix.upper()
+        if prefix in self.boardData.getCommonTypeGroupedComponents()[side]:
+            self.selectedCommonTypePrefix = prefix
+    
+    def unselectCommonTypeComponents(self):
+        self.selectedCommonTypePrefix = ''
+    
     def _scaleSurfaceDimensionsByFactor(self, factor:int|float):
         self.surfaceDimensions = [val * factor for val in self.surfaceDimensions]
     
@@ -204,6 +213,12 @@ class DrawBoardEngine:
             self.drawComponents(surface=self.boardLayer, componentNamesList=componentNames, componentColor=GREEN, smtPinColor=YELLOW, 
                                 thPinColor=BLUE, side=side)
         
+        def drawCommonTypeComponents(side:str):
+            self.commonTypeComponentsSurface = self._getEmptySurfce()
+            componentNames = self.boardData.getCommonTypeGroupedComponents()[side]
+            self.drawComponents(surface=self.commonTypeComponentsSurface, componentNamesList=componentNames, componentColor=GREEN, 
+                                smtPinColor=YELLOW, thPinColor=BLUE, side=side, width=0)
+        
         def drawSelectedComponents(side:str):
             self.selectedComponentsSurface = self._getEmptySurfce()
             componentNames = list(self.selectedComponentsSet)
@@ -216,6 +231,7 @@ class DrawBoardEngine:
             self.drawSelectedPins(surface=self.selectedNetSurface, color=VIOLET, side=side)
         
         drawBoardLayer(side)
+        drawCommonTypeComponents(side)
         drawSelectedComponents(side)
         drawSelectedNets(side)
         self._flipSurfaceXAxis(side)     
