@@ -91,7 +91,9 @@ class DrawBoardEngine:
         self._flipUnflipCurrentSide(side)
         self.drawAndBlitInterface(targetSurface, side)
     
-    def changeAreaInterface(self, targetSurface:pygame.Surface, rectangleXYXY:list[tuple[int, int], tuple[int, int]], side:str):
+    def changeAreaInterface(self, targetSurface:pygame.Surface, rectanglePointsXY:list[tuple[int, int], tuple[int, int]], side:str):
+        point1XY, point2XY = rectanglePointsXY
+        rectangleXYXY = list(point1XY) + list(point2XY)
         BoardCanvasWrapper.changeAreaInPlace(self.boardData, rectangleXYXY)
         
         screenWidth, screenHeight = self.screenDimensions
@@ -442,7 +444,7 @@ if __name__ == '__main__':
     isMovingCalledFirstTime = True
     isFindComponentByClickActive = False
     isNewArea = False
-    newArea = []
+    newAreaQueue = []
 
     filePath = openSchematicFile()
     boardWrapper = BoardCanvasWrapper(WIDTH, HEIGHT)
@@ -492,11 +494,12 @@ if __name__ == '__main__':
                         foundComponents = engine.findComponentByClick(pygame.mouse.get_pos(), side)
                         print(f'clicked component: {foundComponents}')
                     if isNewArea:
-                        newArea.append(pygame.mouse.get_pos())
-                        print(newArea)
-                        if len(newArea) == 2:
+                        newAreaQueue.append(pygame.mouse.get_pos())
+                        print(newAreaQueue)
+                        if len(newAreaQueue) == 2:
+                            engine.changeAreaInterface(WIN, newAreaQueue, side)
+                            newAreaQueue = []
                             isNewArea = False
-                            engine.changeAreaInterface(WIN, newArea, side)
 
             
             elif event.type == pygame.MOUSEBUTTONUP:
