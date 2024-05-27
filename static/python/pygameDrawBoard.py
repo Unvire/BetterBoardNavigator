@@ -31,15 +31,38 @@ class DrawBoardEngine:
         self.isHideSelectedNetComponents = False
 
         self.scale = 1
+        self.offsetVector = []
+        self.sidesForFlipX = {}
+    
+    def _resetSelectionCollections(self):
+        self.selectedComponentsSet = set()
+        self.selectedNetComponentsSet = set()
+        self.selectedCommonTypePrefix = ''
+        self.selectedNet = dict()
+        self.isHideSelectedNetComponents = False
+    
+    def _resetSurfaceVariables(self):
+        self.scale = 1
         self.offsetVector = [0, 0]
         self.sidesForFlipX = {'T'}
+    
+    def _resetSurfaceDimensions(self):
+        screenWidth, screenHeight = self.screenDimensions
+        self.surfaceDimensions = [screenWidth, screenHeight]
 
     def setBoardData(self, boardData:board.Board):
+        def resetVariablesAndSurfaces():
+            self._resetSelectionCollections()
+            self._resetSurfaceVariables()
+            self._resetSurfaceDimensions()
+            self.selectedComponentsSurface = self._getEmptySurfce()
+            self.selectedNetSurface = self._getEmptySurfce()
+            self.selectedNetSurface = self._getEmptySurfce()
+        
+        resetVariablesAndSurfaces()
         self.boardData = boardData
         self.boardDataBackup = copy.deepcopy(boardData)
         self._adjustBoardDimensionsForRotating()
-        self.selectedComponentsSurface = self._getEmptySurfce()
-        self.selectedNetSurface = self._getEmptySurfce()
     
     def moveBoardInterface(self, targetSurface:pygame.Surface, relativeXY:list[int, int]):
         self._updateOffsetVector(relativeXY)                    
@@ -100,6 +123,11 @@ class DrawBoardEngine:
         boardData = wrapper.normalizeBoard()
 
         self.setBoardData(boardData)
+        self.drawAndBlitInterface(targetSurface, side)
+    
+    def resetToDefaultViewInterface(self, targetSurface:pygame.Surface, side:str):
+        self.boardData = copy.deepcopy(self.boardDataBackup)
+        self.setBoardData(self.boardData)
         self.drawAndBlitInterface(targetSurface, side)
     
     def drawAndBlitInterface(self, targetSurface:pygame.Surface, side:str):
@@ -461,7 +489,8 @@ if __name__ == '__main__':
     print('Move - mouse dragging')
     print('Zoom - scroll wheel')    
     print('Change side - ;')
-    print('Rotate - , .')
+    print('Rotate - , .')    
+    print('Reset to default view - r')
     print('Use components for area calculation - d')
     print('Flip unflip current side - m')
     print('Select component by click mode - z')
@@ -555,6 +584,9 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_d:
                     engine.changeAreaInterface(WIN, side)
+                
+                elif event.key == pygame.K_r:
+                    engine.resetToDefaultViewInterface(WIN, side)
                 
 
         ## display image
