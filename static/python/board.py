@@ -64,6 +64,11 @@ class Board:
         for _, componentInstance in self.components.items():
             for point in componentInstance.getArea():
                 bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
+        
+        SCALE_DOWN_FACTOR = 0.97
+        SCALE_UP_FACTOR = 1.03
+        bottomLeftPoint.scaleInPlace(SCALE_DOWN_FACTOR)
+        topRightPoint.scaleInPlace(SCALE_UP_FACTOR)
         return bottomLeftPoint, topRightPoint
     
     def translateRotateScaleBoard(self, functionName:str, *args):

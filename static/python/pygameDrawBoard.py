@@ -462,6 +462,7 @@ if __name__ == '__main__':
     print('Zoom - scroll wheel')    
     print('Change side - ;')
     print('Rotate - , .')
+    print('Use components for area calculation - d')
     print('Flip unflip current side - m')
     print('Select component by click mode - z')
     print('Find component by name - x')
@@ -471,7 +472,6 @@ if __name__ == '__main__':
     print('Show/hide selected net components - n')
     print('Highlight common type components - a')
     print('Clear common type components - s')
-    print('Select area for cropping out - d')
     print('====================================')
 
     run = True
@@ -490,7 +490,6 @@ if __name__ == '__main__':
                         foundComponents = engine.findComponentByClick(pygame.mouse.get_pos(), side)
                         print(f'clicked component: {foundComponents}')
 
-            
             elif event.type == pygame.MOUSEBUTTONUP:
                 isMousePressed = False
 
