@@ -346,7 +346,7 @@ if __name__ == '__main__':
     print('Move - mouse dragging')
     print('Zoom - scroll wheel')    
     print('Change side - ;')
-    print('Rotate - n, m')
+    print('Rotate - , .')
     print('Select component by click mode - z')
     print('Find component by name - x')
     print('Clear arrow markers - c')
@@ -399,13 +399,13 @@ if __name__ == '__main__':
                     engine.drawBoard(side)           
                     engine.blitBoardSurfacesIntoTarget(WIN)
                 
-                elif event.key == pygame.K_n:
+                elif event.key == pygame.K_PERIOD:
                     rotationXY = [val / 2 for val in engine.surfaceDimensions]
                     engine.rotate(rotationXY, isClockwise=True)     
                     engine.drawBoard(side)
                     engine.blitBoardSurfacesIntoTarget(WIN)
                 
-                elif event.key == pygame.K_m:
+                elif event.key == pygame.K_COMMA:
                     rotationXY = [val / 2 for val in engine.surfaceDimensions]
                     engine.rotate(rotationXY, isClockwise=False)     
                     engine.drawBoard(side)
