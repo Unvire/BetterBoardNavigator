@@ -50,51 +50,44 @@ class DrawBoardEngine:
             self._scaleUp(pointXY)
         else:
             self._scaleDown(pointXY)
-        
-        self._drawBoard(side)
-        self._blitBoardSurfacesIntoTarget(targetSurface)
+        self._drawAndBlit(targetSurface, side)
     
     def changeSideInterface(self, targetSurface:pygame.Surface, side:str):
-        self._drawBoard(side)           
-        self._blitBoardSurfacesIntoTarget(targetSurface)
+        self._drawAndBlit(targetSurface, side)
     
     def rotateBoardInterface(self, targetSurface:pygame.Surface, rotationXY:list[int, int], isClockwise:bool, side:str):
         self._rotate(rotationXY, isClockwise)     
-        self._drawBoard(side)
-        self._blitBoardSurfacesIntoTarget(targetSurface)
+        self._drawAndBlit(targetSurface, side)
     
     def findComponentByNameInterface(self, targetSurface:pygame.Surface, componentName:str, side:str):
         self._findComponentByName(componentName)
-        self._drawBoard(side)
-        self._blitBoardSurfacesIntoTarget(targetSurface)
+        self._drawAndBlit(targetSurface, side)
     
     def clearFindComponentByNameInterface(self, targetSurface:pygame.Surface, side:str):
         self._unselectComponents()
-        self._drawBoard(side)
-        self._blitBoardSurfacesIntoTarget(targetSurface)
+        self._drawAndBlit(targetSurface, side)
     
     def selectNetByNameInterface(self, targetSurface:pygame.Surface, netName:str, side:str):
         self._selectNet(netName)
-        self._drawBoard(side)
-        self._blitBoardSurfacesIntoTarget(targetSurface)
+        self._drawAndBlit(targetSurface, side)
     
     def unselectNetByNameInterface(self, targetSurface:pygame.Surface, side:str):
         self._unselectNet()
-        self._drawBoard(side)
-        self._blitBoardSurfacesIntoTarget(targetSurface)
+        self._drawAndBlit(targetSurface, side)
     
     def showHideMarkersForSelectedNetByNameInterface(self, targetSurface:pygame.Surface, side:str):
         self._showHideNetComponents()
-        self._drawBoard(side)
-        self._blitBoardSurfacesIntoTarget(targetSurface)
+        self._drawAndBlit(targetSurface, side)
     
     def showCommonTypeComponentsInterface(self, targetSurface:pygame.Surface, prefix:str, side:str):
         self._selectCommonTypeComponents(side, prefix)
-        self._drawBoard(side)
-        self._blitBoardSurfacesIntoTarget(targetSurface)
+        self._drawAndBlit(targetSurface, side)
     
     def clearCommonTypeComponentsInterface(self, targetSurface:pygame.Surface, side:str):
         self._unselectCommonTypeComponents()
+        self._drawAndBlit(targetSurface, side)
+    
+    def _drawAndBlit(self, targetSurface:pygame.Surface, side:str):
         self._drawBoard(side)
         self._blitBoardSurfacesIntoTarget(targetSurface)
 
