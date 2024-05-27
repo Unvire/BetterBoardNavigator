@@ -247,11 +247,9 @@ class DrawBoardEngine:
     def drawMarkers(self, surface:pygame.Surface, componentNamesList:list[str], color:tuple[int, int, int], side:str):
         for componentName in componentNamesList:
             componentInstance = self.boardData.getElementByName('components', componentName)
-            componentSide = componentInstance.getSide()
-            if componentSide != side:
-                continue
-            centerPoint = componentInstance.getCoords()
-            self._drawMarker(surface, centerPoint.getXY(), color)
+            if componentInstance.getMountingType() == 'TH' or componentInstance.getSide() == side:
+                centerPoint = componentInstance.getCoords()
+                self._drawMarker(surface, centerPoint.getXY(), color)
     
     def drawSelectedPins(self, surface:pygame.Surface, color:tuple[int, int, int], side:str):
         for componentName, pinsList in self.selectedNet.items():
