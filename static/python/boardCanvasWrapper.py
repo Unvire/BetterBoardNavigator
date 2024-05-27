@@ -167,8 +167,16 @@ class BoardCanvasWrapper():
     def translateBoardInPlace(board:board.Board, moveVector:list[float|int, float|int]):
         board.translateRotateScaleBoard('translateInPlace', moveVector)
     
+    @staticmethod
+    def removeObjectsOutsideAreaInPlace(board:board.Board, rectangleXYXY:list[float|int, float|int]):
+        x0, y0, x1, y1 = rectangleXYXY
+        point1, point2 = gobj.Point(x0, y0), gobj.Point(x1, y1)
+        bottomLeftPoint, topRightPoint = board.normalizeArea([point1, point2])
+        board.setArea(bottomLeftPoint, topRightPoint)
+        board.removeObjectsOutsideArea()
+    
 
 if __name__ == '__main__':
     normalizedBoard = BoardCanvasWrapper(1200, 700)
-    normalizedBoard.loadAndSetBoardFromFilePath(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\nexyM.gcd')
+    normalizedBoard.loadAndSetBoardFromFilePath(r'C:\python programy\2024_05_20 Schematic yoinker\Schematic\Fisker_Bumper_ECE_MB_RH.gcd')
     normalizedBoard.normalizeBoard()
