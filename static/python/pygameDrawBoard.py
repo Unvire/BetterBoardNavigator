@@ -206,11 +206,13 @@ class DrawBoardEngine:
         
         def drawSelectedComponents(side:str):
             self.selectedComponentsSurface = self._getEmptySurfce()
-            self.drawMarkers(surface=self.selectedComponentsSurface, componentNamesSet=self.selectedComponentsSet, color=RED, side=side)
+            componentNames = list(self.selectedComponentsSet)
+            self.drawMarkers(surface=self.selectedComponentsSurface, componentNamesList=componentNames, color=RED, side=side)
         
         def drawSelectedNets(side:str):
             self.selectedNetSurface = self._getEmptySurfce()
-            self.drawMarkers(surface=self.selectedNetSurface, componentNamesSet=self.selectedNetComponentsSet, color=VIOLET, side=side)
+            componentNames = list(self.selectedNetComponentsSet)
+            self.drawMarkers(surface=self.selectedNetSurface, componentNamesList=componentNames, color=VIOLET, side=side)
             self.drawSelectedPins(surface=self.selectedNetSurface, color=VIOLET, side=side)
         
         drawBoardLayer(side)
@@ -242,9 +244,9 @@ class DrawBoardEngine:
             pinsColor = pinColorDict[componentInstance.getMountingType()]
             self.drawPins(surface, componentInstance, pinsColor, width)
     
-    def drawMarkers(self, surface:pygame.Surface, componentNamesSet:set, color:tuple[int, int, int], side:str):
-        componentsList = [self.boardData.getElementByName('components', componentName) for componentName in list(componentNamesSet)]
-        for componentInstance in componentsList:
+    def drawMarkers(self, surface:pygame.Surface, componentNamesList:list[str], color:tuple[int, int, int], side:str):
+        for componentName in componentNamesList:
+            componentInstance = self.boardData.getElementByName('components', componentName)
             componentSide = componentInstance.getSide()
             if componentSide != side:
                 continue
