@@ -199,8 +199,10 @@ class DrawBoardEngine:
 
         def drawBoardLayer(side:str):
             self.boardLayer = self._getEmptySurfce()
+            componentNames = self.boardData.getSideGroupedComponents()[side]
             self.drawOutlines(surface=self.boardLayer, color=WHITE, width=3)
-            self.drawComponents(surface=self.boardLayer, componentColor=GREEN, smtPinColor=YELLOW, thPinColor=BLUE, side=side)
+            self.drawComponents(surface=self.boardLayer, componentNamesList=componentNames, componentColor=GREEN, smtPinColor=YELLOW, 
+                                thPinColor=BLUE, side=side)
         
         def drawSelectedComponents(side:str):
             self.selectedComponentsSurface = self._getEmptySurfce()
@@ -221,11 +223,10 @@ class DrawBoardEngine:
             shapeType = shape.getType()
             self.drawHandler[shapeType](surface, color, shape, width)
     
-    def drawComponents(self, surface:pygame.Surface, componentColor:tuple[int, int, int], smtPinColor:tuple[int, int, int], thPinColor:tuple[int, int, int], side:str, width:int=1):
+    def drawComponents(self, surface:pygame.Surface, componentNamesList:list[str], componentColor:tuple[int, int, int], smtPinColor:tuple[int, int, int], thPinColor:tuple[int, int, int], side:str, width:int=1):
         pinColorDict = {'SMT':smtPinColor, 'SMD':smtPinColor, 'TH':thPinColor}
         
-        componentNames = self.boardData.getSideGroupedComponents()[side]
-        for componentName in componentNames:
+        for componentName in componentNamesList:
             componentInstance = self.boardData.getElementByName('components', componentName)
             mountingType = componentInstance.getMountingType()
             componentSide = componentInstance.getSide()
