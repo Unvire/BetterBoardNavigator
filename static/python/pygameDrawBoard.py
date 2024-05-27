@@ -87,6 +87,10 @@ class DrawBoardEngine:
         self._unselectCommonTypeComponents()
         self._drawAndBlit(targetSurface, side)
     
+    def flipUnflipCurrentSideInterface(self, targetSurface:pygame.Surface, side:str):
+        self._flipUnflipCurrentSide(side)
+        self._drawAndBlit(targetSurface, side)
+    
     def _drawAndBlit(self, targetSurface:pygame.Surface, side:str):
         self._drawBoard(side)
         self._blitBoardSurfacesIntoTarget(targetSurface)
@@ -212,6 +216,12 @@ class DrawBoardEngine:
     
     def _scaleSurfaceDimensionsByFactor(self, factor:int|float):
         self.surfaceDimensions = [val * factor for val in self.surfaceDimensions]
+    
+    def _flipUnflipCurrentSide(self, side:str):
+        if side in self.sidesForFlipX:
+            self.sidesForFlipX.remove(side)
+        else:
+           self.sidesForFlipX.add(side) 
     
     def _centerBoardInAdjustedSurface(self):
         surfaceWidth, surfaceHeight = self.surfaceDimensions
@@ -450,6 +460,7 @@ if __name__ == '__main__':
     print('Show/hide selected net components - n')
     print('Highlight common type components - a')
     print('Clear common type components - s')
+    print('Flip unflip current side - m')
     print('====================================')
 
     run = True
@@ -527,6 +538,9 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_s:
                     engine.clearCommonTypeComponentsInterface(WIN, side)
+                
+                elif event.key == pygame.K_m:
+                    engine.flipUnflipCurrentSideInterface(WIN, side)
                 
 
         ## display image
