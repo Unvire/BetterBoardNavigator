@@ -98,31 +98,3 @@ class Board:
             if shape.checkIfPointInside(clickedPoint):
                 return componentName
         return ''
-    
-    def removeObjectsOutsideArea(self):
-        def removeShapesOutsideArea():
-            shapesInAreaList = []
-            for shape in self.outlines:
-                isShapeInArea = True
-                for shapePoint in shape.getPoints():
-                    if not self._checkIfPointInArea(shapePoint):
-                        isShapeInArea = False
-                        break
-                if isShapeInArea:
-                    shapesInAreaList.append(shape)
-        
-        def removeComponentsOutsideArea():
-            components = [componentInstance for _, componentInstance in self.components.items()]
-            for component in components:
-                coords = component.getCoords()
-                if not self._checkIfPointInArea(coords):
-                    name = component.name
-                    self.components.pop(name, None)
-        
-        removeShapesOutsideArea()
-        removeComponentsOutsideArea()
-    
-    def _checkIfPointInArea(self, point:gobj.Point) -> bool:
-        xBL, yBL, xTR, yTR = Shape.getAreaAsXYXY(self.area)
-        x, y  = point.getXY()
-        return xBL <= x <=xTR and yBL <= y <= yTR

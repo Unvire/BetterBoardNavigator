@@ -168,12 +168,11 @@ class BoardCanvasWrapper():
         board.translateRotateScaleBoard('translateInPlace', moveVector)
     
     @staticmethod
-    def removeObjectsOutsideAreaInPlace(board:board.Board, rectangleXYXY:list[float|int, float|int]):
+    def changeAreaInPlace(board:board.Board, rectangleXYXY:list[float|int, float|int]):
         x0, y0, x1, y1 = rectangleXYXY
         point1, point2 = gobj.Point(x0, y0), gobj.Point(x1, y1)
         bottomLeftPoint, topRightPoint = board.normalizeArea([point1, point2])
         board.setArea(bottomLeftPoint, topRightPoint)
-        board.removeObjectsOutsideArea()
     
 
 if __name__ == '__main__':

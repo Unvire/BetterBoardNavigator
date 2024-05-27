@@ -92,14 +92,14 @@ class DrawBoardEngine:
         self._drawAndBlit(targetSurface, side)
     
     def changeAreaInterface(self, targetSurface:pygame.Surface, rectangleXYXY:list[tuple[int, int], tuple[int, int]], side:str):
-        BoardCanvasWrapper.removeObjectsOutsideAreaInPlace(self.boardData, rectangleXYXY)
+        BoardCanvasWrapper.changeAreaInPlace(self.boardData, rectangleXYXY)
         
         screenWidth, screenHeight = self.screenDimensions
         wrapper = BoardCanvasWrapper(screenWidth, screenHeight)
         wrapper.setBoard(self.boardData)
-        self.boardData = wrapper.normalizeBoard()
+        boardData = wrapper.normalizeBoard()
 
-        self.setBoardData()
+        self.setBoardData(boardData)
         self._drawAndBlit(targetSurface, side)
     
     def _drawAndBlit(self, targetSurface:pygame.Surface, side:str):
