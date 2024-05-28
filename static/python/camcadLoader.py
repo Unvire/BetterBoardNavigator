@@ -100,17 +100,20 @@ class CamCadLoader:
         for i in netlistRange:
             if ',' in fileLines[i]:
                 line = fileLines[i]
-                _, netName, componentName, pinName , pinX, pinY, side, padID = [parameter.strip() for parameter in line.split(',')]
+                _, netName, componentName, pinName , pinX, pinY, mountingType, padID = [parameter.strip() for parameter in line.split(',')]
                 self._addBlankNet(nets, netName, componentName)     
                 components = boardInstance.getComponents()
 
                 if padID in padsDict:
                     pad = self._calculatePinCoordsAndAddNet(padsDict[padID], pinX, pinY, netName)
                     if componentName not in components:
-                        newComponent = self._createComponent(componentName, 0, side)
-                        boardInstance.addComponent(componentName, newComponent)                
+                        componentOnNet = self._createComponent(componentName, 0, mountingType)
+                        boardInstance.addComponent(componentName, componentOnNet)
+                    else:
+                        componentOnNet = boardInstance.getElementByName('components', componentName)
+                        if mountingType == 'A':
+                            componentOnNet.setMountingType('TH')
                     
-                    componentOnNet = boardInstance.getElementByName('components', componentName)
                     componentOnNet.addPin(pinName, pad)
 
                     nets[netName][componentName]['componentInstance'] = componentOnNet
@@ -155,7 +158,7 @@ class CamCadLoader:
         else:
             newComponent.setSide(side)
         newComponent.setShape('RECT')
-        return newComponent
+        return newComponent    
     
     def _createPin(self, name:str, shape:str, width:float|None, height:float|None) -> pin.Pin: 
         newPin = pin.Pin(name)
@@ -247,7 +250,7 @@ class CamCadLoader:
 
 if __name__ == '__main__':
     #filePath = r'C:\Users\krzys\Documents\GitHub\boardNavigator\Schematic\lvm Core.cad'
-    filePath = r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\gemis2.cad'
+    filePath = r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\cerm.cad'
     loader = CamCadLoader()
     fileLines = loader.loadFile(filePath)
     boardData = loader.processFileLines(fileLines)
