@@ -45,22 +45,6 @@ class DrawBoardEngine:
         self.sidesForFlipX = {}
         self.isShowOutlines = True
     
-    def _resetSelectionCollections(self):
-        self.selectedComponentsSet = set()
-        self.selectedNetComponentsSet = set()
-        self.selectedCommonTypePrefix = ''
-        self.selectedNet = dict()
-        self.isHideSelectedNetComponents = False
-    
-    def _resetSurfaceVariables(self):
-        self.scale = 1
-        self.offsetVector = [0, 0]
-        self.sidesForFlipX = {'T'}
-    
-    def _resetSurfaceDimensions(self):
-        screenWidth, screenHeight = self.screenDimensions
-        self.surfaceDimensions = [screenWidth, screenHeight]
-    
     def getColor(self, key:str) -> tuple[int, int, int]:
         return self.colorsDict.get(key, None)
     
@@ -82,6 +66,22 @@ class DrawBoardEngine:
         if isMakeBackup:
             self.boardDataBackup = copy.deepcopy(boardData)
         self._adjustBoardDimensionsForRotating()
+    
+    def _resetSelectionCollections(self):
+        self.selectedComponentsSet = set()
+        self.selectedNetComponentsSet = set()
+        self.selectedCommonTypePrefix = ''
+        self.selectedNet = dict()
+        self.isHideSelectedNetComponents = False
+    
+    def _resetSurfaceVariables(self):
+        self.scale = 1
+        self.offsetVector = [0, 0]
+        self.sidesForFlipX = {'T'}
+    
+    def _resetSurfaceDimensions(self):
+        screenWidth, screenHeight = self.screenDimensions
+        self.surfaceDimensions = [screenWidth, screenHeight]
     
     def moveBoardInterface(self, targetSurface:pygame.Surface, relativeXY:list[int, int]) -> pygame.Surface:
         self._updateOffsetVector(relativeXY)                    
