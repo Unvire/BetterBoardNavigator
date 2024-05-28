@@ -33,6 +33,16 @@ class DrawBoardEngine:
         self.scale = 1
         self.offsetVector = []
         self.sidesForFlipX = {}
+
+        self.colorsDict = {           
+            'background': (0, 0, 0), 
+            'outlines': (255, 255, 255),
+            'components': (8, 212, 15),
+            'TH pins': (21, 103, 235),
+            'SMT pins': (240, 187, 12),
+            'selected component marker': (255, 0, 0),
+            'selected net marker': (171, 24, 149)
+        }
     
     def _resetSelectionCollections(self):
         self.selectedComponentsSet = set()
@@ -305,40 +315,47 @@ class DrawBoardEngine:
         return self.scale
     
     def _drawBoard(self, side:str):
-        WHITE = 255, 255, 255
-        GREEN = 8, 212, 15
-        BLUE = 21, 103, 235
-        YELLOW = 240, 187, 12
-        RED = 255, 0, 0
-        VIOLET = 171, 24, 149
+        def resetSurfaces():            
+            self.boardLayer = self._getEmptySurfce()
+            self.commonTypeComponentsSurface = self._getEmptySurfce()
+            self.selectedComponentsSurface = self._getEmptySurfce()
+            self.selectedNetSurface = self._getEmptySurfce()
 
         def drawBoardLayer(side:str):
-            self.boardLayer = self._getEmptySurfce()
             componentNames = self.boardData.getSideGroupedComponents()[side]
-            self._drawOutlines(surface=self.boardLayer, color=WHITE, width=3)
-            self._drawComponents(surface=self.boardLayer, componentNamesList=componentNames, componentColor=GREEN, smtPinColor=YELLOW, 
-                                thPinColor=BLUE, side=side)
-        
+            drawOutlines()
+            drawComponents(componentNamesList=componentNames, width=1, side=side)
+
         def drawCommonTypeComponents(side:str):
-            self.commonTypeComponentsSurface = self._getEmptySurfce()
             prefix = self.selectedCommonTypePrefix
             if prefix in self.boardData.getCommonTypeGroupedComponents()[side]:
                 componentNames = self.boardData.getCommonTypeGroupedComponents()[side][prefix]
-                self._drawComponents(surface=self.commonTypeComponentsSurface, componentNamesList=componentNames, componentColor=GREEN, 
-                                    smtPinColor=YELLOW, thPinColor=BLUE, side=side, width=0)
+                drawComponents(componentNamesList=componentNames, width=0, side=side)
+        
+        def drawOutlines():
+            color = self.colorsDict['outlines']
+            self._drawOutlines(surface=self.boardLayer, color=color, width=3)
+
+        def drawComponents(componentNamesList:list[str], width:int, side:str):
+            componentColor = self.colorsDict['components']
+            smtPinColor = self.colorsDict['SMT pins']
+            thPinColor = self.colorsDict['TH pins']
+            self._drawComponents(surface=self.boardLayer, componentNamesList=componentNamesList, componentColor=componentColor, 
+                                 smtPinColor=smtPinColor, thPinColor=thPinColor, side=side, width=width)
         
         def drawSelectedComponents(side:str):
-            self.selectedComponentsSurface = self._getEmptySurfce()
+            color = self.colorsDict['selected component marker']
             componentNames = list(self.selectedComponentsSet)
-            self._drawMarkers(surface=self.selectedComponentsSurface, componentNamesList=componentNames, color=RED, side=side)
+            self._drawMarkers(surface=self.selectedComponentsSurface, componentNamesList=componentNames, color=color, side=side)
         
         def drawSelectedNets(side:str):
-            self.selectedNetSurface = self._getEmptySurfce()
             componentNames = list(self.selectedNetComponentsSet)
+            color = self.colorsDict['selected net marker']
             if not self.isHideSelectedNetComponents:
-                self._drawMarkers(surface=self.selectedNetSurface, componentNamesList=componentNames, color=VIOLET, side=side)
-            self._drawSelectedPins(surface=self.selectedNetSurface, color=VIOLET, side=side)
+                self._drawMarkers(surface=self.selectedNetSurface, componentNamesList=componentNames, color=color, side=side)
+            self._drawSelectedPins(surface=self.selectedNetSurface, color=color, side=side)
         
+        resetSurfaces()
         drawBoardLayer(side)
         drawCommonTypeComponents(side)
         drawSelectedComponents(side)
