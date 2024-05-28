@@ -65,57 +65,57 @@ class DrawBoardEngine:
             self.boardDataBackup = copy.deepcopy(boardData)
         self._adjustBoardDimensionsForRotating()
     
-    def moveBoardInterface(self, targetSurface:pygame.Surface, relativeXY:list[int, int]):
+    def moveBoardInterface(self, targetSurface:pygame.Surface, relativeXY:list[int, int]) -> pygame.Surface:
         self._updateOffsetVector(relativeXY)                    
-        self._blitBoardSurfacesIntoTarget(targetSurface)
+        return self._blitBoardSurfacesIntoTarget(targetSurface)
     
-    def scaleUpDownInterface(self, targetSurface:pygame.Surface, isScaleUp:bool, pointXY:list[int, int], side:str):
+    def scaleUpDownInterface(self, targetSurface:pygame.Surface, isScaleUp:bool, pointXY:list[int, int], side:str) -> pygame.Surface:
         if isScaleUp:
             self._scaleUp(pointXY)
         else:
             self._scaleDown(pointXY)
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def changeSideInterface(self, targetSurface:pygame.Surface, side:str):
-        self.drawAndBlitInterface(targetSurface, side)
+    def changeSideInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def rotateBoardInterface(self, targetSurface:pygame.Surface, rotationXY:list[int, int], isClockwise:bool, side:str):
+    def rotateBoardInterface(self, targetSurface:pygame.Surface, rotationXY:list[int, int], isClockwise:bool, side:str) -> pygame.Surface:
         self._rotate(rotationXY, isClockwise)     
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def findComponentByNameInterface(self, targetSurface:pygame.Surface, componentName:str, side:str):
+    def findComponentByNameInterface(self, targetSurface:pygame.Surface, componentName:str, side:str) -> pygame.Surface:
         self._findComponentByName(componentName)
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def clearFindComponentByNameInterface(self, targetSurface:pygame.Surface, side:str):
+    def clearFindComponentByNameInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._unselectComponents()
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def selectNetByNameInterface(self, targetSurface:pygame.Surface, netName:str, side:str):
+    def selectNetByNameInterface(self, targetSurface:pygame.Surface, netName:str, side:str) -> pygame.Surface:
         self._selectNet(netName)
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def unselectNetByNameInterface(self, targetSurface:pygame.Surface, side:str):
+    def unselectNetByNameInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._unselectNet()
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def showHideMarkersForSelectedNetByNameInterface(self, targetSurface:pygame.Surface, side:str):
+    def showHideMarkersForSelectedNetByNameInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._showHideNetComponents()
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def showCommonTypeComponentsInterface(self, targetSurface:pygame.Surface, prefix:str, side:str):
+    def showCommonTypeComponentsInterface(self, targetSurface:pygame.Surface, prefix:str, side:str) -> pygame.Surface:
         self._selectCommonTypeComponents(side, prefix)
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def clearCommonTypeComponentsInterface(self, targetSurface:pygame.Surface, side:str):
+    def clearCommonTypeComponentsInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._unselectCommonTypeComponents()
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def flipUnflipCurrentSideInterface(self, targetSurface:pygame.Surface, side:str):
+    def flipUnflipCurrentSideInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._flipUnflipCurrentSide(side)
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def changeAreaInterface(self, targetSurface:pygame.Surface, side:str):
+    def changeAreaInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         BoardCanvasWrapper.useAreaFromComponentsInPlace(self.boardData)
         
         screenWidth, screenHeight = self.screenDimensions
@@ -124,16 +124,16 @@ class DrawBoardEngine:
         boardData = wrapper.normalizeBoard()
 
         self.setBoardData(boardData, isMakeBackup=False)
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def resetToDefaultViewInterface(self, targetSurface:pygame.Surface, side:str):
+    def resetToDefaultViewInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self.boardData = copy.deepcopy(self.boardDataBackup)
         self.setBoardData(self.boardData)
-        self.drawAndBlitInterface(targetSurface, side)
+        return self.drawAndBlitInterface(targetSurface, side)
     
-    def drawAndBlitInterface(self, targetSurface:pygame.Surface, side:str):
+    def drawAndBlitInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._drawBoard(side)
-        self._blitBoardSurfacesIntoTarget(targetSurface)
+        return self._blitBoardSurfacesIntoTarget(targetSurface)
 
     def _adjustBoardDimensionsForRotating(self):
         def calculateDiagonal(dimensions:list[int|float]) -> float:
@@ -404,7 +404,7 @@ class DrawBoardEngine:
             pointsList = instance.getShapePoints()
             self._drawPolygon(surface, color, pointsList, width)
         
-    def _blitBoardSurfacesIntoTarget(self, targetSurface:pygame.Surface):    
+    def _blitBoardSurfacesIntoTarget(self, targetSurface:pygame.Surface) -> pygame.Surface:    
         targetSurface.fill((0, 0, 0))
         targetSurface.blit(self.boardLayer, self.offsetVector)
 
@@ -416,6 +416,7 @@ class DrawBoardEngine:
 
         self.selectedNetSurface.set_colorkey((0, 0, 0))
         targetSurface.blit(self.selectedNetSurface, self.offsetVector)
+        return targetSurface
 
     def _drawLine(self, surface:pygame.Surface, color:tuple[int, int, int], lineInstance:gobj.Line, width:int=1):
         startPoint, endPoint = lineInstance.getPoints()
