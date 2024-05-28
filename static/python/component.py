@@ -1,8 +1,8 @@
 import geometryObjects as gobj
-import abstractShape
+from abstractShape import Shape
 import pin
 
-class Component(abstractShape.Shape):
+class Component(Shape):
     def __init__(self, name:str):        
         super().__init__(name)
         self.pins = {}
@@ -24,7 +24,7 @@ class Component(abstractShape.Shape):
         return self.pins
 
     def getCoordsAsTranslationVector(self):
-        return [self.coords.getX(), self.coords.getY()]
+        return self.coords.getXY()
     
     def setSide(self, side:str):
         self.side = side
@@ -53,9 +53,14 @@ class Component(abstractShape.Shape):
     
     def calculateAreaFromPins(self):
         bottomLeftPoint, topRightPoint = self.calculateHitBoxFromPins()        
-        bottomLeftPoint.scaleInPlace(0.95)
-        topRightPoint.scaleInPlace(0.95)
+        areaWidth, areaHeight = Shape.getAreaWidthHeight((bottomLeftPoint, topRightPoint))
+        
+        areaWidth *= 0.03
+        areaHeight *= 0.03
         bottomLeftPoint, topRightPoint = self._makeAreaNotLinear(bottomLeftPoint, topRightPoint)
+        bottomLeftPoint.translateInPlace([-areaWidth, -areaHeight])
+        topRightPoint.translateInPlace([areaWidth, areaHeight])
+
         self.setArea(bottomLeftPoint, topRightPoint)
     
     def _makeAreaNotLinear(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Point, gobj.Point]:
