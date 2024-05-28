@@ -175,9 +175,6 @@ class DrawBoardEngine:
         self._scaleSurfaceDimensionsByFactor(scaleFactor)
         self._centerBoardInAdjustedSurface()
     
-    def setScale(self, factor:int|float):
-        self.scale = factor
-    
     def _setOffsetVector(self, vector:tuple[int, int]):
         self.offsetVector = vector
     
@@ -325,9 +322,6 @@ class DrawBoardEngine:
         pointInScaledSurface = calcluatePointInScaledSurface(self.surfaceDimensions, pointRelativeToSurface)
         resultOffset = translateScaledPointToCursorPosition(pointInScaledSurface, zoomingPoint)
         return resultOffset
-    
-    def getScaleFactor(self) -> int|float:
-        return self.scale
     
     def _drawBoard(self, side:str):
         def resetSurfaces():            
