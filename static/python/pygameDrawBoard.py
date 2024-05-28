@@ -229,7 +229,7 @@ class DrawBoardEngine:
         self._setOffsetVector(newOffset)
         BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
     
-    def findComponentByClick(self, cursorXY:list[int, int], side:str):
+    def findComponentByClick(self, cursorXY:list[int, int], side:str) -> list[str]:
         x, y = cursorXY
         if side in self.sidesForFlipX:
             screenWidth, _ = self.screenDimensions

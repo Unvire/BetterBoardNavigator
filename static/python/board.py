@@ -95,11 +95,12 @@ class Board:
         bottomLeftPoint, topRightPoint = gobj.updateBottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], area)
         return bottomLeftPoint, topRightPoint
     
-    def findComponentByCoords(self, clickedPoint:gobj.Point, side:str) -> str:
+    def findComponentByCoords(self, clickedPoint:gobj.Point, side:str) -> list[str]:
+        result = []
         componentNames = self.sideGroupedComponents[side]
         for componentName in componentNames:
             componentInstance = self.getElementByName('components', componentName)
             shape = componentInstance.getShapeData()
             if shape.checkIfPointInside(clickedPoint):
-                return componentName
-        return ''
+                result.append(componentName)
+        return result
