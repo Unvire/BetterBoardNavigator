@@ -109,7 +109,6 @@ class BoardCanvasWrapper():
             self._checkIfComponentCoordsArePositive(componentInstance)
             self._addComponentToSideComponents(componentInstance)
             self._addComponentToCommonTypeComponents(componentInstance)
-    
 
     def _recalculateComponent(self, componentInstance:comp.Component):
         componentInstance.scaleInPlace(self.baseScale)

@@ -235,6 +235,10 @@ class Circle(AbstractBaseShape):
         distanceFromCenter = math.sqrt((x - xCenter) ** 2 + (y - yCenter) ** 2)
         return distanceFromCenter <= self.radius * TOLERANCE
     
+    def calculateArea(self) -> tuple[Point, Point]:
+        x, y = self.centerPoint.getXY()
+        return Point(x - self.radius, y - self.radius), Point(x + self.radius, y + self.radius)
+    
 class Rectangle(AbstractBaseShape):
     def __init__(self, bottomLeftPoint:Point, topRightPoint:Point):
         self.type = 'Rectangle'
@@ -283,6 +287,12 @@ class Rectangle(AbstractBaseShape):
         vectorAB = xB - xA, yB - yA
         vectorAC = xC - xA, yC - yA
         return abs(vectorAB[0] * vectorAC[1] - vectorAB[1] * vectorAC[0])
+    
+    def calculateArea(self) -> tuple[Point, Point]:
+        defaultPoints = getDefaultBottomLeftTopRightPoints()
+        pointList = [self.bottomLeftPoint, self.bottomRightPoint, self.topLeftPoint, self.topRightPoint]
+        bottomLeftPoint, topRightPoint = updateBottomLeftTopRightPoints(defaultPoints, pointList)
+        return bottomLeftPoint, topRightPoint
 
     
 def floatOrNone(x:str):
