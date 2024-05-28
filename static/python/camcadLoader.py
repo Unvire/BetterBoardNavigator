@@ -124,17 +124,6 @@ class CamCadLoader:
         return matchedComponentsSet
     
     def _getPackages(self, fileLines:list[str], partNumberToComponents:dict, boardInstance:board.Board) -> list[str]:
-        def addPackageFor1PinComponent(componentInstance):
-            pinsDict = componentInstance.getPins()
-            pinName = list(pinsDict.keys())[0]
-            pinInstance = pinsDict[pinName]
-
-            shape = pinInstance.getShapeData()
-            bottomLeftPoint, topRightPoint = shape.calculateArea()
-            
-            componentInstance.setArea(bottomLeftPoint, topRightPoint)
-            componentInstance.calculateCenterFromPins()
-
         packagesDict = self._getPackagesfromPACKAGE(fileLines)
         pnDict = self._getPNDATA(fileLines)
         componentWithoutpackages = self._matchPackagesToComponents(packagesDict, pnDict, partNumberToComponents, boardInstance)
@@ -143,7 +132,7 @@ class CamCadLoader:
             componentInstance = boardInstance.getElementByName('components', compName)
             pinsDict = componentInstance.getPins()
             if len(pinsDict) == 1:
-                addPackageFor1PinComponent(componentInstance)
+                self.addPackageFor1PinComponent(componentInstance)
             else:
                 componentInstance.calculateAreaFromPins()
             componentInstance.caluclateShapeData()
@@ -252,6 +241,17 @@ class CamCadLoader:
                 componentInstance.caluclateShapeData()
 
         return list(noPackagesMatch)
+    
+    def addPackageFor1PinComponent(self, componentInstance):
+        pinsDict = componentInstance.getPins()
+        pinName = list(pinsDict.keys())[0]
+        pinInstance = pinsDict[pinName]
+
+        shape = pinInstance.getShapeData()
+        bottomLeftPoint, topRightPoint = shape.calculateArea()
+        
+        componentInstance.setArea(bottomLeftPoint, topRightPoint)
+        componentInstance.calculateCenterFromPins()
     
     def _calculatePackageBottomRightAndTopLeftPoints(self, componentInstance:comp.Component, dimesions:tuple[float, float]) -> tuple[gobj.Point, gobj.Point]:
         width, height = dimesions
