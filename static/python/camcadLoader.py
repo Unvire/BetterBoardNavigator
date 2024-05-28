@@ -124,14 +124,30 @@ class CamCadLoader:
         return matchedComponentsSet
     
     def _getPackages(self, fileLines:list[str], partNumberToComponents:dict, boardInstance:board.Board) -> list[str]:
+        def addPackageFor1PinComponent(componentInstance):
+            pinsDict = componentInstance.getPins()
+            pinName = list(pinsDict.keys())[0]
+            pinInstance = pinsDict[pinName]
+
+            shape = pinInstance.getShapeData()
+            bottomLeftPoint, topRightPoint = shape.calculateArea()
+            
+            componentInstance.setArea(bottomLeftPoint, topRightPoint)
+            componentInstance.calculateCenterFromPins()
+
         packagesDict = self._getPackagesfromPACKAGE(fileLines)
         pnDict = self._getPNDATA(fileLines)
         componentWithoutpackages = self._matchPackagesToComponents(packagesDict, pnDict, partNumberToComponents, boardInstance)
 
         for compName in componentWithoutpackages:
             componentInstance = boardInstance.getElementByName('components', compName)
-            componentInstance.calculateAreaFromPins()
+            pinsDict = componentInstance.getPins()
+            if len(pinsDict) == 1:
+                addPackageFor1PinComponent(componentInstance)
+            else:
+                componentInstance.calculateAreaFromPins()
             componentInstance.caluclateShapeData()
+
         return componentWithoutpackages
         
     def _rotateComponents(self, boardInstance:board.Board, noRotateComponentNamesList:list[str]):
@@ -146,7 +162,7 @@ class CamCadLoader:
             angle = componentInstance.getAngle()
             if componentName not in noRotateComponentNamesList:
                 componentInstance.rotateInPlaceAroundCoords(angle, isRotatePins=False)
-                
+
             if angle % 180 == 0:
                 for _, pinInstance in componentInstance.getPins().items():
                     pinInstance.rotateInPlaceAroundCoords(90)
