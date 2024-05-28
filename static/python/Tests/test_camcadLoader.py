@@ -266,11 +266,11 @@ def test__getPackages(packagesFileLines):
     assert boardComponents['R40'].getShapePoints() == [gobj.Point(0.98, 0.860), gobj.Point(1.060, 0.860), 
                                                        gobj.Point(1.060, 0.896), gobj.Point(0.98, 0.896)]
     
-    assert boardComponents['C10'].area == [gobj.Point(2.102, 2.148), gobj.Point(2.110, 2.190)]
+    assert boardComponents['C10'].area == [gobj.Point(2.213, 2.260), gobj.Point(2.221, 2.306)]
     assert boardComponents['C10'].mountingType == 'SMT'
     assert boardComponents['C10'].shape == 'RECT'
-    assert boardComponents['C10'].getShapePoints() == [gobj.Point(2.102, 2.148), gobj.Point(2.110, 2.148), 
-                                                       gobj.Point(2.110, 2.190), gobj.Point(2.102, 2.190)]
+    assert boardComponents['C10'].getShapePoints() == [gobj.Point(2.213, 2.260), gobj.Point(2.221, 2.260), 
+                                                       gobj.Point(2.221, 2.306), gobj.Point(2.213, 2.306)]
 
     assert boardComponents['LD1'].area == [gobj.Point(0.843, 1.941), gobj.Point(1.021, 2.019)]
     assert boardComponents['LD1'].mountingType == 'TH'

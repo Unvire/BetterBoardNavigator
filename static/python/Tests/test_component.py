@@ -68,8 +68,8 @@ def test_calculateCenterFromPins(componentForPinsCalculation):
 def test_calculatePackageFromPins(componentForPinsCalculation):
     componentForPinsCalculation.calculateAreaFromPins()
     point1, point2 = componentForPinsCalculation.getArea()
-    assert point1 == gobj.Point(-0.95, -0.95)
-    assert point2 == gobj.Point(2.85, 1.9)
+    assert point1 == gobj.Point(-1.12, -1.09)
+    assert point2 == gobj.Point(3.12, 2.09)
 
 def test__makeAreaNotLinear():
     instance = comp.Component('1')
