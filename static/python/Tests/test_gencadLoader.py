@@ -283,53 +283,53 @@ def test__getBoardDimensions(bouardOutlineTest):
     assert shapes[3] == gobj.Arc(gobj.Point(-4.046038, 3.859678), gobj.Point(-4.08, 3.820681), gobj.Point(-4.04063, 3.820681))
     assert shapes[4] == gobj.Circle(gobj.Point(-2.8661417, 2.527559), 0.08070866)
 
-@pytest.mark.parametrize("testInput, expected", [('PAD "Round 32" ROUND -1', ['PAD', 'Round 32', 'ROUND', '-1']), 
-                                                 ('ARTWORK artwork9 SOLDERPASTE_BOTTOM', ['ARTWORK', 'artwork9', 'SOLDERPASTE_BOTTOM']), 
-                                                 ('PAD    "O b l o n g 2.7x1.7"  FINGER -1', ['PAD', 'O b l o n g 2.7x1.7', 'FINGER', '-1'])])
+@pytest.mark.parametrize("testInput, expected", [('PAD "Round 32" ROUND -1', ['PAD', 'ROUND 32', 'ROUND', '-1']), 
+                                                 ('ARTWORK artwork9 SOLDERPASTE_BOTTOM', ['ARTWORK', 'ARTWORK9', 'SOLDERPASTE_BOTTOM']), 
+                                                 ('PAD    "O b l o n g 2.7x1.7"  FINGER -1', ['PAD', 'O B L O N G 2.7X1.7', 'FINGER', '-1'])])
 def test__splitButNotBetweenCharacter(testInput, expected):
     instance = GenCadLoader()
-    assert expected == instance._splitButNotBetweenCharacter(testInput, ' ', '"')
+    assert expected == instance._splitButNotBetweenCharacterAndUpperCase(testInput, ' ', '"')
 
 def test__getPadsFromPADS(padsTest):
     gobj.Point.DECIMAL_POINT_PRECISION = 3
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(padsTest)
     padsDict = instance._getPadsFromPADS(padsTest)
-    assert list(padsDict.keys()) == ['Round 32', 'Oblong 3.2x5.2', 'Rectangle;1.15x1.65']
+    assert list(padsDict.keys()) == ['ROUND 32', 'OBLONG 3.2X5.2', 'RECTANGLE;1.15X1.65']
     
-    assert padsDict['Round 32'].name == 'Round 32'
-    assert padsDict['Round 32'].shape == 'CIRCLE'
-    assert padsDict['Round 32'].area == [gobj.Point(-0.406, -0.406), gobj.Point(0.406, 0.406)]
-    assert padsDict['Round 32'].coords == gobj.Point(0, 0)
-    assert abs(padsDict['Round 32'].width - 0.812) <= 10 ** (gobj.Point.DECIMAL_POINT_PRECISION)
-    assert abs(padsDict['Round 32'].height - 0.812) <= 10 ** (gobj.Point.DECIMAL_POINT_PRECISION)
+    assert padsDict['ROUND 32'].name == 'ROUND 32'
+    assert padsDict['ROUND 32'].shape == 'CIRCLE'
+    assert padsDict['ROUND 32'].area == [gobj.Point(-0.406, -0.406), gobj.Point(0.406, 0.406)]
+    assert padsDict['ROUND 32'].coords == gobj.Point(0, 0)
+    assert abs(padsDict['ROUND 32'].width - 0.812) <= 10 ** (gobj.Point.DECIMAL_POINT_PRECISION)
+    assert abs(padsDict['ROUND 32'].height - 0.812) <= 10 ** (gobj.Point.DECIMAL_POINT_PRECISION)
 
-    assert padsDict['Oblong 3.2x5.2'].name == 'Oblong 3.2x5.2'
-    assert padsDict['Oblong 3.2x5.2'].shape == 'RECT'    
-    assert padsDict['Oblong 3.2x5.2'].area == [gobj.Point(-1.6, -1), gobj.Point(1.6, 1)]
-    assert padsDict['Oblong 3.2x5.2'].coords == gobj.Point(0, 0)
-    assert padsDict['Oblong 3.2x5.2'].width == 3.2
-    assert padsDict['Oblong 3.2x5.2'].height == 2
+    assert padsDict['OBLONG 3.2X5.2'].name == 'OBLONG 3.2X5.2'
+    assert padsDict['OBLONG 3.2X5.2'].shape == 'RECT'    
+    assert padsDict['OBLONG 3.2X5.2'].area == [gobj.Point(-1.6, -1), gobj.Point(1.6, 1)]
+    assert padsDict['OBLONG 3.2X5.2'].coords == gobj.Point(0, 0)
+    assert padsDict['OBLONG 3.2X5.2'].width == 3.2
+    assert padsDict['OBLONG 3.2X5.2'].height == 2
 
-    assert padsDict['Rectangle;1.15x1.65'].name == 'Rectangle;1.15x1.65'
-    assert padsDict['Rectangle;1.15x1.65'].shape == 'RECT'
-    assert padsDict['Rectangle;1.15x1.65'].area == [gobj.Point(-0.575, -0.825), gobj.Point(0.575, 0.825)]
-    assert padsDict['Rectangle;1.15x1.65'].coords == gobj.Point(0, 0)
-    assert padsDict['Rectangle;1.15x1.65'].width == 1.150
-    assert padsDict['Rectangle;1.15x1.65'].height == 1.650
+    assert padsDict['RECTANGLE;1.15X1.65'].name == 'RECTANGLE;1.15X1.65'
+    assert padsDict['RECTANGLE;1.15X1.65'].shape == 'RECT'
+    assert padsDict['RECTANGLE;1.15X1.65'].area == [gobj.Point(-0.575, -0.825), gobj.Point(0.575, 0.825)]
+    assert padsDict['RECTANGLE;1.15X1.65'].coords == gobj.Point(0, 0)
+    assert padsDict['RECTANGLE;1.15X1.65'].width == 1.150
+    assert padsDict['RECTANGLE;1.15X1.65'].height == 1.650
 
 def test__getArtWorksFromARTWORKS(artWorkTest):
     instance = GenCadLoader()
     instance._getSectionsLinesBeginEnd(artWorkTest)
     artworksDict = instance._getArtWorksFromARTWORKS(artWorkTest)
 
-    assert list(artworksDict.keys()) == ['artwork1850', 'artwork1851']
-    assert artworksDict['artwork1850']['LINE'] == [['-0.984', '-41.339', '-0.984', '41.339'], ['16.732', '41.339', '16.732', '-41.339']]
-    assert artworksDict['artwork1850']['ARC'] == [['16.732', '41.339', '-0.984', '41.339', '7.874', '41.339'], 
+    assert list(artworksDict.keys()) == ['ARTWORK1850', 'ARTWORK1851']
+    assert artworksDict['ARTWORK1850']['LINE'] == [['-0.984', '-41.339', '-0.984', '41.339'], ['16.732', '41.339', '16.732', '-41.339']]
+    assert artworksDict['ARTWORK1850']['ARC'] == [['16.732', '41.339', '-0.984', '41.339', '7.874', '41.339'], 
                                                   ['-0.984', '-41.339', '16.732', '-41.339', '7.874', '-41.339']]
     
-    assert artworksDict['artwork1851']['LINE'] == [['10.827', '-41.339', '10.827', '41.339'], ['28.543', '41.339', '28.543', '-41.339']]
-    assert artworksDict['artwork1851']['ARC'] == [['28.543', '41.339', '10.827', '41.339', '19.685', '41.339'], 
+    assert artworksDict['ARTWORK1851']['LINE'] == [['10.827', '-41.339', '10.827', '41.339'], ['28.543', '41.339', '28.543', '-41.339']]
+    assert artworksDict['ARTWORK1851']['ARC'] == [['28.543', '41.339', '10.827', '41.339', '19.685', '41.339'], 
                                                   ['10.827', '-41.339', '28.543', '-41.339', '19.685', '-41.339']]
 
 def test__getPadstacksFromPADSTACKS(padsTest):
@@ -337,12 +337,12 @@ def test__getPadstacksFromPADSTACKS(padsTest):
     instance._getSectionsLinesBeginEnd(padsTest)
     padsDict = instance._getPadsFromPADS(padsTest)
     padstackDict = instance._getPadstacksFromPADSTACKS(padsTest, padsDict)
-    assert list(padstackDict.keys()) == ['026VIA', 'Smd 0.95x1.45 mm_TOP', 'Round 32', 'Oblong 3.2x5.2', 'Rectangle;1.15x1.65']
-    assert padstackDict['026VIA'] is padsDict['Round 32']
-    assert padstackDict['Smd 0.95x1.45 mm_TOP'] is padsDict['Rectangle;1.15x1.65']
-    assert padstackDict['Round 32'] is padsDict['Round 32']
-    assert padstackDict['Oblong 3.2x5.2'] is padsDict['Oblong 3.2x5.2']
-    assert padstackDict['Rectangle;1.15x1.65'] is padsDict['Rectangle;1.15x1.65']
+    assert list(padstackDict.keys()) == ['026VIA', 'SMD 0.95X1.45 MM_TOP', 'ROUND 32', 'OBLONG 3.2X5.2', 'RECTANGLE;1.15X1.65']
+    assert padstackDict['026VIA'] is padsDict['ROUND 32']
+    assert padstackDict['SMD 0.95X1.45 MM_TOP'] is padsDict['RECTANGLE;1.15X1.65']
+    assert padstackDict['ROUND 32'] is padsDict['ROUND 32']
+    assert padstackDict['OBLONG 3.2X5.2'] is padsDict['OBLONG 3.2X5.2']
+    assert padstackDict['RECTANGLE;1.15X1.65'] is padsDict['RECTANGLE;1.15X1.65']
 
 def test__getComponentsFromCOMPONENTS(componentTest):
     instance = GenCadLoader()
@@ -417,9 +417,9 @@ def test__getAreaPinsfromSHAPES_ARTWORKS(shapesTest):
                 'LINE':[['0.13386', '0.11614', '0.19705', '0.075'], ['0.19705', '0.075', '0.19705', '-0.075'], ['0.19705', '-0.075', '0.13386', '-0.11614'], 
                     ['0.13386', '-0.11614', '-0.13386', '-0.11614'], ['-0.13386', '-0.11614', '-0.19705', '-0.075'], ['-0.19705', '-0.075', '-0.19705', '0.075'],
                     ['-0.19705', '0.075', '-0.13386', '0.11614'], ['-0.13386', '0.11614', '0.13386', '0.11614']],
-                'INSERT': [['smt']],
+                'INSERT': [['SMT']],
                 'HEIGHT': [['0.103150']],
-                'PIN': [['A', 'padstack102', '0.1279528', '0', 'TOP', '270', '0'], ['K', 'padstack102', '-0.1279528', '0', 'TOP', '270', '0']],
+                'PIN': [['A', 'PADSTACK102', '0.1279528', '0', 'TOP', '270', '0'], ['K', 'PADSTACK102', '-0.1279528', '0', 'TOP', '270', '0']],
                 'AREA':[gobj.Point(-0.197, -0.11614), gobj.Point(0.19705, 0.11614)],
                 'AREA_NAME': 'RECT'
                 }

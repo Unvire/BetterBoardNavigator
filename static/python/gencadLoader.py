@@ -50,7 +50,7 @@ class GenCadLoader:
 
         for i in boardOutlineRange:
             if ' ' in fileLines[i]:
-                keyWord, *line  = self._splitButNotBetweenCharacter(fileLines[i])
+                keyWord, *line  = self._splitButNotBetweenCharacterAndUpperCase(fileLines[i])
                 if keyWord == 'ARTWORK':
                     break
                 if keyWord not in self.handleShape:
@@ -68,12 +68,12 @@ class GenCadLoader:
         while i <= iEnd:
             if ' ' in fileLines[i] and 'PAD' in fileLines[i]:
                 line = fileLines[i]
-                _, padName, *_  = self._splitButNotBetweenCharacter(line)                  
+                _, padName, *_  = self._splitButNotBetweenCharacterAndUpperCase(line)                  
                 bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
                 
                 while 'PAD' not in fileLines[i + 1]:
                     i += 1
-                    keyWord, *line  =  self._splitButNotBetweenCharacter(fileLines[i])
+                    keyWord, *line  =  self._splitButNotBetweenCharacterAndUpperCase(fileLines[i])
                     _, bottomLeftPoint, topRightPoint = self.handleShape[keyWord](line, bottomLeftPoint, topRightPoint)
                 
                 keyWord = 'RECT' if keyWord != 'CIRCLE' else keyWord
@@ -90,11 +90,11 @@ class GenCadLoader:
             artWorkParameters = {}
             if ' ' in fileLines[i] and 'ARTWORK' in fileLines[i]:
                 line = fileLines[i]
-                _, artworkName, *_  = self._splitButNotBetweenCharacter(line)
+                _, artworkName, *_  = self._splitButNotBetweenCharacterAndUpperCase(line)
 
                 isEndOfShapeSection = False                
                 while not isEndOfShapeSection:
-                    keyWord, *parameters = self._splitButNotBetweenCharacter(fileLines[i])
+                    keyWord, *parameters = self._splitButNotBetweenCharacterAndUpperCase(fileLines[i])
                     if not keyWord in artWorkParameters:
                         artWorkParameters[keyWord] = []
                     artWorkParameters[keyWord].append(parameters)
@@ -113,13 +113,13 @@ class GenCadLoader:
         while i <= iEnd:
             if ' ' in fileLines[i] and 'PADSTACK' in fileLines[i]:
                 padstackLine = fileLines[i]
-                _, padstackName, *_ = self._splitButNotBetweenCharacter(padstackLine)
+                _, padstackName, *_ = self._splitButNotBetweenCharacterAndUpperCase(padstackLine)
                 
                 j = 1
                 padName = None
                 while padName not in padsDict:
                     padLine = fileLines[i + j]
-                    _, padName, *_ = self._splitButNotBetweenCharacter(padLine)
+                    _, padName, *_ = self._splitButNotBetweenCharacterAndUpperCase(padLine)
                     j += 1 
             
                 padstackDict[padstackName] = padsDict[padName]
@@ -136,7 +136,7 @@ class GenCadLoader:
                 componentParameters = {}
                 isEndOfComponentSection = False
                 while not isEndOfComponentSection:
-                    keyWord, *parameters = self._splitButNotBetweenCharacter(fileLines[i])
+                    keyWord, *parameters = self._splitButNotBetweenCharacterAndUpperCase(fileLines[i])
                     componentParameters[keyWord] = parameters
                     i += 1
                     isEndOfComponentSection = 'COMPONENT' == fileLines[i][:9] or i >= iEnd
@@ -161,7 +161,7 @@ class GenCadLoader:
                 shapeParameters = {}                
                 isEndOfShapeSection = False                
                 while not isEndOfShapeSection:
-                    keyWord, *parameters = self._splitButNotBetweenCharacter(fileLines[i])
+                    keyWord, *parameters = self._splitButNotBetweenCharacterAndUpperCase(fileLines[i])
                     if not keyWord in shapeParameters:
                         shapeParameters[keyWord] = []
                     shapeParameters[keyWord].append(parameters)
@@ -208,13 +208,13 @@ class GenCadLoader:
         while i <= iEnd:
             if ' ' in fileLines[i] and 'SIGNAL' in fileLines[i][:6]:
                 line = fileLines[i]
-                _, netName = self._splitButNotBetweenCharacter(line)
+                _, netName = self._splitButNotBetweenCharacterAndUpperCase(line)
                 netsDict[netName] = {}
                 isEndOfSignalsSection = False
                 i += 1
                 while not isEndOfSignalsSection:
                     line = fileLines[i]
-                    keyWord, *parameters = self._splitButNotBetweenCharacter(line)
+                    keyWord, *parameters = self._splitButNotBetweenCharacterAndUpperCase(line)
                     if keyWord == 'NODE':
                         componentName, pinName = parameters
                         componentInstance, pinInstance = self._getComponentAndPinByNames(boardInstance, componentName, pinName)
@@ -324,7 +324,7 @@ class GenCadLoader:
             bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
         return bottomLeftPoint, topRightPoint
 
-    def _splitButNotBetweenCharacter(self, line:str, splitCharacter:str=' ', ignoreCharacter:str='"') -> list[str]:
+    def _splitButNotBetweenCharacterAndUpperCase(self, line:str, splitCharacter:str=' ', ignoreCharacter:str='"') -> list[str]:
         initialSplit = [val for val in line.split(splitCharacter) if val]
         result = []
 
@@ -336,7 +336,7 @@ class GenCadLoader:
                     current = initialSplit.pop(0)
                     concatenated += f'{splitCharacter}{current}'
                 current = concatenated.replace(ignoreCharacter, '')
-            result.append(current)
+            result.append(current.upper())
         return result
     
     def _calculateRange(self, sectionName:str) -> range:
