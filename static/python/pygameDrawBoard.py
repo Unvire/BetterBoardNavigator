@@ -16,6 +16,16 @@ class DrawBoardEngine:
         self.drawHandler = {'Line': self._drawLine,
                             'Arc': self._drawArc}
         
+        self.colorsDict = {           
+            'background': (0, 0, 0), 
+            'outlines': (255, 255, 255),
+            'components': (8, 212, 15),
+            'TH pins': (21, 103, 235),
+            'SMT pins': (240, 187, 12),
+            'selected component marker': (255, 0, 0),
+            'selected net marker': (171, 24, 149)
+        }
+        
         self.surfaceDimensions = [width, height]
         self.screenDimensions = [width, height]
 
@@ -33,16 +43,6 @@ class DrawBoardEngine:
         self.scale = 1
         self.offsetVector = []
         self.sidesForFlipX = {}
-
-        self.colorsDict = {           
-            'background': (0, 0, 0), 
-            'outlines': (255, 255, 255),
-            'components': (8, 212, 15),
-            'TH pins': (21, 103, 235),
-            'SMT pins': (240, 187, 12),
-            'selected component marker': (255, 0, 0),
-            'selected net marker': (171, 24, 149)
-        }
     
     def _resetSelectionCollections(self):
         self.selectedComponentsSet = set()
@@ -59,6 +59,13 @@ class DrawBoardEngine:
     def _resetSurfaceDimensions(self):
         screenWidth, screenHeight = self.screenDimensions
         self.surfaceDimensions = [screenWidth, screenHeight]
+    
+    def getColor(self, key:str) -> tuple[int, int, int]:
+        return self.colorsDict.get(key, None)
+    
+    def changeColor(self, key:str, RGB:tuple[int, int, int]):
+        if key in self.colorsDict:
+            self.colorsDict[key] = RGB
 
     def setBoardData(self, boardData:board.Board, isMakeBackup:bool=True):
         def resetVariablesAndSurfaces():
@@ -468,7 +475,10 @@ class DrawBoardEngine:
         pygame.draw.polygon(surface, color, markerCoords, width=0)
     
     def _getEmptySurfce(self) -> pygame.Surface:
-        return pygame.Surface(self.surfaceDimensions)
+        color = self.colorsDict['background']
+        surface = pygame.Surface(self.surfaceDimensions)
+        surface.fill(color)
+        return surface
     
     def _getScaleFactorFromSurfaceDimensions(self) -> float:
         screenWidth, _ = self.screenDimensions
