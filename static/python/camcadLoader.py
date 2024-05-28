@@ -132,7 +132,7 @@ class CamCadLoader:
             componentInstance = boardInstance.getElementByName('components', compName)
             pinsDict = componentInstance.getPins()
             if len(pinsDict) == 1:
-                self.addPackageFor1PinComponent(componentInstance)
+                self._addPackageFor1PinComponent(componentInstance)
             else:
                 componentInstance.calculateAreaFromPins()
             componentInstance.caluclateShapeData()
@@ -142,11 +142,7 @@ class CamCadLoader:
     def _rotateComponents(self, boardInstance:board.Board, noRotateComponentNamesList:list[str]):
         componentsDict = boardInstance.getComponents()
         for componentName, componentInstance in componentsDict.items():
-            coords = componentInstance.getCoords()
-            if None in coords.getXY():
-                componentInstance.calculateCenterFromPins()
-                componentInstance.calculateAreaFromPins()
-                componentInstance.caluclateShapeData()
+            self._addPackageDataIfCoordsMissing(componentInstance)
             
             angle = componentInstance.getAngle()
             if componentName not in noRotateComponentNamesList:
@@ -242,7 +238,7 @@ class CamCadLoader:
 
         return list(noPackagesMatch)
     
-    def addPackageFor1PinComponent(self, componentInstance):
+    def _addPackageFor1PinComponent(self, componentInstance:comp.Component):
         pinsDict = componentInstance.getPins()
         pinName = list(pinsDict.keys())[0]
         pinInstance = pinsDict[pinName]
@@ -252,6 +248,13 @@ class CamCadLoader:
         
         componentInstance.setArea(bottomLeftPoint, topRightPoint)
         componentInstance.calculateCenterFromPins()
+    
+    def _addPackageDataIfCoordsMissing(self, componentInstance:comp.Component):
+        coords = componentInstance.getCoords()
+        if None in coords.getXY():
+            componentInstance.calculateCenterFromPins()
+            componentInstance.calculateAreaFromPins()
+            componentInstance.caluclateShapeData()
     
     def _calculatePackageBottomRightAndTopLeftPoints(self, componentInstance:comp.Component, dimesions:tuple[float, float]) -> tuple[gobj.Point, gobj.Point]:
         width, height = dimesions
