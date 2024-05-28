@@ -43,6 +43,7 @@ class DrawBoardEngine:
         self.scale = 1
         self.offsetVector = []
         self.sidesForFlipX = {}
+        self.isShowOutlines = True
     
     def _resetSelectionCollections(self):
         self.selectedComponentsSet = set()
@@ -146,6 +147,10 @@ class DrawBoardEngine:
     def resetToDefaultViewInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self.boardData = copy.deepcopy(self.boardDataBackup)
         self.setBoardData(self.boardData)
+        return self.drawAndBlitInterface(targetSurface, side)
+
+    def showHideOutlinesInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
+        self._showHideOutlines()
         return self.drawAndBlitInterface(targetSurface, side)
     
     def drawAndBlitInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
@@ -280,6 +285,9 @@ class DrawBoardEngine:
         else:
            self.sidesForFlipX.add(side) 
     
+    def _showHideOutlines(self):
+        self.isShowOutlines = not self.isShowOutlines
+    
     def _centerBoardInAdjustedSurface(self):
         surfaceWidth, surfaceHeight = self.surfaceDimensions
         screenWidth, screenHeight = self.screenDimensions
@@ -330,7 +338,8 @@ class DrawBoardEngine:
 
         def drawBoardLayer(side:str):
             componentNames = self.boardData.getSideGroupedComponents()[side]
-            drawOutlines()
+            if self.isShowOutlines:
+                drawOutlines()
             drawComponents(componentNamesList=componentNames, width=1, side=side)
 
         def drawCommonTypeComponents(side:str):
@@ -522,6 +531,7 @@ if __name__ == '__main__':
     print('Rotate - , .')    
     print('Reset to default view - r')
     print('Use components for area calculation - d')
+    print('Show/hide outlines - f')
     print('Flip unflip current side - m')
     print('Select component by click mode - z')
     print('Find component by name - x')
@@ -617,6 +627,9 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_r:
                     engine.resetToDefaultViewInterface(WIN, side)
+                
+                elif event.key == pygame.K_f:
+                    engine.showHideOutlinesInterface(WIN, side)
                 
 
         ## display image
