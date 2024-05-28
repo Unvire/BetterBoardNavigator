@@ -422,16 +422,17 @@ class DrawBoardEngine:
             self._drawPolygon(surface, color, pointsList, width)
         
     def _blitBoardSurfacesIntoTarget(self, targetSurface:pygame.Surface) -> pygame.Surface:    
-        targetSurface.fill((0, 0, 0))
+        color = self.colorsDict['background']
+        targetSurface.fill(color)
         targetSurface.blit(self.boardLayer, self.offsetVector)
 
-        self.commonTypeComponentsSurface.set_colorkey((0, 0, 0))
+        self.commonTypeComponentsSurface.set_colorkey(color)
         targetSurface.blit(self.commonTypeComponentsSurface, self.offsetVector)
 
-        self.selectedComponentsSurface.set_colorkey((0, 0, 0))
+        self.selectedComponentsSurface.set_colorkey(color)
         targetSurface.blit(self.selectedComponentsSurface, self.offsetVector)
 
-        self.selectedNetSurface.set_colorkey((0, 0, 0))
+        self.selectedNetSurface.set_colorkey(color)
         targetSurface.blit(self.selectedNetSurface, self.offsetVector)
         return targetSurface
 
