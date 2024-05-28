@@ -203,7 +203,6 @@ def test__getNetsFromNETLIST(netlistFileLines):
     boardComponents = instance.boardData.getComponents()
 
     ## name of nets and components
-    print(list(boardComponents.keys()))
     assert list(boardNets.keys()) == ['NetC41_1' , 'NetC47_2', 'NetC47_1']
     assert list(boardComponents.keys()) == ['TP100', 'C47', 'TP135', 'TP136']
 
@@ -257,7 +256,7 @@ def test__getPackages(packagesFileLines):
     partNumberToComponents = instance._getComponenentsFromPARTLIST(packagesFileLines, instance.boardData)  
     padsDict = instance._getPadsFromPAD(packagesFileLines)  
     instance._getNetsFromNETLIST(packagesFileLines, padsDict, instance.boardData)
-    instance._getPackages(packagesFileLines, partNumberToComponents, instance.boardData)
+    _ = instance._getPackages(packagesFileLines, partNumberToComponents, instance.boardData)
 
     boardComponents = instance.boardData.getComponents()
     assert boardComponents['R40'].area == [gobj.Point(0.98, 0.860), gobj.Point(1.060, 0.896)]
@@ -285,8 +284,8 @@ def test__rotateComponents(rotateFileLines):
     partNumberToComponents = instance._getComponenentsFromPARTLIST(rotateFileLines, instance.boardData)
     padsDict = instance._getPadsFromPAD(rotateFileLines)
     instance._getNetsFromNETLIST(rotateFileLines, padsDict, instance.boardData)
-    instance._getPackages(rotateFileLines, partNumberToComponents, instance.boardData)
-    instance._rotateComponents(instance.boardData)
+    noMatchedComponents = instance._getPackages(rotateFileLines, partNumberToComponents, instance.boardData)
+    instance._rotateComponents(instance.boardData, noMatchedComponents)
 
     componentInstance = instance.boardData.getElementByName('components', 'C10')
     assert componentInstance.getCoords() == gobj.Point(1.578, -1.268)

@@ -22,8 +22,8 @@ class CamCadLoader:
         partNumberToComponents = self._getComponenentsFromPARTLIST(fileLines, self.boardData)
         padsDict = self._getPadsFromPAD(fileLines)
         matchedComponents = self._getNetsFromNETLIST(fileLines, padsDict, self.boardData)
-        self._getPackages(fileLines, partNumberToComponents, self.boardData)
-        self._rotateComponents(self.boardData)
+        componentWithoutpackages = self._getPackages(fileLines, partNumberToComponents, self.boardData)
+        self._rotateComponents(self.boardData, componentWithoutpackages)
         self._removeNotMatchedComponents(self.boardData, matchedComponents)
 
         return self.boardData
@@ -123,7 +123,7 @@ class CamCadLoader:
         boardInstance.setNets(nets)
         return matchedComponentsSet
     
-    def _getPackages(self, fileLines:list[str], partNumberToComponents:dict, boardInstance:board.Board):
+    def _getPackages(self, fileLines:list[str], partNumberToComponents:dict, boardInstance:board.Board) -> list[str]:
         packagesDict = self._getPackagesfromPACKAGE(fileLines)
         pnDict = self._getPNDATA(fileLines)
         componentWithoutpackages = self._matchPackagesToComponents(packagesDict, pnDict, partNumberToComponents, boardInstance)
@@ -132,10 +132,11 @@ class CamCadLoader:
             componentInstance = boardInstance.getElementByName('components', compName)
             componentInstance.calculateAreaFromPins()
             componentInstance.caluclateShapeData()
+        return componentWithoutpackages
         
-    def _rotateComponents(self, boardInstance:board.Board):
+    def _rotateComponents(self, boardInstance:board.Board, noRotateComponentNamesList:list[str]):
         componentsDict = boardInstance.getComponents()
-        for _, componentInstance in componentsDict.items():
+        for componentName, componentInstance in componentsDict.items():
             coords = componentInstance.getCoords()
             if None in coords.getXY():
                 componentInstance.calculateCenterFromPins()
@@ -143,7 +144,9 @@ class CamCadLoader:
                 componentInstance.caluclateShapeData()
             
             angle = componentInstance.getAngle()
-            componentInstance.rotateInPlaceAroundCoords(angle, isRotatePins=False)
+            if componentName not in noRotateComponentNamesList:
+                componentInstance.rotateInPlaceAroundCoords(angle, isRotatePins=False)
+                
             if angle % 180 == 0:
                 for _, pinInstance in componentInstance.getPins().items():
                     pinInstance.rotateInPlaceAroundCoords(90)
