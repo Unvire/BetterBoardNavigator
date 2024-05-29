@@ -10,8 +10,6 @@
       async function main() {
         let pyodide = await loadPyodide();
 
-        let mypkg = pyodide.pyimport("abstractShape")
-
         await pyodide.loadPackage("micropip");
         const micropip = pyodide.pyimport("micropip");
         await micropip.install("pygame-ce");
