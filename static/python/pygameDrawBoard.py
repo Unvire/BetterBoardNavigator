@@ -1,6 +1,6 @@
 import pygame, math, copy
 import pin, board
-from boardCanvasWrapper import BoardCanvasWrapper
+from static.python.boardWrapper import BoardWrapper
 import geometryObjects as gobj
 import component as comp
 
@@ -134,10 +134,10 @@ class DrawBoardEngine:
         return self.drawAndBlitInterface(targetSurface, side)
     
     def changeAreaInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
-        BoardCanvasWrapper.useAreaFromComponentsInPlace(self.boardData)
+        BoardWrapper.useAreaFromComponentsInPlace(self.boardData)
         
         screenWidth, screenHeight = self.screenDimensions
-        wrapper = BoardCanvasWrapper(screenWidth, screenHeight)
+        wrapper = BoardWrapper(screenWidth, screenHeight)
         wrapper.setBoard(self.boardData)
         boardData = wrapper.normalizeBoard()
 
@@ -187,7 +187,7 @@ class DrawBoardEngine:
         angle = DrawBoardEngine.DELTA_ROTATION_ANGLE_DEG * (-1) ** int(isClockwise)
         xRot, yRot = rotationXY
         rotationPoint = gobj.Point(xRot, yRot)
-        BoardCanvasWrapper.rotateBoardInPlace(self.boardData, rotationPoint, angle)
+        BoardWrapper.rotateBoardInPlace(self.boardData, rotationPoint, angle)
     
     def _scaleUp(self, zoomingPoint:tuple[int, int]):
         surfaceWidth, surfaceHeight = self.surfaceDimensions
@@ -207,7 +207,7 @@ class DrawBoardEngine:
         self._scaleSurfaceDimensionsByFactor(scaleFactor)
         newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
         self._setOffsetVector(newOffset)
-        BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
+        BoardWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
 
     def _scaleDown(self, zoomingPoint:tuple[int, int]):        
         surfaceWidth, surfaceHeight = self.surfaceDimensions
@@ -227,7 +227,7 @@ class DrawBoardEngine:
         self._scaleSurfaceDimensionsByFactor(scaleFactor)
         newOffset = self._calculateOffsetVectorForScaledSurface(zoomingPoint, previousScaleFactor)
         self._setOffsetVector(newOffset)
-        BoardCanvasWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
+        BoardWrapper.scaleBoardInPlace(self.boardData, scaleFactor)
     
     def findComponentByClick(self, cursorXY:list[int, int], side:str) -> list[str]:
         x, y = cursorXY
@@ -292,7 +292,7 @@ class DrawBoardEngine:
         xOffset = (screenWidth - surfaceWidth) / 2
         yOffset = (screenHeight - surfaceHeight) / 2
         self.offsetVector = [xOffset, yOffset]
-        BoardCanvasWrapper.translateBoardInPlace(self.boardData, [-xOffset, -yOffset]) #'-' because board must be moved away from its center 
+        BoardWrapper.translateBoardInPlace(self.boardData, [-xOffset, -yOffset]) #'-' because board must be moved away from its center 
     
     def _calculateOffsetVectorForScaledSurface(self, zoomingPoint:tuple[int, int], previousScaleFactor:float):
         def reverseSurfaceLinearTranslation(screenCoords:list[int, int], offset:list[int, int]) -> tuple[int, int]:
@@ -504,9 +504,9 @@ if __name__ == '__main__':
     isFindComponentByClickActive = False
 
     filePath = openSchematicFile()
-    boardWrapper = BoardCanvasWrapper(WIDTH, HEIGHT)
-    boardWrapper.loadAndSetBoardFromFilePath(filePath)
-    boardInstance = boardWrapper.normalizeBoard()
+    wrapper = BoardWrapper(WIDTH, HEIGHT)
+    wrapper.loadAndSetBoardFromFilePath(filePath)
+    boardInstance = wrapper.normalizeBoard()
 
     ## pygame
     WIN = pygame.display.set_mode((WIDTH, HEIGHT))

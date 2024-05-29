@@ -7,7 +7,7 @@ from abstractShape import Shape
 class NormalizingError(Exception):
     pass
 
-class BoardCanvasWrapper():
+class BoardWrapper():
     def __init__(self, width:int, height:int):
         self.width = width
         self.height = height
@@ -173,6 +173,6 @@ class BoardCanvasWrapper():
     
 
 if __name__ == '__main__':
-    normalizedBoard = BoardCanvasWrapper(1200, 700)
+    normalizedBoard = BoardWrapper(1200, 700)
     normalizedBoard.loadAndSetBoardFromFilePath(r'C:\python programy\2024_05_20 Schematic yoinker\Schematic\Fisker_Bumper_ECE_MB_RH.gcd')
     normalizedBoard.normalizeBoard()
