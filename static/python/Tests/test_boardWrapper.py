@@ -1,5 +1,5 @@
 import pytest
-from static.python.boardWrapper import BoardWrapper
+from boardWrapper import BoardWrapper
 import geometryObjects as gobj
 
 @pytest.fixture
