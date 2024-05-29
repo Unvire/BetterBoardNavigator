@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pyodide Load Schematic File</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js"></script>
+    <script type="text/javascript" src="/static/js/loadLocalModules.js"></script>
+    <script type="text/javascript" src="/static/js/openAndLoadFile.js"></script>
+</head>
+<body>
+    <input type="file" id="fileInput"/>
+    <button id="listFiles">Process file</button>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            // global variables and function binding
+            var fileName;
+            const listFilesButton = document.getElementById("listFiles");
+
+            // initialization
+            let pyodide = await loadPyodide();
+            await loadPygame(pyodide);
+            await loadLocalModules(pyodide);
+
+            // open file and save it to pyodide.FS
+            fileInput.addEventListener("change", async (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    fileName = `/${file.name}`
+                    await openAndLoadCadFile(pyodide, file)       
+                }
+            });
+
+            // read file from pyodide.FS
+            listFilesButton.addEventListener("click", async () => {
+                console.log("Loaded file: ", fileName)  
+                console.log("virtual memory: ", pyodide.FS.readdir('/'));
+
+                // read .cad, .gcd and .tgz files
+                await pyodide.runPythonAsync(`
+                    import sys
+                    sys.path.append("/")
+                    from loaderSelectorFactory import LoaderSelectorFactory
+
+                    loader = LoaderSelectorFactory("/${fileName}")
+                    content = loader.loadFile("/${fileName}")
+                    print(content)
+                `);
+            });
+        });
+    </script>
+</body>
+</html>
