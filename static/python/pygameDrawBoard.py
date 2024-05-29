@@ -1,6 +1,6 @@
 import pygame, math, copy
 import pin, board
-from static.python.boardWrapper import BoardWrapper
+from boardWrapper import BoardWrapper
 import geometryObjects as gobj
 import component as comp
 
