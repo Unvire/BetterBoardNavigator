@@ -124,7 +124,7 @@ class CamCadLoader:
         return matchedComponentsSet
     
     def _getPackages(self, fileLines:list[str], partNumberToComponents:dict, boardInstance:board.Board) -> list[str]:
-        packagesDict = self._getPackagesfromPACKAGE(fileLines)
+        packagesDict = self._getPackagesfromPACKAGES(fileLines)
         pnDict = self._getPNDATA(fileLines)
         componentWithoutpackages = self._matchPackagesToComponents(packagesDict, pnDict, partNumberToComponents, boardInstance)
 
@@ -190,7 +190,7 @@ class CamCadLoader:
         if not componentName in netsDict[netName]:
             netsDict[netName][componentName] = {'componentInstance':None, 'pins':[]}
     
-    def _getPackagesfromPACKAGE(self, fileLines:list[str]) -> dict:
+    def _getPackagesfromPACKAGES(self, fileLines:list[str]) -> dict:
         packagesRange = self._calculateRange('PACKAGES')
         packagesDict = {}
         for i in packagesRange:
