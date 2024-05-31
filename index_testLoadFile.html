@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pyodide Load Schematic File</title>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js"></script>
-    <script type="text/javascript" src="/static/js/loadLocalModules.js"></script>
+    <script type="text/javascript" src="/static/js/configurePython.js"></script>
     <script type="text/javascript" src="/static/js/openAndLoadFile.js"></script>
 </head>
 <body>
@@ -19,6 +19,7 @@
 
             // initialization
             let pyodide = await loadPyodide();
+            await configurePythonPath(pyodide);
             await loadPygame(pyodide);
             await loadLocalModules(pyodide);
 
@@ -38,8 +39,6 @@
 
                 // read .cad, .gcd and .tgz files
                 await pyodide.runPythonAsync(`
-                    import sys
-                    sys.path.append("/")
                     from loaderSelectorFactory import LoaderSelectorFactory
 
                     loader = LoaderSelectorFactory("/${fileName}")
