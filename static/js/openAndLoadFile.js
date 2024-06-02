@@ -10,11 +10,11 @@ async function openAndLoadCadFile(pyodide, file) {
         await pyodide.runPythonAsync(`
             from loaderSelectorFactory import LoaderSelectorFactory
 
-            #loader = LoaderSelectorFactory("/${fileName}")
-            #fileLines = loader.loadFile("/${fileName}")
-            #print(fileLines)
-            #board = loader.processFileLines(fileLines)
-            #print(board)
+            loader = LoaderSelectorFactory("/${fileName}")
+            fileLines = loader.loadFile("/${fileName}")
+            print(fileLines)
+            board = loader.processFileLines(fileLines)
+            print(board)
         `);
     };
     reader.readAsArrayBuffer(file);
