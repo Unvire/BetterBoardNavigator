@@ -10,45 +10,24 @@
 </head>
 <body>
     <input type="file" id="fileInput"/>
-    <button id="listFiles">Process file</button>
     <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            // global variables and function binding
-            var fileName;
-            const listFilesButton = document.getElementById("listFiles");
+        var pyodide;
 
-            // initialization
-            let pyodide = await loadPyodide();
+        document.addEventListener("DOMContentLoaded", async () => {
+            pyodide = await loadPyodide();
             await configurePythonPath(pyodide);
             await loadPygame(pyodide);
             await loadLocalModules(pyodide);
-
-            // open file and save it to pyodide.FS
-            fileInput.addEventListener("change", async (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    fileName = `/${file.name}`
-                    await openAndLoadCadFile(pyodide, file)       
-                }
-            });
-
-            // read file from pyodide.FS
-            listFilesButton.addEventListener("click", async () => {
-                console.log("Loaded file: ", fileName)  
-                console.log("virtual memory: ", pyodide.FS.readdir('/'));
-
-                // read .cad, .gcd and .tgz files
-                await pyodide.runPythonAsync(`
-                    from loaderSelectorFactory import LoaderSelectorFactory
-
-                    loader = LoaderSelectorFactory("/${fileName}")
-                    fileLines = loader.loadFile("/${fileName}")
-                    print(fileLines)
-                    board = loader.processFileLines(fileLines)
-                    print(board)
-                `);
-            });
         });
+
+        // open file and save it to pyodide.FS
+        fileInput.addEventListener("change", async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                await openAndLoadCadFile(pyodide, file);
+            }
+        });
+
     </script>
 </body>
 </html>
