@@ -9,7 +9,7 @@
     <script type="text/javascript" src="/static/js/openAndLoadFile.js"></script>
 </head>
 <body>
-    <input type="file" id="fileInput"/>
+    <input type="file" id="fileInput" disabled="true"/>
     <script>
         var pyodide;
         var loadedFileName = "";
@@ -19,6 +19,7 @@
             await configurePythonPath(pyodide);
             await loadPygame(pyodide);
             await loadLocalModules(pyodide);
+            document.getElementById("fileInput").disabled = false;
         });
 
         // open file and save it to pyodide.FS
