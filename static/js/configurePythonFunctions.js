@@ -1,7 +1,7 @@
 async function configurePythonPath(pyodide){
     await pyodide.runPythonAsync(`
-                import sys
-                sys.path.append("/")
+        import sys
+        sys.path.append("/")
     `);
 }
 
@@ -9,6 +9,10 @@ async function loadPygame(pyodide){
     await pyodide.loadPackage("micropip");
     const micropip = pyodide.pyimport("micropip");
     await micropip.install("pygame-ce");
+    
+    await pyodide.runPythonAsync(`
+        import pygame
+    `);
 }
 
 async function loadLocalModules(pyodide) {
