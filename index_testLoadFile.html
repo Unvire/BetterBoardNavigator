@@ -12,6 +12,7 @@
     <input type="file" id="fileInput"/>
     <script>
         var pyodide;
+        var loadedFileName = "";
 
         document.addEventListener("DOMContentLoaded", async () => {
             pyodide = await loadPyodide();
@@ -24,7 +25,9 @@
         fileInput.addEventListener("change", async (event) => {
             const file = event.target.files[0];
             if (file) {
+                await removePreviousFileFromFS(pyodide, loadedFileName);
                 await openAndLoadCadFile(pyodide, file);
+                loadedFileName = file.name;
             }
         });
 
