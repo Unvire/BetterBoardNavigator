@@ -1,27 +1,19 @@
 <!doctype html>
 <html>
   <head>
-      <script src="https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js"></script>
+    <script src="./static/js/configurePythonFunctions.js"></script>
   </head>
   <body>
     Pyodide test page <br>
     Open your browser console to see Pyodide output
     <script type="text/javascript">
-      async function main() {
-        let pyodide = await loadPyodide();
-
-        await pyodide.loadPackage("micropip");
-        const micropip = pyodide.pyimport("micropip");
-        await micropip.install("pygame-ce");
-        await micropip.install("Pillow");
-
-
-        await pyodide.runPython(`
-            import pygame, sys, pillow
-            sys.version            
-        `);
-      }
-      main();
+      var pyodide;
+      document.addEventListener("DOMContentLoaded", async () => {
+        pyodide = await loadPyodide();
+        configurePythonPath(pyodide);          
+        loadPygame(pyodide);
+      });
     </script>
   </body>
 </html>
