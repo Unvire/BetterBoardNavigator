@@ -135,13 +135,8 @@ class DrawBoardEngine:
     
     def changeAreaInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         BoardWrapper.useAreaFromComponentsInPlace(self.boardData)
-        
-        screenWidth, screenHeight = self.screenDimensions
-        wrapper = BoardWrapper(screenWidth, screenHeight)
-        wrapper.setBoard(self.boardData)
-        boardData = wrapper.normalizeBoard()
-
-        self.setBoardData(boardData, isMakeBackup=False)
+        boardDataNormalized = self._getNormalizedBoard(self.screenDimensions, self.boardData)
+        self.setBoardData(boardDataNormalized, isMakeBackup=False)
         return self.drawAndBlitInterface(targetSurface, side)
     
     def resetToDefaultViewInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
@@ -152,10 +147,22 @@ class DrawBoardEngine:
     def showHideOutlinesInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._showHideOutlines()
         return self.drawAndBlitInterface(targetSurface, side)
+
+    def changeScreenDimensionsInterface(self, targetSurface:pygame.Surface, dimensions:tuple[int, int], side:str) -> pygame.Surface:
+        self.screenDimensions = dimensions[:]
+        boardDataNormalized = self._getNormalizedBoard(dimensions, self.boardData)
+        self.setBoardData(boardDataNormalized, isMakeBackup=True)
+        return self.drawAndBlitInterface(targetSurface, side)
     
     def drawAndBlitInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._drawBoard(side)
         return self._blitBoardSurfacesIntoTarget(targetSurface)
+
+    def _getNormalizedBoard(self, surfaceDimensions:tuple[int, int], boardInstance:board.Board) -> board.Board:
+        width, height = surfaceDimensions
+        wrapper = BoardWrapper(width, height)
+        wrapper.setBoard(boardInstance)
+        return wrapper.normalizeBoard()
 
     def _adjustBoardDimensionsForRotating(self):
         def calculateDiagonal(dimensions:list[int|float]) -> float:
@@ -535,6 +542,7 @@ if __name__ == '__main__':
     print('Show/hide selected net components - n')
     print('Highlight common type components - a')
     print('Clear common type components - s')
+    print('Change screen surface dimensions - g')
     print('====================================')
 
     run = True
@@ -624,6 +632,12 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_f:
                     engine.showHideOutlinesInterface(WIN, side)
+
+                elif event.key == pygame.K_g:
+                    width = int(input("New width: "))
+                    height = int(input("New height: "))
+                    WIN = pygame.display.set_mode((width, height))
+                    engine.changeScreenDimensionsInterface(WIN, [width, height] ,side)
                 
 
         ## display image
