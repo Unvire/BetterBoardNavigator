@@ -1,6 +1,7 @@
 .buttons-row{
     display: flex;
     justify-content: center;
+    background-color: aqua;
 }
 
 .grid-container{
@@ -15,24 +16,30 @@
 
 .item-top-row{
     grid-area: 1 / 1 / 1 / 6;
+    background-color: blueviolet;
 }
 
 .item-left-middle{
     grid-area: 2 / 1 / 8 / 1;
+    background-color: blue;
 }
 
 .item-left-bottom{
     grid-area: 8 / 1 / 11 / 1;
+    background-color: black;
 }
 
 .item-center{
     grid-area: 2 / 2 / 11 / 5;
+    background-color: black;
 }
 
 .item-right-middle{
     grid-area: 2 / 5 / 8 / 5;
+    background-color: yellow;
 }
 
 .item-right-bottom{
     grid-area: 8 / 5 / 11 / 5;
+    background-color: yellowgreen;
 }
