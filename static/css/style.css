@@ -1,5 +1,5 @@
 :root{
-    --BUTTONS-ROW-HEIGHT: 50px;
+    --BUTTONS-ROW-HEIGHT: 100px;
 }
 
 body{
@@ -9,7 +9,7 @@ body{
 
 .buttons-row{
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     background-color: aqua;
     height: var(--BUTTONS-ROW-HEIGHT);
 }
@@ -49,4 +49,10 @@ body{
 .item-right-bottom{
     grid-area: 8 / 5 / 11 / 5;
     background-color: yellowgreen;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
