@@ -45,7 +45,10 @@ body{
 
 .item-center{
     grid-area: 1 / 2 / 11 / 10;
-    background-color: red;
+    background-color: red;    
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .item-right-middle{
@@ -56,4 +59,12 @@ body{
 .item-right-bottom{
     grid-area: 8 / 10 / 11 / 10;
     background-color: yellowgreen;
+}
+
+canvas{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
