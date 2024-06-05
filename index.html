@@ -52,7 +52,7 @@
             <p>component pinout</p>
         </div>
         <div class="item-center">
-            <canvas id="canvas"></canvas>
+            <canvas id="canvas" width="1400" height="800"></canvas>
         </div>
         <div class="item-right-middle">
             <p>nets list</p>
@@ -69,9 +69,10 @@
 
         document.addEventListener("DOMContentLoaded", async () => {
             pyodide = await loadPyodide();
-            configurePythonPath(pyodide);                      
-            loadPygame(pyodide);            
+            await configurePythonPath(pyodide);                      
+            await loadPygame(pyodide);            
             await loadLocalModules(pyodide);
+            pyodide.canvas.setCanvas2D(canvas);
             loadFileButton.disabled = false;
         });
 
