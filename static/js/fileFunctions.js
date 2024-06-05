@@ -5,16 +5,23 @@ async function openAndLoadCadFile(pyodide, file) {
     reader.onload = async (event) => {
         const fileContent = event.target.result;
         pyodide.FS.writeFile(fileName, new Uint8Array(fileContent));
-        
-        // process .cad, .gcd and .tgz files
-        await pyodide.runPythonAsync(`
-            from loaderSelectorFactory import LoaderSelectorFactory
 
-            loader = LoaderSelectorFactory("/${fileName}")
-            fileLines = loader.loadFile("/${fileName}")
-            print(fileLines)
-            board = loader.processFileLines(fileLines)
-            print(board)
+        await pyodide.runPythonAsync(`
+            from boardWrapper import BoardWrapper
+            from pygameDrawBoard import DrawBoardEngine
+
+            cadFileName = '${fileName}'
+
+            wrapper = BoardWrapper(canvas.width, canvas.height)
+            wrapper.loadAndSetBoardFromFilePath(cadFileName)
+            boardInstance = wrapper.normalizeBoard()
+
+            SURFACE = pygame.display.set_mode((canvas.width, canvas.height))
+
+            engine = DrawBoardEngine(canvas.width, canvas.height)
+            engine.setBoardData(boardInstance)
+            engine.drawAndBlitInterface(SURFACE, 'B')
+            pygame.display.flip()
         `);
     };
     reader.readAsArrayBuffer(file);
