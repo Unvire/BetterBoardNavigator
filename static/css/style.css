@@ -7,11 +7,18 @@ body{
     padding: 0;
 }
 
-.buttons-row{
+.buttons-row-flexbox{
     display: flex;
     justify-content: space-evenly;
     background-color: aqua;
     height: var(--BUTTONS-ROW-HEIGHT);
+}
+
+.buttons-flexbox{
+    display: flex;
+    margin: 2px;
+    flex-direction: row;
+    justify-content: space-evenly;
 }
 
 .grid-container{
@@ -49,10 +56,4 @@ body{
 .item-right-bottom{
     grid-area: 8 / 10 / 11 / 10;
     background-color: yellowgreen;
-}
-
-.buttons{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
