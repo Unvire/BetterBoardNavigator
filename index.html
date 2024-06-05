@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Better Board Navigator</title>
     <link rel="stylesheet" href="/static/css/style.css"/>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js"></script>
+    <script type="text/javascript" src="/static/js/configurePythonFunctions.js"></script>    
+    <script type="text/javascript" src="/static/js/fileFunctions.js"></script>
 </head>
 <body>
     <div class="buttons-row-flexbox">
         <div class="buttons-flexbox">
-            <button type="button" id="load-file-button">Load File</button>
+            <button type="button" id="load-file-button" disabled="true">Load File</button>
             <button type="button" id="change-colors-button">Change Colors</button>
         </div>
         <div class="buttons-flexbox">
@@ -59,12 +62,22 @@
         </div>
     </div>
     <script>
-        function resizeCanvas() {
-            const canvas = document.getElementById('canvas');
-            const container = document.getElementById('item-center');
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
+        var pyodide;
+        const canvas = document.getElementById('canvas');
+        const canvasParent = document.getElementById('item-center');
+
+        function resizeCanvas() {            
+            canvas.width = canvasParent.clientWidth;
+            canvas.height = canvasParent.clientHeight;
         }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            pyodide = await loadPyodide();
+            configurePythonPath(pyodide);                      
+            loadPygame(pyodide);            
+            await loadLocalModules(pyodide);
+            document.getElementById("load-file-button").disabled = false;
+        });
 
         window.addEventListener('resize', resizeCanvas);
         window.addEventListener('load', resizeCanvas);
