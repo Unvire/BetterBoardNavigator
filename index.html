@@ -68,9 +68,14 @@
         const canvasParent = document.getElementById('item-center');
         const loadFileButton = document.getElementById('load-file-button');
 
-        function resizeCanvas(){
+        async function resizeCanvas(){
             canvas.width = canvasParent.clientWidth;
             canvas.height = canvasParent.clientHeight;
+            pyodide.runPythonAsync(`
+                if engine:
+                    engine.changeScreenDimensionsInterface(SURFACE, [canvas.width, canvas.height], 'B')
+                    pygame.display.flip()
+            `);
         }
 
         document.addEventListener("DOMContentLoaded", async () => {
@@ -81,8 +86,11 @@
             pyodide.canvas.setCanvas2D(canvas);
             loadFileButton.disabled = false;
             
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
+            window.onresize = function(){
+                let RESCALE_AFTER_MS = 50;
+                clearTimeout(setTimeout(resizeCanvas, RESCALE_AFTER_MS));
+            };
+            await resizeCanvas();
         });
 
         loadFileButton.addEventListener("change", async (event) => {

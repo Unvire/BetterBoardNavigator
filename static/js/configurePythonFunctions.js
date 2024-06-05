@@ -3,6 +3,8 @@ async function configurePythonPath(pyodide){
         import sys
         sys.path.append("/")
 
+        engine = None
+
         from js import document
         canvas = document.getElementById("canvas")
     `);
