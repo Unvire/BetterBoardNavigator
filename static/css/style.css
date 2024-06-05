@@ -43,7 +43,7 @@ body{
     background-color: pink;
 }
 
-.item-center{
+#item-center{
     grid-area: 1 / 2 / 11 / 10;
     background-color: red;    
     position: relative;

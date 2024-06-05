@@ -51,8 +51,8 @@
         <div class="item-left-bottom">
             <p>component pinout</p>
         </div>
-        <div class="item-center">
-            <canvas id="canvas" width="1400" height="800"></canvas>
+        <div id="item-center">
+            <canvas id="canvas"></canvas>
         </div>
         <div class="item-right-middle">
             <p>nets list</p>
@@ -65,7 +65,14 @@
         var pyodide;
         var loadedFileName = "";
         const canvas = document.getElementById('canvas');
-        const loadFileButton = document.getElementById('load-file-button')
+        const canvasParent = document.getElementById('item-center');
+        const loadFileButton = document.getElementById('load-file-button');
+
+        function resizeCanvas(){
+            console.log(canvasParent.clientWidth, canvasParent.clientHeight);
+            canvas.width = canvasParent.clientWidth;
+            canvas.height = canvasParent.clientHeight;
+        }
 
         document.addEventListener("DOMContentLoaded", async () => {
             pyodide = await loadPyodide();
@@ -74,6 +81,9 @@
             await loadLocalModules(pyodide);
             pyodide.canvas.setCanvas2D(canvas);
             loadFileButton.disabled = false;
+            
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
         });
 
         loadFileButton.addEventListener("change", async (event) => {
@@ -84,7 +94,6 @@
                 loadedFileName = file.name;
             }
         });
-
     </script>
 </body>
 </html>
