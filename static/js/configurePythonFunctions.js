@@ -2,6 +2,9 @@ async function configurePythonPath(pyodide){
     await pyodide.runPythonAsync(`
         import sys
         sys.path.append("/")
+
+        from js import document
+        canvas = document.getElementById("canvas")
     `);
 }
 
