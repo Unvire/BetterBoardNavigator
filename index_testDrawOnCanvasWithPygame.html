@@ -12,16 +12,20 @@
     <canvas id="canvas" width="400" height="400"></canvas>
     <script>
         var pyodide;
+        const canvas = document.getElementById("canvas");
         
         document.addEventListener("DOMContentLoaded", async () => {
             pyodide = await loadPyodide();
             await loadPygame(pyodide);
             await configurePythonPath(pyodide);
 
-            canvas = document.getElementById("canvas");
             pyodide.canvas.setCanvas2D(canvas);
             await pyodide.runPythonAsync(`
-                surface = pygame.display.set_mode((400, 400))
+                from js import document
+                canvas = document.getElementById("canvas")
+                width = canvas.width
+                height = canvas.height
+                surface = pygame.display.set_mode((width, height))
                 surface.fill((100, 100, 100))
                 pygame.draw.rect(surface, (255, 0, 0), (150, 150, 100, 100))
                 pygame.display.flip()
