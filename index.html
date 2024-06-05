@@ -12,7 +12,7 @@
 <body>
     <div class="buttons-row-flexbox">
         <div class="buttons-flexbox">
-            <button type="button" id="load-file-button" disabled="true">Load File</button>
+            <input type="file" id="load-file-button" disabled="true">Load File</button>
             <button type="button" id="change-colors-button">Change Colors</button>
         </div>
         <div class="buttons-flexbox">
@@ -63,16 +63,27 @@
     </div>
     <script>
         var pyodide;
+        var loadedFileName = "";
         const canvas = document.getElementById('canvas');
+        const loadFileButton = document.getElementById('load-file-button')
 
         document.addEventListener("DOMContentLoaded", async () => {
             pyodide = await loadPyodide();
             configurePythonPath(pyodide);                      
             loadPygame(pyodide);            
             await loadLocalModules(pyodide);
-            document.getElementById("load-file-button").disabled = false;
+            loadFileButton.disabled = false;
         });
-        
+
+        loadFileButton.addEventListener("change", async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                await removePreviousFileFromFS(pyodide, loadedFileName);
+                await openAndLoadCadFile(pyodide, file);
+                loadedFileName = file.name;
+            }
+        });
+
     </script>
 </body>
 </html>
