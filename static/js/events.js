@@ -47,9 +47,8 @@ async function changeSideEvent(){
     isSideBottom = !isSideBottom;
     side = currentSide();
     pyodide.runPythonAsync(`
-        if engine:
-            engine.changeSideInterface(SURFACE, '${side}')
-            pygame.display.flip()
+        engine.changeSideInterface(SURFACE, '${side}')
+        pygame.display.flip()
     `);
 };
 
