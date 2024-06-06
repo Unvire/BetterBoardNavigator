@@ -68,6 +68,8 @@
         var isMousePressed = false;
         var isMouseClickedFirstTime = false;
         var isSideBottom = true;
+        var resizeTimeout = null;
+
         const sideMap = new Map();
         sideMap.set(true, 'B');
         sideMap.set(false, 'T');
@@ -93,40 +95,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", async () => {
-            window.onresize = function(){
-                let RESCALE_AFTER_MS = 50;
-                clearTimeout(setTimeout(resizeCanvas, RESCALE_AFTER_MS));
-            };
-
-            canvas.onmousedown = function(e){
-                const x = e.offsetX; 
-                const y = e.offsetY;
-                isMousePressed = true;
-                isMouseClickedFirstTime = true;
-            };
-
-            canvas.onmouseup = function(e){
-                isMousePressed = false;
-            };
-
-            canvas.onmousemove = function(e){
-                if (isMousePressed){
-                    if (!isMouseClickedFirstTime){
-                        const x = e.movementX; 
-                        const y = e.movementY;
-
-                        pyodide.runPythonAsync(`
-                            if engine:
-                                deltaVector = [int('${x}'), int('${y}')]
-                                engine.moveBoardInterface(SURFACE, deltaVector)
-                                pygame.display.flip()
-                        `);
-                    } else {
-                        isMouseClickedFirstTime = false;
-                    }
-                }
-            };
-
             pyodide = await loadPyodide();
             await configurePythonPath(pyodide);                      
             await loadPygame(pyodide);            
@@ -135,6 +103,12 @@
             pyodide.canvas.setCanvas2D(canvas);
             loadFileButton.disabled = false;
             await resizeCanvas();
+            
+            console.log(resizeTimeout)
+            window.addEventListener("resize", windowResizeEvent);
+            canvas.addEventListener("mousedown", mouseDownEvent);
+            canvas.addEventListener("mouseup", mouseUpEvent);       
+            canvas.addEventListener("mousemove", mouseMoveEvent);
 
             loadFileButton.addEventListener("change", loadFileEvent);
             changeSideButton.addEventListener("click", changeSideEvent);
