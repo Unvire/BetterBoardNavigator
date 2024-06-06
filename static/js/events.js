@@ -1,7 +1,7 @@
 async function windowResizeEvent(event){
     let RESCALE_AFTER_MS = 3;
     clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(resizeCanvas, RESCALE_AFTER_MS);
+    resizeTimeout = setTimeout(_resizeBoard, RESCALE_AFTER_MS);
 };
 
 function mouseDownEvent(event){
@@ -50,5 +50,14 @@ async function changeSideEvent(){
         if engine:
             engine.changeSideInterface(SURFACE, '${side}')
             pygame.display.flip()
+    `);
+};
+
+async function _resizeBoard(){
+    setCanvasDimensions();
+    side = currentSide();
+    pyodide.runPythonAsync(`
+        engine.changeScreenDimensionsInterface(SURFACE, [canvas.width, canvas.height], '${side}')
+        pygame.display.flip()
     `);
 };

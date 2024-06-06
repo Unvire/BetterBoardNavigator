@@ -80,19 +80,13 @@
         const changeSideButton = document.getElementById('change-side-button');
 
         function currentSide(){
-            return sideMap.get(isSideBottom)
-        }
+            return sideMap.get(isSideBottom);
+        };
 
-        async function resizeCanvas(){
+        function setCanvasDimensions(){
             canvas.width = canvasParent.clientWidth;
             canvas.height = canvasParent.clientHeight;
-            side = currentSide()
-            pyodide.runPythonAsync(`
-                if engine:
-                    engine.changeScreenDimensionsInterface(SURFACE, [canvas.width, canvas.height], '${side}')
-                    pygame.display.flip()
-            `);
-        }
+        };
 
         document.addEventListener("DOMContentLoaded", async () => {
             pyodide = await loadPyodide();
@@ -102,7 +96,7 @@
 
             pyodide.canvas.setCanvas2D(canvas);
             loadFileButton.disabled = false;
-            await resizeCanvas();
+            setCanvasDimensions();
             
             console.log(resizeTimeout)
             window.addEventListener("resize", windowResizeEvent);
