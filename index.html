@@ -103,6 +103,13 @@
                     if (!isMouseClickedFirstTime){
                         const x = e.movementX; 
                         const y = e.movementY;
+
+                        pyodide.runPythonAsync(`
+                            if engine:
+                                deltaVector = [int('${x}'), int('${y}')]
+                                engine.moveBoardInterface(SURFACE, deltaVector)
+                                pygame.display.flip()
+                        `);
                     } else {
                         isMouseClickedFirstTime = false;
                     }
