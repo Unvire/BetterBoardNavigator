@@ -66,17 +66,26 @@
         var loadedFileName = "";
         var isMousePressed = false;
         var isMouseClickedFirstTime = false;
+        var isSideBottom = true;
+        const sideMap = new Map();
+        sideMap.set(true, 'B');
+        sideMap.set(false, 'T');
 
         const canvas = document.getElementById('canvas');
         const canvasParent = document.getElementById('item-center');
         const loadFileButton = document.getElementById('load-file-button');
 
+        function currentSide(){
+            return sideMap.get(isSideBottom)
+        }
+
         async function resizeCanvas(){
             canvas.width = canvasParent.clientWidth;
             canvas.height = canvasParent.clientHeight;
+            side = currentSide()
             pyodide.runPythonAsync(`
                 if engine:
-                    engine.changeScreenDimensionsInterface(SURFACE, [canvas.width, canvas.height], 'B')
+                    engine.changeScreenDimensionsInterface(SURFACE, [canvas.width, canvas.height], '${side}')
                     pygame.display.flip()
             `);
         }

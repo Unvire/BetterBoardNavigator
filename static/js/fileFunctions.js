@@ -5,6 +5,7 @@ async function openAndLoadCadFile(pyodide, file) {
     reader.onload = async (event) => {
         const fileContent = event.target.result;
         pyodide.FS.writeFile(fileName, new Uint8Array(fileContent));
+        side = currentSide();
 
         await pyodide.runPythonAsync(`
             from boardWrapper import BoardWrapper
@@ -20,7 +21,7 @@ async function openAndLoadCadFile(pyodide, file) {
 
             engine = DrawBoardEngine(canvas.width, canvas.height)
             engine.setBoardData(boardInstance)
-            engine.drawAndBlitInterface(SURFACE, 'B')
+            engine.drawAndBlitInterface(SURFACE, '${side}')
             pygame.display.flip()
         `);
     };
