@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="/static/css/style.css"/>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js"></script>
     <script type="text/javascript" src="/static/js/configurePythonFunctions.js"></script>    
-    <script type="text/javascript" src="/static/js/fileFunctions.js"></script>
+    <script type="text/javascript" src="/static/js/fileFunctions.js"></script>   
+    <script type="text/javascript" src="/static/js/events.js"></script>
 </head>
 <body>
     <div class="buttons-row-flexbox">
@@ -135,25 +136,8 @@
             loadFileButton.disabled = false;
             await resizeCanvas();
 
-            loadFileButton.addEventListener("change", async (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    await removePreviousFileFromFS(pyodide, loadedFileName);
-                    await openAndLoadCadFile(pyodide, file);
-                    loadedFileName = file.name;
-                    changeSideButton.disabled = false;
-                }
-            });
-
-            changeSideButton.addEventListener("click", async (event) => {    
-                isSideBottom = !isSideBottom;
-                side = currentSide();
-                pyodide.runPythonAsync(`
-                    if engine:
-                        engine.changeSideInterface(SURFACE, '${side}')
-                        pygame.display.flip()
-                `);
-            });
+            loadFileButton.addEventListener("change", loadFileEvent);
+            changeSideButton.addEventListener("click", changeSideEvent);
 
         });
 
