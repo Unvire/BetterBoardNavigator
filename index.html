@@ -64,6 +64,9 @@
     <script>
         var pyodide;
         var loadedFileName = "";
+        var isMousePressed = false;
+        var isMouseClickedFirstTime = false;
+
         const canvas = document.getElementById('canvas');
         const canvasParent = document.getElementById('item-center');
         const loadFileButton = document.getElementById('load-file-button');
@@ -79,17 +82,40 @@
         }
 
         document.addEventListener("DOMContentLoaded", async () => {
-            pyodide = await loadPyodide();
-            await configurePythonPath(pyodide);                      
-            await loadPygame(pyodide);            
-            await loadLocalModules(pyodide);
-            pyodide.canvas.setCanvas2D(canvas);
-            loadFileButton.disabled = false;
-            
             window.onresize = function(){
                 let RESCALE_AFTER_MS = 50;
                 clearTimeout(setTimeout(resizeCanvas, RESCALE_AFTER_MS));
             };
+
+            canvas.onmousedown = function(e){
+                const x = e.offsetX; 
+                const y = e.offsetY;
+                isMousePressed = true;
+                isMouseClickedFirstTime = true;
+            };
+
+            canvas.onmouseup = function(e){
+                isMousePressed = false;
+            };
+
+            canvas.onmousemove = function(e){
+                if (isMousePressed){
+                    if (!isMouseClickedFirstTime){
+                        const x = e.movementX; 
+                        const y = e.movementY;
+                    } else {
+                        isMouseClickedFirstTime = false;
+                    }
+                }
+            };
+
+            pyodide = await loadPyodide();
+            await configurePythonPath(pyodide);                      
+            await loadPygame(pyodide);            
+            await loadLocalModules(pyodide);
+
+            pyodide.canvas.setCanvas2D(canvas);
+            loadFileButton.disabled = false;
             await resizeCanvas();
         });
 
