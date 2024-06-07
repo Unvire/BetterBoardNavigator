@@ -1,5 +1,5 @@
 async function openAndLoadCadFile(pyodide, file) {
-    var fileName = `/${file.name}`
+    var fileName = `/${file.name}`;
     const reader = new FileReader(); 
 
     reader.onload = async (event) => {
@@ -38,7 +38,7 @@ async function openAndLoadCadFile(pyodide, file) {
 
             itemElement.addEventListener('click', () => selectComponentFromListEvent(itemElement));
         });
-    };
+    }
     reader.readAsArrayBuffer(file);
 }
 

@@ -99,7 +99,7 @@
 
         function currentSide(){
             return sideMap[isSideBottom];
-        };
+        }
 
         function changeSide(){            
             isSideBottom = !isSideBottom;
@@ -108,7 +108,7 @@
         function setCanvasDimensions(){
             canvas.width = canvasParent.clientWidth;
             canvas.height = canvasParent.clientHeight;
-        };
+        }
 
         // This is a workaround about the fact that the pygame-ce is not run in an inifite loop but as an image generator. 
         // As result "main game loop" doesn't exist, which results in throwing errors when any key is pressed down
@@ -119,7 +119,7 @@
                 console.log(message);
                 return true;
             }
-        };
+        }
 
         document.addEventListener("DOMContentLoaded", async () => {
             pyodide = await loadPyodide();
