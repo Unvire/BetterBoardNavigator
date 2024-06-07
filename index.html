@@ -110,6 +110,17 @@
             canvas.height = canvasParent.clientHeight;
         };
 
+        // This is a workaround about the fact that the pygame-ce is not run in an inifite loop but as an image generator. 
+        // As result "main game loop" doesn't exist, which results in throwing errors when any key is pressed down
+        // In other words event is not handled, because game loop does not exist
+        // This cludge overrides JS error handler and ignores these event errors...
+        window.onerror = function(message, source, lineno, colno, error) {
+            if (error.message.includes("emscripten_compute_dom_pk_code")){
+                console.log(message);
+                return true;
+            }
+        };
+
         document.addEventListener("DOMContentLoaded", async () => {
             pyodide = await loadPyodide();
             await configurePythonPath(pyodide);                      
@@ -139,7 +150,6 @@
             preserveComponentMarkesButton.addEventListener("click", preserveComponentMarkesEvent);
             clearMarkersButton.addEventListener("click", clearMarkersEvent);
         });
-
     </script>
 </body>
 </html>

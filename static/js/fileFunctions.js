@@ -17,6 +17,9 @@ async function openAndLoadCadFile(pyodide, file) {
             wrapper.loadAndSetBoardFromFilePath(cadFileName)
             boardInstance = wrapper.normalizeBoard()
 
+            pygame.init()
+            pygame.display.set_caption('Better Board Navigator')
+
             SURFACE = pygame.display.set_mode((canvas.width, canvas.height))
 
             engine = DrawBoardEngine(canvas.width, canvas.height)
