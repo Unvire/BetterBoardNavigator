@@ -1,4 +1,4 @@
-async function windowResizeEvent(event){
+async function windowResizeEvent(){
     let RESCALE_AFTER_MS = 15;
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(_resizeBoard, RESCALE_AFTER_MS);
@@ -16,7 +16,7 @@ function mouseDownEvent(event){
     isMousePressed = true;
     isMouseClickedFirstTime = true;
     
-    if (isRotateEnable){
+    if (isRotateActive){
         side = currentSide();
         pyodide.runPythonAsync(`
             engine.rotateBoardInterface(SURFACE, isClockwise=True, side='${side}', angleDeg=90)
@@ -114,7 +114,7 @@ async function changeSideEvent(){
 }
 
 function rotateEvent(){
-    isRotateEnable = !isRotateEnable
+    isRotateActive = !isRotateActive;
 }
 
 async function mirrorSideEvent(){
