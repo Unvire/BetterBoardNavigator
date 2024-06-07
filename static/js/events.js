@@ -75,8 +75,7 @@ async function loadFileEvent(event){
         await removePreviousFileFromFS(pyodide, loadedFileName);
         await openAndLoadCadFile(pyodide, file);
         loadedFileName = file.name;
-        changeSideButton.disabled = false;
-        rotateButton.disabled = false;
+        _enableButtons();
     }
 }
 
@@ -93,6 +92,14 @@ function rotateEvent(){
     isRotateEnable = !isRotateEnable
 };
 
+async function mirrorSideEvent(){
+    side = currentSide();
+    pyodide.runPythonAsync(`
+        engine.flipUnflipCurrentSideInterface(SURFACE, '${side}')
+        pygame.display.flip()
+    `);
+};
+
 async function _resizeBoard(){
     setCanvasDimensions();
     side = currentSide();
@@ -100,4 +107,10 @@ async function _resizeBoard(){
         engine.changeScreenDimensionsInterface(SURFACE, [canvas.width, canvas.height], '${side}')
         pygame.display.flip()
     `);
+};
+
+function _enableButtons(){
+    changeSideButton.disabled = false;
+    rotateButton.disabled = false;
+    mirrorSideButton.disabled = false;
 };
