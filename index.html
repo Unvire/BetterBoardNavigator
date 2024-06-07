@@ -23,7 +23,7 @@
             <button type="button" id="toggle-outlines-button"  disabled="true">Show/Hide Outlines</button>
         </div>
         <div class="buttons-flexbox">
-            <button type="button" id="default-view-button">Default View</button>
+            <button type="button" id="default-view-button" disabled="true">Default View</button>
             <button type="button" id="components-area-button">Area From Components</button>
         </div>
         <div class="buttons-flexbox">
@@ -86,6 +86,7 @@
         const rotateButton = document.getElementById('rotate-button');
         const mirrorSideButton = document.getElementById('mirror-side-button');
         const toggleOutlinesButton = document.getElementById('toggle-outlines-button');
+        const resetViewButton = document.getElementById('default-view-button');        
 
         function currentSide(){
             return sideMap.get(isSideBottom);
@@ -117,6 +118,7 @@
             rotateButton.addEventListener("click", rotateEvent);
             mirrorSideButton.addEventListener("click", mirrorSideEvent);
             toggleOutlinesButton.addEventListener("click", toggleOutlinesEvent);
+            resetViewButton.addEventListener("click", resetViewEvent);
         });
 
     </script>
