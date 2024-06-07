@@ -51,13 +51,18 @@ body{
     height: 100%;
 }
 
-.item-right-middle{
+.item-right-top{
     grid-area: 1 / 10 / 8 / 10;
     background-color: yellow;
 }
 
+.item-right-middle{
+    grid-area: 8 / 10 / 10 / 10;
+    background-color: tan;
+}
+
 .item-right-bottom{
-    grid-area: 8 / 10 / 11 / 10;
+    grid-area: 10 / 10 / 11 / 10;
     background-color: yellowgreen;
 }
 
