@@ -170,9 +170,19 @@ function selectComponentFromListEvent(itemElement){
     _markSelectedComponentFromList(selectedComponent);
 }
 
-function preserveComponentMarkesButtonEvent(){
+function preserveComponentMarkesEvent(){
     isPresereMarkedComponentsActive = !isPresereMarkedComponentsActive;
 }
+
+async function clearMarkersEvent(){
+    isPresereMarkedComponentsActive = false;
+    side = currentSide();
+    pyodide.runPythonAsync(`
+        engine.clearFindComponentByNameInterface(SURFACE, '${side}')
+        pygame.display.flip()
+    `);
+}
+
 
 function _enableButtons(){
     changeSideButton.disabled = false;
@@ -183,6 +193,7 @@ function _enableButtons(){
     areaFromComponentsButton.disabled = false;
     toggleFindComponentByClickButton.disabled = false;
     preserveComponentMarkesButton.disabled = false;
+    clearMarkersButton.disabled = false;
 }
 
 async function _markSelectedComponentFromList(selectedComponentFromList){

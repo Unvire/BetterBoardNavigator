@@ -99,6 +99,7 @@
         const toggleFindComponentByClickButton = document.getElementById('clicked-component-button');
         const componentsList = document.getElementById('scrollableList');
         const preserveComponentMarkesButton = document.getElementById('toggle-leave-markers-button');
+        const clearMarkersButton = document.getElementById('unselect-components-button');
 
         function currentSide(){
             return sideMap.get(isSideBottom);
@@ -139,7 +140,8 @@
             resetViewButton.addEventListener("click", resetViewEvent);
             areaFromComponentsButton.addEventListener("click", areaFromComponentsEvent);
             toggleFindComponentByClickButton.addEventListener("click", toggleFindComponentByClickEvent);
-            preserveComponentMarkesButton.addEventListener("click", preserveComponentMarkesButtonEvent);
+            preserveComponentMarkesButton.addEventListener("click", preserveComponentMarkesEvent);
+            clearMarkersButton.addEventListener("click", clearMarkersEvent);
         });
 
     </script>
