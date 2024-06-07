@@ -101,6 +101,10 @@
             return sideMap.get(isSideBottom);
         };
 
+        function changeSide(){            
+            isSideBottom = !isSideBottom;
+        }
+
         function setCanvasDimensions(){
             canvas.width = canvasParent.clientWidth;
             canvas.height = canvasParent.clientHeight;

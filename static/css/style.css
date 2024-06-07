@@ -86,4 +86,10 @@ canvas{
 .scrollable-list div {
     padding: 2px;
     border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.scrollable-list div.selected {
+    background-color: #007bff;
+    color: white;
 }

@@ -32,7 +32,9 @@ async function openAndLoadCadFile(pyodide, file) {
             const itemElement = document.createElement('div');
             itemElement.textContent = componentName;
             componentsList.appendChild(itemElement);
-    });
+
+            itemElement.addEventListener('click', () => selectComponentFromListEvent(itemElement));
+        });
     };
     reader.readAsArrayBuffer(file);
 }

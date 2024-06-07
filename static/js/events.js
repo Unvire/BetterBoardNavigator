@@ -2,7 +2,7 @@ async function windowResizeEvent(event){
     let RESCALE_AFTER_MS = 15;
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(_resizeBoard, RESCALE_AFTER_MS);
-};
+}
 
 function keyDownEvent(event){
     var keyID = event.which;
@@ -19,9 +19,9 @@ function mouseDownEvent(event){
     if (isRotateEnable){
         side = currentSide();
         pyodide.runPythonAsync(`
-                engine.rotateBoardInterface(SURFACE, isClockwise=True, side='${side}', angleDeg=90)
-                pygame.display.flip()
-            `);
+            engine.rotateBoardInterface(SURFACE, isClockwise=True, side='${side}', angleDeg=90)
+            pygame.display.flip()
+        `);
     } else if (isFindComponentByClickActive){        
         const x = event.offsetX; 
         const y = event.offsetY;        
@@ -29,18 +29,18 @@ function mouseDownEvent(event){
 
         side = currentSide();
         pyodide.runPython(`
-                clickedXY = [int('${x}'), int('${y}')]
-                clickedComponents = engine.findComponentByClick(clickedXY, '${side}')
-                pygame.display.flip()
-            `);
+            clickedXY = [int('${x}'), int('${y}')]
+            clickedComponents = engine.findComponentByClick(clickedXY, '${side}')
+            pygame.display.flip()
+        `);
         clickedComponents = pyodide.globals.get('clickedComponents').toJs();
         document.getElementById("clicked-components").innerText = clickedComponents;
-    };
-};
+    }
+}
 
 function mouseUpEvent(){
     isMousePressed = false;
-};
+}
 
 async function mouseMoveEvent(event){
     if (isMousePressed){
@@ -58,7 +58,7 @@ async function mouseMoveEvent(event){
             isMouseClickedFirstTime = false;
         }
     }
-};
+}
 
 async function mouseScrollEvent(event){
     const x = event.offsetX; 
@@ -87,7 +87,7 @@ async function mouseScrollEvent(event){
         engine.scaleUpDownInterface(SURFACE, isScaleUp=isScaleUp, pointXY=pointXY, side='${side}')
         pygame.display.flip()
     `);
-};
+}
 
 async function loadFileEvent(event){
     const file = event.target.files[0];
@@ -100,17 +100,17 @@ async function loadFileEvent(event){
 }
 
 async function changeSideEvent(){
-    isSideBottom = !isSideBottom;
+    changeSide();
     side = currentSide();
     pyodide.runPythonAsync(`
         engine.changeSideInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
-};
+}
 
 function rotateEvent(){
     isRotateEnable = !isRotateEnable
-};
+}
 
 async function mirrorSideEvent(){
     side = currentSide();
@@ -118,7 +118,7 @@ async function mirrorSideEvent(){
         engine.flipUnflipCurrentSideInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
-};
+}
 
 async function toggleOutlinesEvent(){
     side = currentSide();
@@ -126,7 +126,7 @@ async function toggleOutlinesEvent(){
         engine.showHideOutlinesInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
-};
+}
 
 async function resetViewEvent(){
     side = currentSide();
@@ -155,7 +155,16 @@ async function _resizeBoard(){
         engine.changeScreenDimensionsInterface(SURFACE, [canvas.width, canvas.height], '${side}')
         pygame.display.flip()
     `);
-};
+}
+
+function selectComponentFromListEvent(itemElement){
+    const allItems = componentsList.querySelectorAll('div');
+    allItems.forEach(el => el.classList.remove('selected'));
+    
+    itemElement.classList.add('selected');
+    let selectedComponent = itemElement.textContent;
+    _markSelectedComponentFromList(selectedComponent);
+}
 
 function _enableButtons(){
     changeSideButton.disabled = false;
@@ -165,4 +174,23 @@ function _enableButtons(){
     resetViewButton.disabled = false;
     areaFromComponentsButton.disabled = false;
     toggleFindComponentByClickButton.disabled = false;
-};
+}
+
+async function _markSelectedComponentFromList(selectedComponentFromList){
+    pyodide.runPython(`
+        componentName = '${selectedComponentFromList}'
+        componentSide = engine.getSideOfComponent(componentName)
+    `);
+    
+    let componentSide = pyodide.globals.get('componentSide');
+    side = currentSide();
+
+    if (componentSide != side){
+        changeSide();
+        side = currentSide();
+    }
+    pyodide.runPython(`
+        engine.findComponentByNameInterface(SURFACE, componentName, '${side}')
+        pygame.display.flip()
+    `);
+}
