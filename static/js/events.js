@@ -116,6 +116,14 @@ async function resetViewEvent(){
     `);
 }
 
+async function areaFromComponentsEvent(){
+    side = currentSide();
+    pyodide.runPythonAsync(`
+        engine.changeAreaInterface(SURFACE, '${side}')
+        pygame.display.flip()
+    `);
+}
+
 async function _resizeBoard(){
     setCanvasDimensions();
     side = currentSide();
@@ -131,4 +139,5 @@ function _enableButtons(){
     mirrorSideButton.disabled = false;
     toggleOutlinesButton.disabled = false;
     resetViewButton.disabled = false;
+    areaFromComponentsButton.disabled = false;
 };

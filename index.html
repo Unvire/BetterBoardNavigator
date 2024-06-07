@@ -24,7 +24,7 @@
         </div>
         <div class="buttons-flexbox">
             <button type="button" id="default-view-button" disabled="true">Default View</button>
-            <button type="button" id="components-area-button">Area From Components</button>
+            <button type="button" id="components-area-button" disabled="true">Area From Components</button>
         </div>
         <div class="buttons-flexbox">
             <button type="button" id="clicked-component-button">Toggle Clicked Component Name Mode</button>
@@ -86,7 +86,8 @@
         const rotateButton = document.getElementById('rotate-button');
         const mirrorSideButton = document.getElementById('mirror-side-button');
         const toggleOutlinesButton = document.getElementById('toggle-outlines-button');
-        const resetViewButton = document.getElementById('default-view-button');        
+        const resetViewButton = document.getElementById('default-view-button');    
+        const areaFromComponentsButton = document.getElementById('components-area-button');    
 
         function currentSide(){
             return sideMap.get(isSideBottom);
@@ -119,6 +120,8 @@
             mirrorSideButton.addEventListener("click", mirrorSideEvent);
             toggleOutlinesButton.addEventListener("click", toggleOutlinesEvent);
             resetViewButton.addEventListener("click", resetViewEvent);
+            areaFromComponentsButton.addEventListener("click", areaFromComponentsEvent);
+            
         });
 
     </script>
