@@ -4,6 +4,15 @@ async function windowResizeEvent(event){
     resizeTimeout = setTimeout(_resizeBoard, RESCALE_AFTER_MS);
 };
 
+function keyDownEvent(event){
+    var keyID = event.which;
+    console.log(keyID);
+    switch(keyID){
+        case 18: // alt
+        break;
+    }
+}
+
 function mouseDownEvent(event){
     const x = event.offsetX; 
     const y = event.offsetY;

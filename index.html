@@ -109,6 +109,8 @@
             setCanvasDimensions();
             
             window.addEventListener("resize", windowResizeEvent);
+            window.addEventListener("keydown", keyDownEvent);
+
             canvas.addEventListener("mousedown", mouseDownEvent);
             canvas.addEventListener("mouseup", mouseUpEvent);       
             canvas.addEventListener("mousemove", mouseMoveEvent);
