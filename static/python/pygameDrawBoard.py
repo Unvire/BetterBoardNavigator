@@ -51,7 +51,7 @@ class DrawBoardEngine:
     def getComponents(self) -> list[str]:
         def calculateSortingValue(component) -> int:
             ## split component name into letters and digits. Calculate value as [ord(char1) + ord(char2) + ...] * 1000 + componentNumber
-            componentType, componentNumber = list(filter(None, re.split(r'(\d+)', component)))
+            componentType, componentNumber, *_ = list(filter(None, re.split(r'(\d+)', component)))
             return sum([ord(char) for char in componentType]) * 1000 + int(componentNumber)
 
         componentsList = list(self.boardData.getComponents().keys())
