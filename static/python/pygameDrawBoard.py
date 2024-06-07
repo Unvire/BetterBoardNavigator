@@ -97,9 +97,9 @@ class DrawBoardEngine:
     def changeSideInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         return self.drawAndBlitInterface(targetSurface, side)
     
-    def rotateBoardInterface(self, targetSurface:pygame.Surface,  isClockwise:bool, side:str) -> pygame.Surface:
+    def rotateBoardInterface(self, targetSurface:pygame.Surface,  isClockwise:bool, side:str, angleDeg:float=None) -> pygame.Surface:
         rotationXY = [val / 2 for val in self.surfaceDimensions]
-        self._rotate(rotationXY, isClockwise)     
+        self._rotate(rotationXY, isClockwise, angleDeg)     
         return self.drawAndBlitInterface(targetSurface, side)
     
     def findComponentByNameInterface(self, targetSurface:pygame.Surface, componentName:str, side:str) -> pygame.Surface:
@@ -191,11 +191,13 @@ class DrawBoardEngine:
         dx, dy = relativeVector
         self.offsetVector = [xMove + dx, yMove + dy]
     
-    def _rotate(self, rotationXY:tuple[int, int], isClockwise:bool):
-        angle = DrawBoardEngine.DELTA_ROTATION_ANGLE_DEG * (-1) ** int(isClockwise)
+    def _rotate(self, rotationXY:tuple[int, int], isClockwise:bool, angleDeg:float=None):
+        if not angleDeg:
+            angleDeg = DrawBoardEngine.DELTA_ROTATION_ANGLE_DEG
+        angleDeg *= (-1) ** int(isClockwise) 
         xRot, yRot = rotationXY
         rotationPoint = gobj.Point(xRot, yRot)
-        BoardWrapper.rotateBoardInPlace(self.boardData, rotationPoint, angle)
+        BoardWrapper.rotateBoardInPlace(self.boardData, rotationPoint, angleDeg)
     
     def _scaleUp(self, zoomingPoint:tuple[int, int]):
         surfaceWidth, surfaceHeight = self.surfaceDimensions
