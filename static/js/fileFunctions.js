@@ -7,7 +7,7 @@ async function openAndLoadCadFile(pyodide, file) {
         pyodide.FS.writeFile(fileName, new Uint8Array(fileContent));
         side = currentSide();
 
-        await pyodide.runPythonAsync(`
+        await pyodide.runPython(`
             from boardWrapper import BoardWrapper
             from pygameDrawBoard import DrawBoardEngine
 
@@ -21,9 +21,18 @@ async function openAndLoadCadFile(pyodide, file) {
 
             engine = DrawBoardEngine(canvas.width, canvas.height)
             engine.setBoardData(boardInstance)
+            allComponents = engine.getComponents()
+
             engine.drawAndBlitInterface(SURFACE, '${side}')
             pygame.display.flip()
         `);
+        let allComponents = pyodide.globals.get('allComponents').toJs();
+
+        allComponents.forEach(componentName => {
+            const itemElement = document.createElement('div');
+            itemElement.textContent = componentName;
+            componentsList.appendChild(itemElement);
+    });
     };
     reader.readAsArrayBuffer(file);
 }

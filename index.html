@@ -47,13 +47,14 @@
         <div class="item-left-top">
             <p>current side</p>
         </div>
-        <div class="item-left-middle">
-            <p>components list</p>
+        <div class="item-left-middle">  
+            <div class="scrollable-list" id="scrollableList">
+            </div>
         </div>
         <div class="item-left-bottom">
             <p>component pinout</p>
         </div>
-        <div id="item-center">
+        <div class="item-center" id="item-center">
             <canvas id="canvas"></canvas>
         </div>
         <div class="item-right-top">
@@ -93,7 +94,8 @@
         const toggleOutlinesButton = document.getElementById('toggle-outlines-button');
         const resetViewButton = document.getElementById('default-view-button');    
         const areaFromComponentsButton = document.getElementById('components-area-button');
-        const toggleFindComponentByClickButton = document.getElementById('clicked-component-button');   
+        const toggleFindComponentByClickButton = document.getElementById('clicked-component-button');
+        const componentsList = document.getElementById('scrollableList');
 
         function currentSide(){
             return sideMap.get(isSideBottom);

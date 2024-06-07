@@ -86,7 +86,7 @@ async function mouseScrollEvent(event){
         isDoScroll = False
         engine.scaleUpDownInterface(SURFACE, isScaleUp=isScaleUp, pointXY=pointXY, side='${side}')
         pygame.display.flip()
-`);
+    `);
 };
 
 async function loadFileEvent(event){

@@ -43,7 +43,7 @@ body{
     background-color: pink;
 }
 
-#item-center{
+.item-center{
     grid-area: 1 / 2 / 11 / 10;
     background-color: red;    
     position: relative;
@@ -72,4 +72,18 @@ canvas{
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+.scrollable-list {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.scrollable-list div {
+    padding: 2px;
+    border-bottom: 1px solid #ddd;
 }
