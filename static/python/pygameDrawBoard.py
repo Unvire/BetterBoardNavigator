@@ -67,6 +67,9 @@ class DrawBoardEngine:
         componentInstance = self.boardData.getElementByName('components', componentName)
         return componentInstance.getSide()
     
+    def getSelectedComponents(self) -> list[str]:
+        return list(self.selectedComponentsSet)
+    
     def changeColor(self, key:str, RGB:tuple[int, int, int]):
         if key in self.colorsDict:
             self.colorsDict[key] = RGB

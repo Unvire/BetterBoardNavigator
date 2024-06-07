@@ -39,6 +39,7 @@ function mouseDownEvent(event){
         `);
         clickedComponents = pyodide.globals.get('clickedComponents').toJs();
         document.getElementById("clicked-components").innerText = clickedComponents;
+        _insertSelectedComponentsIntoDiv();
     }
 }
 
@@ -177,12 +178,12 @@ function preserveComponentMarkesEvent(){
 async function clearMarkersEvent(){
     isPresereMarkedComponentsActive = false;
     side = currentSide();
-    pyodide.runPythonAsync(`
+    pyodide.runPython(`
         engine.clearFindComponentByNameInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
+    _insertSelectedComponentsIntoDiv();
 }
-
 
 function _enableButtons(){
     changeSideButton.disabled = false;
@@ -216,4 +217,13 @@ async function _markSelectedComponentFromList(selectedComponentFromList){
         engine.findComponentByNameInterface(SURFACE, componentName, '${side}')
         pygame.display.flip()
     `);
+    _insertSelectedComponentsIntoDiv();
+}
+
+function _insertSelectedComponentsIntoDiv(){
+    pyodide.runPython(`
+        componentsList = engine.getSelectedComponents()
+    `);
+    let componentsList = pyodide.globals.get('componentsList').toJs();
+    document.getElementById("marked-components").innerText = componentsList;
 }
