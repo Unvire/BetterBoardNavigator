@@ -20,7 +20,7 @@
             <button type="button" id="rotate-button" disabled="true">Rotate</button>
             <button type="button" id="change-side-button" disabled="true">Change Side</button>
             <button type="button" id="mirror-side-button" disabled="true">Mirror Side</button>
-            <button type="button" id="toggle-outlines-button">Show/Hide Outlines</button>
+            <button type="button" id="toggle-outlines-button"  disabled="true">Show/Hide Outlines</button>
         </div>
         <div class="buttons-flexbox">
             <button type="button" id="default-view-button">Default View</button>
@@ -85,6 +85,7 @@
         const changeSideButton = document.getElementById('change-side-button');
         const rotateButton = document.getElementById('rotate-button');
         const mirrorSideButton = document.getElementById('mirror-side-button');
+        const toggleOutlinesButton = document.getElementById('toggle-outlines-button');
 
         function currentSide(){
             return sideMap.get(isSideBottom);
@@ -115,6 +116,7 @@
             changeSideButton.addEventListener("click", changeSideEvent);
             rotateButton.addEventListener("click", rotateEvent);
             mirrorSideButton.addEventListener("click", mirrorSideEvent);
+            toggleOutlinesButton.addEventListener("click", toggleOutlinesEvent);
         });
 
     </script>

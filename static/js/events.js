@@ -100,6 +100,14 @@ async function mirrorSideEvent(){
     `);
 };
 
+async function toggleOutlinesEvent(){
+    side = currentSide();
+    pyodide.runPythonAsync(`
+        engine.showHideOutlinesInterface(SURFACE, '${side}')
+        pygame.display.flip()
+    `);
+};
+
 async function _resizeBoard(){
     setCanvasDimensions();
     side = currentSide();
@@ -113,4 +121,5 @@ function _enableButtons(){
     changeSideButton.disabled = false;
     rotateButton.disabled = false;
     mirrorSideButton.disabled = false;
+    toggleOutlinesButton.disabled = false;
 };
