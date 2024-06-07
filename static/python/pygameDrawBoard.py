@@ -534,7 +534,8 @@ if __name__ == '__main__':
 
     engine = DrawBoardEngine(WIDTH, HEIGHT)
     engine.setBoardData(boardInstance)
-    engine.drawAndBlitInterface(WIN, side)
+    engine.drawAndBlitInterface(WIN, side)    
+    print('Components: ', engine.getComponents())
 
     print('====================================')
     print('Pygame draw PCB engine')
@@ -557,7 +558,6 @@ if __name__ == '__main__':
     print('Change screen surface dimensions - g')
     print('====================================')
 
-    print(engine.getComponents())
     run = True
     while run:
         clock.tick(FPS)
