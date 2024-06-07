@@ -81,9 +81,7 @@
         let isFindComponentByClickActive = false;
         let isPresereMarkedComponentsActive = false;
 
-        const sideMap = new Map();
-        sideMap.set(true, 'B');
-        sideMap.set(false, 'T');
+        const sideMap = {true: 'B', false: 'T'};
 
         const canvas = document.getElementById('canvas');
         const canvasParent = document.getElementById('item-center');
@@ -100,7 +98,7 @@
         const clearMarkersButton = document.getElementById('unselect-components-button');
 
         function currentSide(){
-            return sideMap.get(isSideBottom);
+            return sideMap[isSideBottom];
         };
 
         function changeSide(){            
