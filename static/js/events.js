@@ -9,6 +9,13 @@ function mouseDownEvent(event){
     const y = event.offsetY;
     isMousePressed = true;
     isMouseClickedFirstTime = true;
+    if (isRotateEnable){
+        side = currentSide();
+        pyodide.runPythonAsync(`
+                engine.rotateBoardInterface(SURFACE, isClockwise=True, side='${side}', angleDeg=90)
+                pygame.display.flip()
+            `);
+    };
 };
 
 function mouseUpEvent(){
@@ -69,6 +76,7 @@ async function loadFileEvent(event){
         await openAndLoadCadFile(pyodide, file);
         loadedFileName = file.name;
         changeSideButton.disabled = false;
+        rotateButton.disabled = false;
     }
 }
 
@@ -79,6 +87,10 @@ async function changeSideEvent(){
         engine.changeSideInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
+};
+
+function rotateEvent(){
+    isRotateEnable = !isRotateEnable
 };
 
 async function _resizeBoard(){
