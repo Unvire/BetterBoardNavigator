@@ -31,7 +31,11 @@ function mouseDownEvent(event){
         pyodide.runPython(`
             clickedXY = [int('${x}'), int('${y}')]
             clickedComponents = engine.findComponentByClick(clickedXY, '${side}')
-            pygame.display.flip()
+            
+            if '${isPresereMarkedComponentsActive}' == 'true':
+                for componentName in clickedComponents:
+                    engine.findComponentByNameInterface(SURFACE, componentName, '${side}')
+                    pygame.display.flip()
         `);
         clickedComponents = pyodide.globals.get('clickedComponents').toJs();
         document.getElementById("clicked-components").innerText = clickedComponents;
@@ -166,6 +170,10 @@ function selectComponentFromListEvent(itemElement){
     _markSelectedComponentFromList(selectedComponent);
 }
 
+function preserveComponentMarkesButtonEvent(){
+    isPresereMarkedComponentsActive = !isPresereMarkedComponentsActive;
+}
+
 function _enableButtons(){
     changeSideButton.disabled = false;
     rotateButton.disabled = false;
@@ -174,6 +182,7 @@ function _enableButtons(){
     resetViewButton.disabled = false;
     areaFromComponentsButton.disabled = false;
     toggleFindComponentByClickButton.disabled = false;
+    preserveComponentMarkesButton.disabled = false;
 }
 
 async function _markSelectedComponentFromList(selectedComponentFromList){
@@ -190,6 +199,9 @@ async function _markSelectedComponentFromList(selectedComponentFromList){
         side = currentSide();
     }
     pyodide.runPython(`
+        if '${isPresereMarkedComponentsActive}' == 'false':
+            engine.clearFindComponentByNameInterface(SURFACE, '${side}')
+
         engine.findComponentByNameInterface(SURFACE, componentName, '${side}')
         pygame.display.flip()
     `);

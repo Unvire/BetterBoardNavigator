@@ -28,6 +28,7 @@
         </div>
         <div class="buttons-flexbox">
             <button type="button" id="clicked-component-button" disabled="true">Toggle Clicked Component Name Mode</button>
+            <button type="button" id="toggle-leave-markers-button" disabled="true">Toggle preserve component markers</button>
             <button type="button" id="unselect-components-button" disabled="true">Clear component markers</button>
         </div>
         <div class="buttons-flexbox">
@@ -80,6 +81,7 @@
         let scroll_direction;
         let isRotateEnable = false;
         let isFindComponentByClickActive = false;
+        let isPresereMarkedComponentsActive = false;
 
         const sideMap = new Map();
         sideMap.set(true, 'B');
@@ -96,6 +98,7 @@
         const areaFromComponentsButton = document.getElementById('components-area-button');
         const toggleFindComponentByClickButton = document.getElementById('clicked-component-button');
         const componentsList = document.getElementById('scrollableList');
+        const preserveComponentMarkesButton = document.getElementById('toggle-leave-markers-button');
 
         function currentSide(){
             return sideMap.get(isSideBottom);
@@ -136,6 +139,7 @@
             resetViewButton.addEventListener("click", resetViewEvent);
             areaFromComponentsButton.addEventListener("click", areaFromComponentsEvent);
             toggleFindComponentByClickButton.addEventListener("click", toggleFindComponentByClickEvent);
+            preserveComponentMarkesButton.addEventListener("click", preserveComponentMarkesButtonEvent);
         });
 
     </script>
