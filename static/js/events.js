@@ -1,5 +1,5 @@
 async function windowResizeEvent(event){
-    let RESCALE_AFTER_MS = 3;
+    let RESCALE_AFTER_MS = 15;
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(_resizeBoard, RESCALE_AFTER_MS);
 };
