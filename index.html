@@ -27,7 +27,7 @@
             <button type="button" id="components-area-button" disabled="true">Area From Components</button>
         </div>
         <div class="buttons-flexbox">
-            <button type="button" id="clicked-component-button">Toggle Clicked Component Name Mode</button>
+            <button type="button" id="clicked-component-button" disabled="true">Toggle Clicked Component Name Mode</button>
             <button type="button" id="unselect-components-button">Clear component markers</button>
         </div>
         <div class="buttons-flexbox">
@@ -61,6 +61,8 @@
         </div>
         <div class="item-right-bottom">
             <p>selected components</p>
+            </br>
+            <p id="clicked-components"></p>
         </div>
     </div>
     <script>
@@ -73,7 +75,7 @@
         let scroll_position = 0;
         let scroll_direction;
         let isRotateEnable = false;
-
+        let isFindComponentByClickActive = false;
 
         const sideMap = new Map();
         sideMap.set(true, 'B');
@@ -87,7 +89,8 @@
         const mirrorSideButton = document.getElementById('mirror-side-button');
         const toggleOutlinesButton = document.getElementById('toggle-outlines-button');
         const resetViewButton = document.getElementById('default-view-button');    
-        const areaFromComponentsButton = document.getElementById('components-area-button');    
+        const areaFromComponentsButton = document.getElementById('components-area-button');
+        const toggleFindComponentByClickButton = document.getElementById('clicked-component-button');   
 
         function currentSide(){
             return sideMap.get(isSideBottom);
@@ -123,7 +126,7 @@
             toggleOutlinesButton.addEventListener("click", toggleOutlinesEvent);
             resetViewButton.addEventListener("click", resetViewEvent);
             areaFromComponentsButton.addEventListener("click", areaFromComponentsEvent);
-            
+            toggleFindComponentByClickButton.addEventListener("click", toggleFindComponentByClickEvent);
         });
 
     </script>

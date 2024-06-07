@@ -6,7 +6,6 @@ async function windowResizeEvent(event){
 
 function keyDownEvent(event){
     var keyID = event.which;
-    console.log(keyID);
     switch(keyID){
         case 18: // alt
         break;
@@ -14,16 +13,28 @@ function keyDownEvent(event){
 }
 
 function mouseDownEvent(event){
-    const x = event.offsetX; 
-    const y = event.offsetY;
     isMousePressed = true;
     isMouseClickedFirstTime = true;
+    
     if (isRotateEnable){
         side = currentSide();
         pyodide.runPythonAsync(`
                 engine.rotateBoardInterface(SURFACE, isClockwise=True, side='${side}', angleDeg=90)
                 pygame.display.flip()
             `);
+    } else if (isFindComponentByClickActive){        
+        const x = event.offsetX; 
+        const y = event.offsetY;        
+        let clickedComponents = new Array();
+
+        side = currentSide();
+        pyodide.runPython(`
+                clickedXY = [int('${x}'), int('${y}')]
+                clickedComponents = engine.findComponentByClick(clickedXY, '${side}')
+                pygame.display.flip()
+            `);
+        clickedComponents = pyodide.globals.get('clickedComponents').toJs();
+        document.getElementById("clicked-components").innerText = clickedComponents;
     };
 };
 
@@ -133,6 +144,10 @@ async function areaFromComponentsEvent(){
     `);
 }
 
+function toggleFindComponentByClickEvent(){
+    isFindComponentByClickActive = !isFindComponentByClickActive;
+}
+
 async function _resizeBoard(){
     setCanvasDimensions();
     side = currentSide();
@@ -149,4 +164,5 @@ function _enableButtons(){
     toggleOutlinesButton.disabled = false;
     resetViewButton.disabled = false;
     areaFromComponentsButton.disabled = false;
+    toggleFindComponentByClickButton.disabled = false;
 };
