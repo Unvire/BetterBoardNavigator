@@ -63,12 +63,15 @@
         </div>
     </div>
     <script>
-        var pyodide = null;
-        var loadedFileName = "";
-        var isMousePressed = false;
-        var isMouseClickedFirstTime = false;
-        var isSideBottom = true;
-        var resizeTimeout = null;
+        let pyodide = null;
+        let loadedFileName = "";
+        let isMousePressed = false;
+        let isMouseClickedFirstTime = false;
+        let isSideBottom = true;
+        let resizeTimeout = null;
+        let scroll_position = 0;
+        let scroll_direction;
+
 
         const sideMap = new Map();
         sideMap.set(true, 'B');
@@ -102,6 +105,7 @@
             canvas.addEventListener("mousedown", mouseDownEvent);
             canvas.addEventListener("mouseup", mouseUpEvent);       
             canvas.addEventListener("mousemove", mouseMoveEvent);
+            canvas.addEventListener("wheel", mouseScrollEvent);
 
             loadFileButton.addEventListener("change", loadFileEvent);
             changeSideButton.addEventListener("click", changeSideEvent);

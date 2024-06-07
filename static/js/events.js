@@ -33,6 +33,35 @@ async function mouseMoveEvent(event){
     }
 };
 
+async function mouseScrollEvent(event){
+    const x = event.offsetX; 
+    const y = event.offsetY;
+    pyodide.runPythonAsync(`
+        pointXY = [int('${x}'), int('${y}')]
+    `);
+
+    if (event.deltaY < 0) {
+        pyodide.runPythonAsync(`
+            isScaleUp = True
+            isDoScroll = True
+        `);
+    } else if (event.deltaY > 0) {
+        pyodide.runPythonAsync(`
+            isScaleUp = False
+            isDoScroll = True
+        `);
+    }
+    
+    side = currentSide()
+    pyodide.runPythonAsync(`
+    if engine and isDoScroll:
+        pointXY = [int('${x}'), int('${y}')]        
+        isDoScroll = False
+        engine.scaleUpDownInterface(SURFACE, isScaleUp=isScaleUp, pointXY=pointXY, side='${side}')
+        pygame.display.flip()
+`);
+};
+
 async function loadFileEvent(event){
     const file = event.target.files[0];
     if (file) {
