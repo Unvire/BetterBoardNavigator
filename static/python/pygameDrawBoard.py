@@ -97,7 +97,8 @@ class DrawBoardEngine:
     def changeSideInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         return self.drawAndBlitInterface(targetSurface, side)
     
-    def rotateBoardInterface(self, targetSurface:pygame.Surface, rotationXY:list[int, int], isClockwise:bool, side:str) -> pygame.Surface:
+    def rotateBoardInterface(self, targetSurface:pygame.Surface,  isClockwise:bool, side:str) -> pygame.Surface:
+        rotationXY = [val / 2 for val in self.surfaceDimensions]
         self._rotate(rotationXY, isClockwise)     
         return self.drawAndBlitInterface(targetSurface, side)
     
@@ -586,12 +587,10 @@ if __name__ == '__main__':
                     engine.changeSideInterface(WIN, side)
                 
                 elif event.key == pygame.K_PERIOD:
-                    rotationXY = [val / 2 for val in engine.surfaceDimensions]
-                    engine.rotateBoardInterface(WIN, rotationXY, isClockwise=True, side=side)
+                    engine.rotateBoardInterface(WIN, isClockwise=True, side=side)
                 
                 elif event.key == pygame.K_COMMA:
-                    rotationXY = [val / 2 for val in engine.surfaceDimensions]
-                    engine.rotateBoardInterface(WIN, rotationXY, isClockwise=False, side=side)
+                    engine.rotateBoardInterface(WIN,  isClockwise=False, side=side)
                 
                 elif event.key == pygame.K_z:
                     isFindComponentByClickActive = not isFindComponentByClickActive
