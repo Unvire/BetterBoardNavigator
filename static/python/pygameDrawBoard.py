@@ -1,4 +1,4 @@
-import pygame, math, copy
+import pygame, math, copy, re
 import pin, board
 from boardWrapper import BoardWrapper
 import geometryObjects as gobj
@@ -47,6 +47,15 @@ class DrawBoardEngine:
     
     def getColor(self, key:str) -> tuple[int, int, int]:
         return self.colorsDict.get(key, None)
+
+    def getComponents(self) -> list[str]:
+        def calculateSortingValue(component) -> int:
+            ## split component name into letters and digits. Calculate value as [ord(char1) + ord(char2) + ...] * 1000 + componentNumber
+            componentType, componentNumber = list(filter(None, re.split(r'(\d+)', component)))
+            return sum([ord(char) for char in componentType]) * 1000 + int(componentNumber)
+
+        componentsList = list(self.boardData.getComponents().keys())
+        return sorted(componentsList, key=calculateSortingValue)
     
     def changeColor(self, key:str, RGB:tuple[int, int, int]):
         if key in self.colorsDict:
@@ -548,6 +557,7 @@ if __name__ == '__main__':
     print('Change screen surface dimensions - g')
     print('====================================')
 
+    print(engine.getComponents())
     run = True
     while run:
         clock.tick(FPS)
