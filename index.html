@@ -48,8 +48,9 @@
         <div class="item-left-top">
             <p>current side</p>
         </div>
-        <div class="item-left-middle">  
-            <div class="scrollable-list" id="scrollableList">
+        <div class="item-left-middle">
+            <p>all components</p> 
+            <div class="scrollable-list" id="scrollable-all-components-list">
             </div>
         </div>
         <div class="item-left-bottom">
@@ -63,7 +64,8 @@
         </div>
         <div class="item-right-middle">
             <p>marked components</p>
-            <p id="marked-components"></p>
+            <div class="scrollable-list" id="scrollable-marked-components-list">
+            </div>
         </div>
         <div class="item-right-bottom">
             <p>clicked components</p>
@@ -93,9 +95,10 @@
         const resetViewButton = document.getElementById('default-view-button');    
         const areaFromComponentsButton = document.getElementById('components-area-button');
         const toggleFindComponentByClickButton = document.getElementById('clicked-component-button');
-        const componentsList = document.getElementById('scrollableList');
+        const componentsList = document.getElementById('scrollable-all-components-list');
         const preserveComponentMarkesButton = document.getElementById('toggle-leave-markers-button');
         const clearMarkersButton = document.getElementById('unselect-components-button');
+        const markedComponentsList = document.getElementById('scrollable-marked-components-list');
 
         function currentSide(){
             return sideMap[isSideBottom];
@@ -108,6 +111,16 @@
         function setCanvasDimensions(){
             canvas.width = canvasParent.clientWidth;
             canvas.height = canvasParent.clientHeight;
+        }
+
+        function generateList(containerID, elemetsList){
+            elemetsList.forEach(element => {
+                const itemElement = document.createElement('div');
+                itemElement.textContent = element;
+                containerID.appendChild(itemElement);
+
+                itemElement.addEventListener('click', () => selectComponentFromListEvent(itemElement));
+            });
         }
 
         // This is a workaround about the fact that the pygame-ce is not run in an inifite loop but as an image generator. 
