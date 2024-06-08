@@ -9,6 +9,7 @@
     <script type="text/javascript" src="/static/js/configurePythonFunctions.js"></script>    
     <script type="text/javascript" src="/static/js/fileFunctions.js"></script>   
     <script type="text/javascript" src="/static/js/events.js"></script>
+    <script type="text/javascript" src="/static/js/listFunctions.js"></script>
 </head>
 <body>
     <div class="buttons-row-flexbox">
@@ -111,16 +112,6 @@
         function setCanvasDimensions(){
             canvas.width = canvasParent.clientWidth;
             canvas.height = canvasParent.clientHeight;
-        }
-
-        function generateList(containerID, elemetsList){
-            elemetsList.forEach(element => {
-                const itemElement = document.createElement('div');
-                itemElement.textContent = element;
-                containerID.appendChild(itemElement);
-
-                itemElement.addEventListener('click', () => selectComponentFromListEvent(itemElement));
-            });
         }
 
         // This is a workaround about the fact that the pygame-ce is not run in an inifite loop but as an image generator. 

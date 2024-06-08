@@ -30,7 +30,7 @@ async function openAndLoadCadFile(pyodide, file) {
             pygame.display.flip()
         `);
         let allComponents = pyodide.globals.get('allComponents').toJs();
-        generateList(componentsList, allComponents);
+        generateList(componentsList, allComponents, selectComponentFromListEvent);
     }
     reader.readAsArrayBuffer(file);
 }

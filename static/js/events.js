@@ -39,7 +39,7 @@ function mouseDownEvent(event){
         `);
         clickedComponents = pyodide.globals.get('clickedComponents').toJs();
         document.getElementById("clicked-components").innerText = clickedComponents;
-        _insertSelectedComponentsIntoDiv();
+        _generateMarkedComponentsList();
     }
 }
 
@@ -164,19 +164,17 @@ async function _resizeBoard(){
 
 function selectComponentFromListEvent(itemElement){
     if (!isPresereMarkedComponentsActive){
-        const allItems = componentsList.querySelectorAll('div');
-        allItems.forEach(el => el.classList.remove('selected'));
-        itemElement.classList.add('selected');
+        _selectOneScrollableListItem(componentsList, itemElement);
     } else {
-        if (itemElement.classList.contains('selected')){
-            itemElement.classList.remove('selected')
-        } else {
-            itemElement.classList.add('selected');
-        }
+        _selectMultipleListItems(itemElement);
     }
 
     let clickedListElement = itemElement.textContent;
     _markSelectedComponentFromList(clickedListElement);
+}
+
+function selectComponentFromMarkedComponentsListEvent(itemElement){
+    _selectOneScrollableListItem(markedComponentsList, itemElement);
 }
 
 function preserveComponentMarkesEvent(){
@@ -190,7 +188,7 @@ async function clearMarkersEvent(){
         engine.clearFindComponentByNameInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
-    _insertSelectedComponentsIntoDiv();
+    _generateMarkedComponentsList();
 }
 
 function _enableButtons(){
@@ -225,13 +223,15 @@ async function _markSelectedComponentFromList(selectedComponentFromList){
         engine.findComponentByNameInterface(SURFACE, componentName, '${side}')
         pygame.display.flip()
     `);
-    _insertSelectedComponentsIntoDiv();
+    _generateMarkedComponentsList();
 }
 
-function _insertSelectedComponentsIntoDiv(){
+function _generateMarkedComponentsList(){
     pyodide.runPython(`
         componentsList = engine.getSelectedComponents()
     `);
     let componentsList = pyodide.globals.get('componentsList').toJs();
-    document.getElementById("marked-components").innerText = componentsList;
+    clearList(markedComponentsList);
+
+    generateList(markedComponentsList, componentsList, selectComponentFromMarkedComponentsListEvent);
 }
