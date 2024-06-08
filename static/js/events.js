@@ -163,12 +163,20 @@ async function _resizeBoard(){
 }
 
 function selectComponentFromListEvent(itemElement){
-    const allItems = componentsList.querySelectorAll('div');
-    allItems.forEach(el => el.classList.remove('selected'));
-    
-    itemElement.classList.add('selected');
-    let selectedComponent = itemElement.textContent;
-    _markSelectedComponentFromList(selectedComponent);
+    if (!isPresereMarkedComponentsActive){
+        const allItems = componentsList.querySelectorAll('div');
+        allItems.forEach(el => el.classList.remove('selected'));
+        itemElement.classList.add('selected');
+    } else {
+        if (itemElement.classList.contains('selected')){
+            itemElement.classList.remove('selected')
+        } else {
+            itemElement.classList.add('selected');
+        }
+    }
+
+    let clickedListElement = itemElement.textContent;
+    _markSelectedComponentFromList(clickedListElement);
 }
 
 function preserveComponentMarkesEvent(){
