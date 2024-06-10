@@ -100,9 +100,10 @@
         const allComponentsContainer = document.getElementById('scrollable-all-components-list');
         const preserveComponentMarkesButton = document.getElementById('toggle-leave-markers-button');
         const clearMarkersButton = document.getElementById('unselect-components-button');
-        const markedComponentsList = document.getElementById('scrollable-marked-components-list');
+        const markedComponentsContainer = document.getElementById('scrollable-marked-components-list');
 
         var allComponentsList = new DynamicSelectableList(allComponentsContainer);
+        var markedComponentsList = new DynamicSelectableList(markedComponentsContainer);
 
         function currentSide(){
             return sideMap[isSideBottom];

@@ -167,10 +167,6 @@ function selectComponentFromListEvent(itemElement){
     _markSelectedComponentFromList(clickedListElement);
 }
 
-function selectComponentFromMarkedComponentsListEvent(itemElement){
-    _selectOneScrollableListItem(markedComponentsList, itemElement);
-}
-
 function preserveComponentMarkesEvent(){
     isSelectionModeSingle = !isSelectionModeSingle;
     mode = selectionModesMap[isSelectionModeSingle];
@@ -185,18 +181,6 @@ async function clearMarkersEvent(){
         pygame.display.flip()
     `);
     _generateMarkedComponentsList();
-}
-
-function _enableButtons(){
-    changeSideButton.disabled = false;
-    rotateButton.disabled = false;
-    mirrorSideButton.disabled = false;
-    toggleOutlinesButton.disabled = false;
-    resetViewButton.disabled = false;
-    areaFromComponentsButton.disabled = false;
-    toggleFindComponentByClickButton.disabled = false;
-    preserveComponentMarkesButton.disabled = false;
-    clearMarkersButton.disabled = false;
 }
 
 async function _markSelectedComponentFromList(selectedComponentFromList){
@@ -227,7 +211,21 @@ function _generateMarkedComponentsList(){
         componentsList = engine.getSelectedComponents()
     `);
     let componentsList = pyodide.globals.get('componentsList').toJs();
-    clearList(markedComponentsList);
+    
+    markedComponentsList.elements = componentsList
+    markedComponentsList.selectionMode = 'single';
+    markedComponentsList.eventCallbackFuntion = null;
+    markedComponentsList.generateList()
+}
 
-    generateList(markedComponentsList, componentsList, selectComponentFromMarkedComponentsListEvent);
+function _enableButtons(){
+    changeSideButton.disabled = false;
+    rotateButton.disabled = false;
+    mirrorSideButton.disabled = false;
+    toggleOutlinesButton.disabled = false;
+    resetViewButton.disabled = false;
+    areaFromComponentsButton.disabled = false;
+    toggleFindComponentByClickButton.disabled = false;
+    preserveComponentMarkesButton.disabled = false;
+    clearMarkersButton.disabled = false;
 }
