@@ -9,7 +9,7 @@
     <script type="text/javascript" src="/static/js/configurePythonFunctions.js"></script>    
     <script type="text/javascript" src="/static/js/fileFunctions.js"></script>   
     <script type="text/javascript" src="/static/js/events.js"></script>
-    <script type="text/javascript" src="/static/js/listFunctions.js"></script>
+    <script type="text/javascript" src="/static/js/dynamicSelectableList.js"></script>
 </head>
 <body>
     <div class="buttons-row-flexbox">
@@ -82,9 +82,10 @@
         let resizeTimeout = null;
         let isRotateActive = false;
         let isFindComponentByClickActive = false;
-        let isPresereMarkedComponentsActive = false;
+        let isSelectionModeSingle = true;
 
         const sideMap = {true: 'B', false: 'T'};
+        const selectionModesMap = {true: 'single', false: 'multiple'};
 
         const canvas = document.getElementById('canvas');
         const canvasParent = document.getElementById('item-center');
@@ -96,10 +97,12 @@
         const resetViewButton = document.getElementById('default-view-button');    
         const areaFromComponentsButton = document.getElementById('components-area-button');
         const toggleFindComponentByClickButton = document.getElementById('clicked-component-button');
-        const componentsList = document.getElementById('scrollable-all-components-list');
+        const allComponentsContainer = document.getElementById('scrollable-all-components-list');
         const preserveComponentMarkesButton = document.getElementById('toggle-leave-markers-button');
         const clearMarkersButton = document.getElementById('unselect-components-button');
         const markedComponentsList = document.getElementById('scrollable-marked-components-list');
+
+        var allComponentsList = new DynamicSelectableList(allComponentsContainer);
 
         function currentSide(){
             return sideMap[isSideBottom];

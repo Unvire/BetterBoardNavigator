@@ -163,12 +163,6 @@ async function _resizeBoard(){
 }
 
 function selectComponentFromListEvent(itemElement){
-    if (!isPresereMarkedComponentsActive){
-        _selectOneScrollableListItem(componentsList, itemElement);
-    } else {
-        _selectMultipleListItems(itemElement);
-    }
-
     let clickedListElement = itemElement.textContent;
     _markSelectedComponentFromList(clickedListElement);
 }
@@ -178,11 +172,13 @@ function selectComponentFromMarkedComponentsListEvent(itemElement){
 }
 
 function preserveComponentMarkesEvent(){
-    isPresereMarkedComponentsActive = !isPresereMarkedComponentsActive;
+    isSelectionModeSingle = !isSelectionModeSingle;
+    mode = selectionModesMap[isSelectionModeSingle];
+    allComponentsList.selectionMode = mode;
 }
 
 async function clearMarkersEvent(){
-    isPresereMarkedComponentsActive = false;
+    isSelectionModeSingle = true;
     side = currentSide();
     pyodide.runPython(`
         engine.clearFindComponentByNameInterface(SURFACE, '${side}')
@@ -217,7 +213,7 @@ async function _markSelectedComponentFromList(selectedComponentFromList){
         side = currentSide();
     }
     pyodide.runPython(`
-        if '${isPresereMarkedComponentsActive}' == 'false':
+        if '${isSelectionModeSingle}' == 'true':
             engine.clearFindComponentByNameInterface(SURFACE, '${side}')
 
         engine.findComponentByNameInterface(SURFACE, componentName, '${side}')
