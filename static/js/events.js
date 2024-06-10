@@ -25,7 +25,7 @@ function mouseDownEvent(event){
     } else if (isFindComponentByClickActive){        
         const x = event.offsetX; 
         const y = event.offsetY;        
-        let clickedComponents = new Array();
+        let clickedComponents = [];
 
         side = currentSide();
         pyodide.runPython(`
