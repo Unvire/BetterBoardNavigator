@@ -24,20 +24,19 @@ function mouseDownEvent(event){
         `);
     } else if (isFindComponentByClickActive){        
         const x = event.offsetX; 
-        const y = event.offsetY;        
-        let clickedComponents = [];
-
+        const y = event.offsetY;
         side = currentSide();
+
         pyodide.runPython(`
             clickedXY = [int('${x}'), int('${y}')]
             clickedComponents = engine.findComponentByClick(clickedXY, '${side}')
             
             if '${isSelectionModeSingle}' == 'false':
                 for componentName in clickedComponents:
-                    engine.findComponentByNameInterface(SURFACE, componentName, '${side}')
+                    engine.findComponentByNameInterface(SURFACE, componentName, '${side}') #mark all clicked components
                     pygame.display.flip()
         `);
-        clickedComponents = pyodide.globals.get('clickedComponents').toJs();
+        let clickedComponents = pyodide.globals.get('clickedComponents').toJs();
         document.getElementById("clicked-components").innerText = clickedComponents;
         _generateMarkedComponentsList();
     }
@@ -68,27 +67,12 @@ async function mouseMoveEvent(event){
 async function mouseScrollEvent(event){
     const x = event.offsetX; 
     const y = event.offsetY;
-    pyodide.runPythonAsync(`
-        pointXY = [int('${x}'), int('${y}')]
-    `);
+    side = currentSide();
 
-    if (event.deltaY < 0) {
-        pyodide.runPythonAsync(`
-            isScaleUp = True
-            isDoScroll = True
-        `);
-    } else if (event.deltaY > 0) {
-        pyodide.runPythonAsync(`
-            isScaleUp = False
-            isDoScroll = True
-        `);
-    }
-    
-    side = currentSide()
-    pyodide.runPythonAsync(`
-    if engine and isDoScroll:
-        pointXY = [int('${x}'), int('${y}')]        
-        isDoScroll = False
+    pyodide.runPython(`
+    if engine:
+        pointXY = [int('${x}'), int('${y}')]
+        isScaleUp = '${event.deltaY < 0}' == 'true'
         engine.scaleUpDownInterface(SURFACE, isScaleUp=isScaleUp, pointXY=pointXY, side='${side}')
         pygame.display.flip()
     `);
