@@ -27,7 +27,7 @@ function mouseDownEvent(event){
         const y = event.offsetY;
         side = currentSide();
 
-        pyodide.runPythonAsync(`
+        pyodide.runPython(`
             clickedXY = [int('${x}'), int('${y}')]
             clickedComponents = engine.findComponentByClick(clickedXY, '${side}')
             
