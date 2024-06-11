@@ -27,7 +27,7 @@ function mouseDownEvent(event){
         const y = event.offsetY;
         side = currentSide();
 
-        pyodide.runPython(`
+        pyodide.runPythonAsync(`
             clickedXY = [int('${x}'), int('${y}')]
             clickedComponents = engine.findComponentByClick(clickedXY, '${side}')
             
@@ -69,7 +69,7 @@ async function mouseScrollEvent(event){
     const y = event.offsetY;
     side = currentSide();
 
-    pyodide.runPython(`
+    pyodide.runPythonAsync(`
     if engine:
         pointXY = [int('${x}'), int('${y}')]
         isScaleUp = '${event.deltaY < 0}' == 'true'
