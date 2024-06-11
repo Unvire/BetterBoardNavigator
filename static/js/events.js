@@ -119,18 +119,24 @@ async function toggleOutlinesEvent(){
 
 async function resetViewEvent(){
     side = currentSide();
-    pyodide.runPythonAsync(`
+    pyodide.runPython(`
         engine.resetToDefaultViewInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
+    
+    allComponentsList.unselectAllItems();
+    _generateMarkedComponentsList();
 }
 
 async function areaFromComponentsEvent(){
     side = currentSide();
-    pyodide.runPythonAsync(`
+    pyodide.runPython(`
         engine.changeAreaInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
+
+    allComponentsList.unselectAllItems();
+    _generateMarkedComponentsList();
 }
 
 function toggleFindComponentByClickEvent(){
