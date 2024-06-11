@@ -125,7 +125,9 @@ class DrawBoardEngine:
         return self.drawAndBlitInterface(targetSurface, side)
     
     def findComponentByNameInterface(self, targetSurface:pygame.Surface, componentName:str, side:str) -> pygame.Surface:
-        self._findComponentByName(componentName)
+        componentInstance = self._findComponentByName(componentName)
+        if componentInstance:
+            self._setComponentInScreenCenter(componentInstance, side)
         return self.drawAndBlitInterface(targetSurface, side)
     
     def clearFindComponentByNameInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
@@ -176,7 +178,7 @@ class DrawBoardEngine:
         boardDataNormalized = self._getNormalizedBoard(dimensions, self.boardData)
         self.setBoardData(boardDataNormalized, isMakeBackup=True)
         return self.drawAndBlitInterface(targetSurface, side)
-    
+
     def drawAndBlitInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._drawBoard(side)
         return self._blitBoardSurfacesIntoTarget(targetSurface)
@@ -263,22 +265,39 @@ class DrawBoardEngine:
     
     def findComponentByClick(self, cursorXY:list[int, int], side:str) -> list[str]:
         x, y = cursorXY
-        if side in self.sidesForFlipX:
-            screenWidth, _ = self.screenDimensions
-            x = screenWidth - x
         xOffset, yOffset = self.offsetVector
-        clickedPoint = gobj.Point(x - xOffset, y - yOffset)
+
+        x = x - xOffset
+        y = y - yOffset
+        if side in self.sidesForFlipX:
+            x = self._xForMirroredSurface(x)
+            
+        clickedPoint = gobj.Point(x, y)
         return self.boardData.findComponentByCoords(clickedPoint, side)
     
-    def _findComponentByName(self, componentName:str):
+    def _findComponentByName(self, componentName:str) -> comp.Component|None:
         componentInstance = self.boardData.getElementByName('components', componentName)
         if not componentInstance:
             return
         
         if componentInstance.name in self.selectedComponentsSet:
             self.selectedComponentsSet.remove(componentInstance.name)
+            return
         else:
             self.selectedComponentsSet.add(componentInstance.name)
+            return componentInstance
+    
+    def _setComponentInScreenCenter(self, componentInstance:comp.Component, side:str):
+        coords = componentInstance.getCoords()
+        xComp, yComp = coords.getXY()
+        xScreen, yScreen = self.screenDimensions
+
+        if side in self.sidesForFlipX:
+            xComp = self._xForMirroredSurface(xComp)
+        x = xScreen / 2 - xComp
+        y = yScreen / 2 - yComp
+
+        self._setOffsetVector([x, y])
     
     def _selectNet(self, netName:str):
         net = self.boardData.getElementByName('nets', netName)
@@ -519,6 +538,10 @@ class DrawBoardEngine:
         screenWidth, _ = self.screenDimensions
         surfaceWidth, _ = self.surfaceDimensions
         return surfaceWidth / screenWidth
+    
+    def _xForMirroredSurface(self, x:float) -> float:
+        surfaceWidth, _ = self.surfaceDimensions
+        return surfaceWidth - x
 
 if __name__ == '__main__':
     def openSchematicFile() -> str:        
