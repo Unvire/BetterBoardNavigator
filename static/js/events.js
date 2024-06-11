@@ -32,7 +32,7 @@ function mouseDownEvent(event){
             clickedXY = [int('${x}'), int('${y}')]
             clickedComponents = engine.findComponentByClick(clickedXY, '${side}')
             
-            if '${isPresereMarkedComponentsActive}' == 'true':
+            if '${isSelectionModeSingle}' == 'false':
                 for componentName in clickedComponents:
                     engine.findComponentByNameInterface(SURFACE, componentName, '${side}')
                     pygame.display.flip()
@@ -185,22 +185,20 @@ async function clearMarkersEvent(){
 
 async function _markSelectedComponentFromList(selectedComponentFromList){
     pyodide.runPython(`
-        componentName = '${selectedComponentFromList}'
-        componentSide = engine.getSideOfComponent(componentName)
+        componentSide = engine.getSideOfComponent('${selectedComponentFromList}')
     `);
-    
     let componentSide = pyodide.globals.get('componentSide');
+
+    if (componentSide != currentSide()){
+        changeSide();
+    }
     side = currentSide();
 
-    if (componentSide != side){
-        changeSide();
-        side = currentSide();
-    }
     pyodide.runPython(`
         if '${isSelectionModeSingle}' == 'true':
             engine.clearFindComponentByNameInterface(SURFACE, '${side}')
 
-        engine.findComponentByNameInterface(SURFACE, componentName, '${side}')
+        engine.findComponentByNameInterface(SURFACE, '${selectedComponentFromList}', '${side}')
         pygame.display.flip()
     `);
     _generateMarkedComponentsList();
@@ -214,8 +212,26 @@ function _generateMarkedComponentsList(){
     
     markedComponentsList.elements = componentsList
     markedComponentsList.selectionMode = 'single';
-    markedComponentsList.eventCallbackFuntion = null;
+    markedComponentsList.eventCallbackFuntion = componentInScreenCenterEvent;
     markedComponentsList.generateList()
+}
+
+function componentInScreenCenterEvent(itemElement){
+    let componentName = itemElement.textContent;
+    pyodide.runPython(`
+        componentSide = engine.getSideOfComponent('${componentName}')
+    `);
+    let componentSide = pyodide.globals.get('componentSide');
+
+    if (componentSide != currentSide()){
+        changeSide();
+    }
+    side = currentSide();
+
+    pyodide.runPython(`
+        engine.componentInScreenCenterInterface(SURFACE, '${componentName}', '${side}')
+        pygame.display.flip()
+    `);
 }
 
 function _enableButtons(){
