@@ -180,6 +180,7 @@ async function clearMarkersEvent(){
         engine.clearFindComponentByNameInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
+    allComponentsList.unselectAllItems();
     _generateMarkedComponentsList();
 }
 

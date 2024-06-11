@@ -28,7 +28,7 @@ class DynamicSelectableList{
     }
 
     _singleSelectionMode(itemDiv){
-        this.children.forEach(el => el.classList.remove('selected'));
+        this.unselectAllItems();
         itemDiv.classList.add('selected');
     }
 
@@ -68,5 +68,9 @@ class DynamicSelectableList{
             }
         });
         return this.selectedItems;
+    }
+
+    unselectAllItems(){
+        this.children.forEach(el => el.classList.remove('selected'));
     }
 }
