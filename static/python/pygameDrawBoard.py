@@ -125,8 +125,13 @@ class DrawBoardEngine:
         return self.drawAndBlitInterface(targetSurface, side)
     
     def findComponentByNameInterface(self, targetSurface:pygame.Surface, componentName:str, side:str) -> pygame.Surface:
-        componentInstance = self._findComponentByName(componentName)
-        if componentInstance:
+        self._findComponentByName(componentName)
+        return self.drawAndBlitInterface(targetSurface, side)
+    
+    def componentInScreenCenterInterface(self, targetSurface:pygame.Surface, componentName:str, side:str) -> pygame.Surface:
+        componentInstance = self.boardData.getElementByName('components', componentName)
+        componentSide  = componentInstance.getSide()
+        if componentSide == side:
             self._setComponentInScreenCenter(componentInstance, side)
         return self.drawAndBlitInterface(targetSurface, side)
     
@@ -592,6 +597,7 @@ if __name__ == '__main__':
     print('Highlight common type components - a')
     print('Clear common type components - s')
     print('Change screen surface dimensions - g')
+    print('Set component in screen center - h')
     print('====================================')
 
     run = True
@@ -684,9 +690,13 @@ if __name__ == '__main__':
                     width = int(input("New width: "))
                     height = int(input("New height: "))
                     WIN = pygame.display.set_mode((width, height))
-                    engine.changeScreenDimensionsInterface(WIN, [width, height] ,side)
-                
+                    engine.changeScreenDimensionsInterface(WIN, [width, height], side)
 
+                elif event.key == pygame.K_h:
+                    componentName = input('Component name: ')
+                    engine.componentInScreenCenterInterface(WIN, componentName, side)
+
+        
         ## display image
         pygame.display.update()
         #run = False
