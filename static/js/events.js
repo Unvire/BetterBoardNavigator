@@ -217,12 +217,22 @@ function componentInScreenCenterEvent(itemElement){
     if (componentSide != currentSide()){
         changeSide();
     }
-    side = currentSide();
 
+    generatePinoutTableEvent(componentName);
+
+    side = currentSide();
     pyodide.runPython(`
         engine.componentInScreenCenterInterface(SURFACE, '${componentName}', '${side}')
         pygame.display.flip()
     `);
+}
+
+function generatePinoutTableEvent(componentName){
+    pyodide.runPython(`
+        pinoutDict = engine.getComponentPinout('${componentName}')
+    `);
+    let pinoutMap = pyodide.globals.get('pinoutDict').toJs();
+    console.log(pinoutMap)
 }
 
 function _enableButtons(){
