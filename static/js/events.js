@@ -218,6 +218,8 @@ function generatePinoutTableEvent(componentName){
         pinoutDict = engine.getComponentPinout('${componentName}')
     `);
     let pinoutMap = pyodide.globals.get('pinoutDict').toJs();
+    pinoutTable.addRows(pinoutMap);
+    pinoutTable.generateTable();
 }
 
 function componentInScreenCenterEvent(componentName){

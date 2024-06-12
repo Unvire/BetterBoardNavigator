@@ -1,9 +1,7 @@
 class PinoutTable{
     constructor(parentContainer){
         this.parentContainer = parentContainer;
-
         this.table = document.createElement('table');
-        this.tableBody = document.createElement('table-body');
         this._createHeader()
     }
 
@@ -23,6 +21,25 @@ class PinoutTable{
         tableHead.appendChild(headerRow);
         
         this.table.appendChild(tableHead);
+    }
+
+    addRows(pinMap){
+        for (const [pinID, netName] of Object.entries(pinMap)) {
+            const rowKey = document.createElement('td');
+            rowKey.textContent = pinID;
+
+            const rowNet = document.createElement('td');
+            rowNet.textContent = netName;
+            
+            const row = document.createElement('tr');
+            row.appendChild(rowKey);
+            row.appendChild(rowNet);
+
+            const tableBody = document.createElement('table-body');
+            tableBody.appendChild(row);
+
+            this.table.appendChild(tableBody);
+        }
     }
 
     generateTable(){
