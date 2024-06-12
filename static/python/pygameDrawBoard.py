@@ -71,7 +71,6 @@ class DrawBoardEngine:
         def stringValue(pinData):
             pinID, *_ = pinData
             try:
-                print(pinID)
                 val = int(pinID)
             except ValueError:
                 val = sum([ord(char) for char in pinID])
