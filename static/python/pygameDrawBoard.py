@@ -68,9 +68,19 @@ class DrawBoardEngine:
         return componentInstance.getSide()
     
     def getComponentPinout(self, componentName:str) -> dict:
+        def stringValue(pinData):
+            pinID, *_ = pinData
+            try:
+                print(pinID)
+                val = int(pinID)
+            except ValueError:
+                val = sum([ord(char) for char in pinID])
+            return val
+        
         componentInstance = self.boardData.getElementByName('components', componentName)
         pins = componentInstance.getPins()
-        return {pinName:pinInstance.getNet() for pinName, pinInstance in pins.items()}
+        pinoutDict = {pinName:pinInstance.getNet() for pinName, pinInstance in pins.items()}
+        return dict(sorted(pinoutDict.items(), key=stringValue))
         
     def getSelectedComponents(self) -> list[str]:
         return list(self.selectedComponentsSet)
