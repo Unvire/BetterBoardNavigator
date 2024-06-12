@@ -58,7 +58,6 @@ class PinoutTable{
     }
 
     clearBody(){
-        console.log(this.tableBody);
         while (this.tableBody.firstChild){
             this.tableBody.removeChild(this.tableBody.firstChild);
         }
