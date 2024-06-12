@@ -68,13 +68,7 @@ class DrawBoardEngine:
         return componentInstance.getSide()
     
     def getComponentPinout(self, componentName:str) -> dict:
-        def stringValue(pinData):
-            pinID, *_ = pinData
-            try:
-                val = int(pinID)
-            except ValueError:
-                val = sum([ord(char) for char in pinID])
-            return val
+        stringValue = lambda pinData: int(pinData[0]) if pinData[0].isnumeric() else sum([ord(char) for char in pinData[0]])
         
         componentInstance = self.boardData.getElementByName('components', componentName)
         pins = componentInstance.getPins()
