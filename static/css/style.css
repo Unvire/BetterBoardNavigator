@@ -99,3 +99,21 @@ canvas{
     background-color: #007bff;
     color: white;
 }
+
+table {
+    width: 50%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 14px;
+    text-align: left;
+}
+
+th, td {
+    padding: 7px;
+    border-bottom: 1px solid #ddd;
+}
+
+.table-highlighted {
+    background-color: #007bff;
+    color: white;
+}

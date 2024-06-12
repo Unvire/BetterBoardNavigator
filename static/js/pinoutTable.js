@@ -2,7 +2,9 @@ class PinoutTable{
     constructor(parentContainer){
         this.parentContainer = parentContainer;
         this.table = document.createElement('table');
-        this._createHeader()
+        this.tableHead = document.createElement('table-head');
+        this.tableBody = document.createElement('table-body');
+        this._createHeader();
     }
 
     _createHeader(){
@@ -16,14 +18,13 @@ class PinoutTable{
         headerRow.appendChild(headerColumn1);
         headerRow.appendChild(headerColumn2);
 
-        
-        const tableHead = document.createElement('table-head');
-        tableHead.appendChild(headerRow);
-        
-        this.table.appendChild(tableHead);
+        this.tableHead.appendChild(headerRow);
+        this.table.appendChild(this.tableHead);
+        this.children = null;
     }
 
     addRows(pinMap){
+        this.clearBody();
         for (const [pinID, netName] of Object.entries(pinMap)) {
             const rowKey = document.createElement('td');
             rowKey.textContent = pinID;
@@ -34,16 +35,33 @@ class PinoutTable{
             const row = document.createElement('tr');
             row.appendChild(rowKey);
             row.appendChild(rowNet);
+            row.addEventListener('click', () => this._singleSelectionModeEvent(row));
 
-            const tableBody = document.createElement('table-body');
-            tableBody.appendChild(row);
+            this.tableBody.appendChild(row);
 
-            this.table.appendChild(tableBody);
+            this.table.appendChild(this.tableBody);
         }
+        this.children = this.tableBody.querySelectorAll('tr');
+    }
+
+    _singleSelectionModeEvent(row){        
+        this._unselectAllRows();
+        row.classList.add('table-highlighted');
     }
 
     generateTable(){
         this.parentContainer.appendChild(this.table);
     }
 
+    _unselectAllRows(){
+        this.children.forEach(tr => tr.classList.remove('table-highlighted'));
+    }
+
+    clearBody(){
+        console.log(this.tableBody);
+        while (this.tableBody.firstChild){
+            this.tableBody.removeChild(this.tableBody.firstChild);
+        }
+        this.children = [];
+    }
 }
