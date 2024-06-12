@@ -155,6 +155,7 @@ async function _resizeBoard(){
 function selectComponentFromListEvent(itemElement){
     let clickedListElement = itemElement.textContent;
     _markSelectedComponentFromList(clickedListElement);
+    generatePinoutTableEvent(clickedListElement);
 }
 
 function preserveComponentMarkesEvent(){
