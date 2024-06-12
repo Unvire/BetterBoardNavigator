@@ -10,6 +10,7 @@
     <script type="text/javascript" src="/static/js/fileFunctions.js"></script>   
     <script type="text/javascript" src="/static/js/events.js"></script>
     <script type="text/javascript" src="/static/js/dynamicSelectableList.js"></script>
+    <script type="text/javascript" src="/static/js/pinoutTable.js"></script>
 </head>
 <body>
     <div class="buttons-row-flexbox">
@@ -54,7 +55,7 @@
             <div class="scrollable-list" id="scrollable-all-components-list">
             </div>
         </div>
-        <div class="item-left-bottom">
+        <div class="item-left-bottom" id="pinout-table">
             <p>component pinout</p>
         </div>
         <div class="item-center" id="item-center">
@@ -101,9 +102,11 @@
         const preserveComponentMarkesButton = document.getElementById('toggle-leave-markers-button');
         const clearMarkersButton = document.getElementById('unselect-components-button');
         const markedComponentsContainer = document.getElementById('scrollable-marked-components-list');
+        const pinoutTableContainer = document.getElementById('pinout-table');
 
         var allComponentsList = new DynamicSelectableList(allComponentsContainer);
         var markedComponentsList = new DynamicSelectableList(markedComponentsContainer);
+        var pinoutTable = new PinoutTable(pinoutTableContainer);
 
         function currentSide(){
             return sideMap[isSideBottom];
@@ -130,6 +133,8 @@
         }
 
         document.addEventListener("DOMContentLoaded", async () => {
+            pinoutTable.generateTable();
+            
             pyodide = await loadPyodide();
             await configurePythonPath(pyodide);                      
             await loadPygame(pyodide);            
