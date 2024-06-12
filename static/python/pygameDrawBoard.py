@@ -67,6 +67,11 @@ class DrawBoardEngine:
         componentInstance = self.boardData.getElementByName('components', componentName)
         return componentInstance.getSide()
     
+    def getComponentPinout(self, componentName:str) -> dict:
+        componentInstance = self.boardData.getElementByName('components', componentName)
+        pins = componentInstance.getPins()
+        return {pinName:pinInstance.getNet() for pinName, pinInstance in pins.items()}
+        
     def getSelectedComponents(self) -> list[str]:
         return list(self.selectedComponentsSet)
     
@@ -653,6 +658,7 @@ if __name__ == '__main__':
                 elif event.key == pygame.K_x:
                     componentName = input('Component name: ')
                     engine.findComponentByNameInterface(WIN, componentName, side)
+                    print(engine.getComponentPinout(componentName))
                 
                 elif event.key == pygame.K_c:
                     engine.clearFindComponentByNameInterface(WIN, side)
