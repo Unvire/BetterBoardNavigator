@@ -101,11 +101,25 @@ canvas{
 }
 
 table {
-    width: 50%;
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    height: 100%;
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 14px;
     text-align: left;
+}
+table-head {
+    display: block;
+    flex: 0 0 auto;
+}
+    
+table-body {
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 th, td {
