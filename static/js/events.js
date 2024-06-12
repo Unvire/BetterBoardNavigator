@@ -203,12 +203,24 @@ function _generateMarkedComponentsList(){
     
     markedComponentsList.elements = componentsList
     markedComponentsList.selectionMode = 'single';
-    markedComponentsList.eventCallbackFuntion = componentInScreenCenterEvent;
+    markedComponentsList.eventCallbackFuntion = markedComponentsListItemClickedEvent;
     markedComponentsList.generateList()
 }
 
-function componentInScreenCenterEvent(itemElement){
+function markedComponentsListItemClickedEvent(itemElement){
     let componentName = itemElement.textContent;
+    generatePinoutTableEvent(componentName);
+    componentInScreenCenterEvent(componentName);
+}
+
+function generatePinoutTableEvent(componentName){
+    pyodide.runPython(`
+        pinoutDict = engine.getComponentPinout('${componentName}')
+    `);
+    let pinoutMap = pyodide.globals.get('pinoutDict').toJs();
+}
+
+function componentInScreenCenterEvent(componentName){
     pyodide.runPython(`
         componentSide = engine.getSideOfComponent('${componentName}')
     `);
@@ -218,21 +230,11 @@ function componentInScreenCenterEvent(itemElement){
         changeSide();
     }
 
-    generatePinoutTableEvent(componentName);
-
     side = currentSide();
     pyodide.runPython(`
         engine.componentInScreenCenterInterface(SURFACE, '${componentName}', '${side}')
         pygame.display.flip()
     `);
-}
-
-function generatePinoutTableEvent(componentName){
-    pyodide.runPython(`
-        pinoutDict = engine.getComponentPinout('${componentName}')
-    `);
-    let pinoutMap = pyodide.globals.get('pinoutDict').toJs();
-    console.log(pinoutMap)
 }
 
 function _enableButtons(){
