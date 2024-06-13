@@ -49,19 +49,8 @@ class DrawBoardEngine:
         return self.colorsDict.get(key, None)
 
     def getComponents(self) -> list[str]:
-        def calculateSortingValue(component) -> int:
-            ## split component name into letters and digits. Calculate value as [ord(char1) + ord(char2) + ...] * 1000 + componentNumber
-            stringValue = lambda componentType: sum([ord(char) for char in componentType]) * 1000
-
-            try:
-                componentType, componentNumber, *_ = list(filter(None, re.split(r'(\d+)', component)))
-            except ValueError:
-                componentType = component
-                componentNumber = 0
-            return stringValue(componentType) + int(componentNumber)
-
         componentsList = list(self.boardData.getComponents().keys())
-        return sorted(componentsList, key=calculateSortingValue)
+        return sorted(componentsList, key=self._componentSortingValue)
     
     def getNets(self) -> dict:
         nets = {}
@@ -564,11 +553,22 @@ class DrawBoardEngine:
         surfaceWidth, _ = self.surfaceDimensions
         return surfaceWidth - x
     
-    def _pinStringValue(self, pinName) -> int:
+    def _pinStringValue(self, pinName:str) -> int:
         if pinName.isnumeric():
             return int(pinName)
         else:
             return sum([ord(char) for char in pinName])
+    
+    def _componentSortingValue(self, componentName:str):
+        ## split component name into letters and digits. Calculate value as [ord(char1) + ord(char2) + ...] * 1000 + componentNumber
+        stringValue = lambda componentType: sum([ord(char) for char in componentType]) * 1000
+
+        try:
+            componentType, componentNumber, *_ = list(filter(None, re.split(r'(\d+)', componentName)))
+        except ValueError:
+            componentType = componentName
+            componentNumber = 0
+        return stringValue(componentType) + int(componentNumber)
 
 if __name__ == '__main__':
     def openSchematicFile() -> str:        
