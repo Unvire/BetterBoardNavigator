@@ -50,17 +50,21 @@ class DrawBoardEngine:
 
     def getComponents(self) -> list[str]:
         componentsList = list(self.boardData.getComponents().keys())
-        return sorted(componentsList, key=self._componentSortingValue)
+        return sorted(componentsList, key=self._componentStringValue)
     
     def getNets(self) -> dict:
         nets = {}
         for netName, componentOnNetSubDict in self.boardData.getNets().items():
             nets[netName] = {}
+            componentsOnNetDict = {}
             for componentName in componentOnNetSubDict:
-                pinsList = componentOnNetSubDict[componentName]['pins']
+                pinsList = sorted(componentOnNetSubDict[componentName]['pins'], key=self._pinStringValue)
                 pinsString = ', '.join(pinsList)
-                nets[netName][componentName] = pinsString
-        return nets
+                componentsOnNetDict[componentName] = pinsString
+            nets[netName] = dict(sorted(componentsOnNetDict.items(), key=lambda componentPinoutData: self._componentStringValue(componentPinoutData[0])))
+            
+        sortedNetNamesList = sorted(nets.keys()) 
+        return {netName:nets[netName] for netName in sortedNetNamesList}
     
     def getSideOfComponent(self, componentName:str) -> str:
         componentInstance = self.boardData.getElementByName('components', componentName)
@@ -559,7 +563,7 @@ class DrawBoardEngine:
         else:
             return sum([ord(char) for char in pinName])
     
-    def _componentSortingValue(self, componentName:str):
+    def _componentStringValue(self, componentName:str):
         ## split component name into letters and digits. Calculate value as [ord(char1) + ord(char2) + ...] * 1000 + componentNumber
         stringValue = lambda componentType: sum([ord(char) for char in componentType]) * 1000
 
