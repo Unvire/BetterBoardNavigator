@@ -63,6 +63,16 @@ class DrawBoardEngine:
         componentsList = list(self.boardData.getComponents().keys())
         return sorted(componentsList, key=calculateSortingValue)
     
+    def getNets(self) -> dict:
+        nets = {}
+        for netName, componentOnNetSubDict in self.boardData.getNets().items():
+            nets[netName] = {}
+            for componentName in componentOnNetSubDict:
+                pinsList = componentOnNetSubDict[componentName]['pins']
+                pinsString = ', '.join(pinsList)
+                nets[netName][componentName] = pinsString
+        return nets
+    
     def getSideOfComponent(self, componentName:str) -> str:
         componentInstance = self.boardData.getElementByName('components', componentName)
         return componentInstance.getSide()
@@ -607,6 +617,8 @@ if __name__ == '__main__':
     print('Change screen surface dimensions - g')
     print('Set component in screen center - h')
     print('====================================')
+
+    print(engine.getNets())
 
     run = True
     while run:
