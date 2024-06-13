@@ -62,7 +62,7 @@ class DrawBoardEngine:
                 pinsString = ', '.join(pinsList)
                 componentsOnNetDict[componentName] = pinsString
             nets[netName] = dict(sorted(componentsOnNetDict.items(), key=lambda componentPinoutData: self._componentStringValue(componentPinoutData[0])))
-            
+
         sortedNetNamesList = sorted(nets.keys()) 
         return {netName:nets[netName] for netName in sortedNetNamesList}
     
@@ -603,6 +603,7 @@ if __name__ == '__main__':
     engine.setBoardData(boardInstance)
     engine.drawAndBlitInterface(WIN, side)    
     print('Components: ', engine.getComponents())
+    print('Nets: ', engine.getNets())
 
     print('====================================')
     print('Pygame draw PCB engine')
@@ -625,8 +626,6 @@ if __name__ == '__main__':
     print('Change screen surface dimensions - g')
     print('Set component in screen center - h')
     print('====================================')
-
-    print(engine.getNets())
 
     run = True
     while run:
