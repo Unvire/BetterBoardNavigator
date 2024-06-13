@@ -24,7 +24,9 @@ async function openAndLoadCadFile(pyodide, file) {
 
             engine = DrawBoardEngine(canvas.width, canvas.height)
             engine.setBoardData(boardInstance)
+
             allComponents = engine.getComponents()
+            netsDict = engine.getNets()
 
             engine.drawAndBlitInterface(SURFACE, '${side}')
             pygame.display.flip()
@@ -33,7 +35,11 @@ async function openAndLoadCadFile(pyodide, file) {
         allComponentsList.elementsList = allComponents;
         allComponentsList.callbackEventFunction = selectComponentFromListEvent;
         allComponentsList.selectionMode = 'single';
-        allComponentsList.generateList();        
+        allComponentsList.generateList();
+
+        let netsMap = pyodide.globals.get('netsDict').toJs();
+        netsTreeview.addBranches(netsMap);
+        netsTreeview.generate();
     }
     reader.readAsArrayBuffer(file);
 }

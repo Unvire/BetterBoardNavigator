@@ -131,3 +131,28 @@ th, td {
     background-color: #007bff;
     color: white;
 }
+
+.treeview ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.treeview li {
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.treeview-hidden {
+    display: none;
+}
+
+.treeview-selected {
+    background-color: #007bff;
+    color: white;
+}
+
+.toggle-button {
+    margin-right: 5px;
+    cursor: pointer;
+}
