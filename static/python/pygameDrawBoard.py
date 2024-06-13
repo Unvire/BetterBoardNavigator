@@ -78,12 +78,10 @@ class DrawBoardEngine:
         return componentInstance.getSide()
     
     def getComponentPinout(self, componentName:str) -> dict:
-        stringValue = lambda pinData: int(pinData[0]) if pinData[0].isnumeric() else sum([ord(char) for char in pinData[0]])
-        
         componentInstance = self.boardData.getElementByName('components', componentName)
         pins = componentInstance.getPins()
         pinoutDict = {pinName:pinInstance.getNet() for pinName, pinInstance in pins.items()}
-        return dict(sorted(pinoutDict.items(), key=stringValue))
+        return dict(sorted(pinoutDict.items(), key=lambda pinData: self._pinStringValue(pinData[0])))
         
     def getSelectedComponents(self) -> list[str]:
         return list(self.selectedComponentsSet)
@@ -565,6 +563,12 @@ class DrawBoardEngine:
     def _xForMirroredSurface(self, x:float) -> float:
         surfaceWidth, _ = self.surfaceDimensions
         return surfaceWidth - x
+    
+    def _pinStringValue(self, pinName) -> int:
+        if pinName.isnumeric():
+            return int(pinName)
+        else:
+            return sum([ord(char) for char in pinName])
 
 if __name__ == '__main__':
     def openSchematicFile() -> str:        
