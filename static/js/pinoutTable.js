@@ -6,6 +6,7 @@ class PinoutTable{
         this.tableBody = document.createElement('table-body');
         this.#createHeader();
         this.selectRowEvent = null;
+        this.selectedRow = null;
     }
 
     set rowEvent(eventFunction){
@@ -41,9 +42,11 @@ class PinoutTable{
             row.appendChild(rowKey);
             row.appendChild(rowNet);
             row.addEventListener('click', () => {
-                this.#singleSelectionModeEvent(row);
-                if (this.selectRowEvent){
+                this.selectedRow = this.#singleSelectionModeEvent(row, this.selectedRow);
+                if (this.selectedRow === row){
                     this.selectRowEvent(netName);
+                } else {
+                    this.selectRowEvent('');
                 }
             });
 
@@ -54,9 +57,18 @@ class PinoutTable{
         this.children = this.tableBody.querySelectorAll('tr');
     }
 
-    #singleSelectionModeEvent(row){        
-        this.#unselectAllRows();
-        row.classList.add('table-highlighted');
+    #singleSelectionModeEvent(row, currentSelectedRow){
+        if (row.classList.contains('table-highlighted')){
+            row.classList.remove('table-highlighted');
+            currentSelectedRow = null;
+        } else {
+            if (currentSelectedRow){
+                currentSelectedRow.classList.remove('table-highlighted');
+            }
+            row.classList.add('table-highlighted');
+            currentSelectedRow = row;
+        }
+        return currentSelectedRow;
     }
 
     generateTable(){
