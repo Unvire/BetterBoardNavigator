@@ -132,13 +132,19 @@ th, td {
     color: white;
 }
 
-.treeview ul {
+.tree-view {
+    overflow-y: scroll;
+    width: 100%;
+    height: 100%;
+}
+
+ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
-.treeview li {
+li {
     margin-left: 20px;
     cursor: pointer;
 }
