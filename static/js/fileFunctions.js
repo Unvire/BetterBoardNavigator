@@ -40,6 +40,10 @@ async function openAndLoadCadFile(pyodide, file) {
         let netsMap = pyodide.globals.get('netsDict').toJs();
         netsTreeview.addBranches(netsMap);
         netsTreeview.generate();
+
+        pinoutTable.clearBody();
+        markedComponentsList.clearList();
+        clickedComponentContainer.innerText = '';
     }
     reader.readAsArrayBuffer(file);
 }

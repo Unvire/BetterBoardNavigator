@@ -37,7 +37,7 @@ function mouseDownEvent(event){
                     pygame.display.flip()
         `);
         let clickedComponents = pyodide.globals.get('clickedComponents').toJs();
-        document.getElementById("clicked-components").innerText = clickedComponents;
+        clickedComponentContainer.innerText = clickedComponents;
         _generateMarkedComponentsList();
     }
 }
