@@ -219,6 +219,7 @@ function generatePinoutTableEvent(componentName){
         pinoutDict = engine.getComponentPinout('${componentName}')
     `);
     let pinoutMap = pyodide.globals.get('pinoutDict').toJs();
+    pinoutTable.rowEvent = selectNetEvent;
     pinoutTable.addRows(pinoutMap);
     pinoutTable.generateTable();
 }

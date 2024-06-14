@@ -5,6 +5,11 @@ class PinoutTable{
         this.tableHead = document.createElement('table-head');
         this.tableBody = document.createElement('table-body');
         this.#createHeader();
+        this.selectRowEvent = null;
+    }
+
+    set rowEvent(eventFunction){
+        this.selectRowEvent = eventFunction;
     }
 
     #createHeader(){
@@ -35,7 +40,12 @@ class PinoutTable{
             const row = document.createElement('tr');
             row.appendChild(rowKey);
             row.appendChild(rowNet);
-            row.addEventListener('click', () => this.#singleSelectionModeEvent(row));
+            row.addEventListener('click', () => {
+                this.#singleSelectionModeEvent(row);
+                if (this.selectRowEvent){
+                    this.selectRowEvent(netName);
+                }
+            });
 
             this.tableBody.appendChild(row);
 
