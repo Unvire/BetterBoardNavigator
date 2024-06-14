@@ -4,10 +4,10 @@ class PinoutTable{
         this.table = document.createElement('table');
         this.tableHead = document.createElement('table-head');
         this.tableBody = document.createElement('table-body');
-        this._createHeader();
+        this.#createHeader();
     }
 
-    _createHeader(){
+    #createHeader(){
         const headerColumn1 = document.createElement('th');
         headerColumn1.textContent = 'Pin';
 
@@ -35,7 +35,7 @@ class PinoutTable{
             const row = document.createElement('tr');
             row.appendChild(rowKey);
             row.appendChild(rowNet);
-            row.addEventListener('click', () => this._singleSelectionModeEvent(row));
+            row.addEventListener('click', () => this.#singleSelectionModeEvent(row));
 
             this.tableBody.appendChild(row);
 
@@ -44,8 +44,8 @@ class PinoutTable{
         this.children = this.tableBody.querySelectorAll('tr');
     }
 
-    _singleSelectionModeEvent(row){        
-        this._unselectAllRows();
+    #singleSelectionModeEvent(row){        
+        this.#unselectAllRows();
         row.classList.add('table-highlighted');
     }
 
@@ -53,7 +53,7 @@ class PinoutTable{
         this.parentContainer.appendChild(this.table);
     }
 
-    _unselectAllRows(){
+    #unselectAllRows(){
         this.children.forEach(tr => tr.classList.remove('table-highlighted'));
     }
 

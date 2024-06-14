@@ -8,27 +8,27 @@ class NetTreeView{
     }
     
     addBranches(netMap){
-        this._clearTree();
+        this.clearTree();
         for (const netName in netMap){
             const netBranch = document.createElement('li');
             const toggleSpan = document.createElement('span');
             const netSpan = document.createElement('span');
 
-            this._setToggleButton(toggleSpan, netBranch);
-            this._setNetSpan(netSpan, netName);
+            this.#setToggleButton(toggleSpan, netBranch);
+            this.#setNetSpan(netSpan, netName);
             netBranch.appendChild(toggleSpan);
             netBranch.appendChild(netSpan);
 
             const subBranchContainer = document.createElement('ul');
             subBranchContainer.classList.add('hidden');
-            this._addSubBranches(subBranchContainer, netMap[netName]);  
+            this.#addSubBranches(subBranchContainer, netMap[netName]);  
 
             netBranch.appendChild(subBranchContainer);
             this.ulFirstLevel.appendChild(netBranch);
         }
     }
 
-    _addSubBranches(subBranchContainer, netComponentSubMap){
+    #addSubBranches(subBranchContainer, netComponentSubMap){
         subBranchContainer.classList.add('treeview-hidden');
 
         for (const componentName in netComponentSubMap){
@@ -39,7 +39,7 @@ class NetTreeView{
             componentPinoutSpan.textContent = componentName + ": " + pins;
             componentPinoutSpan.addEventListener('click', (event) => {
                 event.stopPropagation();
-                this.selectedComponent = this._handleSingleSelection(componentPinoutSpan, this.selectedComponent);
+                this.selectedComponent = this.#handleSingleSelection(componentPinoutSpan, this.selectedComponent);
             });
 
             componentBranch.appendChild(componentPinoutSpan);
@@ -47,24 +47,24 @@ class NetTreeView{
         }
     }
 
-    _setToggleButton(toggleButton, liParent){
+    #setToggleButton(toggleButton, liParent){
         toggleButton.textContent = '+';
         toggleButton.classList.add('toggle-button');
         toggleButton.addEventListener('click', (event) => {
             event.stopPropagation();
-            this._toggleButtonVisibility(toggleButton, liParent);
+            this.#toggleButtonVisibility(toggleButton, liParent);
         });
     }
     
-    _setNetSpan(netSpan, netName){
+    #setNetSpan(netSpan, netName){
         netSpan.textContent = netName;
         netSpan.addEventListener('click', (event) => {
             event.stopPropagation();
-            this.selectedNet = this._handleSingleSelection(netSpan, this.selectedNet);
+            this.selectedNet = this.#handleSingleSelection(netSpan, this.selectedNet);
         });
     }
 
-    _toggleButtonVisibility(toggleButton, liParent){
+    #toggleButtonVisibility(toggleButton, liParent){
         const childUl = liParent.querySelector('ul');
         if (childUl) {
             if (childUl.classList.contains('treeview-hidden')){
@@ -77,7 +77,7 @@ class NetTreeView{
         }
     }
 
-    _handleSingleSelection(clickedItem, currentSelectedItem){
+    #handleSingleSelection(clickedItem, currentSelectedItem){
         if (clickedItem.classList.contains('treeview-selected')){
             clickedItem.classList.remove('treeview-selected');
             currentSelectedItem = null;
@@ -91,7 +91,7 @@ class NetTreeView{
         return currentSelectedItem;
     }
 
-    _clearTree(){
+    clearTree(){
         this.ulFirstLevel.innerHTML = '';
     }
 

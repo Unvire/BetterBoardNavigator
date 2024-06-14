@@ -1,7 +1,7 @@
 class DynamicSelectableList{
     constructor(parentContainer){
         this.parentContainer = parentContainer;
-        this.selectionModesMap = {'single': this._singleSelectionMode, 'multiple':this._multipleSelectionMode};
+        this.selectionModesMap = {'single': this.#singleSelectionMode, 'multiple':this.#multipleSelectionMode};
         this.selectionFunction = null;
         this.elements = [];
         this.callbackEventFunction = null;
@@ -20,19 +20,19 @@ class DynamicSelectableList{
         this.selectionFunction = this.selectionModesMap[mode];
     }
 
-    _bindOnClickEvent(itemDiv){
+    #bindOnClickEvent(itemDiv){
         this.selectionFunction(itemDiv);
         if (this.callbackEventFunction){
             this.callbackEventFunction(itemDiv);
         }
     }
 
-    _singleSelectionMode(itemDiv){
+    #singleSelectionMode(itemDiv){
         this.unselectAllItems();
         itemDiv.classList.add('selected');
     }
 
-    _multipleSelectionMode(itemDiv){
+    #multipleSelectionMode(itemDiv){
         if (itemDiv.classList.contains('selected')){
             itemDiv.classList.remove('selected');
         } else {
@@ -48,7 +48,7 @@ class DynamicSelectableList{
             itemDiv.textContent = el;
             
             this.parentContainer.appendChild(itemDiv);
-            itemDiv.addEventListener('click', () => this._bindOnClickEvent(itemDiv));
+            itemDiv.addEventListener('click', () => this.#bindOnClickEvent(itemDiv));
         });
 
         this.children = this.parentContainer.querySelectorAll('div');
