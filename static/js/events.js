@@ -240,6 +240,14 @@ function componentInScreenCenterEvent(componentName){
     `);
 }
 
+function selectNetEvent(netName){
+    side = currentSide();
+    pyodide.runPython(`
+        engine.selectNetByNameInterface(SURFACE, '${netName}', '${side}')
+        pygame.display.flip()
+    `);
+}
+
 function _enableButtons(){
     changeSideButton.disabled = false;
     rotateButton.disabled = false;

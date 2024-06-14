@@ -5,6 +5,16 @@ class NetTreeView{
         this.parentContainer.appendChild(this.ulFirstLevel);
         this.selectedNet = null;
         this.selectedComponent = null;
+        this.selectNetEvent = null;
+        this.selectComponentEvent = null;
+    }
+
+    set netEvent(eventFunction){
+        this.selectNetEvent = eventFunction;
+    }
+
+    set componentEvent(eventFunction){
+        this.selectComponentEvent = eventFunction;
     }
     
     addBranches(netMap){
@@ -40,6 +50,9 @@ class NetTreeView{
             componentPinoutSpan.addEventListener('click', (event) => {
                 event.stopPropagation();
                 this.selectedComponent = this.#handleSingleSelection(componentPinoutSpan, this.selectedComponent);
+                if (this.selectComponentEvent){
+                    this.selectComponentEvent(componentName);
+                }
             });
 
             componentBranch.appendChild(componentPinoutSpan);
@@ -61,6 +74,13 @@ class NetTreeView{
         netSpan.addEventListener('click', (event) => {
             event.stopPropagation();
             this.selectedNet = this.#handleSingleSelection(netSpan, this.selectedNet);
+            if (this.selectNetEvent){
+                if (this.selectedNet === netSpan){
+                    this.selectNetEvent(netName);
+                } else {
+                    this.selectNetEvent('');
+                }
+            }
         });
     }
 
