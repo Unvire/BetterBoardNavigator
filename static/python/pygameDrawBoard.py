@@ -149,7 +149,10 @@ class DrawBoardEngine:
         return self.drawAndBlitInterface(targetSurface, side)
     
     def selectNetByNameInterface(self, targetSurface:pygame.Surface, netName:str, side:str) -> pygame.Surface:
-        self._selectNet(netName)
+        if netName:
+            self._selectNet(netName)
+        else:
+            self._unselectNet()
         return self.drawAndBlitInterface(targetSurface, side)
     
     def unselectNetByNameInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
