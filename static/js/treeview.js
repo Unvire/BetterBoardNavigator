@@ -3,6 +3,8 @@ class NetTreeView{
         this.parentContainer = parentContainer
         this.ulFirstLevel = document.createElement('ul');
         this.parentContainer.appendChild(this.ulFirstLevel);
+        this.selectedNet = null;
+        this.selectedComponent = null;
     }
     
     addBranches(netMap){
@@ -36,7 +38,7 @@ class NetTreeView{
             componentPinoutSpan.textContent = componentName + ": " + pins;
             componentPinoutSpan.addEventListener('click', (event) => {
                 event.stopPropagation();
-                this._toggleSelect(componentPinoutSpan);
+                this.selectedComponent = this._handleSingleSelection(componentPinoutSpan, this.selectedComponent);
             });
 
             componentBranch.appendChild(componentPinoutSpan);
@@ -57,7 +59,7 @@ class NetTreeView{
         netSpan.textContent = netName;
         netSpan.addEventListener('click', (event) => {
             event.stopPropagation();
-            this._toggleSelect(netSpan);
+            this.selectedNet = this._handleSingleSelection(netSpan, this.selectedNet);
         });
     }
 
@@ -74,8 +76,18 @@ class NetTreeView{
         }
     }
 
-    _toggleSelect(item){
-        item.classList.toggle('treeview-selected');
+    _handleSingleSelection(clickedItem, currentSelectedItem){
+        if (clickedItem.classList.contains('treeview-selected')){
+            clickedItem.classList.remove('treeview-selected');
+            currentSelectedItem = null;
+        } else {
+            if (currentSelectedItem){
+                currentSelectedItem.classList.remove('treeview-selected');
+            }
+            clickedItem.classList.add('treeview-selected');
+            currentSelectedItem = clickedItem;
+        }
+        return currentSelectedItem;
     }
 
     generate(){
