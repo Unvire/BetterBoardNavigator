@@ -8,6 +8,7 @@ class NetTreeView{
     }
     
     addBranches(netMap){
+        this._clearTree();
         for (const netName in netMap){
             const netBranch = document.createElement('li');
             const toggleSpan = document.createElement('span');
@@ -88,6 +89,10 @@ class NetTreeView{
             currentSelectedItem = clickedItem;
         }
         return currentSelectedItem;
+    }
+
+    _clearTree(){
+        this.ulFirstLevel.innerHTML = '';
     }
 
     generate(){
