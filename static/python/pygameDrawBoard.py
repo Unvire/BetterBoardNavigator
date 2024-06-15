@@ -35,6 +35,7 @@ class DrawBoardEngine:
         self.selectedNetSurface = self._getEmptySurfce()
 
         self.selectedComponentsSet = set()
+        self.allSelectedNetComponentsSet = set()
         self.selectedNetComponentsSet = set()
         self.selectedCommonTypePrefix = ''
         self.selectedNet = dict()
@@ -100,7 +101,7 @@ class DrawBoardEngine:
     
     def _resetSelectionCollections(self):
         self.selectedComponentsSet = set()
-        self.selectedNetComponentsSet = set()
+        self.allSelectedNetComponentsSet = set()
         self.selectedCommonTypePrefix = ''
         self.selectedNet = dict()
         self.isHideSelectedNetComponents = False
@@ -153,6 +154,10 @@ class DrawBoardEngine:
             self._selectNet(netName)
         else:
             self._unselectNet()
+        return self.drawAndBlitInterface(targetSurface, side)
+    
+    def selectNetComponentByNameInterface(self, targetSurface:pygame.Surface, componentName:str, side:str) -> pygame.Surface:
+        self._selectNetComponentByName(componentName)
         return self.drawAndBlitInterface(targetSurface, side)
     
     def unselectNetInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
@@ -304,6 +309,12 @@ class DrawBoardEngine:
             self.selectedComponentsSet.add(componentInstance.name)
             return componentInstance
     
+    def _selectNetComponentByName(self, componentName:str):
+        if componentName in self.selectedNetComponentsSet:
+            self.selectedNetComponentsSet.remove(componentName)
+        elif componentName in self.allSelectedNetComponentsSet:
+            self.selectedNetComponentsSet.add(componentName)
+    
     def _setComponentInScreenCenter(self, componentInstance:comp.Component, side:str):
         coords = componentInstance.getCoords()
         xComp, yComp = coords.getXY()
@@ -318,7 +329,7 @@ class DrawBoardEngine:
     
     def _selectNet(self, netName:str):
         net = self.boardData.getElementByName('nets', netName)
-        self.selectedNetComponentsSet = set(net)
+        self.allSelectedNetComponentsSet = set(net)
         for componentName, parameters in net.items():
             self.selectedNet[componentName] = parameters['pins']
         self.isHideSelectedNetComponents = False
@@ -327,6 +338,7 @@ class DrawBoardEngine:
         self.selectedComponentsSet = set()
     
     def _unselectNet(self):        
+        self.allSelectedNetComponentsSet = set()
         self.selectedNetComponentsSet = set()
         self.selectedNet = dict()
     
@@ -628,6 +640,7 @@ if __name__ == '__main__':
     print('Clear common type components - s')
     print('Change screen surface dimensions - g')
     print('Set component in screen center - h')
+    print('Select component on net (net must be drawn before) - j')
     print('====================================')
 
     run = True
@@ -726,6 +739,10 @@ if __name__ == '__main__':
                 elif event.key == pygame.K_h:
                     componentName = input('Component name: ')
                     engine.componentInScreenCenterInterface(WIN, componentName, side)
+                
+                elif event.key == pygame.K_j:
+                    componentName = input('Net component name: ')
+                    engine.selectNetComponentByNameInterface(WIN, componentName, side)
 
         
         ## display image
