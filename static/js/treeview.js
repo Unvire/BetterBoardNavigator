@@ -61,7 +61,10 @@ class NetTreeView{
         netSpan.textContent = `+ ${netName}`;
         netSpan.addEventListener('click', (event) => {
             event.stopPropagation();
+
+            this.#unselectCurrentItems(this.selectedNet, this.selectedComponent);
             this.#toggleVisibility(netSpan, liParent);
+
             this.selectedNet = this.#handleSingleSelection(netSpan, this.selectedNet);
             this.selectNetEvent('');
             if (this.selectedNet === netSpan){
@@ -96,6 +99,21 @@ class NetTreeView{
             currentSelectedItem = clickedItem;
         }
         return currentSelectedItem;
+    }
+
+    #unselectCurrentItems(currentSelectedNet, currentSelectedItem){
+        if (currentSelectedNet){
+            const liParent = currentSelectedNet.parentElement;
+            const childUl = liParent.querySelector('ul');
+
+            childUl.classList.add('treeview-hidden');
+            currentSelectedNet.textContent = '+' + currentSelectedNet.textContent.substring(1);
+        }
+
+        if (currentSelectedItem){
+            currentSelectedItem.classList.remove('treeview-selected');
+        }
+
     }
 
     clearTree(){
