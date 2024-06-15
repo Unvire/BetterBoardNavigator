@@ -155,7 +155,7 @@ class DrawBoardEngine:
             self._unselectNet()
         return self.drawAndBlitInterface(targetSurface, side)
     
-    def unselectNetByNameInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
+    def unselectNetInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._unselectNet()
         return self.drawAndBlitInterface(targetSurface, side)
     
@@ -693,7 +693,7 @@ if __name__ == '__main__':
                     engine.selectNetByNameInterface(WIN, netName, side)
                 
                 elif event.key == pygame.K_b:
-                    engine.unselectNetByNameInterface(WIN, side)
+                    engine.unselectNetInterface(WIN, side)
                 
                 elif event.key == pygame.K_n:
                     engine.showHideMarkersForSelectedNetByNameInterface(WIN, side)
