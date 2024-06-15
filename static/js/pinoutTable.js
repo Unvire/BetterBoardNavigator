@@ -42,11 +42,10 @@ class PinoutTable{
             row.appendChild(rowKey);
             row.appendChild(rowNet);
             row.addEventListener('click', () => {
-                this.selectedRow = this.#singleSelectionModeEvent(row, this.selectedRow);
+                this.selectedRow = this.#singleSelectionModeEvent(row, this.selectedRow);                
+                this.selectRowEvent('');
                 if (this.selectedRow === row){
                     this.selectRowEvent(netName);
-                } else {
-                    this.selectRowEvent('');
                 }
             });
 

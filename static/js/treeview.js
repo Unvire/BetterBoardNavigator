@@ -74,12 +74,9 @@ class NetTreeView{
         netSpan.addEventListener('click', (event) => {
             event.stopPropagation();
             this.selectedNet = this.#handleSingleSelection(netSpan, this.selectedNet);
-            if (this.selectNetEvent){
-                if (this.selectedNet === netSpan){
-                    this.selectNetEvent(netName);
-                } else {
-                    this.selectNetEvent('');
-                }
+            this.selectNetEvent('');
+            if (this.selectedNet === netSpan){
+                this.selectNetEvent(netName);
             }
         });
     }
