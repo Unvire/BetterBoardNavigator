@@ -35,7 +35,7 @@
             <button type="button" id="unselect-components-button" disabled="true">Clear component markers</button>
         </div>
         <div class="buttons-flexbox">
-            <button type="button" id="toggle-net-marker-button" disabled="true">Hide net markers</button>
+            <button type="button" id="toggle-net-marker-button" disabled="true">Toggle net markers</button>
             <button type="button" id="unselect-net-button" disabled="true">Unselect net</button>
         </div>
         <div class="buttons-flexbox">
@@ -107,7 +107,8 @@
         const clearMarkersButton = document.getElementById('unselect-components-button');
         const markedComponentsContainer = document.getElementById('scrollable-marked-components-list');
         const pinoutTableContainer = document.getElementById('pinout-table');
-        const netTreeviewContainer = document.getElementById('net-treeview')
+        const netTreeviewContainer = document.getElementById('net-treeview');
+        const toggleNetMarkersButton = document.getElementById('toggle-net-marker-button');
 
         var allComponentsList = new DynamicSelectableList(allComponentsContainer);
         var markedComponentsList = new DynamicSelectableList(markedComponentsContainer);
@@ -168,6 +169,7 @@
             toggleFindComponentByClickButton.addEventListener("click", toggleFindComponentByClickEvent);
             preserveComponentMarkesButton.addEventListener("click", preserveComponentMarkesEvent);
             clearMarkersButton.addEventListener("click", clearMarkersEvent);
+            toggleNetMarkersButton.addEventListener("click", toggleNetMarkersEvent);
         });
     </script>
 </body>

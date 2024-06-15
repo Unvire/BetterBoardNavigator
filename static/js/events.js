@@ -249,6 +249,14 @@ function selectNetEvent(netName){
     `);
 }
 
+function toggleNetMarkersEvent(){
+    side = currentSide();
+    pyodide.runPython(`
+        engine.showHideMarkersForSelectedNetByNameInterface(SURFACE, '${side}')
+        pygame.display.flip()
+    `);
+}
+
 function _enableButtons(){
     changeSideButton.disabled = false;
     rotateButton.disabled = false;
@@ -259,4 +267,5 @@ function _enableButtons(){
     toggleFindComponentByClickButton.disabled = false;
     preserveComponentMarkesButton.disabled = false;
     clearMarkersButton.disabled = false;
+    toggleNetMarkersButton.disabled = false;
 }
