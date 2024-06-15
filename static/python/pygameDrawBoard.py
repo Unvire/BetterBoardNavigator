@@ -311,8 +311,9 @@ class DrawBoardEngine:
     
     def _selectNetComponentByName(self, componentName:str):
         if componentName in self.selectedNetComponentsSet:
-            self.selectedNetComponentsSet.remove(componentName)
+            self.selectedNetComponentsSet = set()
         elif componentName in self.allSelectedNetComponentsSet:
+            self.selectedNetComponentsSet = set()
             self.selectedNetComponentsSet.add(componentName)
     
     def _setComponentInScreenCenter(self, componentInstance:comp.Component, side:str):
