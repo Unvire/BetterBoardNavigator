@@ -109,6 +109,7 @@
         const pinoutTableContainer = document.getElementById('pinout-table');
         const netTreeviewContainer = document.getElementById('net-treeview');
         const toggleNetMarkersButton = document.getElementById('toggle-net-marker-button');
+        const unselectNetButton = document.getElementById('unselect-net-button');
 
         var allComponentsList = new DynamicSelectableList(allComponentsContainer);
         var markedComponentsList = new DynamicSelectableList(markedComponentsContainer);
@@ -170,6 +171,7 @@
             preserveComponentMarkesButton.addEventListener("click", preserveComponentMarkesEvent);
             clearMarkersButton.addEventListener("click", clearMarkersEvent);
             toggleNetMarkersButton.addEventListener("click", toggleNetMarkersEvent);
+            unselectNetButton.addEventListener("click", unselectNetEvent);
         });
     </script>
 </body>

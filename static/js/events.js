@@ -257,6 +257,14 @@ function toggleNetMarkersEvent(){
     `);
 }
 
+function unselectNetEvent(){
+    side = currentSide();
+    pyodide.runPython(`
+        engine.unselectNetInterface(SURFACE, '${side}')
+        pygame.display.flip()
+    `);
+}
+
 function _enableButtons(){
     changeSideButton.disabled = false;
     rotateButton.disabled = false;
@@ -268,4 +276,5 @@ function _enableButtons(){
     preserveComponentMarkesButton.disabled = false;
     clearMarkersButton.disabled = false;
     toggleNetMarkersButton.disabled = false;
+    unselectNetButton.disabled = false;
 }
