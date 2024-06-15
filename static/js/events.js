@@ -176,15 +176,8 @@ async function clearMarkersEvent(){
 }
 
 async function _markSelectedComponentFromList(selectedComponentFromList){
-    pyodide.runPython(`
-        componentSide = engine.getSideOfComponent('${selectedComponentFromList}')
-    `);
-    let componentSide = pyodide.globals.get('componentSide');
-
-    if (componentSide != currentSide()){
-        changeSide();
-    }
-    side = currentSide();
+    componentSide = _getSideOfComponent(selectedComponentFromList);
+    side = _changeSideIfComponentIsNotOnScreen(componentSide);
 
     pyodide.runPython(`
         if '${isSelectionModeSingle}' == 'true':
@@ -225,16 +218,9 @@ function generatePinoutTableEvent(componentName){
 }
 
 function componentInScreenCenterEvent(componentName){
-    pyodide.runPython(`
-        componentSide = engine.getSideOfComponent('${componentName}')
-    `);
-    let componentSide = pyodide.globals.get('componentSide');
+    componentSide = _getSideOfComponent(componentName);
+    side = _changeSideIfComponentIsNotOnScreen(componentSide);
 
-    if (componentSide != currentSide()){
-        changeSide();
-    }
-
-    side = currentSide();
     pyodide.runPython(`
         engine.componentInScreenCenterInterface(SURFACE, '${componentName}', '${side}')
         pygame.display.flip()
@@ -257,12 +243,36 @@ function toggleNetMarkersEvent(){
     `);
 }
 
+function selectNetComponentByNameEvent(componentName){
+    componentSide = _getSideOfComponent(componentName);
+    side = _changeSideIfComponentIsNotOnScreen(componentSide);
+
+    pyodide.runPython(`
+        engine.selectNetComponentByNameInterface(SURFACE, '${componentName}', '${side}')
+        pygame.display.flip()
+    `);
+}
+
 function unselectNetEvent(){
     side = currentSide();
     pyodide.runPython(`
         engine.unselectNetInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
+}
+
+function _getSideOfComponent(componentName){
+    pyodide.runPython(`
+        componentSide = engine.getSideOfComponent('${componentName}')
+    `);
+    return pyodide.globals.get('componentSide');
+}
+
+function _changeSideIfComponentIsNotOnScreen(componentSide){
+    if (componentSide != currentSide()){
+        changeSide();
+    }
+    return currentSide();
 }
 
 function _enableButtons(){
