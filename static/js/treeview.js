@@ -21,12 +21,9 @@ class NetTreeView{
         this.clearTree();
         for (const netName in netMap){
             const netBranch = document.createElement('li');
-            const toggleSpan = document.createElement('span');
             const netSpan = document.createElement('span');
 
-            this.#setToggleButton(toggleSpan, netBranch);
-            this.#setNetSpan(netSpan, netName);
-            netBranch.appendChild(toggleSpan);
+            this.#setNetSpan(netName, netSpan, netBranch);
             netBranch.appendChild(netSpan);
 
             const subBranchContainer = document.createElement('ul');
@@ -59,20 +56,12 @@ class NetTreeView{
             subBranchContainer.appendChild(componentBranch);            
         }
     }
-
-    #setToggleButton(toggleButton, liParent){
-        toggleButton.textContent = '+';
-        toggleButton.classList.add('toggle-button');
-        toggleButton.addEventListener('click', (event) => {
-            event.stopPropagation();
-            this.#toggleButtonVisibility(toggleButton, liParent);
-        });
-    }
     
-    #setNetSpan(netSpan, netName){
-        netSpan.textContent = netName;
+    #setNetSpan(netName, netSpan, liParent){
+        netSpan.textContent = `+ ${netName}`;
         netSpan.addEventListener('click', (event) => {
             event.stopPropagation();
+            this.#toggleVisibility(netSpan, liParent);
             this.selectedNet = this.#handleSingleSelection(netSpan, this.selectedNet);
             this.selectNetEvent('');
             if (this.selectedNet === netSpan){
@@ -81,15 +70,16 @@ class NetTreeView{
         });
     }
 
-    #toggleButtonVisibility(toggleButton, liParent){
+    #toggleVisibility(netSpan, liParent){
+        const currentNetSpanText = netSpan.innerText;
         const childUl = liParent.querySelector('ul');
         if (childUl) {
             if (childUl.classList.contains('treeview-hidden')){
                 childUl.classList.remove('treeview-hidden');
-                toggleButton.textContent = '-';
+                netSpan.textContent = '-' + currentNetSpanText.substring(1);
             } else {
                 childUl.classList.add('treeview-hidden');
-                toggleButton.textContent = '+';
+                netSpan.textContent = '+' + currentNetSpanText.substring(1);
             }
         }
     }
