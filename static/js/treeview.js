@@ -23,7 +23,7 @@ class NetTreeView{
             const netBranch = document.createElement('li');
             const netSpan = document.createElement('span');
 
-            this.#setNetSpan(netName, netSpan, netBranch);
+            this.#setNetSpan(netName, netSpan);
             netBranch.appendChild(netSpan);
 
             const subBranchContainer = document.createElement('ul');
@@ -57,13 +57,13 @@ class NetTreeView{
         }
     }
     
-    #setNetSpan(netName, netSpan, liParent){
+    #setNetSpan(netName, netSpan){
         netSpan.textContent = `+ ${netName}`;
         netSpan.addEventListener('click', (event) => {
             event.stopPropagation();
 
             this.#unselectCurrentItems(this.selectedNet, this.selectedComponent);
-            this.#toggleVisibility(netSpan, liParent);
+            this.#toggleVisibility(netSpan);
 
             this.selectedNet = this.#handleSingleSelection(netSpan, this.selectedNet);
             this.selectNetEvent('');
@@ -73,16 +73,16 @@ class NetTreeView{
         });
     }
 
-    #toggleVisibility(netSpan, liParent){
-        const currentNetSpanText = netSpan.innerText;
+    #toggleVisibility(netSpan){
+        const liParent = netSpan.parentElement;
         const childUl = liParent.querySelector('ul');
         if (childUl) {
             if (childUl.classList.contains('treeview-hidden')){
                 childUl.classList.remove('treeview-hidden');
-                netSpan.textContent = '-' + currentNetSpanText.substring(1);
+                netSpan.textContent = '-' + netSpan.innerText.substring(1);
             } else {
                 childUl.classList.add('treeview-hidden');
-                netSpan.textContent = '+' + currentNetSpanText.substring(1);
+                netSpan.textContent = '+' + netSpan.innerText.substring(1);
             }
         }
     }
