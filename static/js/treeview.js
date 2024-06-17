@@ -62,7 +62,8 @@ class NetTreeView{
         netSpan.addEventListener('click', (event) => {
             event.stopPropagation();
 
-            this.#unselectCurrentItems(this.selectedNet, this.selectedComponent);
+            this.#unselectCurrentBranch(this.selectedNet);
+            this.#unselectCurrentItem(this.selectedComponent);
             this.#toggleVisibility(netSpan);
 
             this.selectedNet = this.#handleSingleSelection(netSpan, this.selectedNet);
@@ -87,33 +88,32 @@ class NetTreeView{
         }
     }
 
-    #handleSingleSelection(clickedItem, currentSelectedItem){
+    #handleSingleSelection(clickedItem){
+        let currentSelectedItem;
         if (clickedItem.classList.contains('treeview-selected')){
             clickedItem.classList.remove('treeview-selected');
             currentSelectedItem = null;
         } else {
-            if (currentSelectedItem){
-                currentSelectedItem.classList.remove('treeview-selected');
-            }
             clickedItem.classList.add('treeview-selected');
             currentSelectedItem = clickedItem;
         }
         return currentSelectedItem;
     }
 
-    #unselectCurrentItems(currentSelectedNet, currentSelectedItem){
-        if (currentSelectedNet){
-            const liParent = currentSelectedNet.parentElement;
+    #unselectCurrentBranch(currentSelectedBranch){
+        if (currentSelectedBranch){
+            const liParent = currentSelectedBranch.parentElement;
             const childUl = liParent.querySelector('ul');
 
             childUl.classList.add('treeview-hidden');
-            currentSelectedNet.textContent = '+' + currentSelectedNet.textContent.substring(1);
-        }
+            currentSelectedBranch.textContent = '+' + currentSelectedBranch.textContent.substring(1);
+            }
+    }
 
+    #unselectCurrentItem(currentSelectedItem){
         if (currentSelectedItem){
             currentSelectedItem.classList.remove('treeview-selected');
         }
-
     }
 
     clearTree(){
