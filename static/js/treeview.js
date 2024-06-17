@@ -88,7 +88,7 @@ class NetTreeView{
         }
     }
 
-    #handleSingleSelection(clickedItem){
+    #handleSingleSelection(clickedItem, currentSelectedItem){
         let currentSelectedItem;
         if (clickedItem.classList.contains('treeview-selected')){
             clickedItem.classList.remove('treeview-selected');
@@ -104,8 +104,9 @@ class NetTreeView{
         if (currentSelectedBranch){
             const liParent = currentSelectedBranch.parentElement;
             const childUl = liParent.querySelector('ul');
-
             childUl.classList.add('treeview-hidden');
+
+            currentSelectedBranch.classList.remove('treeview-selected');
             currentSelectedBranch.textContent = '+' + currentSelectedBranch.textContent.substring(1);
             }
     }
