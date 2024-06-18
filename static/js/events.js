@@ -212,9 +212,14 @@ function generatePinoutTableEvent(componentName){
         pinoutDict = engine.getComponentPinout('${componentName}')
     `);
     let pinoutMap = pyodide.globals.get('pinoutDict').toJs();
-    pinoutTable.rowEvent = selectNetEvent;
+    pinoutTable.rowEvent = selectNetFromTableEvent;
     pinoutTable.addRows(pinoutMap);
     pinoutTable.generateTable();
+}
+
+function selectNetFromTableEvent(netName){
+    netsTreeview.scrollToBranchByName(netName);
+    selectNetEvent(netName);
 }
 
 function componentInScreenCenterEvent(componentName){
