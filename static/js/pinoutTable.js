@@ -82,13 +82,8 @@ class PinoutTable{
         this.selectedRow.classList.remove('table-highlighted');
         this.selectedRow = null;
     }
-
     generateTable(){
         this.parentContainer.appendChild(this.table);
-    }
-
-    #unselectAllRows(){
-        this.children.forEach(tr => tr.classList.remove('table-highlighted'));
     }
 
     clearBody(){
