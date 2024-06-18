@@ -14,6 +14,14 @@ class NetTreeView{
         return this.selectedNet;
     }
 
+    getSelectedNetName(){
+        if (this.selectedNet){
+            return this.selectedNet.textContent.substring(2); // first 2 characters are '+ ' or '- '
+        } else {
+            return '';
+        }
+    }
+
     set netEvent(eventFunction){
         this.selectNetEvent = eventFunction;
     }

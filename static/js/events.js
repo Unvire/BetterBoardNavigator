@@ -216,6 +216,9 @@ function generatePinoutTableEvent(componentName){
     pinoutTable.beforeRowEvent = unselectNetEvent;
     pinoutTable.addRows(pinoutMap);
     pinoutTable.generateTable();
+
+    const netTreeSelectedNetName = netsTreeview.getSelectedNetName();
+    pinoutTable.selectRowByName(netTreeSelectedNetName);
 }
 
 function selectNetFromTableEvent(netName){
@@ -231,7 +234,10 @@ function selectNetFromTreeviewEvent(netName){
     if(netsTreeview.getSelectedNet()){
         selectNetEvent(netName);
     } else {
-        pinoutTable.unselectCurrentRow();
+        try {
+            pinoutTable.unselectCurrentRow();
+        } catch (TypeError) {
+        }
     }
 }
 

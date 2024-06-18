@@ -92,10 +92,11 @@ class PinoutTable{
         let potentialRow; 
         potentialRow = await this.tableBody.querySelector(`tr[data-key="${netName}"]`);
         if (!potentialRow){
-            if (this.selectedRow){
+            try {
                 this.unselectCurrentRow();
+            } finally {
+                return;
             }
-            return;
         }
 
         let isSkipSelectionHandling = false;
