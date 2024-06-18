@@ -47,9 +47,22 @@ class PinoutTable{
             const row = document.createElement('tr');
             row.appendChild(rowKey);
             row.appendChild(rowNet);
-            row.addEventListener('click', () => {
-                this.selectedRow = this.#singleSelectionModeEvent(row, this.selectedRow);                
+            row.addEventListener('click', () => {         
+                let isSkipSelectionHandling = false;
+
                 this.beforeSelectionEvent();
+                if (row === this.selectedRow){
+                    isSkipSelectionHandling = true;
+                }
+
+                if (this.selectedRow){
+                    this.unselectCurrentRow();
+                }
+
+                if (!isSkipSelectionHandling){
+                    this.selectedRow = this.#singleSelectionModeEvent(row);
+                }
+                
                 this.selectRowEvent(netName);
             });
 
@@ -60,18 +73,14 @@ class PinoutTable{
         this.children = this.tableBody.querySelectorAll('tr');
     }
 
-    #singleSelectionModeEvent(row, currentSelectedRow){
-        if (row.classList.contains('table-highlighted')){
-            row.classList.remove('table-highlighted');
-            currentSelectedRow = null;
-        } else {
-            if (currentSelectedRow){
-                currentSelectedRow.classList.remove('table-highlighted');
-            }
-            row.classList.add('table-highlighted');
-            currentSelectedRow = row;
-        }
-        return currentSelectedRow;
+    #singleSelectionModeEvent(row){
+        row.classList.add('table-highlighted');
+        return row;
+    }
+
+    unselectCurrentRow(){
+        this.selectedRow.classList.remove('table-highlighted');
+        this.selectedRow = null;
     }
 
     generateTable(){
