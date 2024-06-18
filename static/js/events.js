@@ -223,6 +223,14 @@ function selectNetFromTableEvent(netName){
     selectNetEvent(netName);
 }
 
+function selectNetFromTreeviewEvent(netName){
+    console.log(pinoutTable, netName)
+    if (pinoutTable){
+        pinoutTable.selectRowByName(netName);
+    }
+    selectNetEvent(netName);
+}
+
 function componentInScreenCenterEvent(componentName){
     componentSide = _getSideOfComponent(componentName);
     side = _changeSideIfComponentIsNotOnScreen(componentSide);

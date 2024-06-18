@@ -38,7 +38,7 @@ async function openAndLoadCadFile(pyodide, file) {
         allComponentsList.generateList();
 
         let netsMap = pyodide.globals.get('netsDict').toJs();
-        netsTreeview.netEvent = selectNetEvent;
+        netsTreeview.netEvent = selectNetFromTreeviewEvent;
         netsTreeview.componentEvent = selectNetComponentByNameEvent;
         netsTreeview.eventBeforeSelection = unselectNetEvent;
         netsTreeview.addBranches(netsMap);
