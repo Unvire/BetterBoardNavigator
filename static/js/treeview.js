@@ -7,6 +7,7 @@ class NetTreeView{
         this.selectedComponent = null;
         this.selectNetEvent = null;
         this.selectComponentEvent = null;
+        this.beforeSelectionEvent = null;
     }
 
     set netEvent(eventFunction){
@@ -15,6 +16,10 @@ class NetTreeView{
 
     set componentEvent(eventFunction){
         this.selectComponentEvent = eventFunction;
+    }
+
+    set eventBeforeSelection(eventFunction){
+        this.beforeSelectionEvent = eventFunction;
     }
     
     addBranches(netMap){
@@ -47,12 +52,20 @@ class NetTreeView{
             componentPinoutSpan.textContent = componentName + ": " + pins;
             componentPinoutSpan.addEventListener('click', (event) => {
                 event.stopPropagation();
+                let isSkipSelectionHandling = false;
+
+                if (componentPinoutSpan === this.selectedComponent){
+                    isSkipSelectionHandling = true;
+                }
                 
                 if (this.selectedComponent){
                     this.unselectCurrentItem();
                 }
                 
-                this.selectedComponent = this.#handleSingleSelection(componentPinoutSpan);
+                if (!isSkipSelectionHandling){
+                    this.selectedComponent = this.#handleSingleSelection(componentPinoutSpan);
+                }
+                
                 this.selectComponentEvent(componentName);
             });
 
@@ -65,22 +78,26 @@ class NetTreeView{
         netSpan.textContent = `+ ${netName}`;
         netSpan.addEventListener('click', (event) => {
             event.stopPropagation();
+            let isSkipSelectionHandling = false;
             
-            this.selectNetEvent('');
-            this.unselectCurrentItem();
+            this.beforeSelectionEvent();
+            if (this.selectedComponent){
+                this.unselectCurrentItem();
+            }
 
             if (this.selectedNet === netSpan){
-                this.unselectCurrentBranch();
-                return;   
+                isSkipSelectionHandling = true;
             }
 
             if (this.selectedNet){
                 this.unselectCurrentBranch();
             }
 
-            this.#toggleVisibility(netSpan);
-            this.selectedNet = this.#handleSingleSelection(netSpan);
-            this.selectNetEvent(netName);
+            if (!isSkipSelectionHandling){
+                this.#toggleVisibility(netSpan);
+                this.selectedNet = this.#handleSingleSelection(netSpan);
+                this.selectNetEvent(netName);
+            }
         });
     }
 
@@ -109,9 +126,8 @@ class NetTreeView{
     }
 
     unselectCurrentItem(){
-        if (this.selectedComponent){
-            this.selectedComponent.classList.remove('treeview-selected');
-        }
+        this.selectedComponent.classList.remove('treeview-selected');
+        this.selectedComponent = null;
     }
     
     async scrollToBranchByName(netName){
@@ -123,7 +139,10 @@ class NetTreeView{
         keyElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         let netSpan = await keyElement.querySelector('span');
 
-        this.unselectCurrentItem();
+        if (this.selectedComponent){
+            this.unselectCurrentItem();
+        }
+
         if (this.selectedNet === netSpan){
             this.unselectCurrentBranch();
             return;   
