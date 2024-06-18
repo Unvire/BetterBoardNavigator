@@ -99,11 +99,7 @@ class PinoutTable{
             }
         }
 
-        let isSkipSelectionHandling = false;
-        
-        if (potentialRow === this.selectedRow){
-            isSkipSelectionHandling = true;
-        }
+        const isSkipSelectionHandling = potentialRow === this.selectedRow;
 
         if (this.selectedRow){
             this.unselectCurrentRow();

@@ -65,12 +65,9 @@ class NetTreeView{
             componentPinoutSpan.textContent = componentName + ": " + pins;
             componentPinoutSpan.addEventListener('click', (event) => {
                 event.stopPropagation();
-                let isSkipSelectionHandling = false;
 
-                if (componentPinoutSpan === this.selectedComponent){
-                    isSkipSelectionHandling = true;
-                }
-                
+                const isSkipSelectionHandling = componentPinoutSpan === this.selectedComponent;
+
                 if (this.selectedComponent){
                     this.unselectCurrentItem();
                 }
@@ -91,16 +88,14 @@ class NetTreeView{
         netSpan.textContent = `+ ${netName}`;
         netSpan.addEventListener('click', (event) => {
             event.stopPropagation();
-            let isSkipSelectionHandling = false;
-            
+
             this.beforeSelectionEvent();
+
             if (this.selectedComponent){
                 this.unselectCurrentItem();
             }
 
-            if (this.selectedNet === netSpan){
-                isSkipSelectionHandling = true;
-            }
+            const isSkipSelectionHandling = this.selectedNet === netSpan;
 
             if (this.selectedNet){
                 this.unselectCurrentBranch();
