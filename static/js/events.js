@@ -233,11 +233,6 @@ function selectNetFromTreeviewEvent(netName){
 
     if(netsTreeview.getSelectedNet()){
         selectNetEvent(netName);
-    } else {
-        try {
-            pinoutTable.unselectCurrentRow();
-        } catch (TypeError) {
-        }
     }
 }
 
