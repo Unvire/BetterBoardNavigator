@@ -61,13 +61,17 @@ class NetTreeView{
         netSpan.textContent = `+ ${netName}`;
         netSpan.addEventListener('click', (event) => {
             event.stopPropagation();
+            
+            this.selectNetEvent('');
+            if (this.selectedNet){
+                this.#unselectCurrentBranch(this.selectedNet);
+                console.log(this.selectedNet);
+            }
 
-            this.#unselectCurrentBranch(this.selectedNet);
             this.#unselectCurrentItem(this.selectedComponent);
             this.#toggleVisibility(netSpan);
 
             this.selectedNet = this.#handleSingleSelection(netSpan, this.selectedNet);
-            this.selectNetEvent('');
             if (this.selectedNet === netSpan){
                 this.selectNetEvent(netName);
             }
@@ -77,19 +81,13 @@ class NetTreeView{
     #toggleVisibility(netSpan){
         const liParent = netSpan.parentElement;
         const childUl = liParent.querySelector('ul');
-        if (childUl) {
-            if (childUl.classList.contains('treeview-hidden')){
-                childUl.classList.remove('treeview-hidden');
-                netSpan.textContent = '-' + netSpan.innerText.substring(1);
-            } else {
-                childUl.classList.add('treeview-hidden');
-                netSpan.textContent = '+' + netSpan.innerText.substring(1);
-            }
+        if (childUl && childUl.classList.contains('treeview-hidden')) {
+            childUl.classList.remove('treeview-hidden');
+            netSpan.textContent = '-' + netSpan.innerText.substring(1);
         }
     }
 
     #handleSingleSelection(clickedItem, currentSelectedItem){
-        let currentSelectedItem;
         if (clickedItem.classList.contains('treeview-selected')){
             clickedItem.classList.remove('treeview-selected');
             currentSelectedItem = null;
