@@ -63,20 +63,20 @@ class NetTreeView{
             event.stopPropagation();
             
             this.selectNetEvent('');
-            this.#unselectCurrentItem(this.selectedComponent);
+            this.unselectCurrentItem(this.selectedComponent);
+
+            if (this.selectedNet === netSpan){
+                this.unselectCurrentBranch();
+                return;   
+            }
 
             if (this.selectedNet){
-                this.#unselectCurrentBranch();
-                console.log(this.selectedNet);
+                this.unselectCurrentBranch();
             }
 
-            
             this.#toggleVisibility(netSpan);
-
-            this.selectedNet = this.#handleSingleSelection(netSpan, this.selectedNet);
-            if (this.selectedNet === netSpan){
-                this.selectNetEvent(netName);
-            }
+            this.selectedNet = this.#handleSingleSelection(netSpan);
+            this.selectNetEvent(netName);
         });
     }
 
@@ -89,30 +89,22 @@ class NetTreeView{
         }
     }
 
-    #handleSingleSelection(clickedItem, currentSelectedItem){
-        if (clickedItem.classList.contains('treeview-selected')){
-            clickedItem.classList.remove('treeview-selected');
-            currentSelectedItem = null;
-        } else {
-            clickedItem.classList.add('treeview-selected');
-            currentSelectedItem = clickedItem;
-        }
-        return currentSelectedItem;
+    #handleSingleSelection(clickedItem){
+        clickedItem.classList.add('treeview-selected');
+        return clickedItem;
     }
 
-    #unselectCurrentBranch(){
-        let currentSelectedBranch = this.selectedNet;
-        if (currentSelectedBranch){
-            const liParent = currentSelectedBranch.parentElement;
-            const childUl = liParent.querySelector('ul');
-            childUl.classList.add('treeview-hidden');
+    unselectCurrentBranch(){
+        const liParent = this.selectedNet.parentElement;
+        const childUl = liParent.querySelector('ul');
+        childUl.classList.add('treeview-hidden');
 
-            currentSelectedBranch.classList.remove('treeview-selected');
-            currentSelectedBranch.textContent = '+' + currentSelectedBranch.textContent.substring(1);
-            }
+        this.selectedNet.classList.remove('treeview-selected');
+        this.selectedNet.textContent = '+' + this.selectedNet.textContent.substring(1);
+        this.selectedNet = null;
     }
 
-    #unselectCurrentItem(currentSelectedItem){
+    unselectCurrentItem(currentSelectedItem){
         if (currentSelectedItem){
             currentSelectedItem.classList.remove('treeview-selected');
         }
