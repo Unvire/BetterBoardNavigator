@@ -52,13 +52,10 @@ class PinoutTable{
             row.setAttribute('data-key', netName);
             row.appendChild(rowKey);
             row.appendChild(rowNet);
-            row.addEventListener('click', () => {         
-                let isSkipSelectionHandling = false;
-
+            row.addEventListener('click', () => { 
                 this.beforeSelectionEvent();
-                if (row === this.selectedRow){
-                    isSkipSelectionHandling = true;
-                }
+
+                const isSkipSelectionHandling = row === this.selectedRow;
 
                 if (this.selectedRow){
                     this.unselectCurrentRow();
