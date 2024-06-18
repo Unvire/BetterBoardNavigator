@@ -63,12 +63,14 @@ class NetTreeView{
             event.stopPropagation();
             
             this.selectNetEvent('');
+            this.#unselectCurrentItem(this.selectedComponent);
+
             if (this.selectedNet){
-                this.#unselectCurrentBranch(this.selectedNet);
+                this.#unselectCurrentBranch();
                 console.log(this.selectedNet);
             }
 
-            this.#unselectCurrentItem(this.selectedComponent);
+            
             this.#toggleVisibility(netSpan);
 
             this.selectedNet = this.#handleSingleSelection(netSpan, this.selectedNet);
@@ -98,7 +100,8 @@ class NetTreeView{
         return currentSelectedItem;
     }
 
-    #unselectCurrentBranch(currentSelectedBranch){
+    #unselectCurrentBranch(){
+        let currentSelectedBranch = this.selectedNet;
         if (currentSelectedBranch){
             const liParent = currentSelectedBranch.parentElement;
             const childUl = liParent.querySelector('ul');
