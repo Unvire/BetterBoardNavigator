@@ -1,16 +1,22 @@
 class PinoutTable{
     constructor(parentContainer){
         this.parentContainer = parentContainer;
+        this.selectRowEvent = null;
+        this.beforeSelectionEvent = null;
+        this.selectedRow = null;
+        
         this.table = document.createElement('table');
         this.tableHead = document.createElement('table-head');
         this.tableBody = document.createElement('table-body');
         this.#createHeader();
-        this.selectRowEvent = null;
-        this.selectedRow = null;
     }
 
     set rowEvent(eventFunction){
         this.selectRowEvent = eventFunction;
+    }
+
+    set beforeRowEvent(eventFunction){
+        this.beforeSelectionEvent = eventFunction;
     }
 
     #createHeader(){
@@ -43,10 +49,8 @@ class PinoutTable{
             row.appendChild(rowNet);
             row.addEventListener('click', () => {
                 this.selectedRow = this.#singleSelectionModeEvent(row, this.selectedRow);                
-                this.selectRowEvent('');
-                if (this.selectedRow === row){
-                    this.selectRowEvent(netName);
-                }
+                this.beforeSelectionEvent();
+                this.selectRowEvent(netName);
             });
 
             this.tableBody.appendChild(row);

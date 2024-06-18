@@ -213,6 +213,7 @@ function generatePinoutTableEvent(componentName){
     `);
     let pinoutMap = pyodide.globals.get('pinoutDict').toJs();
     pinoutTable.rowEvent = selectNetFromTableEvent;
+    pinoutTable.beforeRowEvent = unselectNetEvent;
     pinoutTable.addRows(pinoutMap);
     pinoutTable.generateTable();
 }
