@@ -11,6 +11,10 @@ class PinoutTable{
         this.#createHeader();
     }
 
+    getSelectedRow(){
+        return this.selectedRow;
+    }
+
     set rowEvent(eventFunction){
         this.selectRowEvent = eventFunction;
     }
@@ -88,7 +92,9 @@ class PinoutTable{
         let potentialRow; 
         potentialRow = await this.tableBody.querySelector(`tr[data-key="${netName}"]`);
         if (!potentialRow){
-            this.unselectCurrentRow();
+            if (this.selectedRow){
+                this.unselectCurrentRow();
+            }
             return;
         }
 

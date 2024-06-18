@@ -10,9 +10,14 @@ class NetTreeView{
         this.beforeSelectionEvent = null;
     }
 
+    getSelectedNet(){
+        return this.selectedNet;
+    }
+
     set netEvent(eventFunction){
         this.selectNetEvent = eventFunction;
     }
+    
 
     set componentEvent(eventFunction){
         this.selectComponentEvent = eventFunction;
@@ -96,8 +101,8 @@ class NetTreeView{
             if (!isSkipSelectionHandling){
                 this.#toggleVisibility(netSpan);
                 this.selectedNet = this.#handleSingleSelection(netSpan);
-                this.selectNetEvent(netName);
             }
+            this.selectNetEvent(netName);
         });
     }
 

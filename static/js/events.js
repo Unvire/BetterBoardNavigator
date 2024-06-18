@@ -220,15 +220,19 @@ function generatePinoutTableEvent(componentName){
 
 function selectNetFromTableEvent(netName){
     netsTreeview.scrollToBranchByName(netName);
-    selectNetEvent(netName);
+    if(pinoutTable.getSelectedRow()){
+        selectNetEvent(netName);
+    }
 }
 
 function selectNetFromTreeviewEvent(netName){
-    console.log(pinoutTable, netName)
-    if (pinoutTable){
-        pinoutTable.selectRowByName(netName);
+    pinoutTable.selectRowByName(netName);    
+
+    if(netsTreeview.getSelectedNet()){
+        selectNetEvent(netName);
+    } else {
+        pinoutTable.unselectCurrentRow();
     }
-    selectNetEvent(netName);
 }
 
 function componentInScreenCenterEvent(componentName){
