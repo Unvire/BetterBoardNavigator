@@ -46,10 +46,13 @@ class NetTreeView{
             componentPinoutSpan.textContent = componentName + ": " + pins;
             componentPinoutSpan.addEventListener('click', (event) => {
                 event.stopPropagation();
-                this.selectedComponent = this.#handleSingleSelection(componentPinoutSpan, this.selectedComponent);
-                if (this.selectComponentEvent){
-                    this.selectComponentEvent(componentName);
+                
+                if (this.selectedComponent){
+                    this.unselectCurrentItem();
                 }
+                
+                this.selectedComponent = this.#handleSingleSelection(componentPinoutSpan);
+                this.selectComponentEvent(componentName);
             });
 
             componentBranch.appendChild(componentPinoutSpan);
@@ -104,9 +107,9 @@ class NetTreeView{
         this.selectedNet = null;
     }
 
-    unselectCurrentItem(currentSelectedItem){
-        if (currentSelectedItem){
-            currentSelectedItem.classList.remove('treeview-selected');
+    unselectCurrentItem(){
+        if (this.selectedComponent){
+            this.selectedComponent.classList.remove('treeview-selected');
         }
     }
 
