@@ -101,37 +101,9 @@ class NetTreeView{
         });
     }
 
-    #toggleVisibility(netSpan){
-        const liParent = netSpan.parentElement;
-        const childUl = liParent.querySelector('ul');
-        if (childUl && childUl.classList.contains('treeview-hidden')) {
-            childUl.classList.remove('treeview-hidden');
-            netSpan.textContent = '-' + netSpan.innerText.substring(1);
-        }
-    }
-
     #handleSingleSelection(clickedItem){
         clickedItem.classList.add('treeview-selected');
         return clickedItem;
-    }
-
-    unselectCurrentBranch(){
-        if (this.selectedNet){
-            const liParent = this.selectedNet.parentElement;
-            const childUl = liParent.querySelector('ul');
-            childUl.classList.add('treeview-hidden');
-
-            this.selectedNet.classList.remove('treeview-selected');
-            this.selectedNet.textContent = '+' + this.selectedNet.textContent.substring(1);
-            this.selectedNet = null;
-        }
-    }
-
-    unselectCurrentItem(){
-        if (this.selectedComponent){
-            this.selectedComponent.classList.remove('treeview-selected');
-            this.selectedComponent = null;
-        }
     }
     
     async scrollToBranchByName(netName){
@@ -157,12 +129,43 @@ class NetTreeView{
         if (!this.selectedNet){
             return;
         }
-        const liParent = this.selectedNet.parentElement;
-        const childUl = liParent.querySelector('ul');
+        
+        const selectedNetUl = this.#getUlFromSpan(this.selectedNet);
 
-        let componentLi = await childUl.querySelector(`li[data-key="${componentName}"]`);
+        let componentLi = await selectedNetUl.querySelector(`li[data-key="${componentName}"]`);
         console.log(this.selectedNet, componentLi)
 
+    }
+
+    unselectCurrentBranch(){
+        if (this.selectedNet){
+            const selectedNetUl = this.#getUlFromSpan(this.selectedNet);
+            selectedNetUl.classList.add('treeview-hidden');
+
+            this.selectedNet.classList.remove('treeview-selected');
+            this.selectedNet.textContent = '+' + this.selectedNet.textContent.substring(1);
+            this.selectedNet = null;
+        }
+    }
+
+    unselectCurrentItem(){
+        if (this.selectedComponent){
+            this.selectedComponent.classList.remove('treeview-selected');
+            this.selectedComponent = null;
+        }
+    }
+
+    #toggleVisibility(netSpan){
+        const netUl = this.#getUlFromSpan(netSpan);
+        if (netUl && netUl.classList.contains('treeview-hidden')) {
+            netUl.classList.remove('treeview-hidden');
+            netSpan.textContent = '-' + netSpan.innerText.substring(1);
+        }
+    }
+
+    #getUlFromSpan(span){
+        const liParent = span.parentElement;
+        return liParent.querySelector('ul');
     }
 
     clearTree(){
