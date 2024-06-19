@@ -321,6 +321,20 @@ function findComponentUsingNameEvent(){
     modalSubmit.show();
 }
 
+function getComponentNameFromModalBoxEvent(componentName){
+    console.log(componentName);
+    modalBoxComponentName = componentName.toUpperCase();
+    console.log(modalBoxComponentName);
+
+    /*
+    side = currentSide();
+    pyodide.runPython(`
+        engine.findComponentByNameInterface(SURFACE, '${componentName.toUpperCase()}', '${side}')
+        pygame.display.flip()
+    `);
+    */
+}
+
 function _enableButtons(){
     changeSideButton.disabled = false;
     rotateButton.disabled = false;
