@@ -22,31 +22,30 @@ class ModalBox{
 
     close(){
         this.header.innerText = '';
-        parentContainer.style.display = 'none';
+        this.parentContainer.style.display = 'none';
     }
 
-    setHeder(text){
+    setHeader(text){
         this.header.innerText = text;
     }
 }
 
 class ModalSubmit extends ModalBox{
-    constructor(parentContainer, closeSpan, header, textInput, submitButton){
+    constructor(parentContainer, closeSpan, header, textInput, submitButton, submitEvent){
         super(parentContainer, closeSpan, header)
         this.textInput = textInput;
-        this.submitButton = submitButton
-        this.textFromInput = '';
+        this.submitButton = submitButton;
+        this.submitEvent = submitEvent;
 
         this.submitButton.addEventListener('click', () => {
-            this.textFromInput = this.textInput.value;
+            this.submitEvent(this.textInput.value);
             this.close();
         });
     }
 
     close(){
-        this.textFromInput = '';
         this.textInput.value = '';
-        super();
+        super.close();
     }
 }
 
