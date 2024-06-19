@@ -104,6 +104,7 @@
         let isRotateActive = false;
         let isFindComponentByClickActive = false;
         let isSelectionModeSingle = true;
+        let modalBoxComponentName = '';
 
         const sideMap = {true: 'B', false: 'T'};
         const selectionModesMap = {true: 'single', false: 'multiple'};
@@ -141,8 +142,11 @@
         var paragraphModalPromptHeader = document.getElementById("paragraph-modal-header");
         var paragraphModalTextParagraph = document.getElementById("paragraph-modal-p");
 
-        var modalSubmit = new ModalSubmit(textModalContainer, closeTextModalSpan, textModalPromptHeader, textModalInput, textModalSubmitButton);
-        var modalParagraph = new ModalParagraph(paragraphModalContainer, closeParagraphModal, paragraphModalPromptHeader, paragraphModalTextParagraph);
+        var modalSubmit = new ModalSubmit(textModalContainer, closeTextModalSpan, 
+                                            textModalPromptHeader, textModalInput, 
+                                            textModalSubmitButton, getComponentNameFromModalBoxEvent);
+        var modalParagraph = new ModalParagraph(paragraphModalContainer, closeParagraphModal, 
+                                                paragraphModalPromptHeader, paragraphModalTextParagraph);
         var allComponentsList = new DynamicSelectableList(allComponentsContainer);
         var markedComponentsList = new DynamicSelectableList(markedComponentsContainer);
         var pinoutTable = new PinoutTable(pinoutTableContainer);
