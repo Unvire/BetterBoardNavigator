@@ -125,6 +125,10 @@ async function resetViewEvent(){
     `);
     
     allComponentsList.unselectAllItems();
+    netsTreeview.unselectCurrentBranch();
+    netsTreeview.unselectCurrentItem();
+    pinoutTable.unselectCurrentRow();
+    pinoutTable.clearBody();
     _generateMarkedComponentsList();
 }
 
@@ -136,6 +140,10 @@ async function areaFromComponentsEvent(){
     `);
 
     allComponentsList.unselectAllItems();
+    netsTreeview.unselectCurrentBranch();
+    netsTreeview.unselectCurrentItem();
+    pinoutTable.unselectCurrentRow();
+    pinoutTable.clearBody();
     _generateMarkedComponentsList();
 }
 
@@ -285,6 +293,10 @@ function unselectNetEvent(){
         engine.unselectNetInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
+    
+    netsTreeview.unselectCurrentBranch();
+    netsTreeview.unselectCurrentItem();
+    pinoutTable.unselectCurrentRow();
 }
 
 function _getSideOfComponent(componentName){
