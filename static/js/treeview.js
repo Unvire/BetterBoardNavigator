@@ -126,14 +126,20 @@ class NetTreeView{
     }
 
     async selectComponentByName(componentName){
-        if (!this.selectedNet){
+        if (!this.selectedNet || !componentName){
             return;
         }
         
         const selectedNetUl = this.#getUlFromSpan(this.selectedNet);
-
         let componentLi = await selectedNetUl.querySelector(`li[data-key="${componentName}"]`);
-        console.log(this.selectedNet, componentLi)
+        let componentPinoutSpan = await componentLi.querySelector(`span`);
+
+        const isSkipSelectionHandling = componentPinoutSpan === this.selectedComponent;
+        this.unselectCurrentItem();
+
+        if (!isSkipSelectionHandling){
+            this.selectedComponent = this.#handleSingleSelection(componentPinoutSpan);
+        }
 
     }
 
