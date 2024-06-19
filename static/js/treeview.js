@@ -67,10 +67,7 @@ class NetTreeView{
                 event.stopPropagation();
 
                 const isSkipSelectionHandling = componentPinoutSpan === this.selectedComponent;
-
-                if (this.selectedComponent){
-                    this.unselectCurrentItem();
-                }
+                this.unselectCurrentItem();
                 
                 if (!isSkipSelectionHandling){
                     this.selectedComponent = this.#handleSingleSelection(componentPinoutSpan);
@@ -90,16 +87,10 @@ class NetTreeView{
             event.stopPropagation();
 
             this.beforeSelectionEvent();
-
-            if (this.selectedComponent){
-                this.unselectCurrentItem();
-            }
+            this.unselectCurrentItem();
 
             const isSkipSelectionHandling = this.selectedNet === netSpan;
-
-            if (this.selectedNet){
-                this.unselectCurrentBranch();
-            }
+            this.unselectCurrentBranch();
 
             if (!isSkipSelectionHandling){
                 this.#toggleVisibility(netSpan);
@@ -124,18 +115,22 @@ class NetTreeView{
     }
 
     unselectCurrentBranch(){
-        const liParent = this.selectedNet.parentElement;
-        const childUl = liParent.querySelector('ul');
-        childUl.classList.add('treeview-hidden');
+        if (this.selectedNet){
+            const liParent = this.selectedNet.parentElement;
+            const childUl = liParent.querySelector('ul');
+            childUl.classList.add('treeview-hidden');
 
-        this.selectedNet.classList.remove('treeview-selected');
-        this.selectedNet.textContent = '+' + this.selectedNet.textContent.substring(1);
-        this.selectedNet = null;
+            this.selectedNet.classList.remove('treeview-selected');
+            this.selectedNet.textContent = '+' + this.selectedNet.textContent.substring(1);
+            this.selectedNet = null;
+        }
     }
 
     unselectCurrentItem(){
-        this.selectedComponent.classList.remove('treeview-selected');
-        this.selectedComponent = null;
+        if (this.selectedComponent){
+            this.selectedComponent.classList.remove('treeview-selected');
+            this.selectedComponent = null;
+        }
     }
     
     async scrollToBranchByName(netName){
@@ -147,19 +142,13 @@ class NetTreeView{
         keyElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         let netSpan = await keyElement.querySelector('span');
 
-        if (this.selectedComponent){
-            this.unselectCurrentItem();
-        }
-
+        this.unselectCurrentItem();
         if (this.selectedNet === netSpan){
             this.unselectCurrentBranch();
-            return;   
+            return;  
         }
 
-        if (this.selectedNet){
-            this.unselectCurrentBranch();
-        }
-        
+        this.unselectCurrentBranch();
         this.#toggleVisibility(netSpan);
         this.selectedNet = this.#handleSingleSelection(netSpan);
     }

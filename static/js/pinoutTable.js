@@ -56,10 +56,7 @@ class PinoutTable{
                 this.beforeSelectionEvent();
 
                 const isSkipSelectionHandling = row === this.selectedRow;
-
-                if (this.selectedRow){
-                    this.unselectCurrentRow();
-                }
+                this.unselectCurrentRow();
 
                 if (!isSkipSelectionHandling){
                     this.selectedRow = this.#singleSelectionModeEvent(row);
@@ -81,29 +78,24 @@ class PinoutTable{
     }
 
     unselectCurrentRow(){
-        this.selectedRow.classList.remove('table-highlighted');
-        this.selectedRow = null;
+        if (this.selectedRow){
+            this.selectedRow.classList.remove('table-highlighted');
+            this.selectedRow = null;
+        }
     }
 
     async selectRowByName(netName){
         let potentialRow; 
         potentialRow = await this.tableBody.querySelector(`tr[data-key="${netName}"]`);
-        if (!potentialRow){
-            try {
-                this.unselectCurrentRow();
-            } finally {
-                return;
-            }
-        }
-
-        const isSkipSelectionHandling = potentialRow === this.selectedRow;
-
-        if (this.selectedRow){
+        if (potentialRow){
+            const isSkipSelectionHandling = potentialRow === this.selectedRow;
             this.unselectCurrentRow();
-        }
 
-        if (!isSkipSelectionHandling){
-            this.selectedRow = this.#singleSelectionModeEvent(potentialRow);
+            if (!isSkipSelectionHandling){
+                this.selectedRow = this.#singleSelectionModeEvent(potentialRow);
+            }
+        } else {            
+            this.unselectCurrentRow();
         }
     }
 
