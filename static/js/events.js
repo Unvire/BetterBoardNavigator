@@ -317,7 +317,8 @@ function _changeSideIfComponentIsNotOnScreen(componentSide){
 }
 
 function findComponentUsingNameEvent(){
-    console.log('a')
+    modalSubmit.setHeader('Component name:');
+    modalSubmit.show();
 }
 
 function _enableButtons(){
