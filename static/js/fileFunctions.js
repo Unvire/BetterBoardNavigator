@@ -47,6 +47,7 @@ async function openAndLoadCadFile(pyodide, file) {
         pinoutTable.clearBody();
         markedComponentsList.clearList();
         clickedComponentContainer.innerText = '';
+        currentSideSpan.innerText = currentSide();
     }
     reader.readAsArrayBuffer(file);
 }

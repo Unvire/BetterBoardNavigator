@@ -162,3 +162,7 @@ li {
     margin-right: 5px;
     cursor: pointer;
 }
+
+.innertext{
+    font-weight: bold;
+}
