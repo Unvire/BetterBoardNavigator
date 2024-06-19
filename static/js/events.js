@@ -221,7 +221,7 @@ function generatePinoutTableEvent(componentName){
     `);
     let pinoutMap = pyodide.globals.get('pinoutDict').toJs();
     pinoutTable.rowEvent = selectNetFromTableEvent;
-    pinoutTable.beforeRowEvent = unselectNetEvent;
+    pinoutTable.beforeRowEvent = unselectNetFromWidgetsEvent;
     pinoutTable.addRows(pinoutMap);
     pinoutTable.generateTable();
 
@@ -288,15 +288,18 @@ function selectNetComponentByNameEvent(componentName){
 }
 
 function unselectNetEvent(){
+    unselectNetFromWidgetsEvent();
+    netsTreeview.unselectCurrentBranch();
+    netsTreeview.unselectCurrentItem();
+    pinoutTable.unselectCurrentRow();
+}
+
+function unselectNetFromWidgetsEvent(){
     side = currentSide();
     pyodide.runPython(`
         engine.unselectNetInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
-    
-    netsTreeview.unselectCurrentBranch();
-    netsTreeview.unselectCurrentItem();
-    pinoutTable.unselectCurrentRow();
 }
 
 function _getSideOfComponent(componentName){
