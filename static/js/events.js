@@ -313,6 +313,10 @@ function _changeSideIfComponentIsNotOnScreen(componentSide){
     return currentSide();
 }
 
+function findComponentUsingNameEvent(){
+    console.log('a')
+}
+
 function _enableButtons(){
     changeSideButton.disabled = false;
     rotateButton.disabled = false;
@@ -325,4 +329,5 @@ function _enableButtons(){
     clearMarkersButton.disabled = false;
     toggleNetMarkersButton.disabled = false;
     unselectNetButton.disabled = false;
+    findComponentUsingNameButton.disabled = false;
 }

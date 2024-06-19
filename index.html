@@ -12,6 +12,7 @@
     <script type="text/javascript" src="/static/js/dynamicSelectableList.js"></script>
     <script type="text/javascript" src="/static/js/pinoutTable.js"></script>
     <script type="text/javascript" src="/static/js/treeview.js"></script>
+    <script type="text/javascript" src="/static/js/modals.js"></script>
 </head>
 <body>
     <div class="buttons-row-flexbox">
@@ -30,21 +31,21 @@
             <button type="button" id="components-area-button" disabled="true">Area From Components</button>
         </div>
         <div class="buttons-flexbox">
+            <button type="button" id="find-component-by-name-button" disabled="true">Find Component By Name</button>
             <button type="button" id="clicked-component-button" disabled="true">Toggle Clicked Component Name Mode</button>
-            <button type="button" id="toggle-leave-markers-button" disabled="true">Toggle preserve component markers</button>
-            <button type="button" id="unselect-components-button" disabled="true">Clear component markers</button>
+            <button type="button" id="toggle-leave-markers-button" disabled="true">Toggle Preserve Component Markers</button>
+            <button type="button" id="unselect-components-button" disabled="true">Clear Component Markers</button>
         </div>
         <div class="buttons-flexbox">
-            <button type="button" id="toggle-net-marker-button" disabled="true">Toggle net markers</button>
-            <button type="button" id="unselect-net-button" disabled="true">Unselect net</button>
+            <button type="button" id="toggle-net-marker-button" disabled="true">Toggle Net Markers</button>
+            <button type="button" id="unselect-net-button" disabled="true">Unselect Net</button>
         </div>
         <div class="buttons-flexbox">
-            <button type="button" id="prefix-components-button" disabled="true">Prefix components</button>
-            <button type="button" id="unselect-prefix-button" disabled="true">Unselect prefix components</button>
+            <button type="button" id="prefix-components-button" disabled="true">Prefix Components</button>
+            <button type="button" id="unselect-prefix-button" disabled="true">Unselect Prefix Components</button>
         </div>
         <div class="buttons-flexbox">
             <button type="button" id="help-button" disabled="true">Help</button>
-            <button type="button" id="about-button" disabled="true">About</button>
         </div>
     </div>
     <div class="grid-container">
@@ -76,6 +77,21 @@
         <div class="item-right-bottom">
             <p>clicked components</p>
             <p id="clicked-components"></p>
+        </div>
+    </div>
+    <div id="text-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeTextModal">&times;</span>
+            <h2 id="text-modal-header"></h2>
+            <input type="text" id="modal-text-input" placeholder="">
+            <button id="submit-text">Ok</button>
+        </div>
+    </div>
+    <div id="paragraph-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-paragraph-modal">&times;</span>
+            <h2></h2>
+            <p id="paragraph-text"></p>
         </div>
     </div>
     <script>
@@ -112,6 +128,7 @@
         const toggleNetMarkersButton = document.getElementById('toggle-net-marker-button');
         const unselectNetButton = document.getElementById('unselect-net-button');
         const currentSideSpan = document.getElementById('current-side-p');
+        const findComponentUsingNameButton = document.getElementById('find-component-by-name-button');
 
         var allComponentsList = new DynamicSelectableList(allComponentsContainer);
         var markedComponentsList = new DynamicSelectableList(markedComponentsContainer);
@@ -175,6 +192,7 @@
             clearMarkersButton.addEventListener("click", clearMarkersEvent);
             toggleNetMarkersButton.addEventListener("click", toggleNetMarkersEvent);
             unselectNetButton.addEventListener("click", unselectNetEvent);
+            findComponentUsingNameButton.addEventListener("click", findComponentUsingNameEvent);
         });
     </script>
 </body>
