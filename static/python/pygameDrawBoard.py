@@ -36,7 +36,7 @@ class DrawBoardEngine:
 
         self.selectedComponentsSet = set()
         self.allSelectedNetComponentsSet = set()
-        self.selectedNetComponentsSet = set()
+        self.selectedNetComponentSet = set()
         self.selectedCommonTypePrefix = ''
         self.selectedNet = dict()
         self.isHideSelectedNetComponents = False
@@ -81,8 +81,8 @@ class DrawBoardEngine:
         return list(self.selectedComponentsSet)
     
     def getSelectedNetComponent(self) -> str:
-        if self.selectedNetComponentsSet:
-            return list(self.selectedNetComponentsSet)[0]
+        if self.selectedNetComponentSet:
+            return list(self.selectedNetComponentSet)[0]
         return ''
     
     def changeColor(self, key:str, RGB:tuple[int, int, int]):
@@ -110,6 +110,7 @@ class DrawBoardEngine:
         self.selectedCommonTypePrefix = ''
         self.selectedNet = dict()
         self.isHideSelectedNetComponents = False
+        self.selectedNetComponentSet = set()
     
     def _resetSurfaceVariables(self):
         self.scale = 1
@@ -315,11 +316,11 @@ class DrawBoardEngine:
             return componentInstance
     
     def _selectNetComponentByName(self, componentName:str):
-        if componentName in self.selectedNetComponentsSet:
-            self.selectedNetComponentsSet = set()
+        if componentName in self.selectedNetComponentSet:
+            self.selectedNetComponentSet = set()
         elif componentName in self.allSelectedNetComponentsSet:
-            self.selectedNetComponentsSet = set()
-            self.selectedNetComponentsSet.add(componentName)
+            self.selectedNetComponentSet = set()
+            self.selectedNetComponentSet.add(componentName)
     
     def _setComponentInScreenCenter(self, componentInstance:comp.Component, side:str):
         coords = componentInstance.getCoords()
@@ -345,7 +346,7 @@ class DrawBoardEngine:
     
     def _unselectNet(self):        
         self.allSelectedNetComponentsSet = set()
-        self.selectedNetComponentsSet = set()
+        self.selectedNetComponentSet = set()
         self.selectedNet = dict()
     
     def _showHideNetComponents(self):
@@ -445,7 +446,7 @@ class DrawBoardEngine:
             self._drawMarkers(surface=self.selectedComponentsSurface, componentNamesList=componentNames, color=color, side=side)
         
         def drawSelectedNets(side:str):
-            componentNames = list(self.selectedNetComponentsSet)
+            componentNames = list(self.selectedNetComponentSet)
             color = self.colorsDict['selected net marker']
             if not self.isHideSelectedNetComponents:
                 self._drawMarkers(surface=self.selectedNetSurface, componentNamesList=componentNames, color=color, side=side)
