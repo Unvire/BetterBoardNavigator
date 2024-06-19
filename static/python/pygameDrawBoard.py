@@ -80,6 +80,11 @@ class DrawBoardEngine:
     def getSelectedComponents(self) -> list[str]:
         return list(self.selectedComponentsSet)
     
+    def getSelectedNetComponent(self) -> str:
+        if self.selectedNetComponentsSet:
+            return list(self.selectedNetComponentsSet)[0]
+        return ''
+    
     def changeColor(self, key:str, RGB:tuple[int, int, int]):
         if key in self.colorsDict:
             self.colorsDict[key] = RGB

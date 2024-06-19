@@ -17,9 +17,8 @@ class NetTreeView{
     getSelectedNetName(){
         if (this.selectedNet){
             return this.selectedNet.textContent.substring(2); // first 2 characters are '+ ' or '- '
-        } else {
-            return '';
         }
+        return '';
     }
 
     set netEvent(eventFunction){
@@ -60,6 +59,8 @@ class NetTreeView{
         for (const componentName in netComponentSubMap){
             const componentBranch = document.createElement('li');
             const componentPinoutSpan = document.createElement('span');
+            
+            componentBranch.setAttribute('data-key', componentName);
 
             const pins = netComponentSubMap[componentName];
             componentPinoutSpan.textContent = componentName + ": " + pins;
@@ -134,8 +135,7 @@ class NetTreeView{
     }
     
     async scrollToBranchByName(netName){
-        let keyElement; 
-        keyElement = await this.ulFirstLevel.querySelector(`li[data-key="${netName}"]`);
+        let keyElement = await this.ulFirstLevel.querySelector(`li[data-key="${netName}"]`);
         if (!keyElement){
             return
         }
@@ -151,6 +151,18 @@ class NetTreeView{
         this.unselectCurrentBranch();
         this.#toggleVisibility(netSpan);
         this.selectedNet = this.#handleSingleSelection(netSpan);
+    }
+
+    async selectComponentByName(componentName){
+        if (!this.selectedNet){
+            return;
+        }
+        const liParent = this.selectedNet.parentElement;
+        const childUl = liParent.querySelector('ul');
+
+        let componentLi = await childUl.querySelector(`li[data-key="${componentName}"]`);
+        console.log(this.selectedNet, componentLi)
+
     }
 
     clearTree(){

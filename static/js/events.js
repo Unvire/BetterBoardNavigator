@@ -255,11 +255,18 @@ function selectNetEvent(netName){
 }
 
 function toggleNetMarkersEvent(){
+    pyodide.runPython(`
+        selectedNetComponent = engine.getSelectedNetComponent()
+    `);
+    const selectedNetComponent = pyodide.globals.get('selectedNetComponent');
+    netsTreeview.selectComponentByName(selectedNetComponent);
+
     side = currentSide();
     pyodide.runPython(`
         engine.showHideMarkersForSelectedNetByNameInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
+
 }
 
 function selectNetComponentByNameEvent(componentName){
