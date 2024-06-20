@@ -46,6 +46,7 @@ class DynamicSelectableList{
         this.elements.forEach(el => {
             const itemDiv = document.createElement('div');
             itemDiv.textContent = el;
+            itemDiv.setAttribute('data-key', el);
             
             this.parentContainer.appendChild(itemDiv);
             itemDiv.addEventListener('click', () => this.#bindOnClickEvent(itemDiv));
@@ -72,5 +73,12 @@ class DynamicSelectableList{
 
     unselectAllItems(){
         this.children.forEach(el => el.classList.remove('selected'));
+    }
+
+    async selectItemByName(name){
+        let potentialDiv = await this.parentContainer.querySelector(`div[data-key="${name}"]`);
+        if (potentialDiv){
+            this.selectionFunction(potentialDiv);
+        }
     }
 }
