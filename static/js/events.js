@@ -323,9 +323,17 @@ function getComponentNameFromModalBoxEvent(componentName){
 function getCommonPrefixFromModalBoxEvent(commonPrefix){
     const modalBoxCommonPrefix = commonPrefix.toUpperCase();
     pyodide.runPython(`
+        isPrefixExist = engine.checkIfPrefixExists('${modalBoxCommonPrefix}')
+    `);
+    let isPrefixExist = pyodide.globals.get('isPrefixExist');
+
+    if (isPrefixExist){
+        pyodide.runPython(`
         engine.showCommonTypeComponentsInterface(SURFACE, '${modalBoxCommonPrefix}', '${side}')
         pygame.display.flip()
-    `);
+        `);
+        commonPrefixSpan.innerText = modalBoxCommonPrefix;
+    }
 }
 
 function hideCommonPrefixComponentsEvent(){
@@ -334,6 +342,7 @@ function hideCommonPrefixComponentsEvent(){
         engine.clearCommonTypeComponentsInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
+    commonPrefixSpan.innerText = '';
 }
 
 function _findComponentByNameHelper(componentName){

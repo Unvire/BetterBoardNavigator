@@ -50,8 +50,8 @@
     </div>
     <div class="grid-container">
         <div class="item-left-top">
-            <p>Current side</p>
-            <p class="innertext" id="current-side-p"></p>            
+            <p>Current side: <span class="innertext" id="current-side-span"></span></p>
+            <p>Highlighted prefix: <span class="innertext" id="common-prefix-span"></span></p>            
         </div>
         <div class="item-left-middle">
             <p>all components</p> 
@@ -129,10 +129,11 @@
         const netTreeviewContainer = document.getElementById('net-treeview');
         const toggleNetMarkersButton = document.getElementById('toggle-net-marker-button');
         const unselectNetButton = document.getElementById('unselect-net-button');
-        const currentSideSpan = document.getElementById('current-side-p');
+        const currentSideSpan = document.getElementById('current-side-span');
         const findComponentUsingNameButton = document.getElementById('find-component-by-name-button');
         const prefixComponentsButton = document.getElementById('prefix-components-button');
         const unselectPrefixComponentsButton = document.getElementById('unselect-prefix-components-button');
+        const commonPrefixSpan = document.getElementById('common-prefix-span');
 
         var textModalContainer = document.getElementById("text-modal");
         var textModalCloseSpan = document.getElementById("text-modal-close-span");
