@@ -31,13 +31,13 @@ async function openAndLoadCadFile(pyodide, file) {
             engine.drawAndBlitInterface(SURFACE, '${side}')
             pygame.display.flip()
         `);
-        let allComponents = pyodide.globals.get('allComponents').toJs();
+        let allComponents = pyodide.globals.get("allComponents").toJs();
         allComponentsList.elementsList = allComponents;
         allComponentsList.callbackEventFunction = selectComponentFromListEvent;
-        allComponentsList.selectionMode = 'single';
+        allComponentsList.selectionMode = "single";
         allComponentsList.generateList();
 
-        let netsMap = pyodide.globals.get('netsDict').toJs();
+        let netsMap = pyodide.globals.get("netsDict").toJs();
         netsTreeview.netEvent = selectNetFromTreeviewEvent;
         netsTreeview.componentEvent = selectNetComponentByNameEvent;
         netsTreeview.eventBeforeSelection = unselectNetFromWidgetsEvent;
@@ -46,14 +46,14 @@ async function openAndLoadCadFile(pyodide, file) {
 
         pinoutTable.clearBody();
         markedComponentsList.clearList();
-        clickedComponentContainer.innerText = '';
+        clickedComponentContainer.innerText = "";
         currentSideSpan.innerText = currentSide();
     }
     reader.readAsArrayBuffer(file);
 }
 
 async function removePreviousFileFromFS(pyodide, fileName){
-    const pydodideFiles = pyodide.FS.readdir('/');
+    const pydodideFiles = pyodide.FS.readdir("/");
     if (pydodideFiles.includes(fileName)){
         pyodide.FS.unlink(`/${fileName}`);
     }

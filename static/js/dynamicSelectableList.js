@@ -1,7 +1,7 @@
 class DynamicSelectableList{
     constructor(parentContainer){
         this.parentContainer = parentContainer;
-        this.selectionModesMap = {'single': this.#singleSelectionMode, 'multiple':this.#multipleSelectionMode};
+        this.selectionModesMap = {"single": this.#singleSelectionMode, "multiple":this.#multipleSelectionMode};
         this.selectionFunction = null;
         this.elements = [];
         this.callbackEventFunction = null;
@@ -29,14 +29,14 @@ class DynamicSelectableList{
 
     #singleSelectionMode(itemDiv){
         this.unselectAllItems();
-        itemDiv.classList.add('selected');
+        itemDiv.classList.add("selected");
     }
 
     #multipleSelectionMode(itemDiv){
-        if (itemDiv.classList.contains('selected')){
-            itemDiv.classList.remove('selected');
+        if (itemDiv.classList.contains("selected")){
+            itemDiv.classList.remove("selected");
         } else {
-            itemDiv.classList.add('selected');
+            itemDiv.classList.add("selected");
         }
     }
 
@@ -44,15 +44,15 @@ class DynamicSelectableList{
         this.clearList()
 
         this.elements.forEach(el => {
-            const itemDiv = document.createElement('div');
+            const itemDiv = document.createElement("div");
             itemDiv.textContent = el;
-            itemDiv.setAttribute('data-key', el);
+            itemDiv.setAttribute("data-key", el);
             
             this.parentContainer.appendChild(itemDiv);
-            itemDiv.addEventListener('click', () => this.#bindOnClickEvent(itemDiv));
+            itemDiv.addEventListener("click", () => this.#bindOnClickEvent(itemDiv));
         });
 
-        this.children = this.parentContainer.querySelectorAll('div');
+        this.children = this.parentContainer.querySelectorAll("div");
     }
 
     clearList(){
@@ -64,7 +64,7 @@ class DynamicSelectableList{
     get selectedItems(){
         selectedItems = [];
         this.children.forEach(el => {
-            if (el.classList.contains('selected')){
+            if (el.classList.contains("selected")){
                 this.selectedItems.push(el);
             }
         });
@@ -72,7 +72,7 @@ class DynamicSelectableList{
     }
 
     unselectAllItems(){
-        this.children.forEach(el => el.classList.remove('selected'));
+        this.children.forEach(el => el.classList.remove("selected"));
     }
 
     async selectItemByName(name){

@@ -41,7 +41,7 @@ function mouseDownEvent(event){
                     engine.findComponentByNameInterface(SURFACE, componentName, '${side}') #mark all clicked components
                     pygame.display.flip()
         `);
-        let clickedComponents = pyodide.globals.get('clickedComponents').toJs();
+        let clickedComponents = pyodide.globals.get("clickedComponents").toJs();
         clickedComponentContainer.innerText = clickedComponents;
         _generateMarkedComponentsList();
     }
@@ -197,10 +197,10 @@ function _generateMarkedComponentsList(){
     pyodide.runPython(`
         componentsList = engine.getSelectedComponents()
     `);
-    let componentsList = pyodide.globals.get('componentsList').toJs();
+    let componentsList = pyodide.globals.get("componentsList").toJs();
     
     markedComponentsList.elements = componentsList
-    markedComponentsList.selectionMode = 'single';
+    markedComponentsList.selectionMode = "single";
     markedComponentsList.eventCallbackFuntion = markedComponentsListItemClickedEvent;
     markedComponentsList.generateList()
 }
@@ -215,7 +215,7 @@ function generatePinoutTableEvent(componentName){
     pyodide.runPython(`
         pinoutDict = engine.getComponentPinout('${componentName}')
     `);
-    let pinoutMap = pyodide.globals.get('pinoutDict').toJs();
+    let pinoutMap = pyodide.globals.get("pinoutDict").toJs();
     pinoutTable.rowEvent = selectNetFromTableEvent;
     pinoutTable.beforeRowEvent = unselectNetFromWidgetsEvent;
     pinoutTable.addRows(pinoutMap);
@@ -262,7 +262,7 @@ function toggleNetMarkersEvent(){
     pyodide.runPython(`
         selectedNetComponent = engine.getSelectedNetComponent()
     `);
-    const selectedNetComponent = pyodide.globals.get('selectedNetComponent');
+    const selectedNetComponent = pyodide.globals.get("selectedNetComponent");
     netsTreeview.selectComponentByName(selectedNetComponent);
 
     side = currentSide();
@@ -299,7 +299,7 @@ function unselectNetFromWidgetsEvent(){
 }
 
 function findComponentUsingNameEvent(){
-    modalSubmit.setHeader('Component name:');
+    modalSubmit.setHeader("Component name:");
     modalSubmit.buttonEvent = getComponentNameFromModalBoxEvent;
     modalSubmit.show();
 }
@@ -310,7 +310,7 @@ function getComponentNameFromModalBoxEvent(componentName){
 }
 
 function showCommonPrefixComponentsEvent(){
-    modalSubmit.setHeader('Prefix:');
+    modalSubmit.setHeader("Prefix:");
     modalSubmit.buttonEvent = getCommonPrefixFromModalBoxEvent;
     modalSubmit.show();
 }
@@ -325,7 +325,7 @@ function getCommonPrefixFromModalBoxEvent(commonPrefix){
     pyodide.runPython(`
         isPrefixExist = engine.checkIfPrefixExists('${modalBoxCommonPrefix}')
     `);
-    let isPrefixExist = pyodide.globals.get('isPrefixExist');
+    let isPrefixExist = pyodide.globals.get("isPrefixExist");
 
     if (isPrefixExist){
         pyodide.runPython(`
@@ -342,7 +342,7 @@ function hideCommonPrefixComponentsEvent(){
         engine.clearCommonTypeComponentsInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
-    commonPrefixSpan.innerText = '';
+    commonPrefixSpan.innerText = "";
 }
 
 function _findComponentByNameHelper(componentName){
@@ -368,7 +368,7 @@ function _getSideOfComponent(componentName){
     pyodide.runPython(`
         componentSide = engine.getSideOfComponent('${componentName}')
     `);
-    return pyodide.globals.get('componentSide');
+    return pyodide.globals.get("componentSide");
 }
 
 function _changeSideIfComponentIsNotOnScreen(componentSide){

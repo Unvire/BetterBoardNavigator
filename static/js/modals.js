@@ -4,12 +4,12 @@ class ModalBox{
         this.closeSpan = closeSpan;
         this.header = header;
 
-        this.closeSpan.addEventListener('click', () => { 
+        this.closeSpan.addEventListener("click", () => { 
             this.close();
         });
 
         
-        window.addEventListener('click', (event) => { 
+        window.addEventListener("click", (event) => { 
             if (event.target == this.parentContainer) {
                 this.close();
             }
@@ -17,12 +17,12 @@ class ModalBox{
     }
 
     show(){
-        this.parentContainer.style.display = 'block';
+        this.parentContainer.style.display = "block";
     }
 
     close(){
-        this.header.innerText = '';
-        this.parentContainer.style.display = 'none';
+        this.header.innerText = "";
+        this.parentContainer.style.display = "none";
     }
 
     setHeader(text){
@@ -39,14 +39,14 @@ class ModalSubmit extends ModalBox{
 
     set buttonEvent(eventFunction){
         this.submitEvent = eventFunction;
-        this.submitButton.addEventListener('click', () => {
+        this.submitButton.addEventListener("click", () => {
             this.submitEvent(this.textInput.value);
             this.close();
         });
     }
 
     close(){
-        this.textInput.value = '';
+        this.textInput.value = "";
         super.close();
     }
 }
@@ -58,7 +58,7 @@ class ModalParagraph extends ModalBox{
     }
 
     clearParagraph(){
-        this.setParagraphText('');
+        this.setParagraphText("");
     }
 
     setParagraphText(text){

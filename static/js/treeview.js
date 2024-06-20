@@ -1,7 +1,7 @@
 class NetTreeView{
     constructor(parentContainer){
         this.parentContainer = parentContainer
-        this.ulFirstLevel = document.createElement('ul');
+        this.ulFirstLevel = document.createElement("ul");
         this.parentContainer.appendChild(this.ulFirstLevel);
         this.selectedNet = null;
         this.selectedComponent = null;
@@ -16,9 +16,9 @@ class NetTreeView{
 
     getSelectedNetName(){
         if (this.selectedNet){
-            return this.selectedNet.textContent.substring(2); // first 2 characters are '+ ' or '- '
+            return this.selectedNet.textContent.substring(2); // first 2 characters are "+ " or "- "
         }
-        return '';
+        return "";
     }
 
     set netEvent(eventFunction){
@@ -37,15 +37,15 @@ class NetTreeView{
     addBranches(netMap){
         this.clearTree();
         for (const netName in netMap){
-            const netBranch = document.createElement('li');
-            const netSpan = document.createElement('span');
+            const netBranch = document.createElement("li");
+            const netSpan = document.createElement("span");
 
             this.#setNetSpan(netName, netSpan);
             netBranch.appendChild(netSpan);
-            netBranch.setAttribute('data-key', netName);
+            netBranch.setAttribute("data-key", netName);
 
-            const subBranchContainer = document.createElement('ul');
-            subBranchContainer.classList.add('hidden');
+            const subBranchContainer = document.createElement("ul");
+            subBranchContainer.classList.add("hidden");
             this.#addSubBranches(subBranchContainer, netMap[netName]);  
 
             netBranch.appendChild(subBranchContainer);
@@ -54,17 +54,17 @@ class NetTreeView{
     }
 
     #addSubBranches(subBranchContainer, netComponentSubMap){
-        subBranchContainer.classList.add('treeview-hidden');
+        subBranchContainer.classList.add("treeview-hidden");
 
         for (const componentName in netComponentSubMap){
-            const componentBranch = document.createElement('li');
-            const componentPinoutSpan = document.createElement('span');
+            const componentBranch = document.createElement("li");
+            const componentPinoutSpan = document.createElement("span");
             
-            componentBranch.setAttribute('data-key', componentName);
+            componentBranch.setAttribute("data-key", componentName);
 
             const pins = netComponentSubMap[componentName];
             componentPinoutSpan.textContent = componentName + ": " + pins;
-            componentPinoutSpan.addEventListener('click', (event) => {
+            componentPinoutSpan.addEventListener("click", (event) => {
                 event.stopPropagation();
 
                 const isSkipSelectionHandling = componentPinoutSpan === this.selectedComponent;
@@ -84,7 +84,7 @@ class NetTreeView{
     
     #setNetSpan(netName, netSpan){
         netSpan.textContent = `+ ${netName}`;
-        netSpan.addEventListener('click', (event) => {
+        netSpan.addEventListener("click", (event) => {
             event.stopPropagation();
 
             this.beforeSelectionEvent();
@@ -102,7 +102,7 @@ class NetTreeView{
     }
 
     #handleSingleSelection(clickedItem){
-        clickedItem.classList.add('treeview-selected');
+        clickedItem.classList.add("treeview-selected");
         return clickedItem;
     }
     
@@ -111,8 +111,8 @@ class NetTreeView{
         if (!keyElement){
             return
         }
-        keyElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        let netSpan = await keyElement.querySelector('span');
+        keyElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        let netSpan = await keyElement.querySelector("span");
 
         this.unselectCurrentItem();
         if (this.selectedNet === netSpan){
@@ -146,36 +146,36 @@ class NetTreeView{
     unselectCurrentBranch(){
         if (this.selectedNet){
             const selectedNetUl = this.#getUlFromSpan(this.selectedNet);
-            selectedNetUl.classList.add('treeview-hidden');
+            selectedNetUl.classList.add("treeview-hidden");
 
-            this.selectedNet.classList.remove('treeview-selected');
-            this.selectedNet.textContent = '+' + this.selectedNet.textContent.substring(1);
+            this.selectedNet.classList.remove("treeview-selected");
+            this.selectedNet.textContent = "+" + this.selectedNet.textContent.substring(1);
             this.selectedNet = null;
         }
     }
 
     unselectCurrentItem(){
         if (this.selectedComponent){
-            this.selectedComponent.classList.remove('treeview-selected');
+            this.selectedComponent.classList.remove("treeview-selected");
             this.selectedComponent = null;
         }
     }
 
     #toggleVisibility(netSpan){
         const netUl = this.#getUlFromSpan(netSpan);
-        if (netUl && netUl.classList.contains('treeview-hidden')) {
-            netUl.classList.remove('treeview-hidden');
-            netSpan.textContent = '-' + netSpan.innerText.substring(1);
+        if (netUl && netUl.classList.contains("treeview-hidden")) {
+            netUl.classList.remove("treeview-hidden");
+            netSpan.textContent = "-" + netSpan.innerText.substring(1);
         }
     }
 
     #getUlFromSpan(span){
         const liParent = span.parentElement;
-        return liParent.querySelector('ul');
+        return liParent.querySelector("ul");
     }
 
     clearTree(){
-        this.ulFirstLevel.innerHTML = '';
+        this.ulFirstLevel.innerHTML = "";
     }
 
     generate(){
