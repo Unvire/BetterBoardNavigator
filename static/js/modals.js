@@ -31,12 +31,14 @@ class ModalBox{
 }
 
 class ModalSubmit extends ModalBox{
-    constructor(parentContainer, closeSpan, header, textInput, submitButton, submitEvent){
+    constructor(parentContainer, closeSpan, header, textInput, submitButton){
         super(parentContainer, closeSpan, header)
         this.textInput = textInput;
         this.submitButton = submitButton;
-        this.submitEvent = submitEvent;
+    }
 
+    set buttonEvent(eventFunction){
+        this.submitEvent = eventFunction;
         this.submitButton.addEventListener('click', () => {
             this.submitEvent(this.textInput.value);
             this.close();
