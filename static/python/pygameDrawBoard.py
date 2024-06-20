@@ -85,6 +85,9 @@ class DrawBoardEngine:
             return list(self.selectedNetComponentSet)[0]
         return ''
     
+    def checkIfPrefixExists(self, prefix:str) -> bool:
+        return prefix in self.boardData.getCommonTypeGroupedComponents()['T'] or prefix in self.boardData.getCommonTypeGroupedComponents()['B']
+
     def changeColor(self, key:str, RGB:tuple[int, int, int]):
         if key in self.colorsDict:
             self.colorsDict[key] = RGB
