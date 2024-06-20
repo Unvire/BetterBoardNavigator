@@ -58,18 +58,18 @@ body{
 }
 
 .item-right-top{
-    grid-area: 1 / 10 / 8 / 10;
-    background-color: yellow;
+    grid-area: 1 / 10 / 2 / 10;
+    background-color: yellowgreen;
 }
 
 .item-right-middle{
-    grid-area: 8 / 10 / 10 / 10;
+    grid-area: 2 / 10 / 4 / 10;
     background-color: tan;
 }
 
 .item-right-bottom{
-    grid-area: 10 / 10 / 11 / 10;
-    background-color: yellowgreen;
+    grid-area: 4 / 10 / 11 / 10;
+    background-color: yellow;
 }
 
 canvas{
