@@ -11,7 +11,7 @@ function keyDownEvent(event){
         } else if (event.key.length === 1){
             textModalInput.value += event.key;
         } else if (event.key === "Enter"){
-            
+            textModalSubmitButton.click();
         }
         event.preventDefault();
     }
