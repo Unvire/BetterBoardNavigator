@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pyodide Pygame-CE Example</title>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js"></script>
+</head>
+<body>
+  <h1>Pyodide Pygame-CE Example</h1>
+  <canvas id="canvas" width="640" height="480"></canvas>
+  <input type="text" id="text-input" placeholder="Type here">
+  <script type="text/javascript">
+    async function main() {
+      let canvas = document.getElementById('canvas')
+      let pyodide = await loadPyodide();
+      
+      pyodide.canvas.setCanvas2D(canvas);
+
+      await pyodide.loadPackage(['micropip']);
+
+      // Install Pygame-CE
+      await pyodide.runPythonAsync(`
+        import micropip
+        await micropip.install('pygame-ce')
+      `);
+
+      // Function to run Pygame code
+      async function runPygame() {
+        await pyodide.runPythonAsync(`
+          import pygame
+          import pygame.display
+          import pygame.draw
+          pygame.display.init()
+          screen = pygame.display.set_mode((640, 480))
+          pygame.display.set_caption("Pyodide Pygame-CE Example")
+
+          # Fill the screen with white color
+          screen.fill((255, 255, 255))
+
+          # Draw a red circle
+          pygame.draw.circle(screen, (255, 0, 0), (320, 240), 50)
+
+          # Update the display
+          pygame.display.flip()
+        `);
+      }
+
+      // Run Pygame when the page loads
+      await runPygame();
+    }
+
+    // Handle keyboard events to input text
+    const inputField = document.getElementById('text-input');
+    let isInputFocused = false;
+
+    inputField.addEventListener('focus', () => {
+      isInputFocused = true;
+    });
+
+    inputField.addEventListener('blur', () => {
+      isInputFocused = false;
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (isInputFocused) {
+        if (event.key === "Backspace") {
+          inputField.value = inputField.value.slice(0, -1);
+        } else if (event.key.length === 1) {
+          inputField.value += event.key;
+        } else if (event.key === "Enter") {
+          inputField.value += "\n";
+        }
+        event.preventDefault();
+      }
+    });
+
+    window.onerror = function(message, source, lineno, colno, error) {
+      if (error.message.includes("emscripten_compute_dom_pk_code")){
+        console.log(message);
+        return true;
+      }
+    }
+
+    // Load Pyodide and run the script
+    main();
+  </script>
+</body>
+</html>
