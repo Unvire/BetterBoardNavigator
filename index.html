@@ -174,7 +174,7 @@
         // As result "main game loop" doesn't exist, which results in throwing errors when any key is pressed down
         // This cludge overrides JS error handler and ignores these event errors and manually sets keyboard behaviour (onkeydown event)
         window.onerror = function(message, source, lineno, colno, error) {
-            if (error.message.includes("emscripten_compute_dom_pk_code")){
+            if (error.message.includes("emscripten_compute_dom_pk_code") || error.message.includes("pygame.error: Out of memory")){
                 return true;
             }
         }
