@@ -104,36 +104,36 @@
         let isRotateActive = false;
         let isFindComponentByClickActive = false;
         let isSelectionModeSingle = true;
-        let modalBoxComponentName = '';
+        let modalBoxComponentName = "";
         let isTextModalInputFocused = false;
 
-        const sideMap = {true: 'B', false: 'T'};
-        const selectionModesMap = {true: 'single', false: 'multiple'};
+        const sideMap = {true: "B", false: "T"};
+        const selectionModesMap = {true: "single", false: "multiple"};
 
-        const canvas = document.getElementById('canvas');
-        const canvasParent = document.getElementById('item-center');
-        const loadFileButton = document.getElementById('load-file-button');
-        const changeSideButton = document.getElementById('change-side-button');
-        const rotateButton = document.getElementById('rotate-button');
-        const mirrorSideButton = document.getElementById('mirror-side-button');
-        const toggleOutlinesButton = document.getElementById('toggle-outlines-button');
-        const resetViewButton = document.getElementById('default-view-button');    
-        const areaFromComponentsButton = document.getElementById('components-area-button');
-        const toggleFindComponentByClickButton = document.getElementById('clicked-component-button');
+        const canvas = document.getElementById("canvas");
+        const canvasParent = document.getElementById("item-center");
+        const loadFileButton = document.getElementById("load-file-button");
+        const changeSideButton = document.getElementById("change-side-button");
+        const rotateButton = document.getElementById("rotate-button");
+        const mirrorSideButton = document.getElementById("mirror-side-button");
+        const toggleOutlinesButton = document.getElementById("toggle-outlines-button");
+        const resetViewButton = document.getElementById("default-view-button");    
+        const areaFromComponentsButton = document.getElementById("components-area-button");
+        const toggleFindComponentByClickButton = document.getElementById("clicked-component-button");
         const clickedComponentContainer = document.getElementById("clicked-components");
-        const allComponentsContainer = document.getElementById('scrollable-all-components-list');
-        const preserveComponentMarkesButton = document.getElementById('toggle-leave-markers-button');
-        const clearMarkersButton = document.getElementById('unselect-components-button');
-        const markedComponentsContainer = document.getElementById('scrollable-marked-components-list');
-        const pinoutTableContainer = document.getElementById('pinout-table');
-        const netTreeviewContainer = document.getElementById('net-treeview');
-        const toggleNetMarkersButton = document.getElementById('toggle-net-marker-button');
-        const unselectNetButton = document.getElementById('unselect-net-button');
-        const currentSideSpan = document.getElementById('current-side-span');
-        const findComponentUsingNameButton = document.getElementById('find-component-by-name-button');
-        const prefixComponentsButton = document.getElementById('prefix-components-button');
-        const unselectPrefixComponentsButton = document.getElementById('unselect-prefix-components-button');
-        const commonPrefixSpan = document.getElementById('common-prefix-span');
+        const allComponentsContainer = document.getElementById("scrollable-all-components-list");
+        const preserveComponentMarkesButton = document.getElementById("toggle-leave-markers-button");
+        const clearMarkersButton = document.getElementById("unselect-components-button");
+        const markedComponentsContainer = document.getElementById("scrollable-marked-components-list");
+        const pinoutTableContainer = document.getElementById("pinout-table");
+        const netTreeviewContainer = document.getElementById("net-treeview");
+        const toggleNetMarkersButton = document.getElementById("toggle-net-marker-button");
+        const unselectNetButton = document.getElementById("unselect-net-button");
+        const currentSideSpan = document.getElementById("current-side-span");
+        const findComponentUsingNameButton = document.getElementById("find-component-by-name-button");
+        const prefixComponentsButton = document.getElementById("prefix-components-button");
+        const unselectPrefixComponentsButton = document.getElementById("unselect-prefix-components-button");
+        const commonPrefixSpan = document.getElementById("common-prefix-span");
 
         var textModalContainer = document.getElementById("text-modal");
         var textModalCloseSpan = document.getElementById("text-modal-close-span");
@@ -182,11 +182,11 @@
         // ignore syntax errors from python's regex
         console.warn = () => {};
 
-        textModalInput.addEventListener('focus', () => {
+        textModalInput.addEventListener("focus", () => {
             isTextModalInputFocused = true;
         });
 
-        textModalInput.addEventListener('blur', () => {
+        textModalInput.addEventListener("blur", () => {
             isTextModalInputFocused = false;
         });
 
