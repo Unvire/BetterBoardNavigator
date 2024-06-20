@@ -105,6 +105,7 @@
         let isFindComponentByClickActive = false;
         let isSelectionModeSingle = true;
         let modalBoxComponentName = '';
+        let isTextModalInputFocused = false;
 
         const sideMap = {true: 'B', false: 'T'};
         const selectionModesMap = {true: 'single', false: 'multiple'};
@@ -168,8 +169,7 @@
 
         // This is a workaround about the fact that the pygame-ce is not run in an inifite loop but as an image generator. 
         // As result "main game loop" doesn't exist, which results in throwing errors when any key is pressed down
-        // In other words event is not handled, because game loop does not exist
-        // This cludge overrides JS error handler and ignores these event errors...
+        // This cludge overrides JS error handler and ignores these event errors and manually sets keyboard behaviour (onkeydown event)
         window.onerror = function(message, source, lineno, colno, error) {
             if (error.message.includes("emscripten_compute_dom_pk_code")){
                 console.log(message);
@@ -177,7 +177,14 @@
             }
         }
 
-        
+        textModalInput.addEventListener('focus', () => {
+            isTextModalInputFocused = true;
+        });
+
+        textModalInput.addEventListener('blur', () => {
+            isTextModalInputFocused = false;
+        });
+
 
         document.addEventListener("DOMContentLoaded", async () => {
             pinoutTable.generateTable();

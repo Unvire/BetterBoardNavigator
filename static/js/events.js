@@ -5,10 +5,15 @@ async function windowResizeEvent(){
 }
 
 function keyDownEvent(event){
-    var keyID = event.which;
-    switch(keyID){
-        case 18: // alt
-        break;
+    if (isTextModalInputFocused){
+        if (event.key === "Backspace"){
+            textModalInput.value = textModalInput.value.slice(0, -1);
+        } else if (event.key.length === 1){
+            textModalInput.value += event.key;
+        } else if (event.key === "Enter"){
+            
+        }
+        event.preventDefault();
     }
 }
 
