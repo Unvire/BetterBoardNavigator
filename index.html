@@ -175,10 +175,12 @@
         // This cludge overrides JS error handler and ignores these event errors and manually sets keyboard behaviour (onkeydown event)
         window.onerror = function(message, source, lineno, colno, error) {
             if (error.message.includes("emscripten_compute_dom_pk_code")){
-                console.log(message);
                 return true;
             }
         }
+        
+        // ignore syntax errors from python's regex
+        console.warn = () => {};
 
         textModalInput.addEventListener('focus', () => {
             isTextModalInputFocused = true;
