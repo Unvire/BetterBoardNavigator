@@ -300,12 +300,40 @@ function unselectNetFromWidgetsEvent(){
 
 function findComponentUsingNameEvent(){
     modalSubmit.setHeader('Component name:');
+    modalSubmit.buttonEvent = getComponentNameFromModalBoxEvent;
     modalSubmit.show();
 }
 
 function getComponentNameFromModalBoxEvent(componentName){
     const modalBoxComponentName = componentName.toUpperCase();
     _findComponentByNameHelper(modalBoxComponentName);
+}
+
+function showCommonPrefixComponentsEvent(){
+    modalSubmit.setHeader('Prefix:');
+    modalSubmit.buttonEvent = getCommonPrefixFromModalBoxEvent;
+    modalSubmit.show();
+}
+
+function getComponentNameFromModalBoxEvent(componentName){
+    const modalBoxComponentName = componentName.toUpperCase();
+    _findComponentByNameHelper(modalBoxComponentName);
+}
+
+function getCommonPrefixFromModalBoxEvent(commonPrefix){
+    const modalBoxCommonPrefix = commonPrefix.toUpperCase();
+    pyodide.runPython(`
+        engine.showCommonTypeComponentsInterface(SURFACE, '${modalBoxCommonPrefix}', '${side}')
+        pygame.display.flip()
+    `);
+}
+
+function hideCommonPrefixComponentsEvent(){
+    side = currentSide();
+    pyodide.runPython(`
+        engine.clearCommonTypeComponentsInterface(SURFACE, '${side}')
+        pygame.display.flip()
+    `);
 }
 
 function _findComponentByNameHelper(componentName){
@@ -354,4 +382,6 @@ function _enableButtons(){
     toggleNetMarkersButton.disabled = false;
     unselectNetButton.disabled = false;
     findComponentUsingNameButton.disabled = false;
+    prefixComponentsButton.disabled = false;
+    unselectPrefixComponentsButton.disabled = false;
 }

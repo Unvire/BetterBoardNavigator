@@ -42,7 +42,7 @@
         </div>
         <div class="buttons-flexbox">
             <button type="button" id="prefix-components-button" disabled="true">Prefix Components</button>
-            <button type="button" id="unselect-prefix-button" disabled="true">Unselect Prefix Components</button>
+            <button type="button" id="unselect-prefix-components-button" disabled="true">Unselect Prefix Components</button>
         </div>
         <div class="buttons-flexbox">
             <button type="button" id="help-button" disabled="true">Help</button>
@@ -131,6 +131,8 @@
         const unselectNetButton = document.getElementById('unselect-net-button');
         const currentSideSpan = document.getElementById('current-side-p');
         const findComponentUsingNameButton = document.getElementById('find-component-by-name-button');
+        const prefixComponentsButton = document.getElementById('prefix-components-button');
+        const unselectPrefixComponentsButton = document.getElementById('unselect-prefix-components-button');
 
         var textModalContainer = document.getElementById("text-modal");
         var textModalCloseSpan = document.getElementById("text-modal-close-span");
@@ -145,7 +147,7 @@
 
         var modalSubmit = new ModalSubmit(textModalContainer, textModalCloseSpan, 
                                             textModalPromptHeader, textModalInput, 
-                                            textModalSubmitButton, getComponentNameFromModalBoxEvent);
+                                            textModalSubmitButton);
         var modalParagraph = new ModalParagraph(paragraphModalContainer, paragraphModalCloseSpan, 
                                                 paragraphModalPromptHeader, paragraphModalTextParagraph);
         var allComponentsList = new DynamicSelectableList(allComponentsContainer);
@@ -217,8 +219,10 @@
             preserveComponentMarkesButton.addEventListener("click", preserveComponentMarkesEvent);
             clearMarkersButton.addEventListener("click", clearMarkersEvent);
             toggleNetMarkersButton.addEventListener("click", toggleNetMarkersEvent);
-            unselectNetButton.addEventListener("click", unselectNetEvent);
+            unselectNetButton.addEventListener("click", unselectNetEvent);            
             findComponentUsingNameButton.addEventListener("click", findComponentUsingNameEvent);
+            prefixComponentsButton.addEventListener("click", showCommonPrefixComponentsEvent);
+            unselectPrefixComponentsButton.addEventListener("click", hideCommonPrefixComponentsEvent);
         });
     </script>
 </body>
