@@ -53,27 +53,41 @@
             <p>Highlighted prefix: <span class="innertext" id="common-prefix-span"></span></p>            
         </div>
         <div class="item-left-middle">
-            <p>all components</p> 
+            <div class="item-header">
+                <p>all components</p> 
+            </div>
             <div class="scrollable-list" id="scrollable-all-components-list">
             </div>
         </div>
-        <div class="item-left-bottom" id="pinout-table">
-            <p>component pinout</p>
+        <div class="item-left-bottom">
+            <div class="item-header"> 
+                <p>component pinout</p>
+            </div>
+            <div id="pinout-table">
+            </div>
         </div>
         <div class="item-center" id="item-center">
             <canvas id="canvas"></canvas>
         </div>
         <div class="item-right-top">
-            <p>clicked components</p>
-            <p id="clicked-components"></p>
+            <div class="item-header">
+                <p>clicked components</p>
+            </div>
+            <div id="clicked-components">
+                <p></p>
+            </div>
         </div>
         <div class="item-right-middle">
-            <p>marked components</p>
+            <div class="item-header">
+                <p>marked components</p>
+            </div>
             <div class="scrollable-list" id="scrollable-marked-components-list">
             </div>
         </div>
         <div class="item-right-bottom">
-            <p>nets list</p>
+            <div class="item-header"> 
+                <p>nets list</p>
+            </div>
             <div id="net-treeview" class="tree-view">
             </div>
         </div>

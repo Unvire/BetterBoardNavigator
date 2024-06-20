@@ -72,6 +72,10 @@ body{
     background-color: yellow;
 }
 
+.item-header{
+    width: 100%;
+}
+
 canvas{
     position: absolute;
     top: 0;
