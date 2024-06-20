@@ -166,6 +166,28 @@
             canvas.height = canvasParent.clientHeight;
         }
 
+        function drawFrame(){
+            pyodide.runPython(`
+                pixelArray = pygame.surfarray.array3d(SURFACE)
+                pixelArray = np.transpose(pixelArray, (1, 0, 2))  # Transpose to match canvas dimensions
+            `);
+            let pixelArray = pyodide.globals.get('pixelArray').toJs();
+            let ctx = canvas.getContext('2d');
+            let imageData = ctx.createImageData(canvas.width, canvas.height);
+
+            // Convert 4D array into 1D array
+            for (let y = 0; y < canvas.height; y++) {
+                for (let x = 0; x < canvas.width; x++) {
+                let index = (y * canvas.width + x) * 4;
+                imageData.data[index] = pixelArray[y][x][0];        // Red
+                imageData.data[index + 1] = pixelArray[y][x][1];    // Green
+                imageData.data[index + 2] = pixelArray[y][x][2];    // Blue
+                imageData.data[index + 3] = 255;                    // Alpha
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+        }
+
         // This is a workaround about the fact that the pygame-ce is not run in an inifite loop but as an image generator. 
         // As result "main game loop" doesn't exist, which results in throwing errors when any key is pressed down
         // In other words event is not handled, because game loop does not exist
