@@ -69,7 +69,7 @@ class DrawBoardEngine:
     
     def getSideOfComponent(self, componentName:str) -> str:
         componentInstance = self.boardData.getElementByName('components', componentName)
-        return componentInstance.getSide()
+        return componentInstance.getSide() if componentInstance else ''
     
     def getComponentPinout(self, componentName:str) -> dict:
         componentInstance = self.boardData.getElementByName('components', componentName)
