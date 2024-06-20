@@ -189,16 +189,7 @@ async function clearMarkersEvent(){
 }
 
 async function _markSelectedComponentFromList(selectedComponentFromList){
-    componentSide = _getSideOfComponent(selectedComponentFromList);
-    side = _changeSideIfComponentIsNotOnScreen(componentSide);
-
-    pyodide.runPython(`
-        if '${isSelectionModeSingle}' == 'true':
-            engine.clearFindComponentByNameInterface(SURFACE, '${side}')
-
-        engine.findComponentByNameInterface(SURFACE, '${selectedComponentFromList}', '${side}')
-        pygame.display.flip()
-    `);
+    _findComponentByNameHelper(selectedComponentFromList);
     _generateMarkedComponentsList();
 }
 
@@ -307,6 +298,32 @@ function unselectNetFromWidgetsEvent(){
     `);
 }
 
+function findComponentUsingNameEvent(){
+    modalSubmit.setHeader('Component name:');
+    modalSubmit.show();
+}
+
+function getComponentNameFromModalBoxEvent(componentName){
+    const modalBoxComponentName = componentName.toUpperCase();
+    _findComponentByNameHelper(modalBoxComponentName);
+}
+
+function _findComponentByNameHelper(componentName){
+    componentSide = _getSideOfComponent(componentName);
+    if (!componentSide){
+        return
+    }
+
+    side = _changeSideIfComponentIsNotOnScreen(componentSide);
+    pyodide.runPython(`
+        if '${isSelectionModeSingle}' == 'true':
+            engine.clearFindComponentByNameInterface(SURFACE, '${side}')
+
+        engine.findComponentByNameInterface(SURFACE, '${componentName}', '${side}')
+        pygame.display.flip()
+    `);
+}
+
 function _getSideOfComponent(componentName){
     pyodide.runPython(`
         componentSide = engine.getSideOfComponent('${componentName}')
@@ -319,25 +336,6 @@ function _changeSideIfComponentIsNotOnScreen(componentSide){
         changeSide();
     }
     return currentSide();
-}
-
-function findComponentUsingNameEvent(){
-    modalSubmit.setHeader('Component name:');
-    modalSubmit.show();
-}
-
-function getComponentNameFromModalBoxEvent(componentName){
-    console.log(componentName);
-    modalBoxComponentName = componentName.toUpperCase();
-    console.log(modalBoxComponentName);
-
-    /*
-    side = currentSide();
-    pyodide.runPython(`
-        engine.findComponentByNameInterface(SURFACE, '${componentName.toUpperCase()}', '${side}')
-        pygame.display.flip()
-    `);
-    */
 }
 
 function _enableButtons(){
