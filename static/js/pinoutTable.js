@@ -85,8 +85,7 @@ class PinoutTable{
     }
 
     async selectRowByName(netName){
-        let potentialRow; 
-        potentialRow = await this.tableBody.querySelector(`tr[data-key="${netName}"]`);
+        let potentialRow = await this.tableBody.querySelector(`tr[data-key="${netName}"]`);
         if (potentialRow){
             const isSkipSelectionHandling = potentialRow === this.selectedRow;
             this.unselectCurrentRow();
