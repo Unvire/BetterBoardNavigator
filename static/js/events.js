@@ -322,6 +322,9 @@ function _findComponentByNameHelper(componentName){
         engine.findComponentByNameInterface(SURFACE, '${componentName}', '${side}')
         pygame.display.flip()
     `);
+    generatePinoutTableEvent(componentName);
+    _generateMarkedComponentsList();
+    allComponentsList.selectItemByName(componentName);
 }
 
 function _getSideOfComponent(componentName){
