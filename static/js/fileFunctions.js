@@ -12,27 +12,25 @@ async function openAndLoadCadFile(pyodide, file) {
             from pygameDrawBoard import DrawBoardEngine
 
             cadFileName = '${fileName}'
-            canvasWidth, canvasHeight = int('${canvas.width}'), int('${canvas.height}')
 
-            wrapper = BoardWrapper(canvasWidth, canvasHeight)
+            wrapper = BoardWrapper(canvas.width, canvas.height)
             wrapper.loadAndSetBoardFromFilePath(cadFileName)
             boardInstance = wrapper.normalizeBoard()
 
             pygame.init()
             pygame.display.set_caption('Better Board Navigator')
 
-            SURFACE = pygame.Surface((canvasWidth, canvasHeight))
+            SURFACE = pygame.display.set_mode((canvas.width, canvas.height))
 
-            engine = DrawBoardEngine(canvasWidth, canvasHeight)
+            engine = DrawBoardEngine(canvas.width, canvas.height)
             engine.setBoardData(boardInstance)
 
             allComponents = engine.getComponents()
             netsDict = engine.getNets()
 
             engine.drawAndBlitInterface(SURFACE, '${side}')
+            pygame.display.flip()
         `);
-        drawFrame();
-
         let allComponents = pyodide.globals.get('allComponents').toJs();
         allComponentsList.elementsList = allComponents;
         allComponentsList.callbackEventFunction = selectComponentFromListEvent;

@@ -4,19 +4,19 @@ async function configurePythonPath(pyodide){
         sys.path.append("/")
 
         engine = None
+
+        from js import document
+        canvas = document.getElementById("canvas")
     `);
 }
 
 async function loadPygame(pyodide){
     await pyodide.loadPackage("micropip");
-
+    const micropip = pyodide.pyimport("micropip");
+    await micropip.install("pygame-ce");
+    
     await pyodide.runPythonAsync(`
-        import micropip
-        await micropip.install('pygame-ce')
-        await micropip.install('numpy')
-
         import pygame
-        import numpy as np
     `);
 }
 
