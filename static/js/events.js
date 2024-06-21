@@ -365,7 +365,6 @@ function _findComponentByNameHelper(componentName){
     `);
     generatePinoutTableEvent(componentName);
     _generateMarkedComponentsList();
-    allComponentsList.selectItemByName(componentName);
 }
 
 function _getSideOfComponent(componentName){
