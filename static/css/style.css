@@ -34,22 +34,27 @@ body{
     height: calc(100vh - var(--BUTTONS-ROW-HEIGHT));
 }
 
-.item-left-top{
+.functionality-container{
+    width: 100%;
+    height: 100%;
+}
+
+#item-left-top{
     grid-area: 1 / 1 / 1 / 1;
     background-color: blueviolet;
 }
 
-.item-left-middle{
+#item-left-middle{
     grid-area: 2 / 1 / 8 / 1;
     background-color: lightblue;
 }
 
-.item-left-bottom{
+#item-left-bottom{
     grid-area: 8 / 1 / 11 / 1;
     background-color: pink;
 }
 
-.item-center{
+#item-center{
     grid-area: 1 / 2 / 11 / 10;
     background-color: red;    
     position: relative;
@@ -57,17 +62,17 @@ body{
     height: 100%;
 }
 
-.item-right-top{
+#item-right-top{
     grid-area: 1 / 10 / 2 / 10;
     background-color: yellowgreen;
 }
 
-.item-right-middle{
+#item-right-middle{
     grid-area: 2 / 10 / 4 / 10;
     background-color: tan;
 }
 
-.item-right-bottom{
+#item-right-bottom{
     grid-area: 4 / 10 / 11 / 10;
     background-color: yellow;
 }
