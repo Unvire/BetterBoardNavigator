@@ -191,3 +191,7 @@ li {
     text-decoration: none;
     cursor: pointer;
 }
+
+.span-list span{
+    cursor: pointer;
+}

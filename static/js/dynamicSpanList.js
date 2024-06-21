@@ -2,6 +2,7 @@ class DynamicSpanList{
     constructor(parentContainer){
         this.parentContainer = parentContainer;
         this.spanListContainer = document.createElement("div");
+        this.spanListContainer.classList.add("span-list")
 
         this.callbackEventFunction = null;
     }
