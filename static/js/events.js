@@ -187,7 +187,7 @@ function _generateMarkedComponentsList(){
     let componentsList = pyodide.globals.get("componentsList").toJs();
     
     markedComponentsList.elements = componentsList
-    markedComponentsList.selectionMode = "single";
+    markedComponentsList.selectionMode = "no";
     markedComponentsList.eventCallbackFuntion = markedComponentsListItemClickedEvent;
     markedComponentsList.generateList()
 }

@@ -1,7 +1,7 @@
 class DynamicSelectableList{
     constructor(parentContainer){
         this.parentContainer = parentContainer;
-        this.selectionModesMap = {"single": this.#singleSelectionMode, "multiple":this.#multipleSelectionMode};
+        this.selectionModesMap = {"no": this.#noSelectionMode, "single": this.#singleSelectionMode, "multiple":this.#multipleSelectionMode};
         this.selectionFunction = null;
         this.elements = [];
         this.callbackEventFunction = null;
@@ -25,6 +25,10 @@ class DynamicSelectableList{
         if (this.callbackEventFunction){
             this.callbackEventFunction(itemDiv);
         }
+    }
+
+    #noSelectionMode(itemDiv){
+
     }
 
     #singleSelectionMode(itemDiv){
