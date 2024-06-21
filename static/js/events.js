@@ -42,9 +42,14 @@ function mouseDownEvent(event){
                     pygame.display.flip()
         `);
         let clickedComponents = pyodide.globals.get("clickedComponents").toJs();
-        clickedComponentContainer.innerText = clickedComponents;
+        generateClickedComponentsSpanList(clickedComponents);
         _generateMarkedComponentsList();
     }
+}
+
+function generateClickedComponentsSpanList(clickedComponentsList){
+    clickedComponentSpanList.addSpans(clickedComponentsList);
+    clickedComponentSpanList.generate();
 }
 
 function mouseUpEvent(){
