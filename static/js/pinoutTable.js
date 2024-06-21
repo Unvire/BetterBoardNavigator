@@ -4,10 +4,11 @@ class PinoutTable{
         this.selectRowEvent = null;
         this.beforeSelectionEvent = null;
         this.selectedRow = null;
+
+        this.tableContainer = document.createElement("div");
+        this.tableHeader = document.createElement("div");
+        this.tableBody = document.createElement("div"); 
         
-        this.table = document.createElement("table");
-        this.tableHead = document.createElement("table-head");
-        this.tableBody = document.createElement("table-body");
         this.#createHeader();
     }
 
@@ -24,24 +25,40 @@ class PinoutTable{
     }
 
     #createHeader(){
-        const headerColumn1 = document.createElement("th");
-        headerColumn1.textContent = "Pin";
+        const row = document.createElement("div");
+        this.#createRow(this.tableHeader, row, "header", "Pin", "Net");
+        this.tableContainer.appendChild(this.tableHeader);
 
-        const headerColumn2 = document.createElement("th");
-        headerColumn2.textContent = "Net";
+        this.parentContainer.appendChild(this.tableContainer) // debug
+    }
+    
+    #createRow(parentContainer, row, rowAttriubute, textColumn1, textColumn2){
+        row.classList.add("table-row");
 
-        const headerRow = document.createElement("tr");
-        headerRow.appendChild(headerColumn1);
-        headerRow.appendChild(headerColumn2);
+        const column1 = document.createElement("div");
+        const paragraph1 = document.createElement("p");
+        paragraph1.innerText = textColumn1;
+        column1.appendChild(paragraph1);
 
-        this.tableHead.appendChild(headerRow);
-        this.table.appendChild(this.tableHead);
-        this.children = null;
+        const column2 = document.createElement("div");
+        const paragraph2 = document.createElement("p");
+        paragraph2.innerText = textColumn2;
+        column2.appendChild(paragraph2);
+
+        row.appendChild(column1);
+        row.appendChild(column2);
+        row.setAttribute("data-key", rowAttriubute);
+
+        parentContainer.appendChild(row);
     }
 
     addRows(pinMap){
         this.clearBody();
         for (const [pinID, netName] of Object.entries(pinMap)) {
+            const rowa = document.createElement("div");
+            row.classList.add("table-row");
+
+
             const rowKey = document.createElement("td");
             rowKey.textContent = pinID;
 
@@ -69,7 +86,6 @@ class PinoutTable{
 
             this.table.appendChild(this.tableBody);
         }
-        this.children = this.tableBody.querySelectorAll("tr");
     }
 
     #singleSelectionModeEvent(row){
@@ -103,9 +119,8 @@ class PinoutTable{
     }
 
     clearBody(){
-        while (this.tableBody.firstChild){
-            this.tableBody.removeChild(this.tableBody.firstChild);
+        while (this.tableContainer.firstChild){
+            this.tableContainer.removeChild(this.tableContainer.firstChild);
         }
-        this.children = [];
     }
 }
