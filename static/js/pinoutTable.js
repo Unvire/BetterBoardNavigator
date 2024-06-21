@@ -36,7 +36,7 @@ class PinoutTable{
         row.appendChild(column2);
         row.setAttribute("data-key", rowAttriubute);
 
-        parentContainer.appendChild(row);
+        this.parentContainer.appendChild(row);
     }
 
     addRows(pinMap){
@@ -74,7 +74,7 @@ class PinoutTable{
     }
 
     async selectRowByName(netName){
-        let potentialRow = await this.tableBody.querySelector(`tr[data-key="${netName}"]`);
+        let potentialRow = await this.parentContainer.querySelector(`div[data-key="${netName}"]`);
         if (potentialRow){
             const isSkipSelectionHandling = potentialRow === this.selectedRow;
             this.unselectCurrentRow();
