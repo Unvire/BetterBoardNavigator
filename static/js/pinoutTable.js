@@ -1,15 +1,10 @@
 class PinoutTable{
     constructor(parentContainer){
         this.parentContainer = parentContainer;
+        this.tableContainer = document.createElement("div");
         this.selectRowEvent = null;
         this.beforeSelectionEvent = null;
         this.selectedRow = null;
-
-        this.tableContainer = document.createElement("div");
-        this.tableHeader = document.createElement("div");
-        this.tableBody = document.createElement("div"); 
-        
-        this.#createHeader();
     }
 
     getSelectedRow(){
@@ -22,14 +17,6 @@ class PinoutTable{
 
     set beforeRowEvent(eventFunction){
         this.beforeSelectionEvent = eventFunction;
-    }
-
-    #createHeader(){
-        const row = document.createElement("div");
-        this.#createRow(this.tableHeader, row, "header", "Pin", "Net");
-        this.tableContainer.appendChild(this.tableHeader);
-
-        this.parentContainer.appendChild(this.tableContainer) // debug
     }
     
     #createRow(parentContainer, row, rowAttriubute, textColumn1, textColumn2){
@@ -55,20 +42,9 @@ class PinoutTable{
     addRows(pinMap){
         this.clearBody();
         for (const [pinID, netName] of Object.entries(pinMap)) {
-            const rowa = document.createElement("div");
-            row.classList.add("table-row");
+            const row = document.createElement("div");
+            this.#createRow(this.parentContainerGe, row, netName, pinID, netName);
 
-
-            const rowKey = document.createElement("td");
-            rowKey.textContent = pinID;
-
-            const rowNet = document.createElement("td");
-            rowNet.textContent = netName;
-            
-            const row = document.createElement("tr");
-            row.setAttribute("data-key", netName);
-            row.appendChild(rowKey);
-            row.appendChild(rowNet);
             row.addEventListener("click", () => { 
                 this.beforeSelectionEvent();
 
@@ -81,10 +57,7 @@ class PinoutTable{
 
                 this.selectRowEvent(netName);
             });
-
-            this.tableBody.appendChild(row);
-
-            this.table.appendChild(this.tableBody);
+            
         }
     }
 
@@ -115,12 +88,12 @@ class PinoutTable{
     }
 
     generateTable(){
-        this.parentContainer.appendChild(this.table);
+        this.parentContainer.appendChild(this.tableContainer);
     }
 
     clearBody(){
-        while (this.tableContainer.firstChild){
-            this.tableContainer.removeChild(this.tableContainer.firstChild);
+        while (this.parentContainer.firstChild){
+            this.parentContainer.removeChild(this.parentContainer.firstChild);
         }
     }
 }
