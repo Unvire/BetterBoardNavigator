@@ -52,6 +52,10 @@ function generateClickedComponentsSpanList(clickedComponentsList){
     clickedComponentSpanList.generate();
 }
 
+function clickedComponentsClickEvent(componentName){
+    generatePinoutTableEvent(componentName);
+}
+
 function mouseUpEvent(){
     isMousePressed = false;
 }
