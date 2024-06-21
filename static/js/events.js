@@ -135,6 +135,7 @@ async function resetViewEvent(){
     pinoutTable.unselectCurrentRow();
     pinoutTable.clearBody();
     _generateMarkedComponentsList();
+    selectedComponentSpan.innerText = "Component";
 }
 
 async function areaFromComponentsEvent(){
@@ -150,6 +151,7 @@ async function areaFromComponentsEvent(){
     pinoutTable.unselectCurrentRow();
     pinoutTable.clearBody();
     _generateMarkedComponentsList();
+    selectedComponentSpan.innerText = "Component";
 }
 
 function toggleFindComponentByClickEvent(){
@@ -166,9 +168,9 @@ async function _resizeBoard(){
 }
 
 function selectComponentFromListEvent(itemElement){
-    let clickedListElement = itemElement.textContent;
-    _markSelectedComponentFromList(clickedListElement);
-    generatePinoutTableEvent(clickedListElement);
+    let clickedComponentName = itemElement.textContent;
+    _markSelectedComponentFromList(clickedComponentName);
+    generatePinoutTableEvent(clickedComponentName);
 }
 
 function preserveComponentMarkesEvent(){
@@ -186,6 +188,7 @@ async function clearMarkersEvent(){
     `);
     allComponentsList.unselectAllItems();
     _generateMarkedComponentsList();
+    selectedComponentSpan.innerText = "Component";
 }
 
 async function _markSelectedComponentFromList(selectedComponentFromList){
@@ -223,6 +226,7 @@ function generatePinoutTableEvent(componentName){
 
     const netTreeSelectedNetName = netsTreeview.getSelectedNetName();
     pinoutTable.selectRowByName(netTreeSelectedNetName);
+    selectedComponentSpan.innerText = componentName;
 }
 
 function selectNetFromTableEvent(netName){

@@ -61,7 +61,7 @@
         </div>
         <div id="item-left-bottom" class="functionality-container">
             <div class="item-header"> 
-                <p>component pinout</p>
+                <p><span id="selected-component-span">Component</span> pinout</p>
             </div>
             <div class="table-row">
                 <div>
@@ -155,6 +155,8 @@
         const prefixComponentsButton = document.getElementById("prefix-components-button");
         const unselectPrefixComponentsButton = document.getElementById("unselect-prefix-components-button");
         const commonPrefixSpan = document.getElementById("common-prefix-span");
+        const selectedComponentSpan = document.getElementById("selected-component-span");
+
 
         var textModalContainer = document.getElementById("text-modal");
         var textModalCloseSpan = document.getElementById("text-modal-close-span");
