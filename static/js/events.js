@@ -128,14 +128,7 @@ async function resetViewEvent(){
         engine.resetToDefaultViewInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
-    
-    allComponentsList.unselectAllItems();
-    netsTreeview.unselectCurrentBranch();
-    netsTreeview.unselectCurrentItem();
-    pinoutTable.unselectCurrentRow();
-    pinoutTable.clearBody();
-    _generateMarkedComponentsList();
-    selectedComponentSpan.innerText = "Component";
+    _resetWidgets();
 }
 
 async function areaFromComponentsEvent(){
@@ -144,14 +137,7 @@ async function areaFromComponentsEvent(){
         engine.changeAreaInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
-
-    allComponentsList.unselectAllItems();
-    netsTreeview.unselectCurrentBranch();
-    netsTreeview.unselectCurrentItem();
-    pinoutTable.unselectCurrentRow();
-    pinoutTable.clearBody();
-    _generateMarkedComponentsList();
-    selectedComponentSpan.innerText = "Component";
+    _resetWidgets();
 }
 
 function toggleFindComponentByClickEvent(){
@@ -186,9 +172,7 @@ async function clearMarkersEvent(){
         engine.clearFindComponentByNameInterface(SURFACE, '${side}')
         pygame.display.flip()
     `);
-    allComponentsList.unselectAllItems();
-    _generateMarkedComponentsList();
-    selectedComponentSpan.innerText = "Component";
+    _resetSelectedComponentsWidgets();
 }
 
 async function _markSelectedComponentFromList(selectedComponentFromList){
@@ -379,6 +363,24 @@ function _changeSideIfComponentIsNotOnScreen(componentSide){
         changeSide();
     }
     return currentSide();
+}
+
+function _resetWidgets(){
+    _resetTreeview();
+    _resetSelectedComponentsWidgets();
+}
+
+function _resetTreeview(){
+    netsTreeview.unselectCurrentBranch();
+    netsTreeview.unselectCurrentItem();
+}
+
+function _resetSelectedComponentsWidgets(){
+    allComponentsList.unselectAllItems();
+    pinoutTable.unselectCurrentRow();
+    pinoutTable.clearBody();
+    _generateMarkedComponentsList();
+    selectedComponentSpan.innerText = "Component";
 }
 
 function _enableButtons(){
