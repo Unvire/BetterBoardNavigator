@@ -45,9 +45,12 @@ class DynamicSelectableList{
 
         this.elements.forEach(el => {
             const itemDiv = document.createElement("div");
-            itemDiv.textContent = el;
             itemDiv.setAttribute("data-key", el);
+
+            const itemChildParagraph = document.createElement("p");
+            itemChildParagraph.innerText = el;
             
+            itemDiv.appendChild(itemChildParagraph);
             this.parentContainer.appendChild(itemDiv);
             itemDiv.addEventListener("click", () => this.#bindOnClickEvent(itemDiv));
         });
