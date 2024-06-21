@@ -36,14 +36,14 @@ class PinoutTable{
         row.appendChild(column2);
         row.setAttribute("data-key", rowAttriubute);
 
-        this.parentContainer.appendChild(row);
+        parentContainer.appendChild(row);
     }
 
     addRows(pinMap){
         this.clearBody();
         for (const [pinID, netName] of Object.entries(pinMap)) {
             const row = document.createElement("div");
-            this.#createRow(this.parentContainerGe, row, netName, pinID, netName);
+            this.#createRow(this.parentContainer, row, netName, pinID, netName);
 
             row.addEventListener("click", () => { 
                 this.beforeSelectionEvent();
@@ -62,13 +62,13 @@ class PinoutTable{
     }
 
     #singleSelectionModeEvent(row){
-        row.classList.add("table-highlighted");
+        row.classList.add("selected");
         return row;
     }
 
     unselectCurrentRow(){
         if (this.selectedRow){
-            this.selectedRow.classList.remove("table-highlighted");
+            this.selectedRow.classList.remove("selected");
             this.selectedRow = null;
         }
     }

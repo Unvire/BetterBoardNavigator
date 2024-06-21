@@ -106,11 +106,6 @@ canvas{
     cursor: pointer;
 }
 
-.scrollable-list div.selected{
-    background-color: #007bff;
-    color: white;
-}
-
 .table-body{
     box-sizing: border-box;
     overflow-y: auto;
@@ -122,7 +117,7 @@ canvas{
     justify-content: space-evenly;
 }
 
-.table-highlighted {
+.selected {
     background-color: #007bff;
     color: white;
 }
@@ -146,11 +141,6 @@ li {
 
 .treeview-hidden {
     display: none;
-}
-
-.treeview-selected {
-    background-color: #007bff;
-    color: white;
 }
 
 .toggle-button {

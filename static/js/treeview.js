@@ -102,7 +102,7 @@ class NetTreeView{
     }
 
     #handleSingleSelection(clickedItem){
-        clickedItem.classList.add("treeview-selected");
+        clickedItem.classList.add("selected");
         return clickedItem;
     }
     
@@ -148,7 +148,7 @@ class NetTreeView{
             const selectedNetUl = this.#getUlFromSpan(this.selectedNet);
             selectedNetUl.classList.add("treeview-hidden");
 
-            this.selectedNet.classList.remove("treeview-selected");
+            this.selectedNet.classList.remove("selected");
             this.selectedNet.textContent = "+" + this.selectedNet.textContent.substring(1);
             this.selectedNet = null;
         }
@@ -156,7 +156,7 @@ class NetTreeView{
 
     unselectCurrentItem(){
         if (this.selectedComponent){
-            this.selectedComponent.classList.remove("treeview-selected");
+            this.selectedComponent.classList.remove("selected");
             this.selectedComponent = null;
         }
     }
