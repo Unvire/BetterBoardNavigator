@@ -59,19 +59,20 @@ class DynamicSelectableListAdapter{
     }
 
     static selectItemFromListEvent(itemElement){
-        itemNameDynamicSelectableListAdapter.generatePinoutTableForComponent(itemElement);
+        const itemName = DynamicSelectableListAdapter.generatePinoutTableForComponent(itemElement);
         EngineAdapter.findComponentByName(itemName, isSelectionModeSingle);
         DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList)
     }
 
     static onClickItemEvent(itemElement){
-        DynamicSelectableListAdapter.generatePinoutTableForComponent(itemElement);
+        const itemName = DynamicSelectableListAdapter.generatePinoutTableForComponent(itemElement);
         EngineAdapter.componentInScreenCenter(itemName);
     }
 
     static generatePinoutTableForComponent(itemElement){
         let itemName = itemElement.textContent;
         PinoutTableAdapter.generatePinoutTable(itemName);
+        return itemName
     }
 
     static generateMarkedComponentsList(markedComponentsListInstance){
@@ -154,7 +155,7 @@ class TreeViewAdapter{
 
     static resetTreeview(){
         const netsTreeview = globalInstancesMap.getNetsTreeview();
-
+        
         netsTreeview.unselectCurrentBranch();
         netsTreeview.unselectCurrentItem();
     }
