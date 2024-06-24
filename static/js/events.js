@@ -68,12 +68,6 @@ function toggleFindComponentByClickEvent(){
     isFindComponentByClickActive = !isFindComponentByClickActive;
 }
 
-function selectComponentFromListEvent(itemElement){
-    let clickedComponentName = itemElement.textContent;
-    _markSelectedComponentFromList(clickedComponentName);
-    generatePinoutTableEvent(clickedComponentName);
-}
-
 function preserveComponentMarkesEvent(){
     isSelectionModeSingle = !isSelectionModeSingle;
     mode = selectionModesMap[isSelectionModeSingle];
@@ -90,13 +84,7 @@ function _generateMarkedComponentsList(){
         componentsList = engine.getSelectedComponents()
     `);
     let componentsList = pyodide.globals.get("componentsList").toJs();
-    DynamicSelectableListAdapter.generateList(markedComponentsList, componentsList, markedComponentsListItemClickedEvent, "no");
-}
-
-function markedComponentsListItemClickedEvent(itemElement){
-    let componentName = itemElement.textContent;
-    generatePinoutTableEvent(componentName);
-    EngineAdapter.componentInScreenCenter(componentName);
+    DynamicSelectableListAdapter.generateList(markedComponentsList, componentsList, DynamicSelectableListAdapter.onClickItemEvent, "no");
 }
 
 function generatePinoutTableEvent(componentName){

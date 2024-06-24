@@ -32,7 +32,7 @@ async function openAndLoadCadFile(pyodide, file) {
             pygame.display.flip()
         `);
         let allComponents = pyodide.globals.get("allComponents").toJs();
-        DynamicSelectableListAdapter.generateList(allComponentsList, allComponents, selectComponentFromListEvent, "single")
+        DynamicSelectableListAdapter.generateList(allComponentsList, allComponents, DynamicSelectableListAdapter.selectItemFromListEvent, "single")
 
         let netsMap = pyodide.globals.get("netsDict").toJs();
         netsTreeview.netEvent = selectNetFromTreeviewEvent;

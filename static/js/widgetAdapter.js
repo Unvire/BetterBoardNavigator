@@ -31,4 +31,16 @@ class DynamicSelectableListAdapter{
         listInstance.selectionMode = selectionMode;
         listInstance.generateList();
     }
+
+    static selectItemFromListEvent(itemElement){
+        let clickedComponentName = itemElement.textContent;
+        _markSelectedComponentFromList(clickedComponentName);
+        generatePinoutTableEvent(clickedComponentName);
+    }
+
+    static onClickItemEvent(itemElement){
+        let componentName = itemElement.textContent;
+        generatePinoutTableEvent(componentName);
+        EngineAdapter.componentInScreenCenter(componentName);
+    }
 }
