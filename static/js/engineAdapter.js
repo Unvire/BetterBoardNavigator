@@ -1,6 +1,6 @@
 class EngineAdapter{
     static async resizeBoard(){
-        setCanvasDimensions();
+        EventHandler.setCanvasDimensions();
         const side = sideHandler.currentSide();
         pyodide.runPythonAsync(`
             engine.changeScreenDimensionsInterface(SURFACE, [canvas.width, canvas.height], '${side}')

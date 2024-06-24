@@ -178,11 +178,6 @@
         var clickedComponentSpanList = SpanListAdapter.initSpanList(clickedComponentContainer);
         var sideHandler = new SideHandler();
 
-        function setCanvasDimensions(){
-            canvas.width = canvasParent.clientWidth;
-            canvas.height = canvasParent.clientHeight;
-        }
-
         // This is a workaround about the fact that the pygame-ce is not run in an inifite loop but as an image generator. 
         // As result "main game loop" doesn't exist, which results in throwing errors when any key is pressed down
         // This cludge overrides JS error handler and ignores these event errors and manually sets keyboard behaviour (onkeydown event)
@@ -214,7 +209,7 @@
 
             pyodide.canvas.setCanvas2D(canvas);
             loadFileButton.disabled = false;
-            setCanvasDimensions();
+            EventHandler.setCanvasDimensions();
             
             window.addEventListener("resize", EventHandler.windowResize);
             window.addEventListener("keydown", (event) =>{

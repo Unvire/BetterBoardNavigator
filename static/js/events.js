@@ -18,6 +18,11 @@ class EventHandler{
         resizeTimeout = setTimeout(EngineAdapter.resizeBoard, RESCALE_AFTER_MS);
     }
 
+    static setCanvasDimensions(){
+        canvas.width = canvasParent.clientWidth;
+        canvas.height = canvasParent.clientHeight;
+    }
+
     static async loadFile(event, loadedFileName){
         const file = event.target.files[0];
         if (file) {
