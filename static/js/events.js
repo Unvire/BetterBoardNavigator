@@ -1,7 +1,40 @@
-async function windowResizeEvent(){
-    let RESCALE_AFTER_MS = 15;
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(EngineAdapter.resizeBoard, RESCALE_AFTER_MS);
+class EventHandler{
+    constructor(){
+
+    }
+
+    static async windowResizeEvent(){
+        let RESCALE_AFTER_MS = 15;
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(EngineAdapter.resizeBoard, RESCALE_AFTER_MS);
+    }
+
+    static async loadFileEvent(event, loadedFileName){
+        const file = event.target.files[0];
+        if (file) {
+            await removePreviousFileFromFS(pyodide, loadedFileName);
+            await openAndLoadCadFile(pyodide, file);
+            EventHandler.enableButtons();
+            return file.name;
+        }
+    }
+
+    static enableButtons(){
+        changeSideButton.disabled = false;
+        rotateButton.disabled = false;
+        mirrorSideButton.disabled = false;
+        toggleOutlinesButton.disabled = false;
+        resetViewButton.disabled = false;
+        areaFromComponentsButton.disabled = false;
+        toggleFindComponentByClickButton.disabled = false;
+        preserveComponentMarkesButton.disabled = false;
+        clearMarkersButton.disabled = false;
+        toggleNetMarkersButton.disabled = false;
+        unselectNetButton.disabled = false;
+        findComponentUsingNameButton.disabled = false;
+        prefixComponentsButton.disabled = false;
+        unselectPrefixComponentsButton.disabled = false;
+    }
 }
 
 function keyDownEvent(event){
@@ -50,16 +83,6 @@ async function mouseMoveEvent(event){
     }
 }
 
-async function loadFileEvent(event){
-    const file = event.target.files[0];
-    if (file) {
-        await removePreviousFileFromFS(pyodide, loadedFileName);
-        await openAndLoadCadFile(pyodide, file);
-        loadedFileName = file.name;
-        _enableButtons();
-    }
-}
-
 function rotateEvent(){
     isRotateActive = !isRotateActive;
 }
@@ -99,21 +122,4 @@ function showCommonPrefixComponentsEvent(){
 function hideCommonPrefixComponentsEvent(){
     EngineAdapter.hideCommonPrefixComponents();
     commonPrefixSpan.innerText = "";
-}
-
-function _enableButtons(){
-    changeSideButton.disabled = false;
-    rotateButton.disabled = false;
-    mirrorSideButton.disabled = false;
-    toggleOutlinesButton.disabled = false;
-    resetViewButton.disabled = false;
-    areaFromComponentsButton.disabled = false;
-    toggleFindComponentByClickButton.disabled = false;
-    preserveComponentMarkesButton.disabled = false;
-    clearMarkersButton.disabled = false;
-    toggleNetMarkersButton.disabled = false;
-    unselectNetButton.disabled = false;
-    findComponentUsingNameButton.disabled = false;
-    prefixComponentsButton.disabled = false;
-    unselectPrefixComponentsButton.disabled = false;
 }

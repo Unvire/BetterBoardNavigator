@@ -176,6 +176,7 @@
                                             textModalSubmitButton);
         var modalParagraph = new ModalParagraph(paragraphModalContainer, paragraphModalCloseSpan, 
                                                 paragraphModalPromptHeader, paragraphModalTextParagraph);
+
         var allComponentsList = DynamicSelectableListAdapter.initDynamicSelectableList(allComponentsContainer);
         var markedComponentsList = DynamicSelectableListAdapter.initDynamicSelectableList(markedComponentsContainer);
         var pinoutTable = PinoutTableAdapter.initPinoutTable(pinoutTableContainer);
@@ -221,7 +222,7 @@
             loadFileButton.disabled = false;
             setCanvasDimensions();
             
-            window.addEventListener("resize", windowResizeEvent);
+            window.addEventListener("resize", EventHandler.windowResizeEvent);
             window.addEventListener("keydown", keyDownEvent);
 
             canvas.addEventListener("mousedown", mouseDownEvent);
@@ -229,7 +230,9 @@
             canvas.addEventListener("mousemove", mouseMoveEvent);
             canvas.addEventListener("wheel", EngineAdapter.zoomInOut);
 
-            loadFileButton.addEventListener("change", loadFileEvent);
+            loadFileButton.addEventListener("change", (event) => {
+                loadedFileName = EventHandler.loadFileEvent(event, loadedFileName);
+            });
             changeSideButton.addEventListener("click", EngineAdapter.changeSide);
             rotateButton.addEventListener("click", rotateEvent);
             mirrorSideButton.addEventListener("click", EngineAdapter.mirrorSide);
