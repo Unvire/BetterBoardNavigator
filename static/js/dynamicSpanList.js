@@ -11,6 +11,10 @@ class DynamicSpanList{
         this.callbackEventFunction = eventFunction;
     }
 
+    getParentContainer(){
+        return this.parentContainer;
+    }
+
     clearList(){
         while (this.spanListContainer.firstChild) {
             this.spanListContainer.removeChild(this.spanListContainer.firstChild);
