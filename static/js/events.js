@@ -74,14 +74,6 @@ function preserveComponentMarkesEvent(){
     allComponentsList.selectionMode = mode;
 }
 
-function selectNetFromTreeviewEvent(netName){
-    pinoutTable.selectRowByName(netName);    
-
-    if(netsTreeview.getSelectedNet()){
-        EngineAdapter.selectNet(netName);
-    }
-}
-
 function toggleNetMarkersEvent(){
     pyodide.runPython(`
         selectedNetComponent = engine.getSelectedNetComponent()
@@ -89,12 +81,6 @@ function toggleNetMarkersEvent(){
     const selectedNetComponent = pyodide.globals.get("selectedNetComponent");
     netsTreeview.selectComponentByName(selectedNetComponent);
     EngineAdapter.toggleNetMarkers();
-}
-
-function selectNetComponentByNameEvent(componentName){
-    componentSide = _getSideOfComponent(componentName);
-    side = _changeSideIfComponentIsNotOnScreen(componentSide);
-    EngineAdapter.selectNetComponentByName(componentName, componentSide);
 }
 
 function unselectNetEvent(){

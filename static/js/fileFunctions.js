@@ -35,7 +35,7 @@ async function openAndLoadCadFile(pyodide, file) {
         DynamicSelectableListAdapter.generateList(allComponentsList, allComponents, DynamicSelectableListAdapter.selectItemFromListEvent, "single");
 
         let netsMap = pyodide.globals.get("netsDict").toJs();
-        TreeViewAdapter.generateTreeView(netsTreeview, EngineAdapter.unselectNet, selectNetFromTreeviewEvent, selectNetComponentByNameEvent, netsMap);
+        TreeViewAdapter.generateTreeView(netsTreeview, netsMap);
 
         PinoutTableAdapter.clearBody(pinoutTable);
         DynamicSelectableListAdapter.clearList(markedComponentsList);

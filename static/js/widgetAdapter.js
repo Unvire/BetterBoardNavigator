@@ -98,11 +98,25 @@ class TreeViewAdapter{
         return treeview
     }
 
-    static generateTreeView(treeviewInstance, preClickEvent, mainBranchClickEvent, subBranchClickEvent, netsMap){
-        treeviewInstance.eventBeforeSelection = preClickEvent;
-        treeviewInstance.netEvent = mainBranchClickEvent;
-        treeviewInstance.componentEvent = subBranchClickEvent;
+    static generateTreeView(treeviewInstance, netsMap){
+        treeviewInstance.eventBeforeSelection = EngineAdapter.unselectNet;
+        treeviewInstance.netEvent = TreeViewAdapter.selectNetFromTreeviewEvent;
+        treeviewInstance.componentEvent = TreeViewAdapter.selectNetComponentByNameEvent;
         treeviewInstance.addBranches(netsMap);
         treeviewInstance.generate();
+    }
+    
+    static selectNetFromTreeviewEvent(netName){
+        pinoutTable.selectRowByName(netName);    
+    
+        if(netsTreeview.getSelectedNet()){
+            EngineAdapter.selectNet(netName);
+        }
+    }
+
+    static selectNetComponentByNameEvent(componentName){
+        const componentSide = _getSideOfComponent(componentName);
+        side = _changeSideIfComponentIsNotOnScreen(componentSide);
+        EngineAdapter.selectNetComponentByName(componentName, side);
     }
 }
