@@ -20,7 +20,6 @@ class DynamicSpanList{
     addSpans(elementList){
         this.clearList();
         const lastItem = elementList[elementList.length - 1];
-        console.log(elementList, lastItem)
         elementList.forEach(elementString => {
             const elementSpan = document.createElement("span");
             elementSpan.innerText = elementString;
