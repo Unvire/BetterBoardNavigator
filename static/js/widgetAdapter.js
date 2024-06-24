@@ -1,7 +1,11 @@
 class WidgetAdapter{
+
+}
+
+class SpanListAdapter{
     static initSpanList(parentContainer){
         let spanList =  new DynamicSpanList(parentContainer);
-        spanList.clickEvent = WidgetAdapter.onClickEventSpanList;
+        spanList.clickEvent = SpanListAdapter.onClickEventSpanList;
         return spanList
     }
 
@@ -9,6 +13,7 @@ class WidgetAdapter{
         spanList.addSpans(clickedComponentsList);
         spanList.generate();
     }
+
     static onClickEventSpanList(componentName){
         generatePinoutTableEvent(componentName);
     }

@@ -181,7 +181,7 @@
         var markedComponentsList = new DynamicSelectableList(markedComponentsContainer);
         var pinoutTable = new PinoutTable(pinoutTableContainer);
         var netsTreeview = new NetTreeView(netTreeviewContainer);
-        var clickedComponentSpanList = WidgetAdapter.initSpanList(clickedComponentContainer);
+        var clickedComponentSpanList = SpanListAdapter.initSpanList(clickedComponentContainer);
 
         function currentSide(){
             return sideMap[isSideBottom];
