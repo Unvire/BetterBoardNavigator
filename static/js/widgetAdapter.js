@@ -1,5 +1,20 @@
 class WidgetAdapter{
+    static resetWidgets(){
+        WidgetAdapter.resetSelectedComponentsWidgets();
+        TreeViewAdapter.resetTreeview()
+    }
 
+    static resetSelectedComponentsWidgets(){
+        allComponentsList.unselectAllItems();
+        pinoutTable.unselectCurrentRow();
+        pinoutTable.clearBody();
+        DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList);
+        selectedComponentSpan.innerText = "Component";
+    }
+    static resetSelectedNet(){
+        TreeViewAdapter.resetTreeview();
+        pinoutTable.unselectCurrentRow();
+    }
 }
 
 class SpanListAdapter{
@@ -118,5 +133,10 @@ class TreeViewAdapter{
         const componentSide = _getSideOfComponent(componentName);
         side = _changeSideIfComponentIsNotOnScreen(componentSide);
         EngineAdapter.selectNetComponentByName(componentName, side);
+    }
+
+    static resetTreeview(){
+        netsTreeview.unselectCurrentBranch();
+        netsTreeview.unselectCurrentItem();
     }
 }

@@ -85,7 +85,7 @@ class EngineAdapter{
             engine.resetToDefaultViewInterface(SURFACE, '${side}')
             pygame.display.flip()
         `);
-        _resetWidgets();
+        WidgetAdapter.resetWidgets();
     }
 
     static areaFromComponents(){
@@ -94,7 +94,7 @@ class EngineAdapter{
             engine.changeAreaInterface(SURFACE, '${side}')
             pygame.display.flip()
         `);
-        _resetWidgets();
+        WidgetAdapter.resetWidgets();
     }
 
     static async clearMarkers(){
@@ -104,7 +104,7 @@ class EngineAdapter{
             engine.clearFindComponentByNameInterface(SURFACE, '${side}')
             pygame.display.flip()
         `);
-        _resetSelectedComponentsWidgets();
+        WidgetAdapter.resetSelectedComponentsWidgets();
     }
 
     static componentInScreenCenter(componentName){

@@ -85,9 +85,7 @@ function toggleNetMarkersEvent(){
 
 function unselectNetEvent(){
     EngineAdapter.unselectNet();
-    netsTreeview.unselectCurrentBranch();
-    netsTreeview.unselectCurrentItem();
-    pinoutTable.unselectCurrentRow();
+    WidgetAdapter.resetSelectedNet();
 }
 
 function findComponentUsingNameEvent(){
@@ -140,24 +138,6 @@ function _changeSideIfComponentIsNotOnScreen(componentSide){
         changeSide();
     }
     return currentSide();
-}
-
-function _resetWidgets(){
-    _resetTreeview();
-    _resetSelectedComponentsWidgets();
-}
-
-function _resetTreeview(){
-    netsTreeview.unselectCurrentBranch();
-    netsTreeview.unselectCurrentItem();
-}
-
-function _resetSelectedComponentsWidgets(){
-    allComponentsList.unselectAllItems();
-    pinoutTable.unselectCurrentRow();
-    pinoutTable.clearBody();
-    DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList);
-    selectedComponentSpan.innerText = "Component";
 }
 
 function _enableButtons(){
