@@ -10,6 +10,7 @@
     <script type="text/javascript" src="/static/js/fileFunctions.js"></script>
     <script type="text/javascript" src="/static/js/sideHandler.js"></script>
     <script type="text/javascript" src="/static/js/events.js"></script>
+    <script type="text/javascript" src="/static/js/mouseEvents.js"></script>
     <script type="text/javascript" src="/static/js/engineAdapter.js"></script>
     <script type="text/javascript" src="/static/js/dynamicSelectableList.js"></script>
     <script type="text/javascript" src="/static/js/pinoutTable.js"></script>
@@ -122,12 +123,7 @@
     <script>
         let pyodide = null;
         let loadedFileName = "";
-        let isMousePressed = false;
-        let isMouseClickedFirstTime = false;
         let resizeTimeout = null;
-        let isRotateActive = false;
-        let isFindComponentByClickActive = false;
-        let isSelectionModeSingle = true;
         let modalBoxComponentName = "";
         let isTextModalInputFocused = false;
 
@@ -234,7 +230,7 @@
                 loadedFileName = EventHandler.loadFile(event, loadedFileName);
             });
             changeSideButton.addEventListener("click", EngineAdapter.changeSide);
-            rotateButton.addEventListener("click", rotateEvent);
+            rotateButton.addEventListener("click", rotateOnClickEvent);
             mirrorSideButton.addEventListener("click", EngineAdapter.mirrorSide);
             toggleOutlinesButton.addEventListener("click", EngineAdapter.toggleOutlines);
             resetViewButton.addEventListener("click", EngineAdapter.resetView);
