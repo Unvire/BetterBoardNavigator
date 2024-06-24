@@ -186,6 +186,11 @@
         globalInstancesMap.setTextModalInput(textModalInput);
         globalInstancesMap.setCanvas(canvas);
         globalInstancesMap.setCanvasParent(canvasParent);
+        globalInstancesMap.setAllComponentsList(allComponentsList);
+        globalInstancesMap.setMarkedComponentsList(markedComponentsList);
+        globalInstancesMap.setPinoutTable(pinoutTable);
+        globalInstancesMap.setNetsTreeview(netsTreeview);
+
 
         // This is a workaround about the fact that the pygame-ce is not run in an inifite loop but as an image generator. 
         // As result "main game loop" doesn't exist, which results in throwing errors when any key is pressed down

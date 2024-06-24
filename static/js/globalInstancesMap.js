@@ -9,7 +9,6 @@ class GlobalInstancesMap{
         this.pinoutTable = null;
         this.netsTreeview = null;
         this.clickedComponentSpanList = null;
-        this.sideHandler = null;
         this.canvas = null;
         this.canvasParent = null;
         this.commonPrefixSpan = null;
@@ -54,5 +53,37 @@ class GlobalInstancesMap{
 
     getCanvasParent(){
         return this.canvasParent;
+    }
+
+    setAllComponentsList(instance){
+        this.allComponentsList = instance;
+    }
+
+    getAllComponentsList(){
+        return this.allComponentsList;
+    }
+
+    setMarkedComponentsList(instance){
+        this.markedComponentsList = instance;
+    }
+
+    getMarkedComponentsList(){
+        return this.markedComponentsList;
+    }
+
+    setPinoutTable(instance){
+        this.pinoutTable = instance;
+    }
+
+    getPinoutTable(){
+        return this.pinoutTable;
+    }
+
+    setNetsTreeview(instance){
+        this.netsTreeview = instance;
+    }
+
+    getNetsTreeview(){
+        return this.netsTreeview;
     }
 }
