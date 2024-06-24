@@ -15,7 +15,7 @@ class SpanListAdapter{
     }
 
     static onClickEventSpanList(componentName){
-        generatePinoutTableEvent(componentName);
+        PinoutTableAdapter.generatePinoutTable(pinoutTable, componentName);
     }
 }
 
@@ -38,14 +38,14 @@ class DynamicSelectableListAdapter{
 
     static selectItemFromListEvent(itemElement){
         let itemName = itemElement.textContent;
-        generatePinoutTableEvent(itemName);
+        PinoutTableAdapter.generatePinoutTable(pinoutTable, itemName);
         EngineAdapter.findComponentByName(itemName, side, isSelectionModeSingle);
         DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList)
     }
 
     static onClickItemEvent(itemElement){
         let itemName = itemElement.textContent;
-        generatePinoutTableEvent(itemName);
+        PinoutTableAdapter.generatePinoutTable(pinoutTable, itemName);
         EngineAdapter.componentInScreenCenter(itemName);
     }
 
@@ -60,6 +60,30 @@ class DynamicSelectableListAdapter{
 
 class PinoutTableAdapter{
     static initPinoutTable(parentContainer){
-        
+        let table = new PinoutTable(parentContainer);
+        return table;
+    }
+
+    static generatePinoutTable(pinoutTableInstance, componentName){
+        pyodide.runPython(`
+            pinoutDict = engine.getComponentPinout('${componentName}')
+        `);
+        let pinoutMap = pyodide.globals.get("pinoutDict").toJs();
+
+        pinoutTableInstance.rowEvent = PinoutTableAdapter.selectNetFromTableEvent;
+        pinoutTableInstance.beforeRowEvent = EngineAdapter.unselectNet;
+        pinoutTableInstance.addRows(pinoutMap);
+        pinoutTableInstance.generateTable();
+
+        const netTreeSelectedNetName = netsTreeview.getSelectedNetName();
+        pinoutTableInstance.selectRowByName(netTreeSelectedNetName);
+        selectedComponentSpan.innerText = componentName;
+    }
+
+    static selectNetFromTableEvent(netName){
+        netsTreeview.scrollToBranchByName(netName);
+        if(pinoutTable.getSelectedRow()){
+            EngineAdapter.selectNet(netName);
+        }
     }
 }

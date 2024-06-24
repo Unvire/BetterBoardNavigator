@@ -74,28 +74,6 @@ function preserveComponentMarkesEvent(){
     allComponentsList.selectionMode = mode;
 }
 
-function generatePinoutTableEvent(componentName){
-    pyodide.runPython(`
-        pinoutDict = engine.getComponentPinout('${componentName}')
-    `);
-    let pinoutMap = pyodide.globals.get("pinoutDict").toJs();
-    pinoutTable.rowEvent = selectNetFromTableEvent;
-    pinoutTable.beforeRowEvent = EngineAdapter.unselectNet;
-    pinoutTable.addRows(pinoutMap);
-    pinoutTable.generateTable();
-
-    const netTreeSelectedNetName = netsTreeview.getSelectedNetName();
-    pinoutTable.selectRowByName(netTreeSelectedNetName);
-    selectedComponentSpan.innerText = componentName;
-}
-
-function selectNetFromTableEvent(netName){
-    netsTreeview.scrollToBranchByName(netName);
-    if(pinoutTable.getSelectedRow()){
-        EngineAdapter.selectNet(netName);
-    }
-}
-
 function selectNetFromTreeviewEvent(netName){
     pinoutTable.selectRowByName(netName);    
 
