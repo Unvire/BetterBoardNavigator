@@ -90,11 +90,7 @@ function _generateMarkedComponentsList(){
         componentsList = engine.getSelectedComponents()
     `);
     let componentsList = pyodide.globals.get("componentsList").toJs();
-    
-    markedComponentsList.elements = componentsList
-    markedComponentsList.selectionMode = "no";
-    markedComponentsList.eventCallbackFuntion = markedComponentsListItemClickedEvent;
-    markedComponentsList.generateList()
+    DynamicSelectableListAdapter.generateList(markedComponentsList, componentsList, markedComponentsListItemClickedEvent, "no");
 }
 
 function markedComponentsListItemClickedEvent(itemElement){

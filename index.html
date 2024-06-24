@@ -177,8 +177,8 @@
                                             textModalSubmitButton);
         var modalParagraph = new ModalParagraph(paragraphModalContainer, paragraphModalCloseSpan, 
                                                 paragraphModalPromptHeader, paragraphModalTextParagraph);
-        var allComponentsList = new DynamicSelectableList(allComponentsContainer);
-        var markedComponentsList = new DynamicSelectableList(markedComponentsContainer);
+        var allComponentsList = DynamicSelectableListAdapter.initDynamicSelectableList(allComponentsContainer);
+        var markedComponentsList = DynamicSelectableListAdapter.initDynamicSelectableList(markedComponentsContainer);
         var pinoutTable = new PinoutTable(pinoutTableContainer);
         var netsTreeview = new NetTreeView(netTreeviewContainer);
         var clickedComponentSpanList = SpanListAdapter.initSpanList(clickedComponentContainer);
