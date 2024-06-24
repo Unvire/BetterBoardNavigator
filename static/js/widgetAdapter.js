@@ -86,4 +86,8 @@ class PinoutTableAdapter{
             EngineAdapter.selectNet(netName);
         }
     }
+
+    static clearBody(pinoutTableInstance){
+        pinoutTableInstance.clearBody()
+    }
 }
