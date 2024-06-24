@@ -54,7 +54,32 @@ class EventHandler{
         return isSelectionModeSingle;
     }
 
+    static toggleNetMarkersEvent(){
+        pyodide.runPython(`
+            selectedNetComponent = engine.getSelectedNetComponent()
+        `);
+        const selectedNetComponent = pyodide.globals.get("selectedNetComponent");
+        netsTreeview.selectComponentByName(selectedNetComponent);
+        EngineAdapter.toggleNetMarkers();
+    }
 
+    static unselectNetEvent(){
+        EngineAdapter.unselectNet();
+        WidgetAdapter.resetSelectedNet();
+    }
+
+    static findComponentUsingNameEvent(){
+        InputModalBoxAdapter.generateModalBox(modalSubmit, "Component name:", InputModalBoxAdapter.getComponentNameFromInput);
+    }
+    
+    static showCommonPrefixComponentsEvent(){
+        InputModalBoxAdapter.generateModalBox(modalSubmit, "Prefix:", InputModalBoxAdapter.getCommonPrefixFromInput);
+    }
+    
+    static hideCommonPrefixComponentsEvent(){
+        EngineAdapter.hideCommonPrefixComponents();
+        commonPrefixSpan.innerText = "";
+    }
 }
 
 function keyDownEvent(event){
@@ -95,7 +120,6 @@ async function mouseMoveEvent(event){
         if (!isMouseClickedFirstTime){
             const x = event.movementX; 
             const y = event.movementY;
-
             EngineAdapter.moveBoard(x, y);
         } else {
             isMouseClickedFirstTime = false;
@@ -109,31 +133,4 @@ function rotateEvent(){
 
 function toggleFindComponentByClickEvent(){
     isFindComponentByClickActive = !isFindComponentByClickActive;
-}
-
-function toggleNetMarkersEvent(){
-    pyodide.runPython(`
-        selectedNetComponent = engine.getSelectedNetComponent()
-    `);
-    const selectedNetComponent = pyodide.globals.get("selectedNetComponent");
-    netsTreeview.selectComponentByName(selectedNetComponent);
-    EngineAdapter.toggleNetMarkers();
-}
-
-function unselectNetEvent(){
-    EngineAdapter.unselectNet();
-    WidgetAdapter.resetSelectedNet();
-}
-
-function findComponentUsingNameEvent(){
-    InputModalBoxAdapter.generateModalBox(modalSubmit, "Component name:", InputModalBoxAdapter.getComponentNameFromInput);
-}
-
-function showCommonPrefixComponentsEvent(){
-    InputModalBoxAdapter.generateModalBox(modalSubmit, "Prefix:", InputModalBoxAdapter.getCommonPrefixFromInput);
-}
-
-function hideCommonPrefixComponentsEvent(){
-    EngineAdapter.hideCommonPrefixComponents();
-    commonPrefixSpan.innerText = "";
 }

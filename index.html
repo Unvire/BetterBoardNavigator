@@ -244,11 +244,11 @@
                 isSelectionModeSingle = EventHandler.preserveComponentMarkesEvent(isSelectionModeSingle);
             });
             clearMarkersButton.addEventListener("click", EngineAdapter.clearMarkers);
-            toggleNetMarkersButton.addEventListener("click", toggleNetMarkersEvent);
-            unselectNetButton.addEventListener("click", unselectNetEvent);            
-            findComponentUsingNameButton.addEventListener("click", findComponentUsingNameEvent);
-            prefixComponentsButton.addEventListener("click", showCommonPrefixComponentsEvent);
-            unselectPrefixComponentsButton.addEventListener("click", hideCommonPrefixComponentsEvent);
+            toggleNetMarkersButton.addEventListener("click", EventHandler.toggleNetMarkersEvent);
+            unselectNetButton.addEventListener("click", EventHandler.unselectNetEvent);            
+            findComponentUsingNameButton.addEventListener("click", EventHandler.findComponentUsingNameEvent);
+            prefixComponentsButton.addEventListener("click", EventHandler.showCommonPrefixComponentsEvent);
+            unselectPrefixComponentsButton.addEventListener("click", EventHandler.hideCommonPrefixComponentsEvent);
         });
     </script>
 </body>
