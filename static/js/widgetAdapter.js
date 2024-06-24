@@ -52,16 +52,19 @@ class DynamicSelectableListAdapter{
     }
 
     static selectItemFromListEvent(itemElement){
-        let itemName = itemElement.textContent;
-        PinoutTableAdapter.generatePinoutTable(pinoutTable, itemName);
+        DynamicSelectableListAdapter.generatePinoutTableForComponent(itemElement);
         EngineAdapter.findComponentByName(itemName, isSelectionModeSingle);
         DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList)
     }
 
     static onClickItemEvent(itemElement){
+        DynamicSelectableListAdapter.generatePinoutTableForComponent(itemElement);
+        EngineAdapter.componentInScreenCenter(itemName);
+    }
+
+    static generatePinoutTableForComponent(itemElement){
         let itemName = itemElement.textContent;
         PinoutTableAdapter.generatePinoutTable(pinoutTable, itemName);
-        EngineAdapter.componentInScreenCenter(itemName);
     }
 
     static generateMarkedComponentsList(markedComponentsListInstance){
