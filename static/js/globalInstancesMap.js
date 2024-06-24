@@ -3,16 +3,16 @@ class GlobalInstancesMap{
         this.modalSubmit = null;
         this.textModalSubmitButton = null;
         this.textModalInput = null;
-        this.modalParagraph = null;
+        this.canvas = null;
+        this.canvasParent = null;
         this.allComponentsList = null;
         this.markedComponentsList = null;
         this.pinoutTable = null;
         this.netsTreeview = null;
         this.clickedComponentSpanList = null;
-        this.canvas = null;
-        this.canvasParent = null;
         this.commonPrefixSpan = null;
         this.selectedComponentSpan = null;
+        this.modalParagraph = null;
     }
 
     setModalSubmit(instance){
@@ -85,5 +85,29 @@ class GlobalInstancesMap{
 
     getNetsTreeview(){
         return this.netsTreeview;
+    }
+
+    setSelectedComponentSpan(instance){
+        this.selectedComponentSpan = instance;
+    }
+
+    getSelectedComponentSpan(){
+        return this.selectedComponentSpan;
+    }
+
+    setClickedComponentSpanList(instance){
+        this.clickedComponentSpanList = instance;
+    }
+
+    getClickedComponentSpanList(){
+        return this.clickedComponentSpanList;
+    }
+
+    setCommonPrefixSpan(instance){
+        this.commonPrefixSpan = instance;
+    }
+
+    getCommonPrefixSpan(){
+        return this.commonPrefixSpan;
     }
 }

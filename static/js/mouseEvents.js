@@ -19,8 +19,8 @@ function mouseDownEvent(event){
         const y = event.offsetY;
         
         let clickedComponents = EngineAdapter.findClickedComponents(x, y, isSelectionModeSingle);
-        SpanListAdapter.generateSpanList(clickedComponentSpanList, clickedComponents);
-        DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList);
+        SpanListAdapter.generateSpanList(clickedComponents);
+        DynamicSelectableListAdapter.generateMarkedComponentsList();
     }
 }
 

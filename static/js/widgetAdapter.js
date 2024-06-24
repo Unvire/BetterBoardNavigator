@@ -7,11 +7,12 @@ class WidgetAdapter{
     static resetSelectedComponentsWidgets(){
         const allComponentsList = globalInstancesMap.getAllComponentsList()
         const pinoutTable = globalInstancesMap.getPinoutTable();
+        const selectedComponentSpan = globalInstancesMap.getSelectedComponentSpan();
 
         allComponentsList.unselectAllItems();
         pinoutTable.unselectCurrentRow();
         pinoutTable.clearBody();
-        DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList);
+        DynamicSelectableListAdapter.generateMarkedComponentsList();
         selectedComponentSpan.innerText = "Component";
     }
     static resetSelectedNet(){
@@ -29,9 +30,11 @@ class SpanListAdapter{
         return spanList
     }
 
-    static generateSpanList(spanList, clickedComponentsList){
-        spanList.addSpans(clickedComponentsList);
-        spanList.generate();
+    static generateSpanList(clickedComponentsList){
+        const clickedComponentSpanList = globalInstancesMap.getClickedComponentSpanList();
+
+        clickedComponentSpanList.addSpans(clickedComponentsList);
+        clickedComponentSpanList.generate();
     }
 
     static onClickEventSpanList(componentName){
@@ -61,7 +64,7 @@ class DynamicSelectableListAdapter{
     static selectItemFromListEvent(itemElement){
         const itemName = DynamicSelectableListAdapter.generatePinoutTableForComponent(itemElement);
         EngineAdapter.findComponentByName(itemName, isSelectionModeSingle);
-        DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList)
+        DynamicSelectableListAdapter.generateMarkedComponentsList()
     }
 
     static onClickItemEvent(itemElement){
@@ -75,12 +78,14 @@ class DynamicSelectableListAdapter{
         return itemName
     }
 
-    static generateMarkedComponentsList(markedComponentsListInstance){
+    static generateMarkedComponentsList(){
+        const markedComponentsList = globalInstancesMap.getMarkedComponentsList();
+
         pyodide.runPython(`
             componentsList = engine.getSelectedComponents()
         `);
         const componentsList = pyodide.globals.get("componentsList").toJs();
-        DynamicSelectableListAdapter.generateList(markedComponentsListInstance, componentsList, DynamicSelectableListAdapter.onClickItemEvent, "no");
+        DynamicSelectableListAdapter.generateList(markedComponentsList, componentsList, DynamicSelectableListAdapter.onClickItemEvent, "no");
     }
 }
 
@@ -102,10 +107,11 @@ class PinoutTableAdapter{
         pinoutTable.addRows(pinoutMap);
         pinoutTable.generateTable();
         
-        
         const netsTreeview = globalInstancesMap.getNetsTreeview();
         const netTreeSelectedNetName = netsTreeview.getSelectedNetName();
         pinoutTable.selectRowByName(netTreeSelectedNetName);
+        
+        const selectedComponentSpan = globalInstancesMap.getSelectedComponentSpan();
         selectedComponentSpan.innerText = componentName;
     }
 
@@ -178,6 +184,7 @@ class InputModalBoxAdapter{
     
         const isPrefixExist = EngineAdapter.showCommonPrefixComponents(modalBoxCommonPrefix);
         if (isPrefixExist){
+            const  commonPrefixSpan = globalInstancesMap.getCommonPrefixSpan();
             commonPrefixSpan.innerText = modalBoxCommonPrefix;
         }
     }

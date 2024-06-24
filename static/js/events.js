@@ -92,6 +92,8 @@ class EventHandler{
     }
     
     static hideCommonPrefixComponents(){
+        const commonPrefixSpan = globalInstancesMap.getCommonPrefixSpan();
+        
         EngineAdapter.hideCommonPrefixComponents();
         commonPrefixSpan.innerText = "";
     }
