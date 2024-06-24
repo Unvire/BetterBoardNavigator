@@ -22,6 +22,9 @@ class EventHandler{
     }
 
     static setCanvasDimensions(){
+        const canvas = globalInstancesMap.getCanvas();
+        const canvasParent = globalInstancesMap.getCanvasParent();
+
         canvas.width = canvasParent.clientWidth;
         canvas.height = canvasParent.clientHeight;
     }

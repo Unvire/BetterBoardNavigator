@@ -11,7 +11,7 @@ class GlobalInstancesMap{
         this.clickedComponentSpanList = null;
         this.sideHandler = null;
         this.canvas = null;
-        this.canvasParents = null;
+        this.canvasParent = null;
         this.commonPrefixSpan = null;
         this.selectedComponentSpan = null;
     }
@@ -38,5 +38,21 @@ class GlobalInstancesMap{
 
     getTextModalInput(){
         return this.textModalInput;
+    }
+
+    setCanvas(instance){
+        this.canvas = instance;
+    }
+
+    getCanvas(){
+        return this.canvas;
+    }
+
+    setCanvasParent(instance){
+        this.canvasParent = instance;
+    }
+
+    getCanvasParent(){
+        return this.canvasParent;
     }
 }

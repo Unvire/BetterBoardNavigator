@@ -184,6 +184,8 @@
         globalInstancesMap.setModalSubmit(modalSubmit);
         globalInstancesMap.setTextModalSubmitButton(textModalSubmitButton);
         globalInstancesMap.setTextModalInput(textModalInput);
+        globalInstancesMap.setCanvas(canvas);
+        globalInstancesMap.setCanvasParent(canvasParent);
 
         // This is a workaround about the fact that the pygame-ce is not run in an inifite loop but as an image generator. 
         // As result "main game loop" doesn't exist, which results in throwing errors when any key is pressed down
