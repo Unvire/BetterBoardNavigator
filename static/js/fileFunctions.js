@@ -42,7 +42,7 @@ async function openAndLoadCadFile(pyodide, file) {
         netsTreeview.generate();
 
         pinoutTable.clearBody();
-        markedComponentsList.clearList();
+        DynamicSelectableListAdapter.clearList(markedComponentsList);
         clickedComponentContainer.innerText = "";
         currentSideSpan.innerText = currentSide();
     }

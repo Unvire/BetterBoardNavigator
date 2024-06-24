@@ -32,6 +32,10 @@ class DynamicSelectableListAdapter{
         listInstance.generateList();
     }
 
+    static clearList(listInstance){
+        listInstance.clearList();
+    }
+
     static selectItemFromListEvent(itemElement){
         let itemName = itemElement.textContent;
         generatePinoutTableEvent(itemName);
@@ -51,5 +55,11 @@ class DynamicSelectableListAdapter{
         `);
         const componentsList = pyodide.globals.get("componentsList").toJs();
         DynamicSelectableListAdapter.generateList(markedComponentsListInstance, componentsList, DynamicSelectableListAdapter.onClickItemEvent, "no");
+    }
+}
+
+class PinoutTableAdapter{
+    static initPinoutTable(parentContainer){
+        
     }
 }
