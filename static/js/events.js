@@ -89,36 +89,11 @@ function unselectNetEvent(){
 }
 
 function findComponentUsingNameEvent(){
-    modalSubmit.setHeader("Component name:");
-    modalSubmit.buttonEvent = getComponentNameFromModalBoxEvent;
-    modalSubmit.show();
-}
-
-function getComponentNameFromModalBoxEvent(componentName){
-    const modalBoxComponentName = componentName.toUpperCase();
-    EngineAdapter.findComponentByName(modalBoxComponentName, isSelectionModeSingle);
+    InputModalBoxAdapter.generateModalBox(modalSubmit, "Component name:", InputModalBoxAdapter.getComponentNameFromInput);
 }
 
 function showCommonPrefixComponentsEvent(){
-    modalSubmit.setHeader("Prefix:");
-    modalSubmit.buttonEvent = getCommonPrefixFromModalBoxEvent;
-    modalSubmit.show();
-}
-
-function getComponentNameFromModalBoxEvent(componentName){
-    const modalBoxComponentName = componentName.toUpperCase();
-    EngineAdapter.findComponentByName(modalBoxComponentName, isSelectionModeSingle);
-}
-
-function getCommonPrefixFromModalBoxEvent(commonPrefix){
-    const modalBoxCommonPrefix = commonPrefix.toUpperCase();
-
-    EngineAdapter.showCommonPrefixComponents(modalBoxCommonPrefix);
-    
-    const isPrefixExist = pyodide.globals.get("isPrefixExist");
-    if (isPrefixExist){
-        commonPrefixSpan.innerText = modalBoxCommonPrefix;
-    }
+    InputModalBoxAdapter.generateModalBox(modalSubmit, "Prefix:", InputModalBoxAdapter.getCommonPrefixFromInput);
 }
 
 function hideCommonPrefixComponentsEvent(){

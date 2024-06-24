@@ -156,6 +156,7 @@ class EngineAdapter{
                 engine.showCommonTypeComponentsInterface(SURFACE, '${prefix}', '${side}')
                 pygame.display.flip()
         `);
+        return pyodide.globals.get("isPrefixExist");
     }
 
     static hideCommonPrefixComponents(){

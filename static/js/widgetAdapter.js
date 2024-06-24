@@ -134,3 +134,25 @@ class TreeViewAdapter{
         netsTreeview.unselectCurrentItem();
     }
 }
+
+class InputModalBoxAdapter{
+    static generateModalBox(modalboxInstance, headerString, submitEvent){
+        modalboxInstance.setHeader(headerString);
+        modalboxInstance.buttonEvent = submitEvent;
+        modalboxInstance.show();
+    }
+
+    static getComponentNameFromInput(componentName){
+        const modalBoxComponentName = componentName.toUpperCase();
+        EngineAdapter.findComponentByName(modalBoxComponentName, isSelectionModeSingle);
+    }
+
+    static getCommonPrefixFromInput(commonPrefix){
+        const modalBoxCommonPrefix = commonPrefix.toUpperCase();
+    
+        const isPrefixExist = EngineAdapter.showCommonPrefixComponents(modalBoxCommonPrefix);
+        if (isPrefixExist){
+            commonPrefixSpan.innerText = modalBoxCommonPrefix;
+        }
+    }
+}
