@@ -12,6 +12,7 @@ class GlobalInstancesMap{
         this.clickedComponentSpanList = null;
         this.commonPrefixSpan = null;
         this.selectedComponentSpan = null;
+        this.currentSideSpan = null;
         this.modalParagraph = null;
     }
 
@@ -109,5 +110,13 @@ class GlobalInstancesMap{
 
     getCommonPrefixSpan(){
         return this.commonPrefixSpan;
+    }
+
+    setCurrentSideSpan(instance){
+        this.currentSideSpan = instance;
+    }
+
+    getCurrentSideSpan(){
+        return this.currentSideSpan;
     }
 }

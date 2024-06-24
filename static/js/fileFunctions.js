@@ -39,8 +39,11 @@ async function openAndLoadCadFile(pyodide, file) {
 
         PinoutTableAdapter.clearBody();
         DynamicSelectableListAdapter.clearList(markedComponentsList);
-        clickedComponentContainer.innerText = "";
+
+        const currentSideSpan = globalInstancesMap.getCurrentSideSpan();
         currentSideSpan.innerText = sideHandler.currentSide();
+
+        clickedComponentContainer.innerText = "";
     }
     reader.readAsArrayBuffer(file);
 }

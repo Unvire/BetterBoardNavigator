@@ -10,7 +10,10 @@ class SideHandler{
 
     changeSide(){            
         this.isSideBottom = !(this.isSideBottom);
+
+        const currentSideSpan = globalInstancesMap.getCurrentSideSpan();
         currentSideSpan.innerText = this.currentSide();
+        
         return this.currentSide();
     }
 
