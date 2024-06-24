@@ -28,18 +28,9 @@ function mouseDownEvent(event){
         const y = event.offsetY;
         
         let clickedComponents = EngineAdapter.findClickedComponents(x, y, isSelectionModeSingle);
-        generateClickedComponentsSpanList(clickedComponents);
+        WidgetAdapter.generateSpanList(clickedComponentSpanList, clickedComponents)
         _generateMarkedComponentsList();
     }
-}
-
-function generateClickedComponentsSpanList(clickedComponentsList){
-    clickedComponentSpanList.addSpans(clickedComponentsList);
-    clickedComponentSpanList.generate();
-}
-
-function clickedComponentsClickEvent(componentName){
-    generatePinoutTableEvent(componentName);
 }
 
 function mouseUpEvent(){

@@ -15,6 +15,7 @@
     <script type="text/javascript" src="/static/js/treeview.js"></script>
     <script type="text/javascript" src="/static/js/modals.js"></script>
     <script type="text/javascript" src="/static/js/dynamicSpanList.js"></script>
+    <script type="text/javascript" src="/static/js/widgetAdapter.js"></script>
 </head>
 <body>
     <div class="buttons-row-flexbox">
@@ -180,7 +181,7 @@
         var markedComponentsList = new DynamicSelectableList(markedComponentsContainer);
         var pinoutTable = new PinoutTable(pinoutTableContainer);
         var netsTreeview = new NetTreeView(netTreeviewContainer);
-        var clickedComponentSpanList = new DynamicSpanList(clickedComponentContainer);
+        var clickedComponentSpanList = WidgetAdapter.initSpanList(clickedComponentContainer);
 
         function currentSide(){
             return sideMap[isSideBottom];
@@ -252,7 +253,6 @@
             findComponentUsingNameButton.addEventListener("click", findComponentUsingNameEvent);
             prefixComponentsButton.addEventListener("click", showCommonPrefixComponentsEvent);
             unselectPrefixComponentsButton.addEventListener("click", hideCommonPrefixComponentsEvent);
-            clickedComponentSpanList.clickEvent = clickedComponentsClickEvent;
         });
     </script>
 </body>
