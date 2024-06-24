@@ -16,16 +16,11 @@ class EngineAdapter{
         `);
     }
 
-    static findClickedComponents(x, y, isSelectionModeSingle){
+    static findClickedComponents(x, y){
         const side = sideHandler.currentSide();
         pyodide.runPython(`
             clickedXY = [int('${x}'), int('${y}')]
             clickedComponents = engine.findComponentByClick(clickedXY, '${side}')
-            
-            if '${isSelectionModeSingle}' == 'false':
-                for componentName in clickedComponents:
-                    engine.findComponentByNameInterface(SURFACE, componentName, '${side}') #mark all clicked components
-                    pygame.display.flip()
         `);
         return pyodide.globals.get("clickedComponents").toJs();
     }

@@ -20,7 +20,6 @@ function mouseDownEvent(event){
         
         let clickedComponents = EngineAdapter.findClickedComponents(x, y, isSelectionModeSingle);
         SpanListAdapter.generateSpanList(clickedComponents);
-        DynamicSelectableListAdapter.generateMarkedComponentsList();
     }
 }
 
