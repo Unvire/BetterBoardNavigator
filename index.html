@@ -223,7 +223,9 @@
             setCanvasDimensions();
             
             window.addEventListener("resize", EventHandler.windowResizeEvent);
-            window.addEventListener("keydown", keyDownEvent);
+            window.addEventListener("keydown", (event) =>{
+                EventHandler.keyDown(event, isTextModalInputFocused, textModalInput, textModalSubmitButton);
+            });
 
             canvas.addEventListener("mousedown", mouseDownEvent);
             canvas.addEventListener("mouseup", mouseUpEvent);       
