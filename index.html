@@ -180,7 +180,7 @@
         var allComponentsList = DynamicSelectableListAdapter.initDynamicSelectableList(allComponentsContainer);
         var markedComponentsList = DynamicSelectableListAdapter.initDynamicSelectableList(markedComponentsContainer);
         var pinoutTable = PinoutTableAdapter.initPinoutTable(pinoutTableContainer);
-        var netsTreeview = new NetTreeView(netTreeviewContainer);
+        var netsTreeview = TreeViewAdapter.initTreeView(netTreeviewContainer);
         var clickedComponentSpanList = SpanListAdapter.initSpanList(clickedComponentContainer);
 
         function currentSide(){

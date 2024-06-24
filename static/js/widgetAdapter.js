@@ -91,3 +91,18 @@ class PinoutTableAdapter{
         pinoutTableInstance.clearBody()
     }
 }
+
+class TreeViewAdapter{
+    static initTreeView(parentContainer){
+        let treeview = new NetTreeView(parentContainer);
+        return treeview
+    }
+
+    static generateTreeView(treeviewInstance, preClickEvent, mainBranchClickEvent, subBranchClickEvent, netsMap){
+        treeviewInstance.eventBeforeSelection = preClickEvent;
+        treeviewInstance.netEvent = mainBranchClickEvent;
+        treeviewInstance.componentEvent = subBranchClickEvent;
+        treeviewInstance.addBranches(netsMap);
+        treeviewInstance.generate();
+    }
+}
