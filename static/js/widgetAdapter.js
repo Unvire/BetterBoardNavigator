@@ -5,6 +5,9 @@ class WidgetAdapter{
     }
 
     static resetSelectedComponentsWidgets(){
+        const allComponentsList = globalInstancesMap.getAllComponentsList()
+        const pinoutTable = globalInstancesMap.getPinoutTable();
+
         allComponentsList.unselectAllItems();
         pinoutTable.unselectCurrentRow();
         pinoutTable.clearBody();
@@ -12,6 +15,8 @@ class WidgetAdapter{
         selectedComponentSpan.innerText = "Component";
     }
     static resetSelectedNet(){
+        const pinoutTable = globalInstancesMap.getPinoutTable();
+
         TreeViewAdapter.resetTreeview();
         pinoutTable.unselectCurrentRow();
     }
@@ -30,6 +35,8 @@ class SpanListAdapter{
     }
 
     static onClickEventSpanList(componentName){
+        const pinoutTable = globalInstancesMap.getPinoutTable();
+
         PinoutTableAdapter.generatePinoutTable(pinoutTable, componentName);
     }
 }
@@ -52,7 +59,7 @@ class DynamicSelectableListAdapter{
     }
 
     static selectItemFromListEvent(itemElement){
-        DynamicSelectableListAdapter.generatePinoutTableForComponent(itemElement);
+        itemNameDynamicSelectableListAdapter.generatePinoutTableForComponent(itemElement);
         EngineAdapter.findComponentByName(itemName, isSelectionModeSingle);
         DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList)
     }
@@ -64,7 +71,7 @@ class DynamicSelectableListAdapter{
 
     static generatePinoutTableForComponent(itemElement){
         let itemName = itemElement.textContent;
-        PinoutTableAdapter.generatePinoutTable(pinoutTable, itemName);
+        PinoutTableAdapter.generatePinoutTable(itemName);
     }
 
     static generateMarkedComponentsList(markedComponentsListInstance){
@@ -82,31 +89,39 @@ class PinoutTableAdapter{
         return table;
     }
 
-    static generatePinoutTable(pinoutTableInstance, componentName){
+    static generatePinoutTable(componentName){
         pyodide.runPython(`
             pinoutDict = engine.getComponentPinout('${componentName}')
         `);
         let pinoutMap = pyodide.globals.get("pinoutDict").toJs();
-
-        pinoutTableInstance.rowEvent = PinoutTableAdapter.selectNetFromTableEvent;
-        pinoutTableInstance.beforeRowEvent = EngineAdapter.unselectNet;
-        pinoutTableInstance.addRows(pinoutMap);
-        pinoutTableInstance.generateTable();
-
+        
+        const pinoutTable = globalInstancesMap.getPinoutTable();
+        pinoutTable.rowEvent = PinoutTableAdapter.selectNetFromTableEvent;
+        pinoutTable.beforeRowEvent = EngineAdapter.unselectNet;
+        pinoutTable.addRows(pinoutMap);
+        pinoutTable.generateTable();
+        
+        
+        const netsTreeview = globalInstancesMap.getNetsTreeview();
         const netTreeSelectedNetName = netsTreeview.getSelectedNetName();
-        pinoutTableInstance.selectRowByName(netTreeSelectedNetName);
+        pinoutTable.selectRowByName(netTreeSelectedNetName);
         selectedComponentSpan.innerText = componentName;
     }
 
     static selectNetFromTableEvent(netName){
+        const netsTreeview = globalInstancesMap.getNetsTreeview();
+        const pinoutTable = globalInstancesMap.getPinoutTable();    
+
         netsTreeview.scrollToBranchByName(netName);
         if(pinoutTable.getSelectedRow()){
             EngineAdapter.selectNet(netName);
         }
     }
 
-    static clearBody(pinoutTableInstance){
-        pinoutTableInstance.clearBody()
+    static clearBody(){
+        const pinoutTable = globalInstancesMap.getPinoutTable();
+
+        pinoutTable.clearBody()
     }
 }
 
@@ -116,23 +131,30 @@ class TreeViewAdapter{
         return treeview
     }
 
-    static generateTreeView(treeviewInstance, netsMap){
-        treeviewInstance.eventBeforeSelection = EngineAdapter.unselectNet;
-        treeviewInstance.netEvent = TreeViewAdapter.selectNetFromTreeviewEvent;
-        treeviewInstance.componentEvent = EngineAdapter.selectNetComponentByName;
-        treeviewInstance.addBranches(netsMap);
-        treeviewInstance.generate();
+    static generateTreeView(netsMap){
+        const netsTreeview = globalInstancesMap.getNetsTreeview();
+
+        netsTreeview.eventBeforeSelection = EngineAdapter.unselectNet;
+        netsTreeview.netEvent = TreeViewAdapter.selectNetFromTreeviewEvent;
+        netsTreeview.componentEvent = EngineAdapter.selectNetComponentByName;
+        netsTreeview.addBranches(netsMap);
+        netsTreeview.generate();
     }
     
     static selectNetFromTreeviewEvent(netName){
+        const netsTreeview = globalInstancesMap.getNetsTreeview();
+        const pinoutTable = globalInstancesMap.getPinoutTable();
+
         pinoutTable.selectRowByName(netName);    
-    
+
         if(netsTreeview.getSelectedNet()){
             EngineAdapter.selectNet(netName);
         }
     }
 
     static resetTreeview(){
+        const netsTreeview = globalInstancesMap.getNetsTreeview();
+
         netsTreeview.unselectCurrentBranch();
         netsTreeview.unselectCurrentItem();
     }

@@ -57,15 +57,17 @@ class EventHandler{
     }
 
     static preserveComponentMarkes(isSelectionModeSingle){
+        const allComponentsList = globalInstancesMap.getAllComponentsList();
         const selectionModesMap = {true: "single", false: "multiple"};
     
         isSelectionModeSingle = !isSelectionModeSingle;
-        const mode = selectionModesMap[isSelectionModeSingle];
-        allComponentsList.selectionMode = mode;
+        allComponentsList.selectionMode = selectionModesMap[isSelectionModeSingle];
         return isSelectionModeSingle;
     }
 
     static toggleNetMarkers(){
+        const netsTreeview = globalInstancesMap.getNetsTreeview();
+
         pyodide.runPython(`
             selectedNetComponent = engine.getSelectedNetComponent()
         `);
