@@ -54,7 +54,7 @@ class DynamicSelectableListAdapter{
     static selectItemFromListEvent(itemElement){
         let itemName = itemElement.textContent;
         PinoutTableAdapter.generatePinoutTable(pinoutTable, itemName);
-        EngineAdapter.findComponentByName(itemName, side, isSelectionModeSingle);
+        EngineAdapter.findComponentByName(itemName, isSelectionModeSingle);
         DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList)
     }
 
@@ -116,7 +116,7 @@ class TreeViewAdapter{
     static generateTreeView(treeviewInstance, netsMap){
         treeviewInstance.eventBeforeSelection = EngineAdapter.unselectNet;
         treeviewInstance.netEvent = TreeViewAdapter.selectNetFromTreeviewEvent;
-        treeviewInstance.componentEvent = TreeViewAdapter.selectNetComponentByNameEvent;
+        treeviewInstance.componentEvent = EngineAdapter.selectNetComponentByName;
         treeviewInstance.addBranches(netsMap);
         treeviewInstance.generate();
     }
@@ -127,12 +127,6 @@ class TreeViewAdapter{
         if(netsTreeview.getSelectedNet()){
             EngineAdapter.selectNet(netName);
         }
-    }
-
-    static selectNetComponentByNameEvent(componentName){
-        const componentSide = _getSideOfComponent(componentName);
-        side = _changeSideIfComponentIsNotOnScreen(componentSide);
-        EngineAdapter.selectNetComponentByName(componentName, side);
     }
 
     static resetTreeview(){
