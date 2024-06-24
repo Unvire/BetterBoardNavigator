@@ -28,8 +28,8 @@ function mouseDownEvent(event){
         const y = event.offsetY;
         
         let clickedComponents = EngineAdapter.findClickedComponents(x, y, isSelectionModeSingle);
-        SpanListAdapter.generateSpanList(clickedComponentSpanList, clickedComponents)
-        _generateMarkedComponentsList();
+        SpanListAdapter.generateSpanList(clickedComponentSpanList, clickedComponents);
+        DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList);
     }
 }
 
@@ -72,14 +72,6 @@ function preserveComponentMarkesEvent(){
     isSelectionModeSingle = !isSelectionModeSingle;
     mode = selectionModesMap[isSelectionModeSingle];
     allComponentsList.selectionMode = mode;
-}
-
-function _generateMarkedComponentsList(){
-    pyodide.runPython(`
-        componentsList = engine.getSelectedComponents()
-    `);
-    let componentsList = pyodide.globals.get("componentsList").toJs();
-    DynamicSelectableListAdapter.generateList(markedComponentsList, componentsList, DynamicSelectableListAdapter.onClickItemEvent, "no");
 }
 
 function generatePinoutTableEvent(componentName){
@@ -200,7 +192,7 @@ function _resetSelectedComponentsWidgets(){
     allComponentsList.unselectAllItems();
     pinoutTable.unselectCurrentRow();
     pinoutTable.clearBody();
-    _generateMarkedComponentsList();
+    DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList);
     selectedComponentSpan.innerText = "Component";
 }
 

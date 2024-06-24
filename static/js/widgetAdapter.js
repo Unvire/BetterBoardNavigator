@@ -36,12 +36,20 @@ class DynamicSelectableListAdapter{
         let itemName = itemElement.textContent;
         generatePinoutTableEvent(itemName);
         EngineAdapter.findComponentByName(itemName, side, isSelectionModeSingle);
-        _generateMarkedComponentsList();
+        DynamicSelectableListAdapter.generateMarkedComponentsList(markedComponentsList)
     }
 
     static onClickItemEvent(itemElement){
         let itemName = itemElement.textContent;
         generatePinoutTableEvent(itemName);
         EngineAdapter.componentInScreenCenter(itemName);
+    }
+
+    static generateMarkedComponentsList(markedComponentsListInstance){
+        pyodide.runPython(`
+            componentsList = engine.getSelectedComponents()
+        `);
+        const componentsList = pyodide.globals.get("componentsList").toJs();
+        DynamicSelectableListAdapter.generateList(markedComponentsListInstance, componentsList, DynamicSelectableListAdapter.onClickItemEvent, "no");
     }
 }
