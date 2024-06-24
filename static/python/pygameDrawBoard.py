@@ -594,6 +594,8 @@ class DrawBoardEngine:
 
         try:
             componentType, componentNumber, *_ = list(filter(None, re.split(r'(\d+)', componentName)))
+            if not componentNumber.isnumeric():
+                componentNumber = 0
         except ValueError:
             componentType = componentName
             componentNumber = 0
