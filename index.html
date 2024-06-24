@@ -125,7 +125,6 @@
         let pyodide = null;
         let loadedFileName = "";
         let resizeTimeout = null;
-        let modalBoxComponentName = "";
         let isTextModalInputFocused = false;
 
         const canvas = document.getElementById("canvas");
@@ -154,46 +153,55 @@
         const commonPrefixSpan = document.getElementById("common-prefix-span");
         const selectedComponentSpan = document.getElementById("selected-component-span");
 
+        const textModalContainer = document.getElementById("text-modal");
+        const textModalCloseSpan = document.getElementById("text-modal-close-span");
+        const textModalPromptHeader = document.getElementById("text-modal-header");
+        const textModalInput = document.getElementById("text-modal-input");
+        const textModalSubmitButton = document.getElementById("text-modal-submit-text");
 
-        var textModalContainer = document.getElementById("text-modal");
-        var textModalCloseSpan = document.getElementById("text-modal-close-span");
-        var textModalPromptHeader = document.getElementById("text-modal-header");
-        var textModalInput = document.getElementById("text-modal-input");
-        var textModalSubmitButton = document.getElementById("text-modal-submit-text");
+        const paragraphModalContainer = document.getElementById("paragraph-modal");
+        const paragraphModalCloseSpan = document.getElementById("paragraph-modal-close-span");
+        const paragraphModalPromptHeader = document.getElementById("paragraph-modal-header");
+        const paragraphModalTextParagraph = document.getElementById("paragraph-modal-p");
 
-        var paragraphModalContainer = document.getElementById("paragraph-modal");
-        var paragraphModalCloseSpan = document.getElementById("paragraph-modal-close-span");
-        var paragraphModalPromptHeader = document.getElementById("paragraph-modal-header");
-        var paragraphModalTextParagraph = document.getElementById("paragraph-modal-p");
+        
+        
+        var globalInstancesMap = new GlobalInstancesMap();
+        globalInstancesMap.setCanvas(canvas);
+        globalInstancesMap.setCanvasParent(canvasParent);
+        globalInstancesMap.setSelectedComponentSpan(selectedComponentSpan);
+        globalInstancesMap.setCommonPrefixSpan(commonPrefixSpan);
+        globalInstancesMap.setCurrentSideSpan(currentSideSpan);
+
 
         var modalSubmit = new ModalSubmit(textModalContainer, textModalCloseSpan, 
                                             textModalPromptHeader, textModalInput, 
                                             textModalSubmitButton);
+        globalInstancesMap.setModalSubmit(modalSubmit);
+        globalInstancesMap.setTextModalSubmitButton(textModalSubmitButton);
+        globalInstancesMap.setTextModalInput(textModalInput);
+        
+
         var modalParagraph = new ModalParagraph(paragraphModalContainer, paragraphModalCloseSpan, 
                                                 paragraphModalPromptHeader, paragraphModalTextParagraph);
 
         var allComponentsList = DynamicSelectableListAdapter.initDynamicSelectableList(allComponentsContainer);
+        globalInstancesMap.setAllComponentsList(allComponentsList);
+
         var markedComponentsList = DynamicSelectableListAdapter.initDynamicSelectableList(markedComponentsContainer);
+        globalInstancesMap.setMarkedComponentsList(markedComponentsList);
+
         var pinoutTable = PinoutTableAdapter.initPinoutTable(pinoutTableContainer);
+        globalInstancesMap.setPinoutTable(pinoutTable);
+
         var netsTreeview = TreeViewAdapter.initTreeView(netTreeviewContainer);
+        globalInstancesMap.setNetsTreeview(netsTreeview);
+
         var clickedComponentSpanList = SpanListAdapter.initSpanList(clickedComponentContainer);
+        globalInstancesMap.setClickedComponentSpanList(clickedComponentSpanList);
+
         var sideHandler = new SideHandler();
 
-
-        var globalInstancesMap = new GlobalInstancesMap();
-        globalInstancesMap.setModalSubmit(modalSubmit);
-        globalInstancesMap.setTextModalSubmitButton(textModalSubmitButton);
-        globalInstancesMap.setTextModalInput(textModalInput);
-        globalInstancesMap.setCanvas(canvas);
-        globalInstancesMap.setCanvasParent(canvasParent);
-        globalInstancesMap.setAllComponentsList(allComponentsList);
-        globalInstancesMap.setMarkedComponentsList(markedComponentsList);
-        globalInstancesMap.setPinoutTable(pinoutTable);
-        globalInstancesMap.setNetsTreeview(netsTreeview);
-        globalInstancesMap.setSelectedComponentSpan(selectedComponentSpan);
-        globalInstancesMap.setClickedComponentSpanList(clickedComponentSpanList);
-        globalInstancesMap.setCommonPrefixSpan(commonPrefixSpan);
-        globalInstancesMap.setCurrentSideSpan(currentSideSpan);
 
 
         // This is a workaround about the fact that the pygame-ce is not run in an inifite loop but as an image generator. 
