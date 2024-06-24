@@ -108,7 +108,7 @@ class EngineAdapter{
     }
 
     static componentInScreenCenter(componentName){
-        componentSide = _getSideOfComponent(componentName);
+        const componentSide = _getSideOfComponent(componentName);
         side = _changeSideIfComponentIsNotOnScreen(componentSide);
     
         pyodide.runPython(`
@@ -168,6 +168,12 @@ class EngineAdapter{
     }
 
     static findComponentByName(componentName, side, isSelectionModeSingle){
+        const componentSide = _getSideOfComponent(componentName);
+        if (!componentSide){
+            return
+        }
+        side = _changeSideIfComponentIsNotOnScreen(componentSide);
+        
         pyodide.runPython(`
             if '${isSelectionModeSingle}' == 'true':
                 engine.clearFindComponentByNameInterface(SURFACE, '${side}')

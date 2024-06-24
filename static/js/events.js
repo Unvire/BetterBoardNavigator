@@ -74,11 +74,6 @@ function preserveComponentMarkesEvent(){
     allComponentsList.selectionMode = mode;
 }
 
-async function _markSelectedComponentFromList(selectedComponentFromList){
-    _findComponentByNameHelper(selectedComponentFromList);
-    _generateMarkedComponentsList();
-}
-
 function _generateMarkedComponentsList(){
     pyodide.runPython(`
         componentsList = engine.getSelectedComponents()
@@ -147,7 +142,7 @@ function findComponentUsingNameEvent(){
 
 function getComponentNameFromModalBoxEvent(componentName){
     const modalBoxComponentName = componentName.toUpperCase();
-    _findComponentByNameHelper(modalBoxComponentName);
+    EngineAdapter.findComponentByName(modalBoxComponentName, isSelectionModeSingle);
 }
 
 function showCommonPrefixComponentsEvent(){
@@ -158,7 +153,7 @@ function showCommonPrefixComponentsEvent(){
 
 function getComponentNameFromModalBoxEvent(componentName){
     const modalBoxComponentName = componentName.toUpperCase();
-    _findComponentByNameHelper(modalBoxComponentName);
+    EngineAdapter.findComponentByName(modalBoxComponentName, isSelectionModeSingle);
 }
 
 function getCommonPrefixFromModalBoxEvent(commonPrefix){
@@ -175,19 +170,6 @@ function getCommonPrefixFromModalBoxEvent(commonPrefix){
 function hideCommonPrefixComponentsEvent(){
     EngineAdapter.hideCommonPrefixComponents();
     commonPrefixSpan.innerText = "";
-}
-
-function _findComponentByNameHelper(componentName){
-    componentSide = _getSideOfComponent(componentName);
-    if (!componentSide){
-        return
-    }
-
-    side = _changeSideIfComponentIsNotOnScreen(componentSide);
-    EngineAdapter.findComponentByName(componentName, side, isSelectionModeSingle);
-
-    generatePinoutTableEvent(componentName);
-    _generateMarkedComponentsList();
 }
 
 function _getSideOfComponent(componentName){

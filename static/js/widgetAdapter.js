@@ -33,14 +33,15 @@ class DynamicSelectableListAdapter{
     }
 
     static selectItemFromListEvent(itemElement){
-        let clickedComponentName = itemElement.textContent;
-        _markSelectedComponentFromList(clickedComponentName);
-        generatePinoutTableEvent(clickedComponentName);
+        let itemName = itemElement.textContent;
+        generatePinoutTableEvent(itemName);
+        EngineAdapter.findComponentByName(itemName, side, isSelectionModeSingle);
+        _generateMarkedComponentsList();
     }
 
     static onClickItemEvent(itemElement){
-        let componentName = itemElement.textContent;
-        generatePinoutTableEvent(componentName);
-        EngineAdapter.componentInScreenCenter(componentName);
+        let itemName = itemElement.textContent;
+        generatePinoutTableEvent(itemName);
+        EngineAdapter.componentInScreenCenter(itemName);
     }
 }
