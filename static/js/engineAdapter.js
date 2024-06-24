@@ -1,7 +1,7 @@
 class EngineAdapter{
     static async resizeBoard(){
         setCanvasDimensions();
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPythonAsync(`
             engine.changeScreenDimensionsInterface(SURFACE, [canvas.width, canvas.height], '${side}')
             pygame.display.flip()
@@ -9,7 +9,7 @@ class EngineAdapter{
     }
 
     static rotateBoard(){
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPythonAsync(`
             engine.rotateBoardInterface(SURFACE, isClockwise=True, side='${side}', angleDeg=90)
             pygame.display.flip()
@@ -17,7 +17,7 @@ class EngineAdapter{
     }
 
     static findClickedComponents(x, y, isSelectionModeSingle){
-    side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPython(`
             clickedXY = [int('${x}'), int('${y}')]
             clickedComponents = engine.findComponentByClick(clickedXY, '${side}')
@@ -44,7 +44,7 @@ class EngineAdapter{
         const y = event.offsetY;
         const isZoomIn = event.deltaY < 0
         
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPythonAsync(`
         if engine:
             pointXY = [int('${x}'), int('${y}')]
@@ -55,8 +55,7 @@ class EngineAdapter{
     }
 
     static changeSide(){
-        changeSide();
-        side = currentSide();
+        const side = sideHandler.changeSide();
         pyodide.runPythonAsync(`
             engine.changeSideInterface(SURFACE, '${side}')
             pygame.display.flip()
@@ -64,7 +63,7 @@ class EngineAdapter{
     }
 
     static mirrorSide(){
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPythonAsync(`
             engine.flipUnflipCurrentSideInterface(SURFACE, '${side}')
             pygame.display.flip()
@@ -72,7 +71,7 @@ class EngineAdapter{
     }
 
     static toggleOutlines(){
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPythonAsync(`
             engine.showHideOutlinesInterface(SURFACE, '${side}')
             pygame.display.flip()
@@ -80,7 +79,7 @@ class EngineAdapter{
     }
 
     static resetView(){
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPython(`
             engine.resetToDefaultViewInterface(SURFACE, '${side}')
             pygame.display.flip()
@@ -89,7 +88,7 @@ class EngineAdapter{
     }
 
     static areaFromComponents(){
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPython(`
             engine.changeAreaInterface(SURFACE, '${side}')
             pygame.display.flip()
@@ -99,7 +98,8 @@ class EngineAdapter{
 
     static async clearMarkers(){
         isSelectionModeSingle = true;
-        side = currentSide();
+
+        const side = sideHandler.currentSide();
         pyodide.runPython(`
             engine.clearFindComponentByNameInterface(SURFACE, '${side}')
             pygame.display.flip()
@@ -108,9 +108,7 @@ class EngineAdapter{
     }
 
     static componentInScreenCenter(componentName){
-        const componentSide = _getSideOfComponent(componentName);
-        side = _changeSideIfComponentIsNotOnScreen(componentSide);
-    
+        const side = sideHandler.setComponentSideAsCurrentSide(componentName);
         pyodide.runPython(`
             engine.componentInScreenCenterInterface(SURFACE, '${componentName}', '${side}')
             pygame.display.flip()
@@ -118,7 +116,7 @@ class EngineAdapter{
     }
 
     static selectNet(netName){
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPython(`
             engine.selectNetByNameInterface(SURFACE, '${netName}', '${side}')
             pygame.display.flip()
@@ -126,22 +124,23 @@ class EngineAdapter{
     }
 
     static toggleNetMarkers(){
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPython(`
             engine.showHideMarkersForSelectedNetByNameInterface(SURFACE, '${side}')
             pygame.display.flip()
         `);
     }
 
-    static selectNetComponentByName(componentName, componentSide){
+    static selectNetComponentByName(componentName){
+        const side = sideHandler.setComponentSideAsCurrentSide(componentName);
         pyodide.runPython(`
-            engine.selectNetComponentByNameInterface(SURFACE, '${componentName}', '${componentSide}')
+            engine.selectNetComponentByNameInterface(SURFACE, '${componentName}', '${side}')
             pygame.display.flip()
         `);
     }
 
     static unselectNet(){
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPython(`
             engine.unselectNetInterface(SURFACE, '${side}')
             pygame.display.flip()
@@ -149,7 +148,7 @@ class EngineAdapter{
     }
 
     static showCommonPrefixComponents(prefix){
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPython(`
             isPrefixExist = engine.checkIfPrefixExists('${prefix}')
 
@@ -160,20 +159,20 @@ class EngineAdapter{
     }
 
     static hideCommonPrefixComponents(){
-        side = currentSide();
+        const side = sideHandler.currentSide();
         pyodide.runPython(`
             engine.clearCommonTypeComponentsInterface(SURFACE, '${side}')
             pygame.display.flip()
         `);
     }
 
-    static findComponentByName(componentName, side, isSelectionModeSingle){
-        const componentSide = _getSideOfComponent(componentName);
+    static findComponentByName(componentName, isSelectionModeSingle){
+        const componentSide = sideHandler.getSideOfComponent(componentName);
         if (!componentSide){
             return
         }
-        side = _changeSideIfComponentIsNotOnScreen(componentSide);
         
+        const side = sideHandler.setComponentSideAsCurrentSide(componentName);
         pyodide.runPython(`
             if '${isSelectionModeSingle}' == 'true':
                 engine.clearFindComponentByNameInterface(SURFACE, '${side}')

@@ -5,7 +5,7 @@ async function openAndLoadCadFile(pyodide, file) {
     reader.onload = async (event) => {
         const fileContent = event.target.result;
         pyodide.FS.writeFile(fileName, new Uint8Array(fileContent));
-        side = currentSide();
+        const side = sideHandler.currentSide();
 
         await pyodide.runPython(`
             from boardWrapper import BoardWrapper
@@ -40,7 +40,7 @@ async function openAndLoadCadFile(pyodide, file) {
         PinoutTableAdapter.clearBody(pinoutTable);
         DynamicSelectableListAdapter.clearList(markedComponentsList);
         clickedComponentContainer.innerText = "";
-        currentSideSpan.innerText = currentSide();
+        currentSideSpan.innerText = sideHandler.currentSide();
     }
     reader.readAsArrayBuffer(file);
 }

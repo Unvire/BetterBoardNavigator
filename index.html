@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js"></script>
     <script type="text/javascript" src="/static/js/configurePythonFunctions.js"></script>    
     <script type="text/javascript" src="/static/js/fileFunctions.js"></script>
+    <script type="text/javascript" src="/static/js/sideHandler.js"></script>
     <script type="text/javascript" src="/static/js/events.js"></script>
     <script type="text/javascript" src="/static/js/engineAdapter.js"></script>
     <script type="text/javascript" src="/static/js/dynamicSelectableList.js"></script>
@@ -123,7 +124,6 @@
         let loadedFileName = "";
         let isMousePressed = false;
         let isMouseClickedFirstTime = false;
-        let isSideBottom = true;
         let resizeTimeout = null;
         let isRotateActive = false;
         let isFindComponentByClickActive = false;
@@ -131,7 +131,6 @@
         let modalBoxComponentName = "";
         let isTextModalInputFocused = false;
 
-        const sideMap = {true: "B", false: "T"};
         const selectionModesMap = {true: "single", false: "multiple"};
 
         const canvas = document.getElementById("canvas");
@@ -182,15 +181,7 @@
         var pinoutTable = PinoutTableAdapter.initPinoutTable(pinoutTableContainer);
         var netsTreeview = TreeViewAdapter.initTreeView(netTreeviewContainer);
         var clickedComponentSpanList = SpanListAdapter.initSpanList(clickedComponentContainer);
-
-        function currentSide(){
-            return sideMap[isSideBottom];
-        }
-
-        function changeSide(){            
-            isSideBottom = !isSideBottom;
-            currentSideSpan.innerText = currentSide();
-        }
+        var sideHandler = new SideHandler();
 
         function setCanvasDimensions(){
             canvas.width = canvasParent.clientWidth;

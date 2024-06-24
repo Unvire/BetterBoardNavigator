@@ -126,20 +126,6 @@ function hideCommonPrefixComponentsEvent(){
     commonPrefixSpan.innerText = "";
 }
 
-function _getSideOfComponent(componentName){
-    pyodide.runPython(`
-        componentSide = engine.getSideOfComponent('${componentName}')
-    `);
-    return pyodide.globals.get("componentSide");
-}
-
-function _changeSideIfComponentIsNotOnScreen(componentSide){
-    if (componentSide != currentSide()){
-        changeSide();
-    }
-    return currentSide();
-}
-
 function _enableButtons(){
     changeSideButton.disabled = false;
     rotateButton.disabled = false;
