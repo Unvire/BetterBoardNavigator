@@ -1,6 +1,9 @@
 class EventHandler{
-    static keyDown(event, isTextModalInputFocused, textModalInput, textModalSubmitButton){
+    static keyDown(event, isTextModalInputFocused){
         if (isTextModalInputFocused){
+            const textModalInput = globalInstancesMap.getTextModalInput();
+            const textModalSubmitButton = globalInstancesMap.getTextModalSubmitButton();
+            
             if (event.key === "Backspace"){
                 textModalInput.value = textModalInput.value.slice(0, -1);
             } else if (event.key.length === 1){
@@ -74,10 +77,12 @@ class EventHandler{
     }
 
     static findComponentUsingName(){
+        const modalSubmit = globalInstancesMap.getModalSubmit();
         InputModalBoxAdapter.generateModalBox(modalSubmit, "Component name:", InputModalBoxAdapter.getComponentNameFromInput);
     }
     
     static showCommonPrefixComponents(){
+        const modalSubmit = globalInstancesMap.getModalSubmit();
         InputModalBoxAdapter.generateModalBox(modalSubmit, "Prefix:", InputModalBoxAdapter.getCommonPrefixFromInput);
     }
     

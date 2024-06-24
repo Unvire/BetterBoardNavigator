@@ -1,4 +1,4 @@
-class GlobalVariablesMap{
+class GlobalInstancesMap{
     constructor(){
         this.modalSubmit = null;
         this.textModalSubmitButton = null;
@@ -16,5 +16,27 @@ class GlobalVariablesMap{
         this.selectedComponentSpan = null;
     }
 
+    setModalSubmit(instance){
+        this.modalSubmit = instance;
+    }
 
+    getModalSubmit(){
+        return this.modalSubmit;
+    }
+
+    setTextModalSubmitButton(instance){
+        this.textModalSubmitButton = instance;
+    }
+
+    getTextModalSubmitButton(){
+        return this.textModalSubmitButton;
+    }
+
+    setTextModalInput(instance){
+        this.textModalInput = instance;
+    }
+
+    getTextModalInput(){
+        return this.textModalInput;
+    }
 }

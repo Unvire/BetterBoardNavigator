@@ -18,6 +18,7 @@
     <script type="text/javascript" src="/static/js/modals.js"></script>
     <script type="text/javascript" src="/static/js/dynamicSpanList.js"></script>
     <script type="text/javascript" src="/static/js/widgetAdapter.js"></script>
+    <script type="text/javascript" src="/static/js/globalInstancesMap.js"></script>
 </head>
 <body>
     <div class="buttons-row-flexbox">
@@ -178,6 +179,12 @@
         var clickedComponentSpanList = SpanListAdapter.initSpanList(clickedComponentContainer);
         var sideHandler = new SideHandler();
 
+
+        var globalInstancesMap = new GlobalInstancesMap();
+        globalInstancesMap.setModalSubmit(modalSubmit);
+        globalInstancesMap.setTextModalSubmitButton(textModalSubmitButton);
+        globalInstancesMap.setTextModalInput(textModalInput);
+
         // This is a workaround about the fact that the pygame-ce is not run in an inifite loop but as an image generator. 
         // As result "main game loop" doesn't exist, which results in throwing errors when any key is pressed down
         // This cludge overrides JS error handler and ignores these event errors and manually sets keyboard behaviour (onkeydown event)
@@ -213,7 +220,7 @@
             
             window.addEventListener("resize", EventHandler.windowResize);
             window.addEventListener("keydown", (event) =>{
-                EventHandler.keyDown(event, isTextModalInputFocused, textModalInput, textModalSubmitButton);
+                EventHandler.keyDown(event, isTextModalInputFocused);
             });
 
             canvas.addEventListener("mousedown", mouseDownEvent);
