@@ -220,7 +220,7 @@
             loadFileButton.disabled = false;
             setCanvasDimensions();
             
-            window.addEventListener("resize", EventHandler.windowResizeEvent);
+            window.addEventListener("resize", EventHandler.windowResize);
             window.addEventListener("keydown", (event) =>{
                 EventHandler.keyDown(event, isTextModalInputFocused, textModalInput, textModalSubmitButton);
             });
@@ -231,7 +231,7 @@
             canvas.addEventListener("wheel", EngineAdapter.zoomInOut);
 
             loadFileButton.addEventListener("change", (event) => {
-                loadedFileName = EventHandler.loadFileEvent(event, loadedFileName);
+                loadedFileName = EventHandler.loadFile(event, loadedFileName);
             });
             changeSideButton.addEventListener("click", EngineAdapter.changeSide);
             rotateButton.addEventListener("click", rotateEvent);
@@ -241,14 +241,14 @@
             areaFromComponentsButton.addEventListener("click", EngineAdapter.areaFromComponents);
             toggleFindComponentByClickButton.addEventListener("click", toggleFindComponentByClickEvent);
             preserveComponentMarkesButton.addEventListener("click", () => {
-                isSelectionModeSingle = EventHandler.preserveComponentMarkesEvent(isSelectionModeSingle);
+                isSelectionModeSingle = EventHandler.preserveComponentMarkes(isSelectionModeSingle);
             });
             clearMarkersButton.addEventListener("click", EngineAdapter.clearMarkers);
-            toggleNetMarkersButton.addEventListener("click", EventHandler.toggleNetMarkersEvent);
-            unselectNetButton.addEventListener("click", EventHandler.unselectNetEvent);            
-            findComponentUsingNameButton.addEventListener("click", EventHandler.findComponentUsingNameEvent);
-            prefixComponentsButton.addEventListener("click", EventHandler.showCommonPrefixComponentsEvent);
-            unselectPrefixComponentsButton.addEventListener("click", EventHandler.hideCommonPrefixComponentsEvent);
+            toggleNetMarkersButton.addEventListener("click", EventHandler.toggleNetMarkers);
+            unselectNetButton.addEventListener("click", EventHandler.unselectNet);            
+            findComponentUsingNameButton.addEventListener("click", EventHandler.findComponentUsingName);
+            prefixComponentsButton.addEventListener("click", EventHandler.showCommonPrefixComponents);
+            unselectPrefixComponentsButton.addEventListener("click", EventHandler.hideCommonPrefixComponents);
         });
     </script>
 </body>

@@ -12,13 +12,13 @@ class EventHandler{
         }
     }
 
-    static async windowResizeEvent(){
+    static async windowResize(){
         const RESCALE_AFTER_MS = 15;
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(EngineAdapter.resizeBoard, RESCALE_AFTER_MS);
     }
 
-    static async loadFileEvent(event, loadedFileName){
+    static async loadFile(event, loadedFileName){
         const file = event.target.files[0];
         if (file) {
             await removePreviousFileFromFS(pyodide, loadedFileName);
@@ -45,7 +45,7 @@ class EventHandler{
         unselectPrefixComponentsButton.disabled = false;
     }
 
-    static preserveComponentMarkesEvent(isSelectionModeSingle){
+    static preserveComponentMarkes(isSelectionModeSingle){
         const selectionModesMap = {true: "single", false: "multiple"};
     
         isSelectionModeSingle = !isSelectionModeSingle;
@@ -54,7 +54,7 @@ class EventHandler{
         return isSelectionModeSingle;
     }
 
-    static toggleNetMarkersEvent(){
+    static toggleNetMarkers(){
         pyodide.runPython(`
             selectedNetComponent = engine.getSelectedNetComponent()
         `);
@@ -63,20 +63,20 @@ class EventHandler{
         EngineAdapter.toggleNetMarkers();
     }
 
-    static unselectNetEvent(){
+    static unselectNet(){
         EngineAdapter.unselectNet();
         WidgetAdapter.resetSelectedNet();
     }
 
-    static findComponentUsingNameEvent(){
+    static findComponentUsingName(){
         InputModalBoxAdapter.generateModalBox(modalSubmit, "Component name:", InputModalBoxAdapter.getComponentNameFromInput);
     }
     
-    static showCommonPrefixComponentsEvent(){
+    static showCommonPrefixComponents(){
         InputModalBoxAdapter.generateModalBox(modalSubmit, "Prefix:", InputModalBoxAdapter.getCommonPrefixFromInput);
     }
     
-    static hideCommonPrefixComponentsEvent(){
+    static hideCommonPrefixComponents(){
         EngineAdapter.hideCommonPrefixComponents();
         commonPrefixSpan.innerText = "";
     }
