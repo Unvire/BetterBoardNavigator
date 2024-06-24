@@ -9,7 +9,7 @@
     <script type="text/javascript" src="/static/js/configurePythonFunctions.js"></script>    
     <script type="text/javascript" src="/static/js/fileFunctions.js"></script>
     <script type="text/javascript" src="/static/js/events.js"></script>
-    <script type="text/javascript" src="/static/js/engineAdapterEvents.js"></script>
+    <script type="text/javascript" src="/static/js/engineAdapter.js"></script>
     <script type="text/javascript" src="/static/js/dynamicSelectableList.js"></script>
     <script type="text/javascript" src="/static/js/pinoutTable.js"></script>
     <script type="text/javascript" src="/static/js/treeview.js"></script>
@@ -235,18 +235,18 @@
             canvas.addEventListener("mousedown", mouseDownEvent);
             canvas.addEventListener("mouseup", mouseUpEvent);       
             canvas.addEventListener("mousemove", mouseMoveEvent);
-            canvas.addEventListener("wheel", EngineAdapterEvents.zoomInOut);
+            canvas.addEventListener("wheel", EngineAdapter.zoomInOut);
 
             loadFileButton.addEventListener("change", loadFileEvent);
-            changeSideButton.addEventListener("click", EngineAdapterEvents.changeSide);
+            changeSideButton.addEventListener("click", EngineAdapter.changeSide);
             rotateButton.addEventListener("click", rotateEvent);
-            mirrorSideButton.addEventListener("click", EngineAdapterEvents.mirrorSide);
-            toggleOutlinesButton.addEventListener("click", EngineAdapterEvents.toggleOutlines);
-            resetViewButton.addEventListener("click", EngineAdapterEvents.resetView);
-            areaFromComponentsButton.addEventListener("click", EngineAdapterEvents.areaFromComponents);
+            mirrorSideButton.addEventListener("click", EngineAdapter.mirrorSide);
+            toggleOutlinesButton.addEventListener("click", EngineAdapter.toggleOutlines);
+            resetViewButton.addEventListener("click", EngineAdapter.resetView);
+            areaFromComponentsButton.addEventListener("click", EngineAdapter.areaFromComponents);
             toggleFindComponentByClickButton.addEventListener("click", toggleFindComponentByClickEvent);
             preserveComponentMarkesButton.addEventListener("click", preserveComponentMarkesEvent);
-            clearMarkersButton.addEventListener("click", EngineAdapterEvents.clearMarkers);
+            clearMarkersButton.addEventListener("click", EngineAdapter.clearMarkers);
             toggleNetMarkersButton.addEventListener("click", toggleNetMarkersEvent);
             unselectNetButton.addEventListener("click", unselectNetEvent);            
             findComponentUsingNameButton.addEventListener("click", findComponentUsingNameEvent);

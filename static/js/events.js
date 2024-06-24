@@ -1,7 +1,7 @@
 async function windowResizeEvent(){
     let RESCALE_AFTER_MS = 15;
     clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(EngineAdapterEvents.resizeBoard, RESCALE_AFTER_MS);
+    resizeTimeout = setTimeout(EngineAdapter.resizeBoard, RESCALE_AFTER_MS);
 }
 
 function keyDownEvent(event){
@@ -22,12 +22,12 @@ function mouseDownEvent(event){
     isMouseClickedFirstTime = true;
     
     if (isRotateActive){
-        EngineAdapterEvents.rotateBoard();
+        EngineAdapter.rotateBoard();
     } else if (isFindComponentByClickActive){        
         const x = event.offsetX; 
         const y = event.offsetY;
         
-        let clickedComponents = EngineAdapterEvents.findClickedComponents(x, y, isSelectionModeSingle);
+        let clickedComponents = EngineAdapter.findClickedComponents(x, y, isSelectionModeSingle);
         generateClickedComponentsSpanList(clickedComponents);
         _generateMarkedComponentsList();
     }
@@ -52,7 +52,7 @@ async function mouseMoveEvent(event){
             const x = event.movementX; 
             const y = event.movementY;
 
-            EngineAdapterEvents.moveBoard(x, y);
+            EngineAdapter.moveBoard(x, y);
         } else {
             isMouseClickedFirstTime = false;
         }
@@ -109,7 +109,7 @@ function _generateMarkedComponentsList(){
 function markedComponentsListItemClickedEvent(itemElement){
     let componentName = itemElement.textContent;
     generatePinoutTableEvent(componentName);
-    EngineAdapterEvents.componentInScreenCenter(componentName);
+    EngineAdapter.componentInScreenCenter(componentName);
 }
 
 function generatePinoutTableEvent(componentName){
@@ -118,7 +118,7 @@ function generatePinoutTableEvent(componentName){
     `);
     let pinoutMap = pyodide.globals.get("pinoutDict").toJs();
     pinoutTable.rowEvent = selectNetFromTableEvent;
-    pinoutTable.beforeRowEvent = EngineAdapterEvents.unselectNet;
+    pinoutTable.beforeRowEvent = EngineAdapter.unselectNet;
     pinoutTable.addRows(pinoutMap);
     pinoutTable.generateTable();
 
@@ -130,7 +130,7 @@ function generatePinoutTableEvent(componentName){
 function selectNetFromTableEvent(netName){
     netsTreeview.scrollToBranchByName(netName);
     if(pinoutTable.getSelectedRow()){
-        EngineAdapterEvents.selectNet(netName);
+        EngineAdapter.selectNet(netName);
     }
 }
 
@@ -138,7 +138,7 @@ function selectNetFromTreeviewEvent(netName){
     pinoutTable.selectRowByName(netName);    
 
     if(netsTreeview.getSelectedNet()){
-        EngineAdapterEvents.selectNet(netName);
+        EngineAdapter.selectNet(netName);
     }
 }
 
@@ -148,17 +148,17 @@ function toggleNetMarkersEvent(){
     `);
     const selectedNetComponent = pyodide.globals.get("selectedNetComponent");
     netsTreeview.selectComponentByName(selectedNetComponent);
-    EngineAdapterEvents.toggleNetMarkers();
+    EngineAdapter.toggleNetMarkers();
 }
 
 function selectNetComponentByNameEvent(componentName){
     componentSide = _getSideOfComponent(componentName);
     side = _changeSideIfComponentIsNotOnScreen(componentSide);
-    EngineAdapterEvents.selectNetComponentByName(componentName, componentSide);
+    EngineAdapter.selectNetComponentByName(componentName, componentSide);
 }
 
 function unselectNetEvent(){
-    EngineAdapterEvents.unselectNet();
+    EngineAdapter.unselectNet();
     netsTreeview.unselectCurrentBranch();
     netsTreeview.unselectCurrentItem();
     pinoutTable.unselectCurrentRow();
@@ -189,7 +189,7 @@ function getComponentNameFromModalBoxEvent(componentName){
 function getCommonPrefixFromModalBoxEvent(commonPrefix){
     const modalBoxCommonPrefix = commonPrefix.toUpperCase();
 
-    EngineAdapterEvents.showCommonPrefixComponents(modalBoxCommonPrefix);
+    EngineAdapter.showCommonPrefixComponents(modalBoxCommonPrefix);
     
     const isPrefixExist = pyodide.globals.get("isPrefixExist");
     if (isPrefixExist){
@@ -198,7 +198,7 @@ function getCommonPrefixFromModalBoxEvent(commonPrefix){
 }
 
 function hideCommonPrefixComponentsEvent(){
-    EngineAdapterEvents.hideCommonPrefixComponents();
+    EngineAdapter.hideCommonPrefixComponents();
     commonPrefixSpan.innerText = "";
 }
 
@@ -209,7 +209,7 @@ function _findComponentByNameHelper(componentName){
     }
 
     side = _changeSideIfComponentIsNotOnScreen(componentSide);
-    EngineAdapterEvents.findComponentByName(componentName, side, isSelectionModeSingle);
+    EngineAdapter.findComponentByName(componentName, side, isSelectionModeSingle);
 
     generatePinoutTableEvent(componentName);
     _generateMarkedComponentsList();

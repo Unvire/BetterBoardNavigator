@@ -1,4 +1,4 @@
-class EngineAdapterEvents{
+class EngineAdapter{
     static async resizeBoard(){
         setCanvasDimensions();
         side = currentSide();
