@@ -131,8 +131,6 @@
         let modalBoxComponentName = "";
         let isTextModalInputFocused = false;
 
-        const selectionModesMap = {true: "single", false: "multiple"};
-
         const canvas = document.getElementById("canvas");
         const canvasParent = document.getElementById("item-center");
         const loadFileButton = document.getElementById("load-file-button");
@@ -242,7 +240,9 @@
             resetViewButton.addEventListener("click", EngineAdapter.resetView);
             areaFromComponentsButton.addEventListener("click", EngineAdapter.areaFromComponents);
             toggleFindComponentByClickButton.addEventListener("click", toggleFindComponentByClickEvent);
-            preserveComponentMarkesButton.addEventListener("click", preserveComponentMarkesEvent);
+            preserveComponentMarkesButton.addEventListener("click", () => {
+                isSelectionModeSingle = EventHandler.preserveComponentMarkesEvent(isSelectionModeSingle);
+            });
             clearMarkersButton.addEventListener("click", EngineAdapter.clearMarkers);
             toggleNetMarkersButton.addEventListener("click", toggleNetMarkersEvent);
             unselectNetButton.addEventListener("click", unselectNetEvent);            

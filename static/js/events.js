@@ -44,6 +44,17 @@ class EventHandler{
         prefixComponentsButton.disabled = false;
         unselectPrefixComponentsButton.disabled = false;
     }
+
+    static preserveComponentMarkesEvent(isSelectionModeSingle){
+        const selectionModesMap = {true: "single", false: "multiple"};
+    
+        isSelectionModeSingle = !isSelectionModeSingle;
+        const mode = selectionModesMap[isSelectionModeSingle];
+        allComponentsList.selectionMode = mode;
+        return isSelectionModeSingle;
+    }
+
+
 }
 
 function keyDownEvent(event){
@@ -98,12 +109,6 @@ function rotateEvent(){
 
 function toggleFindComponentByClickEvent(){
     isFindComponentByClickActive = !isFindComponentByClickActive;
-}
-
-function preserveComponentMarkesEvent(){
-    isSelectionModeSingle = !isSelectionModeSingle;
-    mode = selectionModesMap[isSelectionModeSingle];
-    allComponentsList.selectionMode = mode;
 }
 
 function toggleNetMarkersEvent(){
