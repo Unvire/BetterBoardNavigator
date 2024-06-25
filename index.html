@@ -216,13 +216,6 @@
         // ignore syntax errors from python's regex
         console.warn = () => {};
 
-        textModalInput.addEventListener("focus", () => {
-            isTextModalInputFocused = true;
-        });
-
-        textModalInput.addEventListener("blur", () => {
-            isTextModalInputFocused = false;
-        });
 
 
         document.addEventListener("DOMContentLoaded", async () => {
@@ -266,6 +259,13 @@
             findComponentUsingNameButton.addEventListener("click", EventHandler.findComponentUsingName);
             prefixComponentsButton.addEventListener("click", EventHandler.showCommonPrefixComponents);
             unselectPrefixComponentsButton.addEventListener("click", EventHandler.hideCommonPrefixComponents);
+            
+            textModalInput.addEventListener("focus", () => {
+                isTextModalInputFocused = true;
+            });
+            textModalInput.addEventListener("blur", () => {
+                isTextModalInputFocused = false;
+            });
         });
     </script>
 </body>
