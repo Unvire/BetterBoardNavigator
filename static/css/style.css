@@ -1,10 +1,15 @@
 :root{
     --BUTTONS-ROW-HEIGHT: 50px;
-    --COLOR-DARK: #3f4156;
-    --COLOR-BG: #2d2d39;
-    --COLOR-DARK-LIGHT: #696d97;
-    --COLOR-MAIN: #71c6dd;
-    --COLOR-LIGHT: #e5e5e5;
+    --COLOR-BG: #000000;
+    --COLOR-BUTTONS-FLEXBOX-BG: #1F2937;
+    --COLOR-BUTTON-BG: #52525B;
+    --COLOR-WIDGET-BG: #4B5563;
+    --COLOR-WIDGET-CONTAINER-BG: #374151;
+    --COLOR-BUTTON-ACTIVE: #2187a3;
+    --COLOR-ITEM-SELECTED: #71c6dd;
+    --COLOR-BUTTON-TEXT: #e5e5e5;
+    --COLOR-TEXT-MAIN: #eeeeee;
+    --COLOR-ITEM-HEADER-BG: #4f6574;
 }
 
 body{
@@ -16,7 +21,8 @@ body{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    background-color: var(--COLOR-DARK-LIGHT);
+    background-color: var(--COLOR-WIDGET-CONTAINER-BG);
+    color: var(--COLOR-TEXT-MAIN);
 }
 
 #load-file-input{
@@ -27,7 +33,7 @@ body{
     display: flex;
     justify-content: space-evenly;
     height: var(--BUTTONS-ROW-HEIGHT);
-    background-color: var(--COLOR-DARK-LIGHT);
+    background-color: var(--COLOR-BUTTONS-FLEXBOX-BG);
 }
 
 .buttons-flexbox{
@@ -38,12 +44,12 @@ body{
 }
 
 .main-button{
-    background-color: var(--COLOR-DARK);
-    color: var(--COLOR-LIGHT);
+    background-color: var(--COLOR-BUTTON-BG);
+    color: var(--COLOR-BUTTON-TEXT);
 }
 
 .button-selected{
-    background-color: var(--COLOR-MAIN);
+    background-color: var(--COLOR-BUTTON-ACTIVE);
 }
 
 .grid-container{
@@ -94,6 +100,7 @@ body{
 
 .item-header{
     width: 100%;
+    background-color: var(--COLOR-ITEM-HEADER-BG);
 }
 
 canvas{
@@ -108,9 +115,9 @@ canvas{
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    border: 1px solid #ccc;
     overflow-y: auto;
     padding: 10px;
+    background-color: var(--COLOR-WIDGET-BG);
 }
 
 .scrollable-list div{
@@ -132,17 +139,18 @@ canvas{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    background-color: var(--COLOR-WIDGET-BG);
 }
 
 .selected {
-    background-color: #007bff;
-    color: white;
+    background-color: var(--COLOR-ITEM-SELECTED);
 }
 
 .tree-view {
     overflow-y: auto;
     width: 100%;
     height: 100%;
+    background-color: var(--COLOR-WIDGET-BG);
 }
 
 ul {
