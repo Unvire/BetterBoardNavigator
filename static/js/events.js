@@ -49,7 +49,6 @@ class EventHandler{
         toggleFindComponentByClickButton.disabled = false;
         preserveComponentMarkesButton.disabled = false;
         clearMarkersButton.disabled = false;
-        toggleNetMarkersButton.disabled = false;
         unselectNetButton.disabled = false;
         findComponentUsingNameButton.disabled = false;
         prefixComponentsButton.disabled = false;
@@ -64,18 +63,6 @@ class EventHandler{
         allComponentsList.selectionMode = selectionModesMap[isSelectionModeSingle];
         EventHandler.toggleButton(preserveComponentMarkesButton);
         return isSelectionModeSingle;
-    }
-
-    static toggleNetMarkers(){
-        const netsTreeview = globalInstancesMap.getNetsTreeview();
-
-        pyodide.runPython(`
-            selectedNetComponent = engine.getSelectedNetComponent()
-        `);
-        const selectedNetComponent = pyodide.globals.get("selectedNetComponent");
-        netsTreeview.selectComponentByName(selectedNetComponent);
-        EventHandler.toggleButton(toggleNetMarkersButton);
-        EngineAdapter.toggleNetMarkers();
     }
 
     static unselectNet(){

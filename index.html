@@ -41,9 +41,6 @@
             <button type="button" class="main-button" id="clicked-component-button" disabled="true">Component Name On Click</button>
             <button type="button" class="main-button" id="toggle-leave-markers-button" disabled="true">Multiple Component Selection</button>
             <button type="button" class="main-button" id="unselect-components-button" disabled="true">Clear Component Markers</button>
-        </div>
-        <div class="buttons-flexbox">
-            <button type="button" class="main-button" id="toggle-net-marker-button" disabled="true">Net Component Marker</button>
             <button type="button" class="main-button" id="unselect-net-button" disabled="true">Unselect Net</button>
         </div>
         <div class="buttons-flexbox">
@@ -146,7 +143,6 @@
         const markedComponentsContainer = document.getElementById("scrollable-marked-components-list");
         const pinoutTableContainer = document.getElementById("pinout-table");
         const netTreeviewContainer = document.getElementById("net-treeview");
-        const toggleNetMarkersButton = document.getElementById("toggle-net-marker-button");
         const unselectNetButton = document.getElementById("unselect-net-button");
         const currentSideSpan = document.getElementById("current-side-span");
         const findComponentUsingNameButton = document.getElementById("find-component-by-name-button");
@@ -258,7 +254,6 @@
                 isSelectionModeSingle = EventHandler.preserveComponentMarkes(isSelectionModeSingle);
             });
             clearMarkersButton.addEventListener("click", EngineAdapter.clearMarkers);
-            toggleNetMarkersButton.addEventListener("click", EventHandler.toggleNetMarkers);
             unselectNetButton.addEventListener("click", EventHandler.unselectNet);            
             findComponentUsingNameButton.addEventListener("click", EventHandler.findComponentUsingName);
             prefixComponentsButton.addEventListener("click", EventHandler.showCommonPrefixComponents);

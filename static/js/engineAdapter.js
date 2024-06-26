@@ -118,14 +118,6 @@ class EngineAdapter{
         `);
     }
 
-    static toggleNetMarkers(){
-        const side = sideHandler.currentSide();
-        pyodide.runPython(`
-            engine.showHideMarkersForSelectedNetByNameInterface(SURFACE, '${side}')
-            pygame.display.flip()
-        `);
-    }
-
     static selectNetComponentByName(componentName){
         const side = sideHandler.setComponentSideAsCurrentSide(componentName);
         pyodide.runPython(`
