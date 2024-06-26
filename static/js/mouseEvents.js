@@ -37,8 +37,10 @@ async function mouseMoveEvent(event){
 
 function rotateOnClickEvent(){
     isRotateActive = !isRotateActive;
+    EventHandler.toggleButton(rotateButton);
 }
 
 function toggleFindComponentByClickEvent(){
     isFindComponentByClickActive = !isFindComponentByClickActive;
+    EventHandler.toggleButton(toggleFindComponentByClickButton);
 }

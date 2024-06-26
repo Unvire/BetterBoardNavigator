@@ -62,6 +62,7 @@ class EventHandler{
     
         isSelectionModeSingle = !isSelectionModeSingle;
         allComponentsList.selectionMode = selectionModesMap[isSelectionModeSingle];
+        EventHandler.toggleButton(preserveComponentMarkesButton);
         return isSelectionModeSingle;
     }
 
@@ -73,6 +74,7 @@ class EventHandler{
         `);
         const selectedNetComponent = pyodide.globals.get("selectedNetComponent");
         netsTreeview.selectComponentByName(selectedNetComponent);
+        EventHandler.toggleButton(toggleNetMarkersButton);
         EngineAdapter.toggleNetMarkers();
     }
 
@@ -96,5 +98,18 @@ class EventHandler{
         
         EngineAdapter.hideCommonPrefixComponents();
         commonPrefixSpan.innerText = "";
+    }
+
+    static toggleOutlines(){
+        EngineAdapter.toggleOutlines();
+        EventHandler.toggleButton(toggleOutlinesButton);
+    }
+
+    static toggleButton(button){
+        if (button.classList.contains("button-selected")){
+            button.classList.remove("button-selected");
+        } else {
+            button.classList.add("button-selected");
+        }
     }
 }
