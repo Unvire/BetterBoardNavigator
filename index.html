@@ -23,7 +23,8 @@
 <body>
     <div class="buttons-row-flexbox">
         <div class="buttons-flexbox">
-            <input type="file" id="load-file-button" disabled="true"/>
+            <button type="button" id="load-file-button">Choose File</button>
+            <input type="file" id="load-file-input" disabled="true"/>
         </div>
         <div class="buttons-flexbox">
             <button type="button" id="rotate-button" disabled="true">Rotate</button>
@@ -130,6 +131,7 @@
         const canvas = document.getElementById("canvas");
         const canvasParent = document.getElementById("item-center");
         const loadFileButton = document.getElementById("load-file-button");
+        const loadFileInput = document.getElementById("load-file-input");
         const changeSideButton = document.getElementById("change-side-button");
         const rotateButton = document.getElementById("rotate-button");
         const mirrorSideButton = document.getElementById("mirror-side-button");
@@ -227,7 +229,7 @@
             await loadLocalModules(pyodide);
 
             pyodide.canvas.setCanvas2D(canvas);
-            loadFileButton.disabled = false;
+            loadFileInput.disabled = false;
             EventHandler.setCanvasDimensions();
             
             window.addEventListener("resize", EventHandler.windowResize);
@@ -240,7 +242,7 @@
             canvas.addEventListener("mousemove", mouseMoveEvent);
             canvas.addEventListener("wheel", EngineAdapter.zoomInOut);
 
-            loadFileButton.addEventListener("change", (event) => {
+            loadFileInput.addEventListener("change", (event) => {
                 loadedFileName = EventHandler.loadFile(event, loadedFileName);
             });
             changeSideButton.addEventListener("click", EngineAdapter.changeSide);
