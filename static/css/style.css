@@ -1,5 +1,8 @@
 :root{
     --BUTTONS-ROW-HEIGHT: 50px;
+    --COLOR-DARK: #3f4156;
+    --COLOR-BG: #2d2d39;
+    --COLOR-DARK-LIGHT: #696d97;
 }
 
 body{
@@ -11,13 +14,14 @@ body{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    background-color: var(--COLOR-DARK);
 }
 
 .buttons-row-flexbox{
     display: flex;
     justify-content: space-evenly;
-    background-color: aqua;
     height: var(--BUTTONS-ROW-HEIGHT);
+    background-color: var(--COLOR-DARK-LIGHT);
 }
 
 .buttons-flexbox{
@@ -43,40 +47,34 @@ body{
 
 #item-left-top{
     grid-area: 1 / 1 / 1 / 1;
-    background-color: blueviolet;
 }
 
 #item-left-middle{
     grid-area: 2 / 1 / 8 / 1;
-    background-color: lightblue;
 }
 
 #item-left-bottom{
     grid-area: 8 / 1 / 11 / 1;
-    background-color: pink;
 }
 
 #item-center{
     grid-area: 1 / 2 / 11 / 10;
-    background-color: red;    
     position: relative;
     width: 100%;
     height: 100%;
+    background-color: var(--COLOR-BG);
 }
 
 #item-right-top{
     grid-area: 1 / 10 / 2 / 10;
-    background-color: yellowgreen;
 }
 
 #item-right-middle{
     grid-area: 2 / 10 / 4 / 10;
-    background-color: tan;
 }
 
 #item-right-bottom{
     grid-area: 4 / 10 / 11 / 10;
-    background-color: yellow;
 }
 
 .item-header{
