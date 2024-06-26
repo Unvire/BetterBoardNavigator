@@ -17,6 +17,10 @@ body{
     background-color: var(--COLOR-DARK);
 }
 
+#load-file-input{
+    display: none;
+}
+
 .buttons-row-flexbox{
     display: flex;
     justify-content: space-evenly;

@@ -23,8 +23,8 @@
 <body>
     <div class="buttons-row-flexbox">
         <div class="buttons-flexbox">
-            <button type="button" id="load-file-button">Choose File</button>
-            <input type="file" id="load-file-input" disabled="true"/>
+            <button type="button" id="load-file-button" disabled="true">Load schematic file</button>
+            <input type="file" id="load-file-input"/>
         </div>
         <div class="buttons-flexbox">
             <button type="button" id="rotate-button" disabled="true">Rotate</button>
@@ -218,8 +218,6 @@
         // ignore syntax errors from python's regex
         console.warn = () => {};
 
-
-
         document.addEventListener("DOMContentLoaded", async () => {
             pinoutTable.generateTable();
             
@@ -229,7 +227,7 @@
             await loadLocalModules(pyodide);
 
             pyodide.canvas.setCanvas2D(canvas);
-            loadFileInput.disabled = false;
+            loadFileButton.disabled = false;
             EventHandler.setCanvasDimensions();
             
             window.addEventListener("resize", EventHandler.windowResize);
@@ -242,9 +240,13 @@
             canvas.addEventListener("mousemove", mouseMoveEvent);
             canvas.addEventListener("wheel", EngineAdapter.zoomInOut);
 
+            loadFileButton.addEventListener("click", () => {
+                loadFileInput.click();
+            });
             loadFileInput.addEventListener("change", (event) => {
                 loadedFileName = EventHandler.loadFile(event, loadedFileName);
             });
+
             changeSideButton.addEventListener("click", EngineAdapter.changeSide);
             rotateButton.addEventListener("click", rotateOnClickEvent);
             mirrorSideButton.addEventListener("click", EngineAdapter.mirrorSide);
