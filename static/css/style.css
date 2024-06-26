@@ -3,6 +3,8 @@
     --COLOR-DARK: #3f4156;
     --COLOR-BG: #2d2d39;
     --COLOR-DARK-LIGHT: #696d97;
+    --COLOR-MAIN: #71c6dd;
+    --COLOR-LIGHT: #e5e5e5;
 }
 
 body{
@@ -14,7 +16,7 @@ body{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    background-color: var(--COLOR-DARK);
+    background-color: var(--COLOR-DARK-LIGHT);
 }
 
 #load-file-input{
@@ -34,6 +36,11 @@ body{
     flex-direction: row;
     justify-content: space-evenly;
 }
+
+.main-button{
+    background-color: var(--COLOR-DARK);
+    color: var(--COLOR-LIGHT);
+} 
 
 .grid-container{
     display: grid;    
