@@ -48,7 +48,7 @@ class EventHandler{
         areaFromComponentsButton.disabled = false;
         toggleFindComponentByClickButton.disabled = false;
         preserveComponentMarkesButton.disabled = false;
-        clearMarkersButton.disabled = false;sa
+        clearMarkersButton.disabled = false;
         unselectNetButton.disabled = false;
         findComponentUsingNameButton.disabled = false;
         prefixComponentsButton.disabled = false;
