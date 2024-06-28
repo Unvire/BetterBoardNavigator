@@ -79,7 +79,7 @@ body{
 }
 
 #item-left-top{
-    grid-area: 1 / 1 / 1 / 1;
+    grid-area: 1 / 1 / 2 / 1;
 }
 
 #item-left-middle{
@@ -110,9 +110,16 @@ body{
     grid-area: 4 / 10 / 11 / 10;
 }
 
+p{
+    line-height: 0.25em;
+}
+
 .item-header{
     width: 100%;
     background-color: var(--COLOR-ITEM-HEADER-BG);
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+    text-align: center;
 }
 
 canvas{
