@@ -76,6 +76,7 @@ body{
     flex-direction: column;
     background-color: var(--COLOR-WIDGET-BG);
     border-radius: 0.4em;
+    border: 1px solid var(--COLOR-BUTTONS-FLEXBOX-BG);
 }
 
 #item-left-top{
@@ -141,7 +142,7 @@ canvas{
 
 .scrollable-list div{
     padding: 2px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #d0d0d0;
     cursor: pointer;
 }
 
@@ -208,20 +209,37 @@ li {
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: var(--COLOR-WIDGET-BG);
     margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
+    border: 1px solid var(--COLOR-BUTTONS-FLEXBOX-BG);
+    border-radius: 0.4em;
     width: 80%;
-    max-width: 500px;
+    max-width: 300px;
     text-align: center;
 }
 
+.modal-head{
+    background-color: var(--COLOR-ITEM-HEADER-BG);
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#text-modal-header{
+    padding: 10px 10px;
+    margin: inherit;
+}
+
+.modal-body{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .close {
-    color: #aaa;
+    color: var(--COLOR-TEXT-MAIN);
     float: right;
     font-size: 28px;
     font-weight: bold;
+    padding-right: 2%;
 }
 
 .close:hover,
