@@ -42,6 +42,12 @@ class SpanListAdapter{
 
         PinoutTableAdapter.generatePinoutTable(pinoutTable, componentName);
     }
+
+    static clearSpanList(spanList){
+        const spanListParent = spanList.getParentContainer();
+
+        spanListParent.innerText = "";
+    }
 }
 
 class DynamicSelectableListAdapter{

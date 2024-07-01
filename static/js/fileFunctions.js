@@ -42,10 +42,13 @@ async function openAndLoadCadFile(pyodide, file) {
 
         const currentSideSpan = globalInstancesMap.getCurrentSideSpan();
         currentSideSpan.innerText = sideHandler.currentSide();
+
+        const  commonPrefixSpan = globalInstancesMap.getCommonPrefixSpan();
+        commonPrefixSpan.innerText = '';
         
         const clickedComponentSpanList = globalInstancesMap.getClickedComponentSpanList();
-        const clickedComponentSpanListParent = clickedComponentSpanList.getParentContainer();
-        clickedComponentSpanListParent.innerText = "";
+        SpanListAdapter.clearSpanList(clickedComponentSpanList);
+        
     }
     reader.readAsArrayBuffer(file);
 }
