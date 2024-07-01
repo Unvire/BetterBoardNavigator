@@ -207,12 +207,14 @@ li {
 }
 
 .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
     background-color: var(--COLOR-WIDGET-BG);
-    margin: 15% auto;
     border: 1px solid var(--COLOR-BUTTONS-FLEXBOX-BG);
     border-radius: 0.4em;
-    width: 80%;
-    max-width: 300px;
     text-align: center;
 }
 
@@ -220,11 +222,14 @@ li {
     background-color: var(--COLOR-ITEM-HEADER-BG);
     margin-top: 0;
     margin-bottom: 0;
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
 }
 
 #text-modal-header{
-    padding: 10px 10px;
+    padding: 15px 0;
     margin: inherit;
+    font-size: larger;
 }
 
 .modal-body{
