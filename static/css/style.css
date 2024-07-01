@@ -142,6 +142,7 @@ p{
     background-color: var(--COLOR-ITEM-HEADER-BG);
     border-top-left-radius: inherit;
     border-top-right-radius: inherit;
+    border-bottom: inherit;
     text-align: center;
 }
 
