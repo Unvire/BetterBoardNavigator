@@ -38,9 +38,7 @@ class SpanListAdapter{
     }
 
     static onClickEventSpanList(componentName){
-        const pinoutTable = globalInstancesMap.getPinoutTable();
-
-        PinoutTableAdapter.generatePinoutTable(pinoutTable, componentName);
+        PinoutTableAdapter.generatePinoutTable(componentName);
     }
 
     static clearSpanList(spanList){
