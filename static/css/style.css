@@ -82,6 +82,11 @@ body{
     grid-area: 1 / 1 / 2 / 1;
 }
 
+#item-left-top div{
+    border-bottom: none;
+    padding: 0;
+}
+
 #item-left-middle{
     grid-area: 2 / 1 / 8 / 1;
 }
@@ -139,8 +144,8 @@ canvas{
 }
 
 .scrollable-list div{
-    padding: 2px;
-    border-bottom: 1px solid #d0d0d0;
+    border-bottom: 1px solid var(--COLOR-TEXT-MAIN);
+    padding: 1px;
     cursor: pointer;
 }
 
@@ -157,11 +162,14 @@ canvas{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    border-bottom: 1px solid var(--COLOR-TEXT-MAIN);
+    padding: 1px;
 }
 
 .selected {
     color: var(--COLOR-TEXT-SELECTED);
     background-color: var(--COLOR-ITEM-SELECTED);
+    font-weight: bold;
 }
 
 .tree-view {
@@ -250,6 +258,12 @@ li {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+#clicked-components{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .span-list span{
