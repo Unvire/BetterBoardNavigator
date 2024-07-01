@@ -1,9 +1,8 @@
 :root{
-    --COLOR-BG: #000000;
+    --COLOR-BG: #374151;
     --COLOR-BUTTONS-FLEXBOX-BG: #1F2937;
     --COLOR-BUTTON-BG: #52525B;
     --COLOR-WIDGET-BG: #4B5563;
-    --COLOR-WIDGET-CONTAINER-BG: #374151;
     --COLOR-BUTTON-ACTIVE: #2187a3;
     --COLOR-ITEM-SELECTED: #71c6dd;
     --COLOR-BUTTON-TEXT: #e5e5e5;
@@ -25,7 +24,7 @@ body{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    background-color: var(--COLOR-WIDGET-CONTAINER-BG);
+    background-color: var(--COLOR-BG);
     color: var(--COLOR-TEXT-MAIN);
 }
 
@@ -96,7 +95,6 @@ body{
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: inherit;
 }
 
 #item-right-top{
