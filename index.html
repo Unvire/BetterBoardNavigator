@@ -33,7 +33,7 @@
             <button type="button" class="main-button" id="rotate-button" disabled="true">Rotate</button>
             <button type="button" class="main-button" id="change-side-button" disabled="true">Change side</button>
             <button type="button" class="main-button" id="mirror-side-button" disabled="true">Mirror side</button>
-            <button type="button" class="main-button button-selected" id="toggle-outlines-button" disabled="true">Board outlines</button>
+            <button type="button" class="main-button" id="toggle-outlines-button" disabled="true">Board outlines</button>
         </div>
         <div class="buttons-flexbox">
             <button type="button" class="main-button" id="default-view-button" disabled="true">Default view</button>
@@ -193,6 +193,7 @@
         globalInstancesMap.setSelectedComponentSpan(selectedComponentSpan);
         globalInstancesMap.setCommonPrefixSpan(commonPrefixSpan);
         globalInstancesMap.setCurrentSideSpan(currentSideSpan);
+        globalInstancesMap.setToggleOutlinesButton(toggleOutlinesButton);
 
 
         var modalSubmit = new ModalSubmit(textModalContainer, textModalCloseSpan, 

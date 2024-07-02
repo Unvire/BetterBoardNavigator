@@ -119,4 +119,12 @@ class GlobalInstancesMap{
     getCurrentSideSpan(){
         return this.currentSideSpan;
     }
+
+    setToggleOutlinesButton(instance){
+        this.toggleOutlinesButton = instance;
+    }
+
+    getToggleOutlinesButton(){
+        return this.toggleOutlinesButton
+    }
 }

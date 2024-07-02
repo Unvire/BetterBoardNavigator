@@ -48,7 +48,9 @@ async function openAndLoadCadFile(pyodide, file) {
         
         const clickedComponentSpanList = globalInstancesMap.getClickedComponentSpanList();
         SpanListAdapter.clearSpanList(clickedComponentSpanList);
-        
+
+        const toggleOutlinesButton = globalInstancesMap.getToggleOutlinesButton();
+        toggleOutlinesButton.classList.add("button-selected");    
     }
     reader.readAsArrayBuffer(file);
 }
