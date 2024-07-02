@@ -23,7 +23,7 @@ async function loadPygame(pyodide){
 async function loadLocalModules(pyodide) {
     async function copyModuleToVirtualMemory(pyodide, moduleName){
         const baseURL = window.location.href;
-        var response = await fetch(baseURL + `/static/python/${moduleName}.py`);
+        var response = await fetch(`/BetterBoardNavigator/static/python/${moduleName}.py`);
         var moduleCode = await response.text();
         pyodide.FS.writeFile(`/${moduleName}.py`, moduleCode);
     }
