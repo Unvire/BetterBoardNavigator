@@ -143,6 +143,9 @@
         </div>
     </div>
     <script>
+        // force 100% scale by dividing by user pixel ratio
+        document.querySelector("meta[name=viewport]").setAttribute('content', 'width=device-width, initial-scale='+(1/window.devicePixelRatio));
+
         let pyodide = null;
         let loadedFileName = "";
         let resizeTimeout = null;
