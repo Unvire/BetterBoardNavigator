@@ -3,14 +3,16 @@
     --COLOR-BUTTONS-FLEXBOX-BG: #1F2937;
     --COLOR-BUTTON-DISABLED-BG: #252529;
     --COLOR-BUTTON-BG: #52525B;
+    --COLOR-BUTTON-BORDER: #37373F;
     --COLOR-WIDGET-BG: #4B5563;
-    --COLOR-BUTTON-ACTIVE: #2187a3;
-    --COLOR-ITEM-SELECTED: #71c6dd;
+    --COLOR-BUTTON-ACTIVE: #2187A3;
+    --COLOR-BUTTON-SELECTED-BORDER: #196B81;
+    --COLOR-ITEM-SELECTED: #71C6DD;
     --COLOR-BUTTON-TEXT-DISABLED: #888888;
-    --COLOR-BUTTON-TEXT: #e5e5e5;
-    --COLOR-TEXT-MAIN: #eeeeee;
-    --COLOR-TEXT-SELECTED: #ffffff;
-    --COLOR-ITEM-HEADER-BG: #4f6574;
+    --COLOR-BUTTON-TEXT: #E5E5E5;
+    --COLOR-TEXT-MAIN: #EEEEEE;
+    --COLOR-TEXT-SELECTED: #FFFFFF;
+    --COLOR-ITEM-HEADER-BG: #4F6574;
 
     --BUTTONS-ROW-HEIGHT: 4em;
     --BUTTONS-ROW-VERTICAL-PADDING: 0.2em;
@@ -54,6 +56,7 @@ body{
 .main-button{
     font-size: 1em;
     background-color: var(--COLOR-BUTTON-BG);
+    border-color: var(--COLOR-BUTTON-BORDER);
     color: var(--COLOR-BUTTON-TEXT);
     margin: 0.5em 0.2em;
     border-radius: 0.4em;
@@ -71,9 +74,11 @@ body{
 
 .button-selected{
     background-color: var(--COLOR-BUTTON-ACTIVE);
+    border-color: var(--COLOR-BUTTON-SELECTED-BORDER);
 }
 
 .button-selected:hover{
+    color: var(--COLOR-TEXT-SELECTED) !important;
     background-color: var(--COLOR-ITEM-SELECTED) !important;
 }
 
