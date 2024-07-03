@@ -17,9 +17,11 @@
     --BUTTONS-ROW-HEIGHT: 4em;
     --BUTTONS-ROW-VERTICAL-PADDING: 0.2em;
     --GRID-VERTICAL-MARGIN-PADDING: 0.4em;
+    --GRID-CONTAINER-HEIGHT: 100vh;
 }
 
 body{
+    height: 100vh;
     font-family: "Aleo", serif;
     margin: 0;
     padding: 0;
@@ -88,7 +90,7 @@ body{
     grid-template-columns: repeat(10, minmax(100px, 1fr));
     grid-gap: 0.75em;
     margin: var(--GRID-VERTICAL-MARGIN-PADDING);
-    height: calc(100vh - var(--BUTTONS-ROW-HEIGHT) - (var(--GRID-VERTICAL-MARGIN-PADDING) * 2) - (var(--BUTTONS-ROW-VERTICAL-PADDING) * 2));    
+    height: calc(var(--GRID-CONTAINER-HEIGHT) - var(--BUTTONS-ROW-HEIGHT) - (var(--GRID-VERTICAL-MARGIN-PADDING) * 2) - (var(--BUTTONS-ROW-VERTICAL-PADDING) * 2));    
 }
 
 .functionality-container{

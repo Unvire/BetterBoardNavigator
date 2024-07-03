@@ -143,8 +143,7 @@
         </div>
     </div>
     <script>
-        // force 100% scale by dividing by user pixel ratio
-        document.body.style.zoom = `${Math.floor(1 / window.devicePixelRatio * 100)}%`;
+        EventHandler.compensateUserDevicePixelRatio();
 
         let pyodide = null;
         let loadedFileName = "";

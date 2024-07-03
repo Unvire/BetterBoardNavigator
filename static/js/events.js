@@ -1,4 +1,12 @@
 class EventHandler{
+    static compensateUserDevicePixelRatio(){
+        const dpr = window.devicePixelRatio;
+        const dynamicVH = dpr * 100;
+
+        document.body.style.zoom = `${Math.floor(1 / dpr * 100)}%`;
+        document.documentElement.style.setProperty('--GRID-CONTAINER-HEIGHT', dynamicVH + 'vh');
+    }
+
     static keyDown(event, isTextModalInputFocused){
         if (isTextModalInputFocused){
             const textModalInput = globalInstancesMap.getTextModalInput();
