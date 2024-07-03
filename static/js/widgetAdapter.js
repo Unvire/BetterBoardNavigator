@@ -181,6 +181,7 @@ class InputModalBoxAdapter{
     static getComponentNameFromInput(componentName){
         const modalBoxComponentName = componentName.toUpperCase();
         EngineAdapter.findComponentByName(modalBoxComponentName, isSelectionModeSingle);
+        EngineAdapter.componentInScreenCenter(modalBoxComponentName);
     }
 
     static getCommonPrefixFromInput(commonPrefix){

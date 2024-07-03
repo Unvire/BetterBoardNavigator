@@ -149,10 +149,11 @@ class DrawBoardEngine:
     
     def componentInScreenCenterInterface(self, targetSurface:pygame.Surface, componentName:str, side:str) -> pygame.Surface:
         componentInstance = self.boardData.getElementByName('components', componentName)
-        componentSide  = componentInstance.getSide()
-        if componentSide == side:
-            self._setComponentInScreenCenter(componentInstance, side)
-        return self.drawAndBlitInterface(targetSurface, side)
+        if componentInstance:
+            componentSide  = componentInstance.getSide()
+            if componentSide == side:
+                self._setComponentInScreenCenter(componentInstance, side)
+            return self.drawAndBlitInterface(targetSurface, side)
     
     def clearFindComponentByNameInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._unselectComponents()
