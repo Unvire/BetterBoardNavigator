@@ -251,10 +251,14 @@ li{
     border: 1px solid var(--COLOR-BUTTONS-FLEXBOX-BG);
     border-radius: 0.4em;
     text-align: center;
+    display: flex;
+    flex: column;
+    flex-direction: column;
 }
 
 #help-modal .modal-content{
     width: 600px;
+    height: 700px;
 }
 
 .modal-head{
@@ -263,6 +267,7 @@ li{
     margin-bottom: 0;
     border-top-left-radius: inherit;
     border-top-right-radius: inherit;
+    display: flex;
 }
 
 .modal-header{
@@ -272,8 +277,21 @@ li{
 }
 
 .modal-body{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.modal-body-content{
     padding-top: 10px;
     padding-bottom: 10px;
+    display: flex;
+    flex-grow: 1;
+}
+
+.modal-footer{
+    display: flex;
+    justify-content: center;
 }
 
 .close {
