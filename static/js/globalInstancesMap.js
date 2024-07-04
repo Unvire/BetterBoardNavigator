@@ -125,6 +125,22 @@ class GlobalInstancesMap{
     }
 
     getToggleOutlinesButton(){
-        return this.toggleOutlinesButton
+        return this.toggleOutlinesButton;
+    }
+
+    setModalHelp(instance){
+        this.modalHelp = instance;
+    }
+
+    getModalHelp(){
+        return this.modalHelp;
+    }
+
+    setShowDemoBoardButton(instance){
+        this.showDemoBoardButton = instance;
+    }
+
+    getShowDemoBoardButton(){
+        return this.showDemoBoardButton;
     }
 }
