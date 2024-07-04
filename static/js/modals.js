@@ -62,10 +62,10 @@ class ModalHelp extends ModalBox{
         this.parameterConstant = parameter;
     }
 
-    set buttonEvent(eventFunction){
+    setButtonEvent(eventFunction){
         this.buttonEvent = eventFunction;
         this.button.addEventListener("click", () => {
-            this.submitEvent(this.parameterConstant);
+            this.buttonEvent(this.parameterConstant);
             this.close();
         });
     }
