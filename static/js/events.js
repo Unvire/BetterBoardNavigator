@@ -108,6 +108,11 @@ class EventHandler{
         }
     }
 
+    static showHelpModalBox(){
+        const modalHelp = globalInstancesMap.getModalHelp();
+        HelpModalAdapter.generateModalBox(modalHelp)
+    }
+
     static loadDemoFile(loadedFileName){
         fetch("./static/cad_files/demo.cad")
             .then(response => response.blob())

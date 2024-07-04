@@ -135,11 +135,15 @@
             </div>
         </div>
     </div>
-    <div id="paragraph-modal" class="modal">
-        <div class="paragraph-modal-content">
-            <span class="close" id="paragraph-modal-close-span">&times;</span>
-            <h2 id="paragraph-modal-header"></h2>
-            <p id="paragraph-modal-p"></p>
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-head">
+                <span class="close" id="help-modal-close-span">&times;</span>
+                <p class="item-header" id="text-modal-header"></p>
+            </div>
+            <div class="modal-body">
+                <button class="main-button" id="show-demo-board-button">Demo board</button>
+            </div>
         </div>
     </div>
     <script>
@@ -188,8 +192,11 @@
         const paragraphModalPromptHeader = document.getElementById("paragraph-modal-header");
         const paragraphModalTextParagraph = document.getElementById("paragraph-modal-p");
 
+        const helpModalContainer = document.getElementById("help-modal");
+        const helpModalCloseSpan = document.getElementById("help-modal-close-span");
+        const showDemoBoardButton = document.getElementById("show-demo-board-button");
         
-        
+
         var globalInstancesMap = new GlobalInstancesMap();
         globalInstancesMap.setCanvas(canvas);
         globalInstancesMap.setCanvasParent(canvasParent);
@@ -207,8 +214,11 @@
         globalInstancesMap.setTextModalInput(textModalInput);
         
 
-        var modalParagraph = new ModalParagraph(paragraphModalContainer, paragraphModalCloseSpan, 
-                                                paragraphModalPromptHeader, paragraphModalTextParagraph);
+        var modalHelp = new ModalHelp(helpModalContainer, helpModalCloseSpan, "Better Board Navigator Help", showDemoBoardButton);
+        modalHelp.eventParameter = loadedFileName;
+        modalHelp.setButtonEvent(EventHandler.loadDemoFile);
+        globalInstancesMap.setModalHelp(modalHelp);
+        globalInstancesMap.setShowDemoBoardButton(showDemoBoardButton);
 
         var allComponentsList = DynamicSelectableListAdapter.initDynamicSelectableList(allComponentsContainer);
         globalInstancesMap.setAllComponentsList(allComponentsList);
@@ -287,9 +297,7 @@
             findComponentUsingNameButton.addEventListener("click", EventHandler.findComponentUsingName);
             prefixComponentsButton.addEventListener("click", EventHandler.showCommonPrefixComponents);
             unselectPrefixComponentsButton.addEventListener("click", EventHandler.hideCommonPrefixComponents);
-            helpButton.addEventListener("click", ()=> {
-                loadedFileName = EventHandler.loadDemoFile(loadedFileName);
-            });
+            helpButton.addEventListener("click", EventHandler.showHelpModalBox);
             
             textModalInput.addEventListener("focus", () => {
                 isTextModalInputFocused = true;
