@@ -107,4 +107,18 @@ class EventHandler{
             button.classList.add("button-selected");
         }
     }
+
+    static loadDemoFile(){
+        fetch("./static/cad_files/demo.cad")
+            .then(response => response.blob())
+            .then(blob => {
+                const file = new File([blob], "demo.cad", {type: "application/octet-stream"});
+                const simulatedEvent = {
+                    target: {
+                        files: [file]
+                    }
+                };
+                EventHandler.loadFile(simulatedEvent, "demo.cad");
+            });
+    }
 }

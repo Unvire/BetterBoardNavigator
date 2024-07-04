@@ -175,6 +175,7 @@
         const unselectPrefixComponentsButton = document.getElementById("unselect-prefix-components-button");
         const commonPrefixSpan = document.getElementById("common-prefix-span");
         const selectedComponentSpan = document.getElementById("selected-component-span");
+        const helpButton = document.getElementById("help-button");
 
         const textModalContainer = document.getElementById("text-modal");
         const textModalCloseSpan = document.getElementById("text-modal-close-span");
@@ -249,8 +250,10 @@
             await loadLocalModules(pyodide);
 
             pyodide.canvas.setCanvas2D(canvas);
-            loadFileButton.disabled = false;
             EventHandler.setCanvasDimensions();
+            
+            loadFileButton.disabled = false;
+            helpButton.disabled = false;
             
             window.addEventListener("resize", EventHandler.windowResize);
             window.addEventListener("keydown", (event) =>{
@@ -284,6 +287,10 @@
             findComponentUsingNameButton.addEventListener("click", EventHandler.findComponentUsingName);
             prefixComponentsButton.addEventListener("click", EventHandler.showCommonPrefixComponents);
             unselectPrefixComponentsButton.addEventListener("click", EventHandler.hideCommonPrefixComponents);
+            helpButton.addEventListener("click", ()=> {
+                EventHandler.loadDemoFile();
+                loadDemoFileName = "demo.cad";
+            });
             
             textModalInput.addEventListener("focus", () => {
                 isTextModalInputFocused = true;
