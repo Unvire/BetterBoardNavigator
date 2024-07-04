@@ -69,4 +69,8 @@ class ModalHelp extends ModalBox{
             this.close();
         });
     }
+
+    close(){
+        this.parentContainer.style.display = "none";
+    }
 }
