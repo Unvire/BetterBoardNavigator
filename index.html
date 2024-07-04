@@ -127,7 +127,7 @@
         <div class="modal-content">
             <div class="modal-head">
                 <span class="close" id="text-modal-close-span">&times;</span>
-                <p class="item-header" id="text-modal-header"></p>
+                <p class="item-header modal-header" id="text-modal-header"></p>
             </div>
             <div class="modal-body">
                 <input type="text" id="text-modal-input" placeholder="">
@@ -139,7 +139,7 @@
         <div class="modal-content">
             <div class="modal-head">
                 <span class="close" id="help-modal-close-span">&times;</span>
-                <p class="item-header" id="text-modal-header"></p>
+                <p class="item-header modal-header" id="help-modal-header"></p>
             </div>
             <div class="modal-body">
                 <button class="main-button" id="show-demo-board-button">Demo board</button>
@@ -194,6 +194,7 @@
 
         const helpModalContainer = document.getElementById("help-modal");
         const helpModalCloseSpan = document.getElementById("help-modal-close-span");
+        const helpModalHeader = document.getElementById("help-modal-header");
         const showDemoBoardButton = document.getElementById("show-demo-board-button");
         
 
@@ -214,7 +215,7 @@
         globalInstancesMap.setTextModalInput(textModalInput);
         
 
-        var modalHelp = new ModalHelp(helpModalContainer, helpModalCloseSpan, "Better Board Navigator Help", showDemoBoardButton);
+        var modalHelp = new ModalHelp(helpModalContainer, helpModalCloseSpan, helpModalHeader, showDemoBoardButton);
         modalHelp.eventParameter = loadedFileName;
         modalHelp.setButtonEvent(EventHandler.loadDemoFile);
         globalInstancesMap.setModalHelp(modalHelp);

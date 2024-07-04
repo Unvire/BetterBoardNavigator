@@ -56,6 +56,7 @@ class ModalHelp extends ModalBox{
         super(parentContainer, closeSpan, header)
         this.button = button;
         this.parameterConstant = null;
+        this.header.innerText = "Better Board Navigator Help";
     }
 
     set eventParameter(parameter){

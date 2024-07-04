@@ -192,35 +192,35 @@ canvas{
     padding: 1px;
 }
 
-.selected {
+.selected{
     color: var(--COLOR-TEXT-SELECTED);
     background-color: var(--COLOR-ITEM-SELECTED);
     font-weight: bold;
 }
 
-.tree-view {
+.tree-view{
     overflow-y: auto;
     width: 100%;
     height: 100%;
 }
 
-ul {
+ul{
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
-li {
+li{
     white-space: nowrap;
     margin-left: 20px;
     cursor: pointer;
 }
 
-.treeview-hidden {
+.treeview-hidden{
     display: none;
 }
 
-.toggle-button {
+.toggle-button{
     margin-right: 5px;
     cursor: pointer;
 }
@@ -229,7 +229,7 @@ li {
     font-weight: bold;
 }
 
-.modal {
+.modal{
     display: none;
     position: fixed;
     z-index: 1;
@@ -241,7 +241,7 @@ li {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-.modal-content {
+.modal-content{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -253,6 +253,10 @@ li {
     text-align: center;
 }
 
+#help-modal .modal-content{
+    width: 600px;
+}
+
 .modal-head{
     background-color: var(--COLOR-ITEM-HEADER-BG);
     margin-top: 0;
@@ -261,7 +265,7 @@ li {
     border-top-right-radius: inherit;
 }
 
-#text-modal-header{
+.modal-header{
     padding: 15px 0;
     margin: inherit;
     font-size: larger;
