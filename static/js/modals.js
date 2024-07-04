@@ -51,17 +51,22 @@ class ModalSubmit extends ModalBox{
     }
 }
 
-class ModalParagraph extends ModalBox{
-    constructor(parentContainer, closeSpan, header, textParagraph){
+class ModalHelp extends ModalBox{
+    constructor(parentContainer, closeSpan, header, button){
         super(parentContainer, closeSpan, header)
-        this.textParagraph = textParagraph;
+        this.button = button;
+        this.parameterConstant = null;
     }
 
-    clearParagraph(){
-        this.setParagraphText("");
+    set eventParameter(parameter){
+        this.parameterConstant = parameter;
     }
 
-    setParagraphText(text){
-        this.textParagraph.innerText = text;
+    set buttonEvent(eventFunction){
+        this.buttonEvent = eventFunction;
+        this.button.addEventListener("click", () => {
+            this.submitEvent(this.parameterConstant);
+            this.close();
+        });
     }
 }
