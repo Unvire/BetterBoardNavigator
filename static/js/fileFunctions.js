@@ -1,13 +1,13 @@
-async function openAndLoadCadFile(pyodide, file) {
+function openAndLoadCadFile(pyodide, file) {
     var fileName = `/${file.name}`;
     const reader = new FileReader(); 
 
-    reader.onload = async (event) => {
+    reader.onload = (event) => {
         const fileContent = event.target.result;
         pyodide.FS.writeFile(fileName, new Uint8Array(fileContent));
         const side = sideHandler.currentSide();
 
-        await pyodide.runPython(`
+        pyodide.runPython(`
             from boardWrapper import BoardWrapper
             from pygameDrawBoard import DrawBoardEngine
 
@@ -55,7 +55,7 @@ async function openAndLoadCadFile(pyodide, file) {
     reader.readAsArrayBuffer(file);
 }
 
-async function removePreviousFileFromFS(pyodide, fileName){
+function removePreviousFileFromFS(pyodide, fileName){
     const pydodideFiles = pyodide.FS.readdir("/");
     if (pydodideFiles.includes(fileName)){
         pyodide.FS.unlink(`/${fileName}`);

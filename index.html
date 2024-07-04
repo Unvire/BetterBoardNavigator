@@ -288,8 +288,7 @@
             prefixComponentsButton.addEventListener("click", EventHandler.showCommonPrefixComponents);
             unselectPrefixComponentsButton.addEventListener("click", EventHandler.hideCommonPrefixComponents);
             helpButton.addEventListener("click", ()=> {
-                EventHandler.loadDemoFile();
-                loadDemoFileName = "demo.cad";
+                loadedFileName = EventHandler.loadDemoFile(loadedFileName);
             });
             
             textModalInput.addEventListener("focus", () => {

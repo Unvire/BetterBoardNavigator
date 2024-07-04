@@ -37,11 +37,11 @@ class EventHandler{
         canvas.height = canvasParent.clientHeight;
     }
 
-    static async loadFile(event, loadedFileName){
+    static loadFile(event, loadedFileName){
         const file = event.target.files[0];
         if (file) {
-            await removePreviousFileFromFS(pyodide, loadedFileName);
-            await openAndLoadCadFile(pyodide, file);
+            removePreviousFileFromFS(pyodide, loadedFileName);
+            openAndLoadCadFile(pyodide, file);
             EventHandler.enableButtons();
             return file.name;
         }
@@ -108,7 +108,7 @@ class EventHandler{
         }
     }
 
-    static loadDemoFile(){
+    static loadDemoFile(loadedFileName){
         fetch("./static/cad_files/demo.cad")
             .then(response => response.blob())
             .then(blob => {
@@ -118,7 +118,8 @@ class EventHandler{
                         files: [file]
                     }
                 };
-                EventHandler.loadFile(simulatedEvent, "demo.cad");
+                EventHandler.loadFile(simulatedEvent, loadedFileName);
+                return "demo.cad"
             });
     }
 }
