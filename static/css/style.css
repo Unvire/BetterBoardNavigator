@@ -228,6 +228,7 @@ li{
 .highlighted-text{
     font-weight: bold;
     font-style: italic;
+    color: var(--COLOR-TEXT-SELECTED);
 }
 
 .modal{
@@ -300,7 +301,8 @@ li{
 
 .modal-main p{    
     line-height: 1em;
-    text-align: left;
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 .new-line{
