@@ -62,7 +62,7 @@
                         <p>Current side</p>
                     </div>
                     <div>
-                        <p><span class="innertext" id="current-side-span"></span></p>
+                        <p><span class="highlighted-text" id="current-side-span"></span></p>
                     </div>
                 </div>
                 <div class="table-row">
@@ -70,7 +70,7 @@
                         <p>Highlighted prefix</p>
                     </div>
                     <div>
-                        <p><span class="innertext" id="common-prefix-span"></span></p>
+                        <p><span class="highlighted-text" id="common-prefix-span"></span></p>
                     </div>
                 </div>
             </div>
@@ -145,15 +145,32 @@
             </div>
             <div class="modal-main">
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus condimentum purus nec convallis congue. Nullam congue elit tellus, eu dictum lorem vestibulum eu. Proin euismod ante tellus, quis convallis nisi varius vitae. Morbi ac mi vel nisl ullamcorper tincidunt non vitae purus. Maecenas id ultrices elit. Aliquam porttitor sed massa eget posuere. Ut imperdiet nibh et blandit consectetur. Suspendisse blandit sagittis massa vitae vulputate. Curabitur mauris massa, hendrerit vitae rutrum quis, laoreet a turpis. In porttitor ligula id lectus fringilla sodales. Phasellus iaculis mollis libero, in tempus libero efficitur vel. Maecenas ultricies venenatis dui, et congue risus aliquam sit amet.
-
-                    Ut iaculis rutrum facilisis. Etiam id iaculis leo, vel vestibulum urna. Morbi pulvinar neque ut leo consectetur tristique. Nam velit ligula, congue et sollicitudin ultrices, suscipit quis elit. Sed eu urna at augue lacinia porttitor sed vitae sem. Pellentesque placerat dui vitae placerat tempor. Morbi laoreet eget est et sollicitudin. Interdum et malesuada fames ac ante ipsum primis in faucibus.
-
-                    Suspendisse vitae justo pretium dolor suscipit accumsan sit amet eget diam. Praesent vitae tincidunt neque. Phasellus pretium erat eu nulla sollicitudin placerat. Praesent aliquam risus nunc, eget dapibus orci consectetur sed. Sed bibendum nibh leo, vel euismod sapien ultrices id. Sed ut felis at urna tincidunt tempor. Fusce non ullamcorper arcu. Nulla tincidunt quam eget nulla pellentesque ullamcorper. Mauris mattis porttitor eros non cursus. Ut sed purus cursus, lacinia justo eu, sodales elit. Nulla in sapien in risus scelerisque vulputate. Nullam volutpat nisl at neque efficitur venenatis ut eleifend dolor. Integer odio elit, molestie id lacus sed, gravida bibendum metus. Mauris laoreet sapien ligula, vel porttitor erat molestie ut.
-
-                    Integer vestibulum lectus eu metus sagittis laoreet. Nulla sit amet turpis congue, luctus lacus sit amet, lobortis purus. Fusce bibendum ultricies magna, in eleifend ex accumsan a. Suspendisse rhoncus quam at erat sagittis egestas. Morbi eget massa tincidunt ex tempor congue ut vel augue. Curabitur non elementum enim. Nam vehicula interdum arcu in feugiat. Proin enim est, pharetra vehicula orci at, egestas commodo nunc. Nullam efficitur volutpat aliquet. Morbi venenatis urna id lobortis tincidunt. Donec auctor massa ut sollicitudin elementum.
-
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ante tellus, hendrerit nec nulla quis, ultrices accumsan augue. Praesent pharetra sem ac nulla vestibulum, sit amet lacinia erat pharetra. Etiam nec nibh vestibulum, bibendum nulla nec, tempor justo. Vestibulum ornare cursus lectus, vel ornare mauris sodales posuere. Ut id convallis massa. Mauris fringilla tellus quam, quis commodo leo suscipit ut. Cras condimentum diam sit amet elit pretium commodo. Proin convallis vehicula felis sagittis gravida. Duis quis tempus leo, eu vulputate est. Curabitur ac eros sed arcu venenatis pulvinar nec eget turpis. Duis scelerisque tortor eu ex aliquet scelerisque. Morbi sodales egestas dolor, et feugiat justo. Ut imperdiet nunc mi, a feugiat nunc ullamcorper et. Maecenas imperdiet urna sed tellus viverra dapibus. Praesent vel porttitor nunc.
+                    Better Navigator is an application to view PCB given as a schematic file. Works with CamCad (.cad), GenCad (.gcd), ODB++ (.tgz) and ViseCAD (.ccz).</br>
+                    </br>
+                    To use a program wait until the loading of libraries is completed and the "Load schematic file" and "Help" button become active.</br>
+                    </br>
+                    Controls and buttons description:</br>
+                    <span class="highlighted-text">Draging with a left mouse button</span> - moving the board acros the canvas.</br>
+                    </br>  
+                    <span class="highlighted-text">Load schematic file</span> - loads a file and processes it. Files are not stored on side, except the demo file.</br>
+                    <span class="highlighted-text">Rotate</span> - when button is active clicking on canvas will rotate the board 90 deg clockwise.</br>
+                    <span class="highlighted-text">Change side</span> - changes currently viewed side.</br>
+                    <span class="highlighted-text">Mirror side</span> - mirrors current side along X axis.</br>
+                    <span class="highlighted-text">Board outlines</span> - shows/hides board outlines.</br>
+                    </br>  
+                    <span class="highlighted-text">Default view</span> - resets viewed board to initial state.</br>
+                    <span class="highlighted-text">Area from components</span> - recalculates board dimensions using all components. Useful when default view is not working.</br>
+                    </br>  
+                    <span class="highlighted-text">Find component by name</span> - searches and displays component with given name if it exists.</br>
+                    <span class="highlighted-text">Component name on click</span> - when active, displays clicked components name.</br>
+                    <span class="highlighted-text">Multiple component selection</span> - changes between single selection and multiple selection of components.</br>
+                    <span class="highlighted-text">Clear components markers</span> - clears markers and marked components.</br>
+                    <span class="highlighted-text">Unselect net</span> - unselects selected net.</br>
+                    </br>   
+                    <span class="highlighted-text">Prefix components</span> - highlights common prefix components with given prefix.</br>
+                    <span class="highlighted-text">Unselect prefix components</span> - clears highlighted common prefix components.</br>
+                    </br>
+                    <span class="highlighted-text">Demo board</span> - displays example file of NPN audio amplifier.</br>
                 </p>
             </div>
             <div class="modal-footer">

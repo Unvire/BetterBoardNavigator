@@ -225,8 +225,9 @@ li{
     cursor: pointer;
 }
 
-.innertext{
+.highlighted-text{
     font-weight: bold;
+    font-style: italic;
 }
 
 .modal{
@@ -295,6 +296,7 @@ li{
 
 .modal-main p{    
     line-height: 1em;
+    text-align: left;
 }
 
 .modal-footer{
