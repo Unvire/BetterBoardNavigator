@@ -241,7 +241,7 @@ li{
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-.modal-content{
+.modal-content-layout{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -256,7 +256,7 @@ li{
     flex-direction: column;
 }
 
-#help-modal .modal-content{
+#help-modal .modal-content-layout{
     width: 600px;
     height: 700px;
 }
@@ -276,22 +276,31 @@ li{
     font-size: larger;
 }
 
-.modal-body{
+.modal-main{
+    min-height: 50px;
+    padding: 0 15px;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    overflow: auto;
 }
 
-.modal-body-content{
-    padding-top: 10px;
-    padding-bottom: 10px;
-    display: flex;
-    flex-grow: 1;
+#text-modal .modal-main{
+    justify-content: center;
+}
+
+#text-modal-input{
+    border-radius: inherit;
+    border-width: 0;
+}
+
+.modal-main p{    
+    line-height: 1em;
 }
 
 .modal-footer{
     display: flex;
     justify-content: center;
+    padding: var(--MODAL-PADDING-PX) 0;
 }
 
 .close {
