@@ -301,7 +301,10 @@ li{
 .modal-main p{    
     line-height: 1em;
     text-align: left;
-    margin: 0;
+}
+
+.new-line{
+    margin-top: 0.75em;
 }
 
 .modal-footer{
