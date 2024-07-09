@@ -285,6 +285,10 @@ li{
     overflow: auto;
 }
 
+.modal-main h3{
+    text-align: center;
+}
+
 #text-modal .modal-main{
     justify-content: center;
 }
@@ -297,6 +301,7 @@ li{
 .modal-main p{    
     line-height: 1em;
     text-align: left;
+    margin: 0;
 }
 
 .modal-footer{

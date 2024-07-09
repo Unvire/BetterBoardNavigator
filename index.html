@@ -144,33 +144,42 @@
                 <span class="close" id="help-modal-close-span">&times;</span>
             </div>
             <div class="modal-main">
+                <h3>About</h3>
                 <p>
-                    Better Navigator is an application to view PCB given as a schematic file. Works with CamCad (.cad), GenCad (.gcd), ODB++ (.tgz) and ViseCAD (.ccz).</br>
+                    Better Navigator is an application to view PCB given as a schematic file. Works with CamCad (.cad), GenCad (.gcd), ODB++ (.tgz) and ViseCAD (.ccz).</br></br>
+                    To use a program, wait until the loading of libraries is completed and the "Load schematic file" and "Help" button become active.</br></br>
                     </br>
-                    To use a program wait until the loading of libraries is completed and the "Load schematic file" and "Help" button become active.</br>
+                </p>
+                <h3>Controls and buttons description</h3>
+                <p>
+                    <span class="highlighted-text">Dragging with a left mouse button</span> - moving the board acros the canvas.</br></br>
+                    <span class="highlighted-text">Load schematic file</span> - loads a file and processes it. Files are not stored on side, except the demo file.</br></br>
+                    <span class="highlighted-text">Rotate</span> - when button is active, clicking on canvas will rotate the board 90 deg clockwise.</br></br>
+                    <span class="highlighted-text">Change side</span> - changes currently viewed side.</br></br>
+                    <span class="highlighted-text">Mirror side</span> - mirrors current side along X axis.</br></br>
+                    <span class="highlighted-text">Board outlines</span> - shows/hides board outlines.</br></br>
+                    <span class="highlighted-text">Default view</span> - resets viewed board to initial state.</br></br>
+                    <span class="highlighted-text">Area from components</span> - recalculates board dimensions using all components. Useful when default view is not working.</br></br>
+                    <span class="highlighted-text">Find component by name</span> - searches and displays component with given name if it exists.</br></br>
+                    <span class="highlighted-text">Component name on click</span> - when active, displays clicked components name.</br></br>
+                    <span class="highlighted-text">Multiple component selection</span> - changes between single selection and multiple selection of components.</br></br>
+                    <span class="highlighted-text">Clear components markers</span> - clears markers and marked components.</br></br>
+                    <span class="highlighted-text">Unselect net</span> - unselects selected net.</br></br>
+                    <span class="highlighted-text">Prefix components</span> - highlights common prefix components with given prefix.</br></br>
+                    <span class="highlighted-text">Unselect prefix components</span> - clears highlighted common prefix components.</br></br>
+                    <span class="highlighted-text">Demo board</span> - displays example file of NPN audio amplifier.</br></br>
                     </br>
-                    Controls and buttons description:</br>
-                    <span class="highlighted-text">Draging with a left mouse button</span> - moving the board acros the canvas.</br>
-                    </br>  
-                    <span class="highlighted-text">Load schematic file</span> - loads a file and processes it. Files are not stored on side, except the demo file.</br>
-                    <span class="highlighted-text">Rotate</span> - when button is active clicking on canvas will rotate the board 90 deg clockwise.</br>
-                    <span class="highlighted-text">Change side</span> - changes currently viewed side.</br>
-                    <span class="highlighted-text">Mirror side</span> - mirrors current side along X axis.</br>
-                    <span class="highlighted-text">Board outlines</span> - shows/hides board outlines.</br>
-                    </br>  
-                    <span class="highlighted-text">Default view</span> - resets viewed board to initial state.</br>
-                    <span class="highlighted-text">Area from components</span> - recalculates board dimensions using all components. Useful when default view is not working.</br>
-                    </br>  
-                    <span class="highlighted-text">Find component by name</span> - searches and displays component with given name if it exists.</br>
-                    <span class="highlighted-text">Component name on click</span> - when active, displays clicked components name.</br>
-                    <span class="highlighted-text">Multiple component selection</span> - changes between single selection and multiple selection of components.</br>
-                    <span class="highlighted-text">Clear components markers</span> - clears markers and marked components.</br>
-                    <span class="highlighted-text">Unselect net</span> - unselects selected net.</br>
-                    </br>   
-                    <span class="highlighted-text">Prefix components</span> - highlights common prefix components with given prefix.</br>
-                    <span class="highlighted-text">Unselect prefix components</span> - clears highlighted common prefix components.</br>
+                </p>
+                <h3>Panels description</h3>
+                <p>
+                    <span class="highlighted-text">Current side and highlighted prefix</span> - displays currently viewed side and displayed common prefix for components.</br></br>
+                    <span class="highlighted-text">All components</span> - displays list with all board components. User can select one or multiple components which will be displayed in "Marked components" list.</br></br>
+                    <span class="highlighted-text">Clicking on components</span> will also show it pinout in the "Component pinout" table.</br></br>
+                    <span class="highlighted-text">Component pinout</span> - displays component pins and nets. Clicking on row will highlight net.</br></br>
+                    <span class="highlighted-text"> Clicked components</span> - displays components clicked with a mouse. Clicking on component name will generate its pinout in the "Pinout table".</br></br>
+                    <span class="highlighted-text">Marked components</span> - displays marked components. Clicking on item will set the component in the center of the canvas and generate its pinout in the "Pinout table".</br></br>
+                    <span class="highlighted-text">Nets list</span> - displays nets of the PCB and components assigned to them. Clicking on the net name will reveal components and mark the net. Clicking on the component will mark the component, set it in the center of the canvas and generate its pinout table.</br></br>
                     </br>
-                    <span class="highlighted-text">Demo board</span> - displays example file of NPN audio amplifier.</br>
                 </p>
             </div>
             <div class="modal-footer">
