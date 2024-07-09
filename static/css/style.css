@@ -304,7 +304,8 @@ li{
 }
 
 .new-line{
-    margin-top: 0.75em;
+    margin-top: 0;
+    margin-bottom: 0.75em;
 }
 
 .modal-footer{
