@@ -124,6 +124,7 @@ class EngineAdapter{
             engine.selectNetComponentByNameInterface(SURFACE, '${componentName}', '${side}')
             pygame.display.flip()
         `);
+        EngineAdapter.componentInScreenCenter(componentName);
     }
 
     static unselectNet(){
