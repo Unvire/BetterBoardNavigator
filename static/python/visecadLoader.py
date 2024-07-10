@@ -30,7 +30,7 @@ class VisecadLoader():
     def _parseXMLFromFileLines(self, fileLines:list[str]) -> 'xml.etree.ElementTree':
         return ET.fromstring(''.join(fileLines))
     
-    def _getOutlinesLayers(self, root:ET) -> list[int]:
+    def _getOutlinesLayers(self, root:ET) -> list[str]:
         layersXML = root.find('Layers')
 
         outlineLayers = []
