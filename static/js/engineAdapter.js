@@ -158,7 +158,7 @@ class EngineAdapter{
     static findComponentByName(componentName, isSelectionModeSingle){
         const componentSide = sideHandler.getSideOfComponent(componentName);
         if (!componentSide){
-            return
+            return false;
         }
         
         const side = sideHandler.setComponentSideAsCurrentSide(componentName);
@@ -169,5 +169,6 @@ class EngineAdapter{
             engine.findComponentByNameInterface(SURFACE, '${componentName}', '${side}')
             pygame.display.flip()
         `);
+        return true;
     }
 }
