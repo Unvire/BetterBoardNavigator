@@ -16,6 +16,7 @@ class VisecadLoader():
     def processFileLines(self, fileLines:list[str]) -> board.Board:
         root = self._parseXMLFromFileLines(fileLines)
         outlinesLayers = self._getOutlinesLayers(root)
+        self._processNetsTag(root, self.boardData)
         
         return self.boardData
     
@@ -38,6 +39,54 @@ class VisecadLoader():
             if 'OUTLINE' in child.attrib['name'].upper():
                 outlineLayers.append(child.attrib['num'])
         return outlineLayers
+
+    def _processNetsTag(self, root:ET, boardInstance:board.Board) -> None:
+        try:
+            filesXML = root.find('Files').find('File').find('Nets')
+        except AttributeError:
+            return
+        
+        componentDict = {}
+        for netXML in filesXML:
+            netName = netXML.attrib['name']
+            for compPinXML in netXML:
+                pinID = compPinXML.attrib['pin']
+                pinX = compPinXML.attrib['x']
+                pinY = compPinXML.attrib['y']
+                newPin = self._createPin(pinID, pinX, pinY)
+
+                pinAngle = compPinXML.attrib['rotation']
+                padShapeID = compPinXML.attrib['padstackGeomNum']
+                
+                componentName = compPinXML.attrib['comp']
+                mountingType = self._getComponentMountingType(compPinXML)
+                newComponent = self._createComponent(componentName, mountingType)
+
+
+
+
+                print(compPinXML.attrib['comp'], compPinXML.attrib['pin'])
+        
+    def _getComponentMountingType(self, attribRootXML:ET) -> str:
+        mountDict = {'SMD': 'SMT', 'SMT':'SMT', 'THRU':'TH', 'TH':'TH'}
+        for child in attribRootXML:
+            if child.tag == 'Attrib' and 'val' in child.attrib and child.attrib['val'].upper() in mountDict:
+                val = child.attrib['val']
+                return mountDict[val]
+    
+    def _createPin(self, pinName:str, pinX:str, pinY:str) -> pin.Pin:
+        pinX = gobj.floatOrNone(pinX)
+        pinY = gobj.floatOrNone(pinY)
+        coordsPoint = gobj.Point(pinX, pinY)
+        
+        newPin = pin.Pin(pinName)
+        newPin.setCoords(coordsPoint)
+        return newPin
+    
+    def _createComponent(self, componentName:str, mountingType:str) -> comp.Component:
+        newComponent = comp.Component(componentName)
+        newComponent.setMountingType(mountingType)
+        return newComponent
 
 if __name__ == '__main__':
     def openSchematicFile() -> str:        
