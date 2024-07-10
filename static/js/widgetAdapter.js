@@ -10,7 +10,7 @@ class WidgetAdapter{
         const selectedComponentSpan = globalInstancesMap.getSelectedComponentSpan();
 
         allComponentsList.unselectAllItems();
-        pinoutTable.unselectCurrentRow();
+        pinoutTable.unselectCurrentRows();
         pinoutTable.clearBody();
         DynamicSelectableListAdapter.generateMarkedComponentsList();
         selectedComponentSpan.innerText = "Component";
@@ -19,7 +19,7 @@ class WidgetAdapter{
         const pinoutTable = globalInstancesMap.getPinoutTable();
 
         TreeViewAdapter.resetTreeview();
-        pinoutTable.unselectCurrentRow();
+        pinoutTable.unselectCurrentRows();
     }
 }
 
@@ -124,7 +124,7 @@ class PinoutTableAdapter{
         const pinoutTable = globalInstancesMap.getPinoutTable();    
 
         netsTreeview.scrollToBranchByName(netName);
-        if(pinoutTable.getSelectedRow()){
+        if(pinoutTable.getSelectedRows()){
             EngineAdapter.selectNet(netName);
         }
     }

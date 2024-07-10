@@ -4,11 +4,11 @@ class PinoutTable{
         this.tableContainer = document.createElement("div");
         this.selectRowEvent = null;
         this.beforeSelectionEvent = null;
-        this.selectedRow = null;
+        this.selectedRows = [];
     }
 
-    getSelectedRow(){
-        return this.selectedRow;
+    getSelectedRows(){
+        return this.selectedRows;
     }
 
     set rowEvent(eventFunction){
@@ -47,14 +47,7 @@ class PinoutTable{
 
             row.addEventListener("click", () => { 
                 this.beforeSelectionEvent();
-
-                const isSkipSelectionHandling = row === this.selectedRow;
-                this.unselectCurrentRow();
-
-                if (!isSkipSelectionHandling){
-                    this.selectedRow = this.#singleSelectionModeEvent(row);
-                }
-
+                this.selectRowByName(netName);
                 this.selectRowEvent(netName);
             });
             
@@ -66,24 +59,26 @@ class PinoutTable{
         return row;
     }
 
-    unselectCurrentRow(){
-        if (this.selectedRow){
-            this.selectedRow.classList.remove("selected");
-            this.selectedRow = null;
-        }
+    unselectCurrentRows(){
+        this.selectedRows.forEach(row => {
+            row.classList.remove("selected");
+        });
+        this.selectedRows = [];
     }
 
     async selectRowByName(netName){
-        let potentialRow = await this.parentContainer.querySelector(`div[data-key="${netName}"]`);
-        if (potentialRow){
-            const isSkipSelectionHandling = potentialRow === this.selectedRow;
-            this.unselectCurrentRow();
+        let potentialRows = await this.parentContainer.querySelectorAll(`div[data-key="${netName}"]`);
+        if (potentialRows){
+            const isSkipSelectionHandling = this.#isSelectedRowsTheSameAs(potentialRows);
+            this.unselectCurrentRows();
 
             if (!isSkipSelectionHandling){
-                this.selectedRow = this.#singleSelectionModeEvent(potentialRow);
+                potentialRows.forEach(row => {
+                    this.selectedRows.push(this.#singleSelectionModeEvent(row));
+                });
             }
         } else {            
-            this.unselectCurrentRow();
+            this.unselectCurrentRows();
         }
     }
 
@@ -95,5 +90,21 @@ class PinoutTable{
         while (this.parentContainer.firstChild){
             this.parentContainer.removeChild(this.parentContainer.firstChild);
         }
+    }
+
+    #isSelectedRowsTheSameAs(selectedRows){
+        const listLength = this.selectedRows.length;
+        if (selectedRows.length != listLength || !selectedRows || !this.selectedRows){
+            return false;
+        }
+
+        const array1 = [...selectedRows].sort();
+        const array2 = [...this.selectedRows].sort();
+        for (let i = 0; i < listLength; i++){
+            if (array1[i] !== array2[i]){
+                return false;
+            }
+        }
+        return true;
     }
 }
