@@ -37,17 +37,7 @@ function openAndLoadCadFile(pyodide, file) {
         let netsMap = pyodide.globals.get("netsDict").toJs();
         TreeViewAdapter.generateTreeView(netsMap);
 
-        PinoutTableAdapter.clearBody();
-        DynamicSelectableListAdapter.clearList(markedComponentsList);
-
-        const currentSideSpan = globalInstancesMap.getCurrentSideSpan();
-        currentSideSpan.innerText = sideHandler.currentSide();
-
-        const  commonPrefixSpan = globalInstancesMap.getCommonPrefixSpan();
-        commonPrefixSpan.innerText = '';
-        
-        const clickedComponentSpanList = globalInstancesMap.getClickedComponentSpanList();
-        SpanListAdapter.clearSpanList(clickedComponentSpanList);
+        WidgetAdapter.resetWidgets();
 
         const toggleOutlinesButton = globalInstancesMap.getToggleOutlinesButton();
         toggleOutlinesButton.classList.add("button-selected");    
