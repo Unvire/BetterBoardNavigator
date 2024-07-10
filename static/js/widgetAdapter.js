@@ -135,10 +135,11 @@ class PinoutTableAdapter{
 
     static selectNetFromTableEvent(netName){
         const netsTreeview = globalInstancesMap.getNetsTreeview();
-        const pinoutTable = globalInstancesMap.getPinoutTable();    
+        const pinoutTable = globalInstancesMap.getPinoutTable();
+        const selectedRowsList = pinoutTable.getSelectedRows();
 
         netsTreeview.scrollToBranchByName(netName);
-        if(pinoutTable.getSelectedRows()){
+        if(selectedRowsList.length > 0){
             EngineAdapter.selectNet(netName);
         }
     }
