@@ -31,6 +31,13 @@ class VisecadLoader():
         return ET.fromstring(''.join(fileLines))
 
 if __name__ == '__main__':
+    def openSchematicFile() -> str:        
+        from tkinter import filedialog
+        filePath = filedialog.askopenfile(mode='r', filetypes=[('*', '*')])
+        return filePath.name
+
+    filePath = openSchematicFile()
+
     loader = VisecadLoader()
-    fileLines = loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\ccz\!15017460_02.ccz')
+    fileLines = loader.loadFile(filePath)
     loader.processFileLines(fileLines)
