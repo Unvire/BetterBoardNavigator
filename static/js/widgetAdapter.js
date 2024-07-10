@@ -196,6 +196,7 @@ class InputModalBoxAdapter{
         const modalBoxComponentName = componentName.toUpperCase();
         EngineAdapter.findComponentByName(modalBoxComponentName, isSelectionModeSingle);
         EngineAdapter.componentInScreenCenter(modalBoxComponentName);
+        PinoutTableAdapter.generatePinoutTable(modalBoxComponentName);
     }
 
     static getCommonPrefixFromInput(commonPrefix){
