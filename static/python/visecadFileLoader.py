@@ -15,8 +15,8 @@ class VisecadLoader():
     
     def processFileLines(self, fileLines:list[str]) -> board.Board:
         root = self._parseXMLFromFileLines(fileLines)
-
-
+        outlinesLayers = self._getOutlinesLayers(root)
+        
         return self.boardData
     
     def _getFileLines(self, filePath:str) -> list[str]:
@@ -29,6 +29,15 @@ class VisecadLoader():
 
     def _parseXMLFromFileLines(self, fileLines:list[str]) -> 'xml.etree.ElementTree':
         return ET.fromstring(''.join(fileLines))
+    
+    def _getOutlinesLayers(self, root:ET) -> list[int]:
+        layersXML = root.find('Layers')
+
+        outlineLayers = []
+        for child in layersXML:
+            if 'OUTLINE' in child.attrib['name'].upper():
+                outlineLayers.append(child.attrib['num'])
+        return outlineLayers
 
 if __name__ == '__main__':
     def openSchematicFile() -> str:        
