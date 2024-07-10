@@ -1,25 +1,39 @@
 class WidgetAdapter{
     static resetWidgets(){
         WidgetAdapter.resetSelectedComponentsWidgets();
-        TreeViewAdapter.resetTreeview()
+        TreeViewAdapter.resetTreeview();
+        WidgetAdapter.resetSpans();
     }
 
     static resetSelectedComponentsWidgets(){
         const allComponentsList = globalInstancesMap.getAllComponentsList()
         const pinoutTable = globalInstancesMap.getPinoutTable();
-        const selectedComponentSpan = globalInstancesMap.getSelectedComponentSpan();
+        const clickedComponentSpanList = globalInstancesMap.getClickedComponentSpanList();
 
         allComponentsList.unselectAllItems();
         pinoutTable.unselectCurrentRows();
         pinoutTable.clearBody();
         DynamicSelectableListAdapter.generateMarkedComponentsList();
-        selectedComponentSpan.innerText = "Component";
+        SpanListAdapter.clearSpanList(clickedComponentSpanList);
     }
+
     static resetSelectedNet(){
         const pinoutTable = globalInstancesMap.getPinoutTable();
 
         TreeViewAdapter.resetTreeview();
         pinoutTable.unselectCurrentRows();
+    }
+
+    static resetSpans(){
+        const commonPrefixSpan = globalInstancesMap.getCommonPrefixSpan();
+        const currentSideSpan = globalInstancesMap.getCurrentSideSpan();
+        const selectedComponentSpan = globalInstancesMap.getSelectedComponentSpan();
+
+        commonPrefixSpan.innerText = '';
+        currentSideSpan.innerText = sideHandler.currentSide();
+
+        selectedComponentSpan.innerText = "Component";
+
     }
 }
 
