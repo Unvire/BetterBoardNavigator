@@ -49,7 +49,8 @@ class VisecadLoader():
         componentsDict = {}
         shapesIDDict = {}
         netsDict = {}
-        for netXML in filesXML:
+        
+        for netXML in filesXML.findall('Net'):
             netName = netXML.attrib['name']
             netsDict[netName] = {}
 
@@ -68,9 +69,9 @@ class VisecadLoader():
                 netsDict[netName][componentName]['componentInstance'] = componentInstance
                 netsDict[netName][componentName]['pins'].append(pinInstance.name)
 
-            boardInstance.setNets(netsDict)
-            boardInstance.setComponents(componentsDict)
-            return shapesIDDict
+        boardInstance.setNets(netsDict)
+        boardInstance.setComponents(componentsDict)
+        return shapesIDDict
 
     def _createPin(self, rootXML:ET) -> pin.Pin:
         pinID = rootXML.attrib['pin']
