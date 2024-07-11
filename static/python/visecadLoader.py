@@ -16,7 +16,7 @@ class VisecadLoader():
     def processFileLines(self, fileLines:list[str]) -> board.Board:
         root = self._parseXMLFromFileLines(fileLines)
         outlinesLayers = self._getOutlinesLayers(root)
-        self._processNetsTag(root, self.boardData)
+        padsID = self._processNetsTag(root, self.boardData)
         
         return self.boardData
     
@@ -46,47 +46,72 @@ class VisecadLoader():
         except AttributeError:
             return
         
-        componentDict = {}
+        componentsDict = {}
+        shapesIDDict = {}
+        netsDict = {}
         for netXML in filesXML:
             netName = netXML.attrib['name']
+            netsDict[netName] = {}
+
             for compPinXML in netXML:
-                pinID = compPinXML.attrib['pin']
-                pinX = compPinXML.attrib['x']
-                pinY = compPinXML.attrib['y']
-                newPin = self._createPin(pinID, pinX, pinY)
-
-                pinAngle = compPinXML.attrib['rotation']
-                padShapeID = compPinXML.attrib['padstackGeomNum']
+                try:
+                    pinInstance = self._createPin(compPinXML)
+                except KeyError:
+                    continue
                 
-                componentName = compPinXML.attrib['comp']
-                mountingType = self._getComponentMountingType(compPinXML)
-                newComponent = self._createComponent(componentName, mountingType)
+                self._getPinPadstackAngleInPlace(compPinXML, pinInstance, shapesIDDict)
+                componentInstance = self._processComponentDataInNets(compPinXML, componentsDict, pinInstance)
+                componentName = componentInstance.name
 
+                if not componentName in netsDict[netName]:
+                    netsDict[netName][componentName] = {'componentInstance': None, 'pins':[]}
+                netsDict[netName][componentName]['componentInstance'] = componentInstance
+                netsDict[netName][componentName]['pins'].append(pinInstance.name)
 
+            boardInstance.setNets(netsDict)
+            boardInstance.setComponents(componentsDict)
+            return shapesIDDict
 
+    def _createPin(self, rootXML:ET) -> pin.Pin:
+        pinID = rootXML.attrib['pin']
 
-                print(compPinXML.attrib['comp'], compPinXML.attrib['pin'])
-        
+        pinX = gobj.floatOrNone(rootXML.attrib['x'])
+        pinY = gobj.floatOrNone(rootXML.attrib['y'])
+        coordsPoint = gobj.Point(pinX, pinY)
+
+        newPin = pin.Pin(pinID)
+        newPin.setCoords(coordsPoint)
+        return newPin
+    
+    def _getPinPadstackAngleInPlace(self, rootXML:ET, pinInstance:pin.Pin, shapesIDDict:dict):
+        pinAngle = rootXML.attrib['rotation']
+        padShapeID = rootXML.attrib['padstackGeomNum']
+
+        if padShapeID not in shapesIDDict:
+            shapesIDDict[padShapeID] = []
+        shapesIDDict[padShapeID].append([pinInstance, pinAngle])
+    
+    def _processComponentDataInNets(self, rootXML:ET, componentsDict:dict, pinInstance:pin.Pin) -> comp.Component:
+        componentName = rootXML.attrib['comp']
+        if componentName not in componentsDict:
+            self._createComponentInPlace(rootXML, componentName, componentsDict)
+
+        componentInstance = componentsDict[componentName]
+        componentInstance.addPin(pinInstance.name, pinInstance)
+        return componentInstance
+    
+    def _createComponentInPlace(self, rootXML:ET,  componentName:str, componentsDict:dict):
+        mountingType = self._getComponentMountingType(rootXML)
+        newComponent = comp.Component(componentName)
+        newComponent.setMountingType(mountingType)
+        componentsDict[componentName] = newComponent
+
     def _getComponentMountingType(self, attribRootXML:ET) -> str:
         mountDict = {'SMD': 'SMT', 'SMT':'SMT', 'THRU':'TH', 'TH':'TH'}
         for child in attribRootXML:
             if child.tag == 'Attrib' and 'val' in child.attrib and child.attrib['val'].upper() in mountDict:
                 val = child.attrib['val']
                 return mountDict[val]
-    
-    def _createPin(self, pinName:str, pinX:str, pinY:str) -> pin.Pin:
-        pinX = gobj.floatOrNone(pinX)
-        pinY = gobj.floatOrNone(pinY)
-        coordsPoint = gobj.Point(pinX, pinY)
-        
-        newPin = pin.Pin(pinName)
-        newPin.setCoords(coordsPoint)
-        return newPin
-    
-    def _createComponent(self, componentName:str, mountingType:str) -> comp.Component:
-        newComponent = comp.Component(componentName)
-        newComponent.setMountingType(mountingType)
-        return newComponent
 
 if __name__ == '__main__':
     def openSchematicFile() -> str:        
