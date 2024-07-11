@@ -85,6 +85,7 @@ def netsLines():
         '</Files>',
         '</CCDoc>'
     ]
+    return fileLinesMock
 
 def test__getOutlinesLayers(layerLines):
     instance = VisecadLoader()
@@ -92,3 +93,9 @@ def test__getOutlinesLayers(layerLines):
 
     expected = ['0', '8', '19']
     assert expected == instance._getOutlinesLayers(root)
+
+def test__processNetsTag(netsLines):
+    instance = VisecadLoader()
+    root = instance._parseXMLFromFileLines(netsLines)
+
+    shapesIDDict = instance._processNetsTag(root, instance.boardData)
