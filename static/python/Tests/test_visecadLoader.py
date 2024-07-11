@@ -79,6 +79,13 @@ def netsLines():
         '    <Attrib key="224" val="SMD_R0603"/>',
         '    <Attrib key="226" val="0"/>',
         '  </CompPin>',
+        '    <CompPin comp="R1" pin="2" entity="160" pinCoords="1" x="0.641732" y="0.456181" rotation="1.570796" mirror="0" padstackGeomNum="52" visible="1">',
+        '    <Attrib key="5" val="0"/>',
+        '    <Attrib key="35" val="SMD"/>',
+        '    <Attrib key="68"/>',
+        '    <Attrib key="224" val="SMD_R0603"/>',
+        '    <Attrib key="226" val="0"/>',
+        '  </CompPin>',
         '</Net>',
         '</Nets>',
         '</File>',
@@ -99,3 +106,23 @@ def test__processNetsTag(netsLines):
     root = instance._parseXMLFromFileLines(netsLines)
 
     shapesIDDict = instance._processNetsTag(root, instance.boardData)
+
+    nets = instance.boardData.getNets()
+    components = instance.boardData.getComponents()
+
+    ## nets test
+    assert list(nets.keys()) == ['N07757', 'N08344']
+    assert list(nets['N07757'].keys()) == ['R5', 'R2', 'L1']
+    assert list(nets['N08344'].keys()) == ['SW1', 'R1']
+    
+    assert nets['N07757']['R5']['componentInstance'] is components['R5']
+    assert nets['N07757']['R2']['componentInstance'] is components['R2']
+    assert nets['N07757']['L1']['componentInstance'] is components['L1']
+    assert nets['N08344']['SW1']['componentInstance'] is components['SW1']
+    assert nets['N08344']['R1']['componentInstance'] is components['R1']
+
+    assert nets['N07757']['R5']['pins'] == ['1']
+    assert nets['N07757']['R2']['pins'] == ['1']
+    assert nets['N07757']['L1']['pins'] == ['K']
+    assert nets['N08344']['SW1']['pins'] == ['2']
+    assert nets['N08344']['R1']['pins'] == ['1', '2']
