@@ -44,9 +44,9 @@ def netsLines():
         '<Net name="N07757" entity="154" flag="0">',
         '  <CompPin comp="R5" pin="1" entity="155" pinCoords="1" x="0.374016" y="0.356339" rotation="4.712389" mirror="0" padstackGeomNum="53" visible="1">',
         '    <Attrib key="5" val="0"/>',
-        '    <Attrib key="35" val="SMD"/>',
+        '    <Attrib key="35" val="THRU"/>',
         '    <Attrib key="68"/>',
-        '    <Attrib key="224" val="SMD_R1206"/>',
+        '    <Attrib key="224" val="case"/>',
         '    <Attrib key="226" val="0"/>',
         '  </CompPin>',
         '  <CompPin comp="R2" pin="1" entity="156" pinCoords="1" x="0.374016" y="0.234213" rotation="1.570796" mirror="0" padstackGeomNum="53" visible="1">',
@@ -126,3 +126,27 @@ def test__processNetsTag(netsLines):
     assert nets['N07757']['L1']['pins'] == ['K']
     assert nets['N08344']['SW1']['pins'] == ['2']
     assert nets['N08344']['R1']['pins'] == ['1', '2']
+
+    ## components test
+    assert list(components.keys()) == ['R5', 'R2', 'L1', 'SW1', 'R1']
+    assert components['R5'].getMountingType() == 'TH'
+    assert components['R2'].getMountingType() == 'SMT'
+    assert components['L1'].getMountingType() == 'SMT'
+    assert components['SW1'].getMountingType() == 'SMT'
+    assert components['R1'].getMountingType() == 'SMT'
+
+    ## pins test
+    componentNamesListTest = 'R5', 'R2', 'L1', 'SW1', 'R1', 'R1'
+    pinNamesListTest = '1', '1', 'K', '2', '1', '2'
+    coordsPointListTest = (gobj.Point(0.374016, 0.356339), gobj.Point(0.374016, 0.234213), gobj.Point(0.5, 0.237283),
+                           gobj.Point(0.834646, 0.448819), gobj.Point(0.641732, 0.456181), gobj.Point(0.641732, 0.456181))    
+    for componentName, pinName, coordsPoint in zip(componentNamesListTest, pinNamesListTest, coordsPointListTest): 
+        pinInstance = components[componentName].getPinByName(pinName)
+        assert pinInstance.getCoords() == coordsPoint
+    
+    ## shapesIDDict test
+    assert list(shapesIDDict.keys()) == ['53', '54', '49', '52']
+    assert shapesIDDict['53'] == [[components['R5'].getPinByName('1'), '4.712389'], [components['R2'].getPinByName('1'), '1.570796']]
+    assert shapesIDDict['54'] == [[components['L1'].getPinByName('K'), '1.570796']]
+    assert shapesIDDict['49'] == [[components['SW1'].getPinByName('2'), '0']]
+    assert shapesIDDict['52'] == [[components['R1'].getPinByName('1'), '1.570796'], [components['R1'].getPinByName('2'), '1.570796']]
