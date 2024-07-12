@@ -94,18 +94,67 @@ def netsLines():
     ]
     return fileLinesMock
 
+@pytest.fixture
+def geometriesSplitTest():
+    fileLinesMock = [
+        '<CCDoc version="7.1" application="CAMCAD.EXE">',
+        '<Geometries>',
+        '  <Geometry num="0" name="Small Width" originalName="" fileNum="-1" geomType="0" flag="585" dCode="0" shape="1" sizeA="0" sizeB="0" sizeC="0" sizeD="0" rotation="0" xOffset="0" yOffset="0" numSpokes="4"></Geometry>',
+        '  <Geometry num="26" name="AP_r2184" originalName="" fileNum="-1" geomType="0" flag="73" dCode="0" shape="1" sizeA="0.085984" sizeB="0" sizeC="0" sizeD="0" rotation="0" xOffset="0" yOffset="0" numSpokes="0"></Geometry>',
+        '  <Geometry num="27" name="AP_r2235" originalName="" fileNum="-1" geomType="0" flag="73" dCode="0" shape="1" sizeA="0.087992" sizeB="0" sizeC="0" sizeD="0" rotation="0" xOffset="0" yOffset="0" numSpokes="0"></Geometry>',
+        '  <Geometry num="58" name="PADSTACK007" originalName="" fileNum="-1" geomType="4" flag="12288">',
+        '    <Datas>',
+        '      <Insert entityNum="58" layer="6" graphicClass="0" insertType="0" refName="" geomNum="26" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '      <Insert entityNum="59" layer="7" graphicClass="0" insertType="0" refName="" geomNum="39" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '      <Insert entityNum="60" layer="8" graphicClass="0" insertType="0" refName="" geomNum="39" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '      <Insert entityNum="61" layer="9" graphicClass="0" insertType="0" refName="" geomNum="26" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '      <Insert entityNum="62" layer="11" graphicClass="0" insertType="0" refName="" geomNum="59" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    </Datas>',
+        '  </Geometry>',
+        '  <Geometry num="2" name="PCB" originalName="" fileNum="1" geomType="1" flag="4">',
+        '     <Datas>',
+        '       <PolyStruct entityNum="87" layer="1" graphicClass="17"></PolyStruct>',
+        '       <PolyStruct entityNum="88" layer="3" graphicClass="17"></PolyStruct>',
+        '       <PolyStruct entityNum="89" layer="3" graphicClass="17"></PolyStruct>',
+        '       <PolyStruct entityNum="87" layer="1" graphicClass="17"></PolyStruct>',
+        '       <PolyStruct entityNum="88" layer="3" graphicClass="17"></PolyStruct>',
+        '       <PolyStruct entityNum="89" layer="3" graphicClass="17"></PolyStruct>',
+        '       <Insert entityNum="90" layer="-1" graphicClass="0" insertType="2" refName="1" geomNum="52" x="0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '       <Insert entityNum="91" layer="-1" graphicClass="0" insertType="2" refName="2" geomNum="52" x="-0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '       <Insert entityNum="90" layer="-1" graphicClass="0" insertType="2" refName="1" geomNum="52" x="0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '       <Insert entityNum="91" layer="-1" graphicClass="0" insertType="2" refName="2" geomNum="52" x="-0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '       <Insert entityNum="90" layer="-1" graphicClass="0" insertType="2" refName="1" geomNum="52" x="0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '       <Insert entityNum="91" layer="-1" graphicClass="0" insertType="2" refName="2" geomNum="52" x="-0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    </Datas>',
+        '  </Geometry>',
+        '  <Geometry num="62" name="R0603_T" originalName="R0603_T" fileNum="1" geomType="5">',
+        '    <Attrib key="35" val="SMD"/>',
+        '    <Attrib key="68"/>',
+        '    <Datas>',
+        '      <PolyStruct entityNum="87" layer="1" graphicClass="17"></PolyStruct>',
+        '      <PolyStruct entityNum="88" layer="3" graphicClass="17"></PolyStruct>',
+        '      <PolyStruct entityNum="89" layer="3" graphicClass="17"></PolyStruct>',
+        '      <Insert entityNum="90" layer="-1" graphicClass="0" insertType="2" refName="1" geomNum="52" x="0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '      <Insert entityNum="91" layer="-1" graphicClass="0" insertType="2" refName="2" geomNum="52" x="-0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    </Datas>',
+        '  </Geometry>',
+        '</Geometries>',
+        '</CCDoc>'
+    ]
+    return fileLinesMock
+
 def test__getOutlinesLayers(layerLines):
     instance = VisecadLoader()
-    root = instance._parseXMLFromFileLines(layerLines)
+    rootXML = instance._parseXMLFromFileLines(layerLines)
 
     expected = ['0', '8', '19']
-    assert expected == instance._getOutlinesLayers(root)
+    assert expected == instance._getOutlinesLayers(rootXML)
 
 def test__processNetsTag(netsLines):
     instance = VisecadLoader()
-    root = instance._parseXMLFromFileLines(netsLines)
+    rootXML = instance._parseXMLFromFileLines(netsLines)
 
-    shapesIDDict = instance._processNetsTag(root, instance.boardData)
+    shapesIDDict = instance._processNetsTag(rootXML, instance.boardData)
 
     nets = instance.boardData.getNets()
     components = instance.boardData.getComponents()
@@ -150,3 +199,20 @@ def test__processNetsTag(netsLines):
     assert shapesIDDict['54'] == [[components['L1'].getPinByName('K'), '1.570796']]
     assert shapesIDDict['49'] == [[components['SW1'].getPinByName('2'), '0']]
     assert shapesIDDict['52'] == [[components['R1'].getPinByName('1'), '1.570796'], [components['R1'].getPinByName('2'), '1.570796']]
+
+def test__processGeometriesTag(geometriesSplitTest):
+    instance = VisecadLoader()
+    rootXML = instance._parseXMLFromFileLines(geometriesSplitTest)
+    shapesDict, padstackDict, pcbXML = instance._processGeometriesTag(rootXML)
+
+    assert list(shapesDict.keys()) == ['0', '26', '27']
+    assert shapesDict['0'].attrib['name'] == 'Small Width'
+    assert shapesDict['26'].attrib['name'] == 'AP_r2184'
+    assert shapesDict['27'].attrib['name'] == 'AP_r2235'
+
+    assert list(padstackDict.keys()) == ['58', '62']
+    assert padstackDict['58'].attrib['name'] == 'PADSTACK007'
+    assert padstackDict['62'].attrib['name'] == 'R0603_T'
+    
+    assert pcbXML.attrib['name'] == 'PCB'
+    assert pcbXML.attrib['num'] == '2'
