@@ -14,9 +14,10 @@ class VisecadLoader():
         return fileLines
     
     def processFileLines(self, fileLines:list[str]) -> board.Board:
-        root = self._parseXMLFromFileLines(fileLines)
-        outlinesLayers = self._getOutlinesLayers(root)
-        padsID = self._processNetsTag(root, self.boardData)
+        rootXML = self._parseXMLFromFileLines(fileLines)
+        outlinesLayers = self._getOutlinesLayers(rootXML)
+        pinsAngleShapesIDDict = self._processNetsTag(rootXML, self.boardData)
+        shapesDict, padstackDict, pcbXML = self._processGeometriesTag(rootXML)
         
         return self.boardData
     
@@ -31,8 +32,8 @@ class VisecadLoader():
     def _parseXMLFromFileLines(self, fileLines:list[str]) -> 'xml.etree.ElementTree':
         return ET.fromstring(''.join(fileLines))
     
-    def _getOutlinesLayers(self, root:ET) -> list[str]:
-        layersXML = root.find('Layers')
+    def _getOutlinesLayers(self, rootXML:ET) -> list[str]:
+        layersXML = rootXML.find('Layers')
 
         outlineLayers = []
         for child in layersXML:
@@ -40,9 +41,9 @@ class VisecadLoader():
                 outlineLayers.append(child.attrib['num'])
         return outlineLayers
 
-    def _processNetsTag(self, root:ET, boardInstance:board.Board) -> None:
+    def _processNetsTag(self, rootXML:ET, boardInstance:board.Board) -> None:
         try:
-            filesXML = root.find('Files').find('File').find('Nets')
+            filesXML = rootXML.find('Files').find('File').find('Nets')
         except AttributeError:
             return
         
@@ -72,6 +73,24 @@ class VisecadLoader():
         boardInstance.setNets(netsDict)
         boardInstance.setComponents(componentsDict)
         return shapesIDDict
+
+    def _processGeometriesTag(self, rootXML:ET) -> tuple[dict, dict, 'xml.etree.ElementTree']:
+        geometriesXML = rootXML.find('Geometries')
+        
+        shapesXMLDict = {}
+        padstackDict = {}
+        pcbXML = ET.fromstring("<Init><Datas></Datas></Init>")
+        for child in geometriesXML.findall('Geometry'):
+            branchID = child.attrib['num']
+            if 'sizeA' in child.attrib:
+                shapesXMLDict[branchID] = child
+            elif len(child) > 0:
+                if len(child.find('Datas')) > len(pcbXML.find('Datas')):
+                    pcbXML = child
+                padstackDict[branchID] = child
+        
+        padstackDict.pop(pcbXML.attrib['num'])
+        return shapesXMLDict, padstackDict, pcbXML
 
     def _createPin(self, rootXML:ET) -> pin.Pin:
         pinID = rootXML.attrib['pin']
