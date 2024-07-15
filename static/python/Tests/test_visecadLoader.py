@@ -1,6 +1,8 @@
 import pytest
+import math
 from visecadLoader import VisecadLoader
 import geometryObjects as gobj
+import component as comp
 
 @pytest.fixture
 def layerLines():
@@ -167,6 +169,21 @@ def polyStructTest():
     ]
     return fileLinesMock
 
+@pytest.fixture
+def componentsInsertTest():
+    fileLinesMock = [
+        '<CCDoc>',
+        '<Datas>',
+        '<Insert entityNum="86" layer="-1" graphicClass="0" colorOverride="1" overrideColor="7895160" insertType="3" refName="CN1" geomNum="61" x="1.039331" y="0.448779" angle="0" mirror="0" placeBottom="1" scale="1"></Insert>',
+        '<Insert entityNum="93" layer="-1" graphicClass="0" insertType="3" refName="R4" geomNum="62" x="0.599606" y="0.311024" angle="4.712389" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '<Insert entityNum="95" layer="-1" graphicClass="0" insertType="3" refName="R1" geomNum="62" x="0.641732" y="0.425197" angle="1.570796" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '<Insert entityNum="27" layer="0" graphicClass="0" insertType="1" refName="" geomNum="46" x="0.467323" y="0.285433" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '<Insert entityNum="27" layer="0" graphicClass="0" insertType="1" refName="Via0001" geomNum="46" x="0.467323" y="0.285433" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '</Datas>',
+        '</CCDoc>',
+    ]
+    return fileLinesMock
+
 
 def test__getOutlinesLayers(layerLines):
     instance = VisecadLoader()
@@ -261,14 +278,43 @@ def test__getBoardOutlines(polyStructTest):
     instance = VisecadLoader()
 
     boardOutlinesTestLines = ['<CCDoc>'] + polyStructTest + ['</CCDoc>']
-    print(boardOutlinesTestLines)
     pcbXML = instance._parseXMLFromFileLines(boardOutlinesTestLines)
-
     OUTLINES_LAYERS_IDS = ['0', '17']
     instance._getBoardOutlines(pcbXML, instance.boardData, OUTLINES_LAYERS_IDS)
-    print(instance.boardData.getOutlines())
     assert instance.boardData.getOutlines() == [gobj.Line(gobj.Point(4.248031, 10.177165), gobj.Point(4.248031, 10.098425)),
                                                 gobj.Line(gobj.Point(4.031496, 10.098425), gobj.Point(4.031496, 9.322835)), 
                                                 gobj.Line(gobj.Point(4.031496, 9.322835), gobj.Point(4.299213, 9.322835)),
                                                 gobj.Line(gobj.Point(4.299213, 9.322835), gobj.Point(4.299213, 10.098425)), 
                                                 gobj.Line(gobj.Point(4.299213, 10.098425), gobj.Point(4.031496, 10.098425))]
+
+def test__updateComponents(componentsInsertTest):
+    instance = VisecadLoader()
+    for componentName in ['CN1', 'R4', 'R1']:
+        componentInstance = comp.Component(componentName)
+        instance.boardData.addComponent(componentName, componentInstance)
+
+    shapesIDDict = {}
+    pcbXML = instance._parseXMLFromFileLines(componentsInsertTest)
+    instance._updateComponents(pcbXML, instance.boardData, shapesIDDict)
+
+    ## test components
+    componentInstance = instance.boardData.getElementByName('components', 'CN1')
+    assert componentInstance.coords == gobj.Point(1.039331, 0.448779)
+    assert componentInstance.angle == 0
+    assert componentInstance.side == 'B'
+
+    componentInstance = instance.boardData.getElementByName('components', 'R4')
+    assert componentInstance.coords == gobj.Point(0.599606, 0.311024)
+    assert componentInstance.angle == math.degrees(4.712389)
+    assert componentInstance.side == 'T'
+
+    componentInstance = instance.boardData.getElementByName('components', 'R1')
+    assert componentInstance.coords == gobj.Point(0.641732, 0.425197)
+    assert componentInstance.angle == math.degrees(1.570796)
+    assert componentInstance.side == 'T'
+
+    ## test shapesIDDict
+    assert list(shapesIDDict.keys()) == ['61', '62']
+    assert shapesIDDict['61'] == [[instance.boardData.getElementByName('components', 'CN1'), '0']]
+    assert shapesIDDict['62'] == [[instance.boardData.getElementByName('components', 'R4'), '0'],
+                                  [instance.boardData.getElementByName('components', 'R1'), '0']]
