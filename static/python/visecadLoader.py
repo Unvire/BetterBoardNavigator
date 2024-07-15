@@ -18,6 +18,7 @@ class VisecadLoader():
         outlinesLayers = self._getOutlinesLayers(rootXML)
         pinsAngleShapesIDDict = self._processNetsTag(rootXML, self.boardData)
         shapesDict, padstackDict, pcbXML = self._processGeometriesTag(rootXML)
+        self._getBoardOutlines(pcbXML, self.boardData, outlinesLayers)
         
         return self.boardData
     
@@ -92,6 +93,14 @@ class VisecadLoader():
         padstackDict.pop(pcbXML.attrib['num'])
         return shapesXMLDict, padstackDict, pcbXML
 
+    def _getBoardOutlines(self, pcbXML:ET, boardInstance:board.Board, outlinesLayers:list[str]):
+        polyStructsXML = [child for child in pcbXML.find('Datas').findall('PolyStruct') if child.attrib['layer'] in outlinesLayers]
+
+        outlinesList = []
+        for polyStructXML in polyStructsXML:
+            outlinesList += self._processPolyStructClosedShape(polyStructXML)
+        boardInstance.setOutlines(outlinesList)
+
     def _createPin(self, rootXML:ET) -> pin.Pin:
         pinID = rootXML.attrib['pin']
 
@@ -132,6 +141,23 @@ class VisecadLoader():
             if child.tag == 'Attrib' and 'val' in child.attrib and child.attrib['val'].upper() in mountDict:
                 val = child.attrib['val']
                 return mountDict[val]
+    
+    def _processPolyStructClosedShape(self, polyStructXML:ET) -> list[gobj.Line|gobj.Arc]:
+        pointsXML = polyStructXML.find('Poly').findall('Pnt')
+        previousPoint = None
+        shapesList = []
+        for pointXML in pointsXML:
+            if 'bulge' in pointXML.attrib:
+                continue
+            x = gobj.floatOrNone(pointXML.attrib['x'])
+            y = gobj.floatOrNone(pointXML.attrib['x'])
+            currentPoint = gobj.Point(x, y)
+            
+            if previousPoint:
+                shapesList.append(gobj.Line(previousPoint, currentPoint))
+            previousPoint = currentPoint
+        return shapesList
+
 
 if __name__ == '__main__':
     def openSchematicFile() -> str:        
