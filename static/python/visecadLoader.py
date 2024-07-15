@@ -98,7 +98,7 @@ class VisecadLoader():
 
         outlinesList = []
         for polyStructXML in polyStructsXML:
-            outlinesList += self._processPolyStructClosedShape(polyStructXML)
+            outlinesList += self._processPolyStruct(polyStructXML)
         boardInstance.setOutlines(outlinesList)
 
     def _createPin(self, rootXML:ET) -> pin.Pin:
@@ -142,7 +142,7 @@ class VisecadLoader():
                 val = child.attrib['val']
                 return mountDict[val]
     
-    def _processPolyStructClosedShape(self, polyStructXML:ET) -> list[gobj.Line|gobj.Arc]:
+    def _processPolyStruct(self, polyStructXML:ET) -> list[gobj.Line|gobj.Arc]:
         pointsXML = polyStructXML.find('Poly').findall('Pnt')
         previousPoint = None
         shapesList = []
@@ -150,7 +150,7 @@ class VisecadLoader():
             if 'bulge' in pointXML.attrib:
                 continue
             x = gobj.floatOrNone(pointXML.attrib['x'])
-            y = gobj.floatOrNone(pointXML.attrib['x'])
+            y = gobj.floatOrNone(pointXML.attrib['y'])
             currentPoint = gobj.Point(x, y)
             
             if previousPoint:
