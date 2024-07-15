@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile
+import math
 import geometryObjects as gobj
 import component as comp
 import board, pin
@@ -19,6 +20,7 @@ class VisecadLoader():
         pinsAngleShapesIDDict = self._processNetsTag(rootXML, self.boardData)
         shapesDict, padstackDict, pcbXML = self._processGeometriesTag(rootXML)
         self._getBoardOutlines(pcbXML, self.boardData, outlinesLayers)
+        shapesDict = self._updateComponents(pcbXML, self.boardData, shapesDict)
         
         return self.boardData
     
@@ -93,13 +95,35 @@ class VisecadLoader():
         padstackDict.pop(pcbXML.attrib['num'])
         return shapesXMLDict, padstackDict, pcbXML
 
-    def _getBoardOutlines(self, pcbXML:ET, boardInstance:board.Board, outlinesLayers:list[str]):
+    def _getBoardOutlines(self, pcbXML:ET.ElementTree, boardInstance:board.Board, outlinesLayers:list[str]):
         polyStructsXML = [child for child in pcbXML.find('Datas').findall('PolyStruct') if child.attrib['layer'] in outlinesLayers]
 
         outlinesList = []
         for polyStructXML in polyStructsXML:
             outlinesList += self._processPolyStruct(polyStructXML)
         boardInstance.setOutlines(outlinesList)
+    
+    def _updateComponents(self, pcbXML:ET.ElementTree, boardInstance:board.Board, shapesDict:dict) -> dict:
+        components = boardInstance.getComponents()
+        insertsXML = [child for child in pcbXML.find('Datas').findall('Insert') if child.attrib['refName'] != '']
+
+        for child in insertsXML:
+            componentName = child.attrib['refName']
+            shapeID = child.attrib['geomNum']
+            x = gobj.floatOrNone(child.attrib['x'])
+            y = gobj.floatOrNone(child.attrib['y'])
+            angle = child.attrib['angle']
+            side = 'B' if child.attrib['placeBottom'] == '1' else 'T'
+
+            if componentName in components:
+                componentInstance = components[componentName]
+                componentInstance.setCoords(gobj.Point(x, y))
+                componentInstance.setAngle(math.degrees(float(angle)))
+                componentInstance.setSide(side)
+                if not shapeID in shapesDict:
+                    shapesDict[shapeID] = []
+                shapesDict[shapeID].append(componentInstance)
+        return shapesDict
 
     def _createPin(self, rootXML:ET.ElementTree) -> pin.Pin:
         pinID = rootXML.attrib['pin']
