@@ -17,10 +17,10 @@ class VisecadLoader():
     def processFileLines(self, fileLines:list[str]) -> board.Board:
         rootXML = self._parseXMLFromFileLines(fileLines)
         outlinesLayers = self._getOutlinesLayers(rootXML)
-        pinsAngleShapesIDDict = self._processNetsTag(rootXML, self.boardData)
-        shapesDict, padstackDict, pcbXML = self._processGeometriesTag(rootXML)
+        shapesIDToInstanceAngleDict = self._processNetsTag(rootXML, self.boardData)
+        shapesXMLDict, padstackDict, pcbXML = self._processGeometriesTag(rootXML)
         self._getBoardOutlines(pcbXML, self.boardData, outlinesLayers)
-        shapesDict = self._updateComponents(pcbXML, self.boardData, shapesDict)
+        shapesIDToInstanceAngleDict = self._updateComponents(pcbXML, self.boardData, shapesIDToInstanceAngleDict)
         
         return self.boardData
     
@@ -44,14 +44,14 @@ class VisecadLoader():
                 outlineLayers.append(child.attrib['num'])
         return outlineLayers
 
-    def _processNetsTag(self, rootXML:ET.ElementTree, boardInstance:board.Board) -> None:
+    def _processNetsTag(self, rootXML:ET.ElementTree, boardInstance:board.Board) -> dict:
         try:
             filesXML = rootXML.find('Files').find('File').find('Nets')
         except AttributeError:
             return
         
         componentsDict = {}
-        shapesIDDict = {}
+        shapesIDToInstanceAngleDict = {}
         netsDict = {}
         
         for netXML in filesXML.findall('Net'):
@@ -64,7 +64,7 @@ class VisecadLoader():
                 except KeyError:
                     continue
                 
-                self._getPinPadstackAngleInPlace(compPinXML, pinInstance, shapesIDDict)
+                self._getPinPadstackAngleInPlace(compPinXML, pinInstance, shapesIDToInstanceAngleDict)
                 componentInstance = self._processComponentDataInNets(compPinXML, componentsDict, pinInstance)
                 componentName = componentInstance.name
 
@@ -75,7 +75,7 @@ class VisecadLoader():
 
         boardInstance.setNets(netsDict)
         boardInstance.setComponents(componentsDict)
-        return shapesIDDict
+        return shapesIDToInstanceAngleDict
 
     def _processGeometriesTag(self, rootXML:ET.ElementTree) -> tuple[dict, dict, ET.ElementTree]:
         geometriesXML = rootXML.find('Geometries')
@@ -103,7 +103,7 @@ class VisecadLoader():
             outlinesList += self._processPolyStruct(polyStructXML)
         boardInstance.setOutlines(outlinesList)
     
-    def _updateComponents(self, pcbXML:ET.ElementTree, boardInstance:board.Board, shapesDict:dict) -> dict:
+    def _updateComponents(self, pcbXML:ET.ElementTree, boardInstance:board.Board, shapesIDToInstanceAngleDict:dict) -> dict:
         components = boardInstance.getComponents()
         insertsXML = [child for child in pcbXML.find('Datas').findall('Insert') if child.attrib['refName'] != '']
 
@@ -120,10 +120,10 @@ class VisecadLoader():
                 componentInstance.setCoords(gobj.Point(x, y))
                 componentInstance.setAngle(math.degrees(float(angle)))
                 componentInstance.setSide(side)
-                if not shapeID in shapesDict:
-                    shapesDict[shapeID] = []
-                shapesDict[shapeID].append([componentInstance, '0'])
-        return shapesDict
+                if not shapeID in shapesIDToInstanceAngleDict:
+                    shapesIDToInstanceAngleDict[shapeID] = []
+                shapesIDToInstanceAngleDict[shapeID].append([componentInstance, '0'])
+        return shapesIDToInstanceAngleDict
 
     def _createPin(self, rootXML:ET.ElementTree) -> pin.Pin:
         pinID = rootXML.attrib['pin']
@@ -136,13 +136,13 @@ class VisecadLoader():
         newPin.setCoords(coordsPoint)
         return newPin
     
-    def _getPinPadstackAngleInPlace(self, rootXML:ET.ElementTree, pinInstance:pin.Pin, shapesIDDict:dict):
+    def _getPinPadstackAngleInPlace(self, rootXML:ET.ElementTree, pinInstance:pin.Pin, shapesIDToInstanceAngleDict:dict):
         pinAngle = rootXML.attrib['rotation']
         padShapeID = rootXML.attrib['padstackGeomNum']
 
-        if padShapeID not in shapesIDDict:
-            shapesIDDict[padShapeID] = []
-        shapesIDDict[padShapeID].append([pinInstance, pinAngle])
+        if padShapeID not in shapesIDToInstanceAngleDict:
+            shapesIDToInstanceAngleDict[padShapeID] = []
+        shapesIDToInstanceAngleDict[padShapeID].append([pinInstance, pinAngle])
     
     def _processComponentDataInNets(self, rootXML:ET.ElementTree, componentsDict:dict, pinInstance:pin.Pin) -> comp.Component:
         componentName = rootXML.attrib['comp']
