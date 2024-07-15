@@ -146,7 +146,7 @@ def geometriesSplitTest():
 @pytest.fixture
 def polyStructTest():
     fileLinesMock = [
-        '<CCDoc>'
+        '<Datas>',
         '<PolyStruct entityNum="78905" layer="17" graphicClass="0">',
         '  <Poly widthIndex="0">',
         '    <Pnt x="4.248031" y="10.177165"/>',
@@ -163,7 +163,7 @@ def polyStructTest():
         '    <Pnt x="4.031496" y="10.098425"/>',
         '  </Poly>',
         '</PolyStruct>',
-        '</CCDoc>'
+        '</Datas>'
     ]
     return fileLinesMock
 
@@ -256,3 +256,19 @@ def test__processPolyStruct(polyStructTest):
 
     for i, polyStructXML in enumerate(polyStructsXML):
         assert expected[i] == instance._processPolyStruct(polyStructXML)
+
+def test__getBoardOutlines(polyStructTest):
+    instance = VisecadLoader()
+
+    boardOutlinesTestLines = ['<CCDoc>'] + polyStructTest + ['</CCDoc>']
+    print(boardOutlinesTestLines)
+    pcbXML = instance._parseXMLFromFileLines(boardOutlinesTestLines)
+
+    OUTLINES_LAYERS_IDS = ['0', '17']
+    instance._getBoardOutlines(pcbXML, instance.boardData, OUTLINES_LAYERS_IDS)
+    print(instance.boardData.getOutlines())
+    assert instance.boardData.getOutlines() == [gobj.Line(gobj.Point(4.248031, 10.177165), gobj.Point(4.248031, 10.098425)),
+                                                gobj.Line(gobj.Point(4.031496, 10.098425), gobj.Point(4.031496, 9.322835)), 
+                                                gobj.Line(gobj.Point(4.031496, 9.322835), gobj.Point(4.299213, 9.322835)),
+                                                gobj.Line(gobj.Point(4.299213, 9.322835), gobj.Point(4.299213, 10.098425)), 
+                                                gobj.Line(gobj.Point(4.299213, 10.098425), gobj.Point(4.031496, 10.098425))]
