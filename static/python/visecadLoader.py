@@ -122,7 +122,7 @@ class VisecadLoader():
                 componentInstance.setSide(side)
                 if not shapeID in shapesDict:
                     shapesDict[shapeID] = []
-                shapesDict[shapeID].append(componentInstance)
+                shapesDict[shapeID].append([componentInstance, '0'])
         return shapesDict
 
     def _createPin(self, rootXML:ET.ElementTree) -> pin.Pin:
