@@ -30,7 +30,7 @@ class VisecadLoader():
                 fileLines = [line.decode('utf-8') for line in xmlFile.readlines()]
         return fileLines
 
-    def _parseXMLFromFileLines(self, fileLines:list[str]) -> 'xml.etree.ElementTree':
+    def _parseXMLFromFileLines(self, fileLines:list[str]) -> ET.ElementTree:
         return ET.fromstring(''.join(fileLines))
     
     def _getOutlinesLayers(self, rootXML:ET) -> list[str]:
@@ -42,7 +42,7 @@ class VisecadLoader():
                 outlineLayers.append(child.attrib['num'])
         return outlineLayers
 
-    def _processNetsTag(self, rootXML:ET, boardInstance:board.Board) -> None:
+    def _processNetsTag(self, rootXML:ET.ElementTree, boardInstance:board.Board) -> None:
         try:
             filesXML = rootXML.find('Files').find('File').find('Nets')
         except AttributeError:
@@ -75,7 +75,7 @@ class VisecadLoader():
         boardInstance.setComponents(componentsDict)
         return shapesIDDict
 
-    def _processGeometriesTag(self, rootXML:ET) -> tuple[dict, dict, 'xml.etree.ElementTree']:
+    def _processGeometriesTag(self, rootXML:ET.ElementTree) -> tuple[dict, dict, ET.ElementTree]:
         geometriesXML = rootXML.find('Geometries')
         
         shapesXMLDict = {}
@@ -101,7 +101,7 @@ class VisecadLoader():
             outlinesList += self._processPolyStruct(polyStructXML)
         boardInstance.setOutlines(outlinesList)
 
-    def _createPin(self, rootXML:ET) -> pin.Pin:
+    def _createPin(self, rootXML:ET.ElementTree) -> pin.Pin:
         pinID = rootXML.attrib['pin']
 
         pinX = gobj.floatOrNone(rootXML.attrib['x'])
@@ -112,7 +112,7 @@ class VisecadLoader():
         newPin.setCoords(coordsPoint)
         return newPin
     
-    def _getPinPadstackAngleInPlace(self, rootXML:ET, pinInstance:pin.Pin, shapesIDDict:dict):
+    def _getPinPadstackAngleInPlace(self, rootXML:ET.ElementTree, pinInstance:pin.Pin, shapesIDDict:dict):
         pinAngle = rootXML.attrib['rotation']
         padShapeID = rootXML.attrib['padstackGeomNum']
 
@@ -120,7 +120,7 @@ class VisecadLoader():
             shapesIDDict[padShapeID] = []
         shapesIDDict[padShapeID].append([pinInstance, pinAngle])
     
-    def _processComponentDataInNets(self, rootXML:ET, componentsDict:dict, pinInstance:pin.Pin) -> comp.Component:
+    def _processComponentDataInNets(self, rootXML:ET.ElementTree, componentsDict:dict, pinInstance:pin.Pin) -> comp.Component:
         componentName = rootXML.attrib['comp']
         if componentName not in componentsDict:
             self._createComponentInPlace(rootXML, componentName, componentsDict)
@@ -129,20 +129,20 @@ class VisecadLoader():
         componentInstance.addPin(pinInstance.name, pinInstance)
         return componentInstance
     
-    def _createComponentInPlace(self, rootXML:ET,  componentName:str, componentsDict:dict):
+    def _createComponentInPlace(self, rootXML:ET.ElementTree,  componentName:str, componentsDict:dict):
         mountingType = self._getComponentMountingType(rootXML)
         newComponent = comp.Component(componentName)
         newComponent.setMountingType(mountingType)
         componentsDict[componentName] = newComponent
 
-    def _getComponentMountingType(self, attribRootXML:ET) -> str:
+    def _getComponentMountingType(self, attribRootXML:ET.ElementTree) -> str:
         mountDict = {'SMD': 'SMT', 'SMT':'SMT', 'THRU':'TH', 'TH':'TH'}
         for child in attribRootXML:
             if child.tag == 'Attrib' and 'val' in child.attrib and child.attrib['val'].upper() in mountDict:
                 val = child.attrib['val']
                 return mountDict[val]
     
-    def _processPolyStruct(self, polyStructXML:ET) -> list[gobj.Line|gobj.Arc]:
+    def _processPolyStruct(self, polyStructXML:ET.ElementTree) -> list[gobj.Line|gobj.Arc]:
         pointsXML = polyStructXML.find('Poly').findall('Pnt')
         previousPoint = None
         shapesList = []
