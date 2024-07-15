@@ -143,6 +143,31 @@ def geometriesSplitTest():
     ]
     return fileLinesMock
 
+@pytest.fixture
+def polyStructTest():
+    fileLinesMock = [
+        '<CCDoc>'
+        '<PolyStruct entityNum="78905" layer="17" graphicClass="0">',
+        '  <Poly widthIndex="0">',
+        '    <Pnt x="4.248031" y="10.177165"/>',
+        '    <Pnt x="4.248031" y="10.177165" bulge="1"/>',
+        '    <Pnt x="4.248031" y="10.098425"/>',
+        '  </Poly>',
+        '</PolyStruct>',
+        '<PolyStruct entityNum="78907" layer="17" graphicClass="0">',
+        '  <Poly widthIndex="0">',
+        '    <Pnt x="4.031496" y="10.098425"/>',
+        '    <Pnt x="4.031496" y="9.322835"/>',
+        '    <Pnt x="4.299213" y="9.322835"/>',
+        '    <Pnt x="4.299213" y="10.098425"/>',
+        '    <Pnt x="4.031496" y="10.098425"/>',
+        '  </Poly>',
+        '</PolyStruct>',
+        '</CCDoc>'
+    ]
+    return fileLinesMock
+
+
 def test__getOutlinesLayers(layerLines):
     instance = VisecadLoader()
     rootXML = instance._parseXMLFromFileLines(layerLines)
@@ -216,3 +241,18 @@ def test__processGeometriesTag(geometriesSplitTest):
     
     assert pcbXML.attrib['name'] == 'PCB'
     assert pcbXML.attrib['num'] == '2'
+
+def test__processPolyStruct(polyStructTest):
+    instance = VisecadLoader()
+    rootXML = instance._parseXMLFromFileLines(polyStructTest)
+    polyStructsXML = rootXML.findall('PolyStruct')
+    expected = [
+        [gobj.Line(gobj.Point(4.248031, 10.177165), gobj.Point(4.248031, 10.098425))],
+        [gobj.Line(gobj.Point(4.031496, 10.098425), gobj.Point(4.031496, 9.322835)), 
+         gobj.Line(gobj.Point(4.031496, 9.322835), gobj.Point(4.299213, 9.322835)),
+         gobj.Line(gobj.Point(4.299213, 9.322835), gobj.Point(4.299213, 10.098425)), 
+         gobj.Line(gobj.Point(4.299213, 10.098425), gobj.Point(4.031496, 10.098425))]
+    ]
+
+    for i, polyStructXML in enumerate(polyStructsXML):
+        assert expected[i] == instance._processPolyStruct(polyStructXML)
