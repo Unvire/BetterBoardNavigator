@@ -295,7 +295,7 @@ class Rectangle(AbstractBaseShape):
         return bottomLeftPoint, topRightPoint
 
     
-def floatOrNone(x:str):
+def floatOrNone(x:str) -> float|None:
     try:
         x = float(x)
     except  (TypeError, ValueError):
