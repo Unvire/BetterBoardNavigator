@@ -21,6 +21,7 @@ class VisecadLoader():
         shapesXMLDict, padstackXMLDict, pcbXML = self._processGeometriesTag(rootXML)
         self._getBoardOutlines(pcbXML, self.boardData, outlinesLayers)
         shapesIDToComponentDict = self._updateComponents(pcbXML, self.boardData)
+        shapesDict = self._calculateBaseShapes(shapesXMLDict)
         
         return self.boardData
     
@@ -125,6 +126,22 @@ class VisecadLoader():
                     shapesIDToComponentDict[shapeID] = []
                 shapesIDToComponentDict[shapeID].append(componentInstance)
         return shapesIDToComponentDict
+
+    def _calculateBaseShapes(self, shapesXMLDict:dict) -> dict:
+        shapesDict = {}
+        for shapeID, child in shapesXMLDict.items():
+            sizeA = gobj.floatOrNone(child.attrib['sizeA'])
+            sizeB = gobj.floatOrNone(child.attrib['sizeB'])
+            if sizeB:
+                bottomLeftPoint = gobj.Point(-sizeA / 2, -sizeB / 2)
+                topRightPoint = gobj.Point(sizeA / 2, sizeB / 2)
+                shapeInstance = gobj.Rectangle(bottomLeftPoint, topRightPoint)
+            else:
+                centerPoint = gobj.Point(0, 0)
+                radius = sizeA / 2
+                shapeInstance = gobj.Circle(centerPoint, radius)
+            shapesDict[shapeID] = shapeInstance
+        return shapesDict
 
     def _createPin(self, rootXML:ET.ElementTree) -> pin.Pin:
         pinID = rootXML.attrib['pin']
