@@ -293,9 +293,8 @@ def test__updateComponents(componentsInsertTest):
         componentInstance = comp.Component(componentName)
         instance.boardData.addComponent(componentName, componentInstance)
 
-    shapesIDToInstanceAngleDict = {}
     pcbXML = instance._parseXMLFromFileLines(componentsInsertTest)
-    instance._updateComponents(pcbXML, instance.boardData, shapesIDToInstanceAngleDict)
+    shapesIDToComponentDict = instance._updateComponents(pcbXML, instance.boardData)
 
     ## test components
     componentInstance = instance.boardData.getElementByName('components', 'CN1')
@@ -314,7 +313,6 @@ def test__updateComponents(componentsInsertTest):
     assert componentInstance.side == 'T'
 
     ## test shapesIDDict
-    assert list(shapesIDToInstanceAngleDict.keys()) == ['61', '62']
-    assert shapesIDToInstanceAngleDict['61'] == [[instance.boardData.getElementByName('components', 'CN1'), '0']]
-    assert shapesIDToInstanceAngleDict['62'] == [[instance.boardData.getElementByName('components', 'R4'), '0'],
-                                  [instance.boardData.getElementByName('components', 'R1'), '0']]
+    assert list(shapesIDToComponentDict.keys()) == ['61', '62']
+    assert shapesIDToComponentDict['61'] == [instance.boardData.getElementByName('components', 'CN1')]
+    assert shapesIDToComponentDict['62'] == [instance.boardData.getElementByName('components', 'R4'), instance.boardData.getElementByName('components', 'R1')]
