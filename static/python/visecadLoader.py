@@ -18,7 +18,7 @@ class VisecadLoader():
         rootXML = self._parseXMLFromFileLines(fileLines)
         outlinesLayers = self._getOutlinesLayers(rootXML)
         shapesIDToPinAngleDict = self._processNetsTag(rootXML, self.boardData)
-        shapesXMLDict, padstackDict, pcbXML = self._processGeometriesTag(rootXML)
+        shapesXMLDict, padstackXMLDict, pcbXML = self._processGeometriesTag(rootXML)
         self._getBoardOutlines(pcbXML, self.boardData, outlinesLayers)
         shapesIDToComponentDict = self._updateComponents(pcbXML, self.boardData)
         
@@ -81,7 +81,7 @@ class VisecadLoader():
         geometriesXML = rootXML.find('Geometries')
         
         shapesXMLDict = {}
-        padstackDict = {}
+        padstackXMLDict = {}
         pcbXML = ET.fromstring("<Init><Datas></Datas></Init>")
         for child in geometriesXML.findall('Geometry'):
             branchID = child.attrib['num']
@@ -90,10 +90,10 @@ class VisecadLoader():
             elif len(child) > 0:
                 if len(child.find('Datas')) > len(pcbXML.find('Datas')):
                     pcbXML = child
-                padstackDict[branchID] = child
+                padstackXMLDict[branchID] = child
         
-        padstackDict.pop(pcbXML.attrib['num'])
-        return shapesXMLDict, padstackDict, pcbXML
+        padstackXMLDict.pop(pcbXML.attrib['num'])
+        return shapesXMLDict, padstackXMLDict, pcbXML
 
     def _getBoardOutlines(self, pcbXML:ET.ElementTree, boardInstance:board.Board, outlinesLayers:list[str]):
         polyStructsXML = [child for child in pcbXML.find('Datas').findall('PolyStruct') if child.attrib['layer'] in outlinesLayers]

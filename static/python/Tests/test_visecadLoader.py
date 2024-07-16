@@ -245,16 +245,16 @@ def test__processNetsTag(netsLines):
 def test__processGeometriesTag(geometriesSplitTest):
     instance = VisecadLoader()
     rootXML = instance._parseXMLFromFileLines(geometriesSplitTest)
-    shapesDict, padstackDict, pcbXML = instance._processGeometriesTag(rootXML)
+    shapesDict, padstackXMLDict, pcbXML = instance._processGeometriesTag(rootXML)
 
     assert list(shapesDict.keys()) == ['0', '26', '27']
     assert shapesDict['0'].attrib['name'] == 'Small Width'
     assert shapesDict['26'].attrib['name'] == 'AP_r2184'
     assert shapesDict['27'].attrib['name'] == 'AP_r2235'
 
-    assert list(padstackDict.keys()) == ['58', '62']
-    assert padstackDict['58'].attrib['name'] == 'PADSTACK007'
-    assert padstackDict['62'].attrib['name'] == 'R0603_T'
+    assert list(padstackXMLDict.keys()) == ['58', '62']
+    assert padstackXMLDict['58'].attrib['name'] == 'PADSTACK007'
+    assert padstackXMLDict['62'].attrib['name'] == 'R0603_T'
     
     assert pcbXML.attrib['name'] == 'PCB'
     assert pcbXML.attrib['num'] == '2'
