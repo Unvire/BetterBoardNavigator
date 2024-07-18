@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile
-import math
+import math, copy
 import geometryObjects as gobj
 import component as comp
 import board, pin
@@ -21,7 +21,8 @@ class VisecadLoader():
         shapesXMLDict, padstackXMLDict, pcbXML = self._processGeometriesTag(rootXML)
         self._getBoardOutlines(pcbXML, self.boardData, outlinesLayers)
         shapesIDToComponentDict = self._updateComponents(pcbXML, self.boardData)
-        shapesDict = self._calculateBaseShapes(shapesXMLDict)
+        shapesDict = self._calculateBaseShapes(shapesXMLDict)        
+        padstackShapeIDDict = self._getPadstackShapeID(padstackXMLDict, shapesDict)
         
         return self.boardData
     
@@ -143,6 +144,45 @@ class VisecadLoader():
             shapesDict[shapeID] = shapeInstance
         return shapesDict
 
+    def _getPadstackShapeID(self, padstackXMLDict:dict, shapesDict:dict) -> dict:
+        padstackShapeIDDict = {}
+        padstacksSecondIterationMatchList = []
+        
+        for padstackID, child in padstackXMLDict.items():
+            datasXML = child.find('Datas')
+            polyStructsXML = datasXML.findall('PolyStruct')
+            insertsXML = datasXML.findall('Insert')
+
+            if not polyStructsXML and not insertsXML: 
+                continue
+            
+            if not polyStructsXML and insertsXML:
+                insertPadstackID = insertsXML[0].attrib['geomNum']
+                if insertPadstackID in shapesDict:
+                    padstackShapeIDDict[insertPadstackID] = shapesDict[insertPadstackID]
+                else:
+                    padstacksSecondIterationMatchList.append([padstackID, insertPadstackID])
+                continue
+            
+            rectangle = self._getRectangleFromPolyStruct(polyStructsXML[0])
+            padstackShapeIDDict[padstackID] = rectangle
+            numberOfPins = len(insertsXML)
+            for insertXML in insertsXML:
+                insertPadstackID = insertXML.attrib['geomNum']
+                if insertPadstackID in shapesDict:
+                    padstackShapeIDDict[insertPadstackID] = shapesDict[insertPadstackID]
+                else:
+                    rectBLPoint, _, rectTRPoint, _ = rectangle.getPoints()
+                    scaleFactor = 1 / (numberOfPins + 1)
+                    scaledRectangle = gobj.Rectangle(gobj.Point.scale(rectBLPoint, scaleFactor), 
+                                                    gobj.Point.scale(rectTRPoint, scaleFactor))
+                    padstackShapeIDDict[insertPadstackID] = scaledRectangle
+        
+        for padstackID, insertPadstackID in padstacksSecondIterationMatchList:
+            padstackShapeIDDict[padstackID] = padstackShapeIDDict[insertPadstackID]
+        
+        return padstackShapeIDDict
+
     def _createPin(self, rootXML:ET.ElementTree) -> pin.Pin:
         pinID = rootXML.attrib['pin']
 
@@ -199,7 +239,18 @@ class VisecadLoader():
                 shapesList.append(gobj.Line(previousPoint, currentPoint))
             previousPoint = currentPoint
         return shapesList
-
+    
+    def _getRectangleFromPolyStruct(self, polyStructXML:ET.ElementTree) -> gobj.Rectangle:
+        pointsXML = polyStructXML.find('Poly').findall('Pnt')
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+        for pointXML in pointsXML:
+            if 'bulge' in pointXML.attrib:
+                continue
+            x = gobj.floatOrNone(pointXML.attrib['x'])
+            y = gobj.floatOrNone(pointXML.attrib['y'])
+            point = gobj.Point(x, y)
+            bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
+        return gobj.Rectangle(bottomLeftPoint, topRightPoint)
 
 if __name__ == '__main__':
     def openSchematicFile() -> str:        
