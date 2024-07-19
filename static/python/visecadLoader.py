@@ -25,7 +25,7 @@ class VisecadLoader():
         shapesDict = self._calculateBaseShapes(shapesXMLDict)        
         padstackIDDict = self._getPadstackShapeID(padstackXMLDict, shapesDict)
         self._addShapesToPins(shapesIDToPinAngleDict, padstackIDDict)
-        #self._addShapesToComponents(shapesIDToComponentDict, padstackIDDict)
+        self._addShapesToComponents(shapesIDToComponentDict, padstackIDDict)
         
         return self.boardData
     
