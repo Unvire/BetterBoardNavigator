@@ -24,6 +24,7 @@ class VisecadLoader():
         shapesIDToComponentDict = self._updateComponents(pcbXML, self.boardData)
         shapesDict = self._calculateBaseShapes(shapesXMLDict)        
         padstackIDDict = self._getPadstackShapeID(padstackXMLDict, shapesDict)
+        self._addShapesToPins(shapesIDToPinAngleDict, padstackIDDict)
         
         return self.boardData
     
@@ -188,6 +189,18 @@ class VisecadLoader():
         
         padstackShapeIDDict.update(shapesDict)
         return padstackShapeIDDict
+    
+    def _addShapesToPins(self, shapesIDToPinAngleDict:dict, padstackIDDict:dict):
+        for shapeID, pinsAnglesList in shapesIDToPinAngleDict.items():
+            for pin, angle in pinsAnglesList:
+                shapeInstance = copy.deepcopy(padstackIDDict[shapeID])
+                bottomLeftPoint, topRightPoint = shapeInstance.calculateArea()
+                shapeName = shapeInstance.type
+                pin.setShape(shapeName.upper())
+                pin.setArea(bottomLeftPoint, topRightPoint)
+                pin.calculateDimensionsFromArea()
+                pin.caluclateShapeData()
+                pin.rotateInPlaceAroundCoords(math.degrees(float(angle)))
 
     def _createPin(self, rootXML:ET.ElementTree) -> pin.Pin:
         pinID = rootXML.attrib['pin']
