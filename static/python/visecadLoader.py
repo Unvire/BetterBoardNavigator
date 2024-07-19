@@ -20,6 +20,7 @@ class VisecadLoader():
         shapesIDToPinAngleDict = self._processNetsTag(rootXML, self.boardData)
         shapesXMLDict, padstackXMLDict, pcbXML = self._processGeometriesTag(rootXML)
         self._getBoardOutlines(pcbXML, self.boardData, outlinesLayers)
+        self._getBoardArea(self.boardData)
         shapesIDToComponentDict = self._updateComponents(pcbXML, self.boardData)
         shapesDict = self._calculateBaseShapes(shapesXMLDict)        
         padstackShapeIDDict = self._getPadstackShapeID(padstackXMLDict, shapesDict)
@@ -105,6 +106,10 @@ class VisecadLoader():
             outlinesList += self._processPolyStruct(polyStructXML)
         boardInstance.setOutlines(outlinesList)
     
+    def _getBoardArea(self, boardInstance:board.Board):        
+        bottomLeftPoint, topRightPoint = boardInstance.calculateAreaFromOutlines()
+        boardInstance.setArea(bottomLeftPoint, topRightPoint)
+
     def _updateComponents(self, pcbXML:ET.ElementTree, boardInstance:board.Board) -> dict:
         components = boardInstance.getComponents()
         insertsXML = [child for child in pcbXML.find('Datas').findall('Insert') if child.attrib['refName'] != '']
