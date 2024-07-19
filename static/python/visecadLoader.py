@@ -21,7 +21,7 @@ class VisecadLoader():
         self._getBoardOutlines(pcbXML, self.boardData, outlinesLayers)
         self._getBoardArea(self.boardData)
         shapesIDToComponentDict = self._updateComponents(pcbXML, self.boardData)
-        shapesDict = self._calculateBaseShapes(shapesXMLDict)        
+        shapesDict = self._calculateBaseShapes(shapesXMLDict)
         padstackIDDict = self._getPadstackShapeID(padstackXMLDict, shapesDict)
         self._addShapesToPins(shapesIDToPinAngleDict, padstackIDDict)
         self._addShapesToComponents(shapesIDToComponentDict, padstackIDDict)
@@ -139,7 +139,7 @@ class VisecadLoader():
         for shapeID, child in shapesXMLDict.items():
             sizeA = gobj.floatOrNone(child.attrib['sizeA'])
             sizeB = gobj.floatOrNone(child.attrib['sizeB'])
-            if sizeB != '0':
+            if sizeB > 0:
                 bottomLeftPoint = gobj.Point(-sizeA / 2, -sizeB / 2)
                 topRightPoint = gobj.Point(sizeA / 2, sizeB / 2)
                 shapeInstance = gobj.Rectangle(bottomLeftPoint, topRightPoint)
@@ -187,13 +187,15 @@ class VisecadLoader():
         for padstackID, insertPadstackID in padstacksSecondIterationMatchList:
             padstackShapeIDDict[padstackID] = padstackShapeIDDict[insertPadstackID]
         
-        padstackShapeIDDict.update(shapesDict)
-        return padstackShapeIDDict
+        for key in padstackShapeIDDict:
+            if key not in shapesDict:
+                shapesDict[key] = padstackShapeIDDict[key]
+        return shapesDict
     
     def _addShapesToPins(self, shapesIDToPinAngleDict:dict, padstackIDDict:dict):
         for shapeID, pinsAnglesList in shapesIDToPinAngleDict.items():
-            for pinInstance, angle in pinsAnglesList:
-                shapeInstance = copy.deepcopy(padstackIDDict[shapeID])
+            for pinInstance, angle in pinsAnglesList:     
+                shapeInstance = copy.deepcopy(padstackIDDict[shapeID]) 
                 self._setInstanceShape(pinInstance, shapeInstance)
                 self._setInstanceAreaDimensionsAndShapeData(pinInstance, shapeInstance)
 
@@ -207,7 +209,7 @@ class VisecadLoader():
                 self._setInstanceAreaDimensionsAndShapeData(componentInstance, shapeInstance)
 
                 angle = componentInstance.getAngle()
-                componentInstance.rotateInPlaceAroundCoords(angle, isRotatePins=False)
+                componentInstance.rotateInPlaceAroundCoords(angle)
     
     def _setInstanceShape(self, instance:pin.Pin|comp.Component, shapeInstance:gobj.Rectangle|gobj.Circle):
         if shapeInstance.type == 'Circle':
