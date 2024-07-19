@@ -4,7 +4,6 @@ import math, copy
 import geometryObjects as gobj
 import component as comp
 import board, pin
-from abstractShape import Shape
 
 class VisecadLoader():
     def __init__(self):
@@ -140,7 +139,7 @@ class VisecadLoader():
         for shapeID, child in shapesXMLDict.items():
             sizeA = gobj.floatOrNone(child.attrib['sizeA'])
             sizeB = gobj.floatOrNone(child.attrib['sizeB'])
-            if sizeB:
+            if sizeB != '0':
                 bottomLeftPoint = gobj.Point(-sizeA / 2, -sizeB / 2)
                 topRightPoint = gobj.Point(sizeA / 2, sizeB / 2)
                 shapeInstance = gobj.Rectangle(bottomLeftPoint, topRightPoint)
@@ -208,7 +207,7 @@ class VisecadLoader():
                 self._setInstanceAreaDimensionsAndShapeData(componentInstance, shapeInstance)
 
                 angle = componentInstance.getAngle()
-                componentInstance.rotateInPlaceAroundCoords(angle)
+                componentInstance.rotateInPlaceAroundCoords(angle, isRotatePins=False)
     
     def _setInstanceShape(self, instance:pin.Pin|comp.Component, shapeInstance:gobj.Rectangle|gobj.Circle):
         if shapeInstance.type == 'Circle':
