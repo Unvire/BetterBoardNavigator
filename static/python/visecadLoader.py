@@ -250,7 +250,12 @@ class VisecadLoader():
             y = gobj.floatOrNone(pointXML.attrib['y'])
             point = gobj.Point(x, y)
             bottomLeftPoint, topRightPoint = gobj.Point.minXY_maxXYCoords(bottomLeftPoint, topRightPoint, point)
-        return gobj.Rectangle(bottomLeftPoint, topRightPoint)
+        
+        xBL, yBL = bottomLeftPoint.getXY()
+        xTR, yTR = topRightPoint.getXY()
+        midX = 0.5 * (abs(xBL) + abs(xTR))   
+        midY = 0.5 * (abs(yBL) + abs(yTR))
+        return gobj.Rectangle(gobj.Point(-midX, -midY), gobj.Point(midX, midY))
 
 if __name__ == '__main__':
     def openSchematicFile() -> str:        
