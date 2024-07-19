@@ -25,6 +25,7 @@ class VisecadLoader():
         shapesDict = self._calculateBaseShapes(shapesXMLDict)        
         padstackIDDict = self._getPadstackShapeID(padstackXMLDict, shapesDict)
         self._addShapesToPins(shapesIDToPinAngleDict, padstackIDDict)
+        #self._addShapesToComponents(shapesIDToComponentDict, padstackIDDict)
         
         return self.boardData
     
@@ -192,15 +193,20 @@ class VisecadLoader():
     
     def _addShapesToPins(self, shapesIDToPinAngleDict:dict, padstackIDDict:dict):
         for shapeID, pinsAnglesList in shapesIDToPinAngleDict.items():
-            for pin, angle in pinsAnglesList:
+            for pinInstance, angle in pinsAnglesList:
                 shapeInstance = copy.deepcopy(padstackIDDict[shapeID])
-                bottomLeftPoint, topRightPoint = shapeInstance.calculateArea()
                 shapeName = shapeInstance.type
-                pin.setShape(shapeName.upper())
-                pin.setArea(bottomLeftPoint, topRightPoint)
-                pin.calculateDimensionsFromArea()
-                pin.caluclateShapeData()
-                pin.rotateInPlaceAroundCoords(math.degrees(float(angle)))
+                pinInstance.setShape(shapeName.upper())
+                
+                moveVector = pinInstance.getCoordsAsTranslationVector()
+                bottomLeftPoint, topRightPoint = shapeInstance.calculateArea()
+                bottomLeftPoint.translateInPlace(moveVector)
+                topRightPoint.translateInPlace(moveVector)
+                pinInstance.setArea(bottomLeftPoint, topRightPoint)
+                pinInstance.calculateDimensionsFromArea()
+                pinInstance.caluclateShapeData()
+
+                pinInstance.rotateInPlaceAroundCoords(math.degrees(float(angle)))
 
     def _createPin(self, rootXML:ET.ElementTree) -> pin.Pin:
         pinID = rootXML.attrib['pin']
