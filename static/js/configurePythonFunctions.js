@@ -30,8 +30,8 @@ async function loadLocalModules(pyodide) {
     }
 
     const modulesList = ['geometryObjects', 'abstractShape', 'pin', 'component', 'board', 'unlzw3', 
-                          'camcadLoader', 'gencadLoader', 'odbPlusPlusLoader', 'loaderSelectorFactory',
-                          'boardWrapper', 'pygameDrawBoard']
+                          'camcadLoader', 'gencadLoader', 'odbPlusPlusLoader', 'visecadLoader',
+                          'loaderSelectorFactory','boardWrapper', 'pygameDrawBoard']
     
     modulesList.forEach(async (moduleName) => {
         await copyModuleToVirtualMemory(pyodide, moduleName)
