@@ -195,17 +195,8 @@ class VisecadLoader():
         for shapeID, pinsAnglesList in shapesIDToPinAngleDict.items():
             for pinInstance, angle in pinsAnglesList:
                 shapeInstance = copy.deepcopy(padstackIDDict[shapeID])
-                shapeName = shapeInstance.type
-                pinInstance.setShape(shapeName.upper())
-                
-                moveVector = pinInstance.getCoordsAsTranslationVector()
-                bottomLeftPoint, topRightPoint = shapeInstance.calculateArea()
-                bottomLeftPoint.translateInPlace(moveVector)
-                topRightPoint.translateInPlace(moveVector)
-
-                pinInstance.setArea(bottomLeftPoint, topRightPoint)
-                pinInstance.calculateDimensionsFromArea()
-                pinInstance.caluclateShapeData()
+                self._setInstanceShape(pinInstance, shapeInstance)
+                self._setInstanceAreaDimensionsAndShapeData(pinInstance, shapeInstance)
 
                 pinInstance.rotateInPlaceAroundCoords(math.degrees(float(angle)))
 
@@ -213,20 +204,27 @@ class VisecadLoader():
         for shapeID, componentsList in shapesIDToComponentDict.items():
             for componentInstance in componentsList:
                 shapeInstance = copy.deepcopy(padstackIDDict[shapeID])
-                shapeName = shapeInstance.type
-                componentInstance.setShape(shapeName.upper())
-
-                bottomLeftPoint, topRightPoint = shapeInstance.calculateArea()
-                moveVector = componentInstance.getCoordsAsTranslationVector()
-                bottomLeftPoint.translateInPlace(moveVector)
-                topRightPoint.translateInPlace(moveVector)
-                
-                componentInstance.setArea(bottomLeftPoint, topRightPoint)
-                componentInstance.calculateDimensionsFromArea()
-                componentInstance.caluclateShapeData()
+                self._setInstanceShape(componentInstance, shapeInstance)
+                self._setInstanceAreaDimensionsAndShapeData(componentInstance, shapeInstance)
 
                 angle = componentInstance.getAngle()
                 componentInstance.rotateInPlaceAroundCoords(angle)
+    
+    def _setInstanceShape(self, instance:pin.Pin|comp.Component, shapeInstance:gobj.Rectangle|gobj.Circle):
+        if shapeInstance.type == 'Circle':
+            instance.setShape('CIRCLE')
+    
+    def _setInstanceAreaDimensionsAndShapeData(self, instance:pin.Pin|comp.Component, shapeInstance:gobj.Rectangle|gobj.Circle):
+        def moveAreaToCoords(instance:pin.Pin|comp.Component, moveVector:list[float, float]) -> tuple[gobj.Point, gobj.Point]:
+            bottomLeftPoint, topRightPoint = instance.calculateArea()
+            bottomLeftPoint.translateInPlace(moveVector)
+            topRightPoint.translateInPlace(moveVector)
+            return bottomLeftPoint, topRightPoint
+
+        bottomLeftPoint, topRightPoint = moveAreaToCoords(shapeInstance, instance.getCoordsAsTranslationVector())
+        instance.setArea(bottomLeftPoint, topRightPoint)
+        instance.calculateDimensionsFromArea()
+        instance.caluclateShapeData()
 
     def _createPin(self, rootXML:ET.ElementTree) -> pin.Pin:
         pinID = rootXML.attrib['pin']
