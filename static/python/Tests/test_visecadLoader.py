@@ -316,3 +316,11 @@ def test__updateComponents(componentsInsertTest):
     assert list(shapesIDToComponentDict.keys()) == ['61', '62']
     assert shapesIDToComponentDict['61'] == [instance.boardData.getElementByName('components', 'CN1')]
     assert shapesIDToComponentDict['62'] == [instance.boardData.getElementByName('components', 'R4'), instance.boardData.getElementByName('components', 'R1')]
+
+def test__getRectangleFromPolyStruct(polyStructTest):
+    instance = VisecadLoader()
+    rootXML = instance._parseXMLFromFileLines(polyStructTest)
+    polyStructsXML = rootXML.findall('PolyStruct')
+
+    assert instance._getRectangleFromPolyStruct(polyStructsXML[0]) == gobj.Rectangle(gobj.Point(4.248031, 10.098425), gobj.Point(4.248031, 10.177165))
+    assert instance._getRectangleFromPolyStruct(polyStructsXML[1]) == gobj.Rectangle(gobj.Point(4.031496, 9.322835), gobj.Point(4.299213, 10.098425))
