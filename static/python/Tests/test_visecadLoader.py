@@ -426,7 +426,7 @@ def test__getPadstackShapeID(matchShapesToIDsTest):
     rectBL = gobj.Point(-0.462598, -0.1673225)
     rectTR = gobj.Point(0.462598, 0.1673225)
     rectMain = gobj.Rectangle(rectBL, rectTR)
-    rectPins = gobj.Rectangle(gobj.Point.scale(rectBL, 1 / 3), gobj.Point.scale(rectTR, 1 / 3))
+    rectPins = gobj.Rectangle(gobj.Point.scale(rectBL, 1 / 2), gobj.Point.scale(rectTR, 1 / 2))
     assert padstackShapeIDDict['3'] == rectMain
     assert padstackShapeIDDict['4'] == rectPins
     assert padstackShapeIDDict['5'] == rectPins

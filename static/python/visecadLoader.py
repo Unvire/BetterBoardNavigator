@@ -180,7 +180,7 @@ class VisecadLoader():
                     padstackShapeIDDict[insertPadstackID] = shapesDict[insertPadstackID]
                 else:
                     rectBLPoint, _, rectTRPoint, _ = rectangle.getPoints()
-                    scaleFactor = 1 / (numberOfPins + 1)
+                    scaleFactor = 1 / numberOfPins
                     scaledRectangle = gobj.Rectangle(gobj.Point.scale(rectBLPoint, scaleFactor), 
                                                     gobj.Point.scale(rectTRPoint, scaleFactor))
                     padstackShapeIDDict[insertPadstackID] = scaledRectangle
