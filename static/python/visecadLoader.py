@@ -23,7 +23,7 @@ class VisecadLoader():
         self._getBoardArea(self.boardData)
         shapesIDToComponentDict = self._updateComponents(pcbXML, self.boardData)
         shapesDict = self._calculateBaseShapes(shapesXMLDict)        
-        padstackShapeIDDict = self._getPadstackShapeID(padstackXMLDict, shapesDict)
+        padstackIDDict = self._getPadstackShapeID(padstackXMLDict, shapesDict)
         
         return self.boardData
     
@@ -186,6 +186,7 @@ class VisecadLoader():
         for padstackID, insertPadstackID in padstacksSecondIterationMatchList:
             padstackShapeIDDict[padstackID] = padstackShapeIDDict[insertPadstackID]
         
+        padstackShapeIDDict.update(shapesDict)
         return padstackShapeIDDict
 
     def _createPin(self, rootXML:ET.ElementTree) -> pin.Pin:

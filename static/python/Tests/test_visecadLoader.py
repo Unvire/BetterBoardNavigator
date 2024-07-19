@@ -422,7 +422,7 @@ def test__getPadstackShapeID(matchShapesToIDsTest):
     assert shapesDict['1'] == gobj.Circle(gobj.Point(0, 0), 0.085 / 2)
     assert shapesDict['2'] == gobj.Rectangle(gobj.Point(-0.0435, -0.017), gobj.Point(0.0435, 0.017))
 
-    assert sorted(list(padstackShapeIDDict.keys())) == ['3', '4', '5', '6', '7']
+    assert sorted(list(padstackShapeIDDict.keys())) == ['1', '2', '3', '4', '5', '6', '7']
     rectBL = gobj.Point(-0.462598, -0.1673225)
     rectTR = gobj.Point(0.462598, 0.1673225)
     rectMain = gobj.Rectangle(rectBL, rectTR)
