@@ -73,7 +73,7 @@ class Board:
     
     def calculateAreaFromOutlines(self) -> tuple[gobj.Point, gobj.Point]:
         bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
-        for shape in self.outlines():
+        for shape in self.outlines:
             bottomLeftPoint, topRightPoint = gobj.updateBottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], list(shape.getPoints()))
         return bottomLeftPoint, topRightPoint
     
