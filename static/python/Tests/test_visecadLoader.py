@@ -172,14 +172,92 @@ def polyStructTest():
 def componentsInsertTest():
     fileLinesMock = [
         '<CCDoc>',
-        '<Datas>',
-        '<Insert entityNum="86" layer="-1" graphicClass="0" colorOverride="1" overrideColor="7895160" insertType="3" refName="CN1" geomNum="61" x="1.039331" y="0.448779" angle="0" mirror="0" placeBottom="1" scale="1"></Insert>',
-        '<Insert entityNum="93" layer="-1" graphicClass="0" insertType="3" refName="R4" geomNum="62" x="0.599606" y="0.311024" angle="4.712389" mirror="0" placeBottom="0" scale="1"></Insert>',
-        '<Insert entityNum="95" layer="-1" graphicClass="0" insertType="3" refName="R1" geomNum="62" x="0.641732" y="0.425197" angle="1.570796" mirror="0" placeBottom="0" scale="1"></Insert>',
-        '<Insert entityNum="27" layer="0" graphicClass="0" insertType="1" refName="" geomNum="46" x="0.467323" y="0.285433" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
-        '<Insert entityNum="27" layer="0" graphicClass="0" insertType="1" refName="Via0001" geomNum="46" x="0.467323" y="0.285433" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
-        '</Datas>',
+        '  <Datas>',
+        '    <Insert entityNum="86" layer="-1" graphicClass="0" colorOverride="1" overrideColor="7895160" insertType="3" refName="CN1" geomNum="61" x="1.039331" y="0.448779" angle="0" mirror="0" placeBottom="1" scale="1"></Insert>',
+        '    <Insert entityNum="93" layer="-1" graphicClass="0" insertType="3" refName="R4" geomNum="62" x="0.599606" y="0.311024" angle="4.712389" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    <Insert entityNum="95" layer="-1" graphicClass="0" insertType="3" refName="R1" geomNum="62" x="0.641732" y="0.425197" angle="1.570796" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    <Insert entityNum="27" layer="0" graphicClass="0" insertType="1" refName="" geomNum="46" x="0.467323" y="0.285433" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    <Insert entityNum="27" layer="0" graphicClass="0" insertType="1" refName="Via0001" geomNum="46" x="0.467323" y="0.285433" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '  </Datas>',
         '</CCDoc>',
+    ]
+    return fileLinesMock
+
+@ pytest.fixture
+def matchShapesToIDsTest():
+    fileLinesMock = [
+        '<CCDoc version="7.1" application="CAMCAD.EXE">',
+        '<Geometries>',
+        '<!-- PCB MOCK -->',
+        '<Geometry num="0" name="PCB" originalName="" fileNum="1" geomType="1" flag="4">',
+        '  <Datas>',
+        '    <PolyStruct entityNum="87" layer="1" graphicClass="17"></PolyStruct>',
+        '    <PolyStruct entityNum="88" layer="3" graphicClass="17"></PolyStruct>',
+        '    <PolyStruct entityNum="89" layer="3" graphicClass="17"></PolyStruct>',
+        '    <PolyStruct entityNum="87" layer="1" graphicClass="17"></PolyStruct>',
+        '    <PolyStruct entityNum="88" layer="3" graphicClass="17"></PolyStruct>',
+        '    <PolyStruct entityNum="89" layer="3" graphicClass="17"></PolyStruct>',
+        '    <Insert entityNum="90" layer="-1" graphicClass="0" insertType="2" refName="1" geomNum="52" x="0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    <Insert entityNum="91" layer="-1" graphicClass="0" insertType="2" refName="2" geomNum="52" x="-0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    <Insert entityNum="90" layer="-1" graphicClass="0" insertType="2" refName="1" geomNum="52" x="0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    <Insert entityNum="91" layer="-1" graphicClass="0" insertType="2" refName="2" geomNum="52" x="-0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    <Insert entityNum="90" layer="-1" graphicClass="0" insertType="2" refName="1" geomNum="52" x="0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    <Insert entityNum="91" layer="-1" graphicClass="0" insertType="2" refName="2" geomNum="52" x="-0.030984" y="-8e-010" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '  </Datas>',
+        '</Geometry>',
+        '',
+        '<!-- BASE SHAPE -->',
+        '<Geometry num="1" name="AP_r2184" originalName="" fileNum="-1" geomType="0" flag="73" dCode="0" shape="1" sizeA="0.085" sizeB="0" sizeC="0" sizeD="0" rotation="0" xOffset="0" yOffset="0" numSpokes="0"></Geometry>',
+        '<Geometry num="2" name="AP_r2235" originalName="" fileNum="-1" geomType="0" flag="73" dCode="0" shape="1" sizeA="0.087" sizeB="0.034" sizeC="0" sizeD="0" rotation="0" xOffset="0" yOffset="0" numSpokes="0"></Geometry>',
+        '',
+        '<!-- POLYSTRUCT AND INSERTS -->',
+        '<Geometry num="3" name="RP_0_PKG" originalName="" fileNum="1" geomType="33">',
+        '  <Datas>',
+        '    <PolyStruct entityNum="10" layer="24" graphicClass="29">',
+        '      <Poly widthIndex="0" closed="1">',
+        '      <Pnt x="0.462598" y="0.149606"/>',
+        '      <Pnt x="-0.462598" y="0.149606"/>',
+        '      <Pnt x="-0.462598" y="-0.185039"/>',
+        '      <Pnt x="0.462598" y="-0.185039"/>',
+        '      <Pnt x="0.462598" y="0.149606"/>',
+        '    </Poly>',
+        '  </PolyStruct>',
+        '  <Insert entityNum="2" layer="-1" graphicClass="0" insertType="38" refName="1" geomNum="4" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '  <Insert entityNum="4" layer="-1" graphicClass="0" insertType="38" refName="2" geomNum="5" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '  </Datas>',
+        '</Geometry>',
+        '<Geometry num="4" name="RP_0_PKG_PIN_1" originalName="" fileNum="1" geomType="34"></Geometry>',
+        '<Geometry num="5" name="RP_0_PKG_PIN_2" originalName="" fileNum="1" geomType="34"></Geometry>',
+        '',
+        '<!-- NO POLYSTRUCT - USE FIRST INSERT - SECOND ITERATION LOOKUP -->',
+        '<Geometry num="6" name="PADSTACK000" originalName="" fileNum="-1" geomType="4" flag="12288">',
+        '  <Datas>',
+        '    <Insert entityNum="6371" layer="8" graphicClass="0" insertType="0" refName="" geomNum="7" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    <Insert entityNum="6372" layer="9" graphicClass="0" insertType="0" refName="" geomNum="800" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    <Insert entityNum="6373" layer="10" graphicClass="0" insertType="0" refName="" geomNum="900" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '    <Insert entityNum="6374" layer="11" graphicClass="0" insertType="0" refName="" geomNum="1000" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
+        '  </Datas>',
+        '</Geometry>',
+        '',
+        '<!-- ONLY POLYSTRUCT -->',
+        '<Geometry num="7" name="R0603_T" originalName="R0603_T" fileNum="1" geomType="5">',
+        '  <Datas>',
+        '    <PolyStruct entityNum="87" layer="1" graphicClass="17">',
+        '      <Poly widthIndex="0" closed="1">',
+        '        <Pnt x="-0.030984" y="-0.015984"/>',
+        '        <Pnt x="0.030984" y="-0.015984"/>',
+        '        <Pnt x="0.030984" y="0.015984"/>',
+        '        <Pnt x="-0.030984" y="0.015984"/>',
+        '        <Pnt x="-0.030984" y="-0.015984"/>',
+        '      </Poly>',
+        '    </PolyStruct>',
+        '  </Datas>',
+        '</Geometry>',
+        '',
+        '<!-- SKIP - NO POLYSTRUCT AND NO INSERTS -->',
+        '<Geometry num="2165" name="DRILL 461" originalName="" fileNum="-1" geomType="20" flag="80" tCode="0" toolSize="0.055118" display="0" geomNum="1" type="0" plated="1" punched="0"></Geometry>',
+        '</Geometries>',
+        '</CCDoc>'
     ]
     return fileLinesMock
 
@@ -320,8 +398,8 @@ def test__getRectangleFromPolyStruct(polyStructTest):
     rootXML = instance._parseXMLFromFileLines(polyStructTest)
     polyStructsXML = rootXML.findall('PolyStruct')
 
-    assert instance._getRectangleFromPolyStruct(polyStructsXML[0]) == gobj.Rectangle(gobj.Point(4.248031, 10.098425), gobj.Point(4.248031, 10.177165))
-    assert instance._getRectangleFromPolyStruct(polyStructsXML[1]) == gobj.Rectangle(gobj.Point(4.031496, 9.322835), gobj.Point(4.299213, 10.098425))
+    assert instance._getRectangleFromPolyStruct(polyStructsXML[0]) == gobj.Rectangle(gobj.Point(-4.248031, -10.137795), gobj.Point(4.248031, 10.137795))
+    assert instance._getRectangleFromPolyStruct(polyStructsXML[1]) == gobj.Rectangle(gobj.Point(-4.165354, -9.71063), gobj.Point(4.165354, 9.71063))
 
 def test__calculateBaseShapes(geometriesSplitTest):
     instance = VisecadLoader()
@@ -332,4 +410,25 @@ def test__calculateBaseShapes(geometriesSplitTest):
     assert list(shapesDict.keys()) == ['26', '27']
     assert shapesDict['26'] == gobj.Circle(gobj.Point(0, 0), 0.085984 / 2)
     assert shapesDict['27'] == gobj.Rectangle(gobj.Point(-0.043996, -0.191), gobj.Point(0.043996, 0.191))
-        
+
+def test__getPadstackShapeID(matchShapesToIDsTest):
+    instance = VisecadLoader()
+    rootXML = instance._parseXMLFromFileLines(matchShapesToIDsTest)
+    shapesXMLDict, padstackXMLDict, _ = instance._processGeometriesTag(rootXML)
+    shapesDict = instance._calculateBaseShapes(shapesXMLDict)
+    padstackShapeIDDict = instance._getPadstackShapeID(padstackXMLDict, shapesDict)
+
+    assert list(shapesDict.keys()) == ['1', '2']
+    assert shapesDict['1'] == gobj.Circle(gobj.Point(0, 0), 0.085 / 2)
+    assert shapesDict['2'] == gobj.Rectangle(gobj.Point(-0.0435, -0.017), gobj.Point(0.0435, 0.017))
+
+    assert sorted(list(padstackShapeIDDict.keys())) == ['3', '4', '5', '6', '7']
+    rectBL = gobj.Point(-0.462598, -0.1673225)
+    rectTR = gobj.Point(0.462598, 0.1673225)
+    rectMain = gobj.Rectangle(rectBL, rectTR)
+    rectPins = gobj.Rectangle(gobj.Point.scale(rectBL, 1 / 3), gobj.Point.scale(rectTR, 1 / 3))
+    assert padstackShapeIDDict['3'] == rectMain
+    assert padstackShapeIDDict['4'] == rectPins
+    assert padstackShapeIDDict['5'] == rectPins
+    assert padstackShapeIDDict['6'] == padstackShapeIDDict['7']
+    assert padstackShapeIDDict['7'] == gobj.Rectangle(gobj.Point(-0.030984, -0.015984), gobj.Point(0.030984, 0.015984))
