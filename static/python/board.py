@@ -71,6 +71,12 @@ class Board:
         topRightPoint.scaleInPlace(SCALE_UP_FACTOR)
         return bottomLeftPoint, topRightPoint
     
+    def calculateAreaFromOutlines(self) -> tuple[gobj.Point, gobj.Point]:
+        bottomLeftPoint, topRightPoint = gobj.getDefaultBottomLeftTopRightPoints()
+        for shape in self.outlines():
+            bottomLeftPoint, topRightPoint = gobj.updateBottomLeftTopRightPoints([bottomLeftPoint, topRightPoint], list(shape.getPoints()))
+        return bottomLeftPoint, topRightPoint
+    
     def translateRotateScaleBoard(self, functionName:str, *args):
         '''
         Calls translateInPlace, rotateInPlace or scaleInPlace on area, shapes and components.
