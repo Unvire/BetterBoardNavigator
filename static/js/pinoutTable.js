@@ -66,8 +66,8 @@ class PinoutTable{
         this.selectedRows = [];
     }
 
-    async selectRowByName(netName){
-        let potentialRows = await this.parentContainer.querySelectorAll(`div[data-key="${netName}"]`);
+    selectRowByName(netName){
+        let potentialRows = this.parentContainer.querySelectorAll(`div[data-key="${netName}"]`);
         if (potentialRows){
             const isSkipSelectionHandling = this.#isSelectedRowsTheSameAs(potentialRows);
             this.unselectCurrentRows();

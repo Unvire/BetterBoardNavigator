@@ -106,13 +106,13 @@ class NetTreeView{
         return clickedItem;
     }
     
-    async scrollToBranchByName(netName){
-        let keyElement = await this.ulFirstLevel.querySelector(`li[data-key="${netName}"]`);
+    scrollToBranchByName(netName){
+        let keyElement = this.ulFirstLevel.querySelector(`li[data-key="${netName}"]`);
         if (!keyElement){
             return
         }
         keyElement.scrollIntoView({ behavior: "smooth", block: "start" });
-        let netSpan = await keyElement.querySelector("span");
+        let netSpan = keyElement.querySelector("span");
 
         this.unselectCurrentItem();
         if (this.selectedNet === netSpan){
@@ -125,14 +125,14 @@ class NetTreeView{
         this.selectedNet = this.#handleSingleSelection(netSpan);
     }
 
-    async selectComponentByName(componentName){
+    selectComponentByName(componentName){
         if (!this.selectedNet || !componentName){
             return;
         }
         
         const selectedNetUl = this.#getUlFromSpan(this.selectedNet);
-        let componentLi = await selectedNetUl.querySelector(`li[data-key="${componentName}"]`);
-        let componentPinoutSpan = await componentLi.querySelector(`span`);
+        let componentLi = selectedNetUl.querySelector(`li[data-key="${componentName}"]`);
+        let componentPinoutSpan = componentLi.querySelector(`span`);
 
         const isSkipSelectionHandling = componentPinoutSpan === this.selectedComponent;
         this.unselectCurrentItem();
