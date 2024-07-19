@@ -101,9 +101,8 @@ def geometriesSplitTest():
     fileLinesMock = [
         '<CCDoc version="7.1" application="CAMCAD.EXE">',
         '<Geometries>',
-        '  <Geometry num="0" name="Small Width" originalName="" fileNum="-1" geomType="0" flag="585" dCode="0" shape="1" sizeA="0" sizeB="0" sizeC="0" sizeD="0" rotation="0" xOffset="0" yOffset="0" numSpokes="4"></Geometry>',
         '  <Geometry num="26" name="AP_r2184" originalName="" fileNum="-1" geomType="0" flag="73" dCode="0" shape="1" sizeA="0.085984" sizeB="0" sizeC="0" sizeD="0" rotation="0" xOffset="0" yOffset="0" numSpokes="0"></Geometry>',
-        '  <Geometry num="27" name="AP_r2235" originalName="" fileNum="-1" geomType="0" flag="73" dCode="0" shape="1" sizeA="0.087992" sizeB="0" sizeC="0" sizeD="0" rotation="0" xOffset="0" yOffset="0" numSpokes="0"></Geometry>',
+        '  <Geometry num="27" name="AP_r2235" originalName="" fileNum="-1" geomType="0" flag="73" dCode="0" shape="1" sizeA="0.087992" sizeB="0.382" sizeC="0" sizeD="0" rotation="0" xOffset="0" yOffset="0" numSpokes="0"></Geometry>',
         '  <Geometry num="58" name="PADSTACK007" originalName="" fileNum="-1" geomType="4" flag="12288">',
         '    <Datas>',
         '      <Insert entityNum="58" layer="6" graphicClass="0" insertType="0" refName="" geomNum="26" x="0" y="0" angle="0" mirror="0" placeBottom="0" scale="1"></Insert>',
@@ -245,12 +244,11 @@ def test__processNetsTag(netsLines):
 def test__processGeometriesTag(geometriesSplitTest):
     instance = VisecadLoader()
     rootXML = instance._parseXMLFromFileLines(geometriesSplitTest)
-    shapesDict, padstackXMLDict, pcbXML = instance._processGeometriesTag(rootXML)
+    shapesXMLDict, padstackXMLDict, pcbXML = instance._processGeometriesTag(rootXML)
 
-    assert list(shapesDict.keys()) == ['0', '26', '27']
-    assert shapesDict['0'].attrib['name'] == 'Small Width'
-    assert shapesDict['26'].attrib['name'] == 'AP_r2184'
-    assert shapesDict['27'].attrib['name'] == 'AP_r2235'
+    assert list(shapesXMLDict.keys()) == ['26', '27']
+    assert shapesXMLDict['26'].attrib['name'] == 'AP_r2184'
+    assert shapesXMLDict['27'].attrib['name'] == 'AP_r2235'
 
     assert list(padstackXMLDict.keys()) == ['58', '62']
     assert padstackXMLDict['58'].attrib['name'] == 'PADSTACK007'
@@ -324,3 +322,14 @@ def test__getRectangleFromPolyStruct(polyStructTest):
 
     assert instance._getRectangleFromPolyStruct(polyStructsXML[0]) == gobj.Rectangle(gobj.Point(4.248031, 10.098425), gobj.Point(4.248031, 10.177165))
     assert instance._getRectangleFromPolyStruct(polyStructsXML[1]) == gobj.Rectangle(gobj.Point(4.031496, 9.322835), gobj.Point(4.299213, 10.098425))
+
+def test__calculateBaseShapes(geometriesSplitTest):
+    instance = VisecadLoader()
+    rootXML = instance._parseXMLFromFileLines(geometriesSplitTest)
+    shapesXMLDict, _, _ = instance._processGeometriesTag(rootXML)    
+    shapesDict = instance._calculateBaseShapes(shapesXMLDict)        
+
+    assert list(shapesDict.keys()) == ['26', '27']
+    assert shapesDict['26'] == gobj.Circle(gobj.Point(0, 0), 0.085984 / 2)
+    assert shapesDict['27'] == gobj.Rectangle(gobj.Point(-0.043996, -0.191), gobj.Point(0.043996, 0.191))
+        
