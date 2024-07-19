@@ -1,4 +1,4 @@
-import camcadLoader, gencadLoader, odbPlusPlusLoader
+import camcadLoader, gencadLoader, odbPlusPlusLoader, visecadLoader
 import board
 
 class LoaderSelectorFactory:
@@ -6,7 +6,8 @@ class LoaderSelectorFactory:
         self.loadersDict = {
             'cad': camcadLoader.CamCadLoader,
             'gcd': gencadLoader.GenCadLoader,
-            'tgz': odbPlusPlusLoader.ODBPlusPlusLoader
+            'tgz': odbPlusPlusLoader.ODBPlusPlusLoader,
+            'ccz': visecadLoader.VisecadLoader
         }
         extension = fileName.split('.')[-1].lower()
         self.loaderInstance = self.loadersDict[extension]()
@@ -34,3 +35,8 @@ if __name__ == '__main__':
     fileLines = loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\odb\DEL2114.tgz')
     _ = loader.processFileLines(fileLines)
     print('odb++ file loaded')
+
+    loader = LoaderSelectorFactory('ccz')
+    fileLines = loader.loadFile(r'C:\Python 3.11.1\Compiled\Board Navigator\Schematic\ccz\20437219_02.ccz')
+    _ = loader.processFileLines(fileLines)
+    print('ccz file loaded')
