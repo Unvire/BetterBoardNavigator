@@ -6,7 +6,7 @@ board = {
         ] 
 
     ## defines board outlines as a list of Lines and Arcs 
-    shape: [
+    outlines: [
         geometryObjects.Line,
         geometryObjects.Arc
         ]
