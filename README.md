@@ -47,5 +47,3 @@ Clicking on components will also show it pinout in the "Component pinout" table.
 - **Red arrows** - selected components marker.
 - **Violet** - pads on selected net.
 - **Violet arrow** - component, whose pads are on selected net.
-
-Documentation of processing files can be found in the ./static/python folder
