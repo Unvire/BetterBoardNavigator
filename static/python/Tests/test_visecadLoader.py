@@ -418,17 +418,16 @@ def test__getPadstackShapeID(matchShapesToIDsTest):
     shapesDict = instance._calculateBaseShapes(shapesXMLDict)
     padstackShapeIDDict = instance._getPadstackShapeID(padstackXMLDict, shapesDict)
 
-    assert list(shapesDict.keys()) == ['1', '2']
+    assert sorted(list(shapesDict.keys())) == ['1', '2', '3', '4', '5', '6', '7']
     assert shapesDict['1'] == gobj.Circle(gobj.Point(0, 0), 0.085 / 2)
     assert shapesDict['2'] == gobj.Rectangle(gobj.Point(-0.0435, -0.017), gobj.Point(0.0435, 0.017))
 
-    assert sorted(list(padstackShapeIDDict.keys())) == ['1', '2', '3', '4', '5', '6', '7']
     rectBL = gobj.Point(-0.462598, -0.1673225)
     rectTR = gobj.Point(0.462598, 0.1673225)
     rectMain = gobj.Rectangle(rectBL, rectTR)
     rectPins = gobj.Rectangle(gobj.Point.scale(rectBL, 1 / 2), gobj.Point.scale(rectTR, 1 / 2))
-    assert padstackShapeIDDict['3'] == rectMain
-    assert padstackShapeIDDict['4'] == rectPins
-    assert padstackShapeIDDict['5'] == rectPins
-    assert padstackShapeIDDict['6'] == padstackShapeIDDict['7']
-    assert padstackShapeIDDict['7'] == gobj.Rectangle(gobj.Point(-0.030984, -0.015984), gobj.Point(0.030984, 0.015984))
+    assert shapesDict['3'] == rectMain
+    assert shapesDict['4'] == rectPins
+    assert shapesDict['5'] == rectPins
+    assert shapesDict['6'] == padstackShapeIDDict['7']
+    assert shapesDict['7'] == gobj.Rectangle(gobj.Point(-0.030984, -0.015984), gobj.Point(0.030984, 0.015984))
