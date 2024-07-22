@@ -216,13 +216,14 @@ class VisecadLoader():
             instance.setShape('CIRCLE')
     
     def _setInstanceAreaDimensionsAndShapeData(self, instance:pin.Pin|comp.Component, shapeInstance:gobj.Rectangle|gobj.Circle):
-        def moveAreaToCoords(instance:pin.Pin|comp.Component, moveVector:list[float, float]) -> tuple[gobj.Point, gobj.Point]:
-            bottomLeftPoint, topRightPoint = instance.calculateArea()
+        def moveAreaToCoords(shapeInstance:pin.Pin|comp.Component, moveVector:list[float, float]) -> tuple[gobj.Point, gobj.Point]:
+            bottomLeftPoint, topRightPoint = shapeInstance.calculateArea()
             bottomLeftPoint.translateInPlace(moveVector)
             topRightPoint.translateInPlace(moveVector)
             return bottomLeftPoint, topRightPoint
 
         bottomLeftPoint, topRightPoint = moveAreaToCoords(shapeInstance, instance.getCoordsAsTranslationVector())
+        bottomLeftPoint, topRightPoint = instance.makeAreaNotLinear(bottomLeftPoint, topRightPoint)
         instance.setArea(bottomLeftPoint, topRightPoint)
         instance.calculateDimensionsFromArea()
         instance.caluclateShapeData()
