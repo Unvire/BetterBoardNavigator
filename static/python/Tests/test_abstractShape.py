@@ -82,3 +82,15 @@ def test_scaleInPlace(shape1):
     assert shape1.getCoords() == gobj.Point(0, 0)
     assert shape1.getArea() == [gobj.Point(-2, -4), gobj.Point(2, 4)]
     assert shape1.getShapePoints() == [gobj.Point(-2, -4), gobj.Point(2, -4), gobj.Point(2, 4), gobj.Point(-2, 4)]
+
+def test__makeAreaNotLinear():
+    instance = Shape('1')
+    
+    bottomLeftPoint, topRightPoint = gobj.Point(-1, 0), gobj.Point(1, 0)
+    bottomLeftPoint, topRightPoint = instance.makeAreaNotLinear(bottomLeftPoint, topRightPoint)
+    assert [bottomLeftPoint, topRightPoint] == [gobj.Point(-1, -0.2), gobj.Point(1, 0.2)]
+
+    bottomLeftPoint, topRightPoint = gobj.Point(0, -1), gobj.Point(0, 1)
+    bottomLeftPoint, topRightPoint = instance.makeAreaNotLinear(bottomLeftPoint, topRightPoint)
+    assert [bottomLeftPoint, topRightPoint] == [gobj.Point(-0.2, -1), gobj.Point(0.2, 1)]
+    

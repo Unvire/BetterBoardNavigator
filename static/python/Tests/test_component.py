@@ -71,18 +71,6 @@ def test_calculatePackageFromPins(componentForPinsCalculation):
     assert point1 == gobj.Point(-1.12, -1.09)
     assert point2 == gobj.Point(3.12, 2.09)
 
-def test__makeAreaNotLinear():
-    instance = comp.Component('1')
-    
-    bottomLeftPoint, topRightPoint = gobj.Point(-1, 0), gobj.Point(1, 0)
-    bottomLeftPoint, topRightPoint = instance._makeAreaNotLinear(bottomLeftPoint, topRightPoint)
-    assert [bottomLeftPoint, topRightPoint] == [gobj.Point(-1, -0.2), gobj.Point(1, 0.2)]
-
-    bottomLeftPoint, topRightPoint = gobj.Point(0, -1), gobj.Point(0, 1)
-    bottomLeftPoint, topRightPoint = instance._makeAreaNotLinear(bottomLeftPoint, topRightPoint)
-    assert [bottomLeftPoint, topRightPoint] == [gobj.Point(-0.2, -1), gobj.Point(0.2, 1)]
-    
-
 def test_translateInPlace(componentForRotateTranslate):
     componentForRotateTranslate.translateInPlace([10, 10])
 

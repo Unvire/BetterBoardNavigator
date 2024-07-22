@@ -60,7 +60,20 @@ class Shape():
 
     def setDimensions(self, width:float, height:float):
         self.width = width
-        self.height = height  
+        self.height = height
+    
+    def makeAreaNotLinear(self, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point) -> tuple[gobj.Point, gobj.Point]:
+        x1, y1 = bottomLeftPoint.getXY()
+        x2, y2 = topRightPoint.getXY()
+        if round(x2 - x1, gobj.Point.DECIMAL_POINT_PRECISION) == 0:
+            moveDistance = round((y2 - y1) * 0.1, gobj.Point.DECIMAL_POINT_PRECISION)
+            bottomLeftPoint.translateInPlace([-moveDistance, 0])
+            topRightPoint.translateInPlace([moveDistance, 0])
+        elif round(y2 - y1, gobj.Point.DECIMAL_POINT_PRECISION) == 0:
+            moveDistance = round((x2 - x1) * 0.1, gobj.Point.DECIMAL_POINT_PRECISION)
+            bottomLeftPoint.translateInPlace([0, -moveDistance])
+            topRightPoint.translateInPlace([0, moveDistance])
+        return bottomLeftPoint, topRightPoint
     
     def calculateAreaFromWidthHeightCoords(self):
         moveVector = [-self.width / 2, -self.height / 2]
