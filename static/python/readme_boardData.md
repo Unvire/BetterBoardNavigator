@@ -80,3 +80,12 @@ Pin inherits shape's parameter
 pin = {
     net: str
 }
+
+#######################################################################################################################
+Processing of a cad file
+
+file --> format factory (loaderSelectorFactory) --> loader (camcadLoader, gencadLoader, odbPlusPlusLoader, viseCadLoader, ...) --> board instance (Board) --> board instance normalized (boardWrapper) --> pygameDrawBoard
+
+All methods with "_" in name are private.
+General purpose functions can be found in geometry objects as functions in a Point as static methods in AbstractShape as static methods.
+All methods for drawing a frame in DrawBoardEngine have "Interface" as last word
