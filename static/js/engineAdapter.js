@@ -3,8 +3,9 @@ class EngineAdapter{
         EventHandler.setCanvasDimensions();
         const side = sideHandler.currentSide();
         pyodide.runPythonAsync(`
-            engine.changeScreenDimensionsInterface(SURFACE, [canvas.width, canvas.height], '${side}')
-            pygame.display.flip()
+            if engine:
+                engine.changeScreenDimensionsInterface(SURFACE, [canvas.width, canvas.height], '${side}')
+                pygame.display.flip()
         `);
     }
 
