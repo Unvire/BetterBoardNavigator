@@ -7,7 +7,7 @@ import component as comp
 class DrawBoardEngine:
     MIN_SURFACE_DIMENSION = 100
     STEP_FACTOR = 0.05
-    MAX_SURFACE_DIMENSION = 11000
+    MAX_SURFACE_DIMENSION = 9000
     DELTA_ROTATION_ANGLE_DEG = 5
 
     def __init__(self, width:int, height:int):
@@ -608,7 +608,7 @@ if __name__ == '__main__':
         filePath = filedialog.askopenfile(mode='r', filetypes=[('*', '*')])
         return filePath.name
     
-    WIDTH, HEIGHT = 1200, 700
+    WIDTH, HEIGHT = 1485, 841
     FPS = 60
 
     sideQueue = ['B', 'T']
