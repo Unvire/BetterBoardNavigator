@@ -9,12 +9,14 @@ class WidgetAdapter{
         const allComponentsList = globalInstancesMap.getAllComponentsList()
         const pinoutTable = globalInstancesMap.getPinoutTable();
         const clickedComponentSpanList = globalInstancesMap.getClickedComponentSpanList();
+        const selectedComponentSpan = globalInstancesMap.getSelectedComponentSpan();
 
         allComponentsList.unselectAllItems();
         pinoutTable.unselectCurrentRows();
         pinoutTable.clearBody();
         DynamicSelectableListAdapter.generateMarkedComponentsList();
         SpanListAdapter.clearSpanList(clickedComponentSpanList);
+        selectedComponentSpan.innerText = "Component";
     }
 
     static resetSelectedNet(){
