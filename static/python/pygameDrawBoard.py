@@ -7,7 +7,7 @@ import component as comp
 class DrawBoardEngine:
     MIN_SURFACE_DIMENSION = 100
     STEP_FACTOR = 0.05
-    MAX_SURFACE_DIMENSION = 9000
+    MAX_SURFACE_DIMENSION = 8800
     DELTA_ROTATION_ANGLE_DEG = 5
 
     def __init__(self, width:int, height:int):
