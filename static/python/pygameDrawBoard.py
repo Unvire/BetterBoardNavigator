@@ -40,6 +40,7 @@ class DrawBoardEngine:
         self.selectedCommonTypePrefix = ''
         self.selectedNet = dict()
         self.isHideSelectedNetComponents = False
+        self.rectangularAreaXYList = []
 
         self.scale = 1
         self.offsetVector = []
@@ -88,6 +89,9 @@ class DrawBoardEngine:
     def checkIfPrefixExists(self, prefix:str) -> bool:
         return prefix in self.boardData.getCommonTypeGroupedComponents()['T'] or prefix in self.boardData.getCommonTypeGroupedComponents()['B']
 
+    def getRectangularAreaXYList(self) -> list[tuple[int, int]]:
+        return self.rectangularAreaXYList
+
     def changeColor(self, key:str, RGB:tuple[int, int, int]):
         if key in self.colorsDict:
             self.colorsDict[key] = RGB
@@ -106,6 +110,14 @@ class DrawBoardEngine:
         if isMakeBackup:
             self.boardDataBackup = copy.deepcopy(boardData)
         self._adjustBoardDimensionsForRotating()
+    
+    def appendXYToRectangularAreaXYList(self, coords:tuple[int, int]):
+        self.rectangularAreaXYList.append(coords)
+        if len(self.rectangularAreaXYList) > 3:
+            self.clearRectangularAreaXYList()
+    
+    def clearRectangularAreaXYList(self):
+        self.rectangularAreaXYList = []
     
     def _resetSelectionCollections(self):
         self.selectedComponentsSet = set()
@@ -209,6 +221,10 @@ class DrawBoardEngine:
         self.screenDimensions = dimensions[:]
         boardDataNormalized = self._getNormalizedBoard(dimensions, self.boardData)
         self.setBoardData(boardDataNormalized, isMakeBackup=True)
+        return self.drawAndBlitInterface(targetSurface, side)
+    
+    def areaRectangularSelectionInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
+        
         return self.drawAndBlitInterface(targetSurface, side)
 
     def drawAndBlitInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
@@ -616,6 +632,7 @@ if __name__ == '__main__':
     isMousePressed = False
     isMovingCalledFirstTime = True
     isFindComponentByClickActive = False
+    isSelectAreaActive = False
 
     filePath = openSchematicFile()
     wrapper = BoardWrapper(WIDTH, HEIGHT)
@@ -654,6 +671,7 @@ if __name__ == '__main__':
     print('Change screen surface dimensions - g')
     print('Set component in screen center - h')
     print('Select component on net (net must be drawn before) - j')
+    print('Set area with rectangular selection - k')
     print('====================================')
 
     run = True
@@ -671,6 +689,19 @@ if __name__ == '__main__':
                     if isFindComponentByClickActive:
                         foundComponents = engine.findComponentByClick(pygame.mouse.get_pos(), side)
                         print(f'clicked component: {foundComponents}')
+                    elif isSelectAreaActive:
+                        pointXY = pygame.mouse.get_pos()
+                        engine.appendXYToRectangularAreaXYList(pointXY)
+
+                        areaPointsList = engine.getRectangularAreaXYList()
+                        print('rectangular points', areaPointsList)
+                        if len(areaPointsList) < 2:
+                            print('select first point')
+                        else:
+                            print('select second point')
+                            engine.areaRectangularSelectionInterface(WIN, side)
+                            engine.clearRectangularAreaXYList()
+                            isSelectAreaActive = False
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 isMousePressed = False
@@ -756,6 +787,10 @@ if __name__ == '__main__':
                 elif event.key == pygame.K_j:
                     componentName = input('Net component name: ')
                     engine.selectNetComponentByNameInterface(WIN, componentName, side)
+                
+                elif event.key == pygame.K_k:
+                    print('Rectangular area selection activated')
+                    isSelectAreaActive = True
 
         
         ## display image
