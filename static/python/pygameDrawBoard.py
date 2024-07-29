@@ -35,6 +35,7 @@ class DrawBoardEngine:
         self.selectedComponentsSurface = self._getEmptySurfce()
         self.selectedNetSurface = self._getEmptySurfce()
         self.rectangularSelectionSurface = self._getEmptySurfce()
+        self.targetSurfaceCopy = self._getEmptySurfce()
 
         self.selectedComponentsSet = set()
         self.allSelectedNetComponentsSet = set()
@@ -90,6 +91,9 @@ class DrawBoardEngine:
 
     def checkIfPrefixExists(self, prefix:str) -> bool:
         return prefix in self.boardData.getCommonTypeGroupedComponents()['T'] or prefix in self.boardData.getCommonTypeGroupedComponents()['B']
+    
+    def copyTargetSurface(self, targetSurface:pygame.Surface):
+        self.targetSurfaceCopy = targetSurface.copy()
 
     def getRectangularAreaXYListLength(self) -> int:
         return len(self.rectangularAreaXYList)
@@ -223,23 +227,32 @@ class DrawBoardEngine:
         self.setBoardData(boardDataNormalized, isMakeBackup=True)
         return self.drawAndBlitInterface(targetSurface, side)
     
-    def drawSelectionRectangleInterface(self, targetSurface:pygame.Surface, secondPoint:tuple[int, int], side:str) -> pygame.Surface:
-        backgroundColor = self.colorsDict['background']
-        self.rectangularSelectionSurface = self._getEmptySurfce()
-        self.rectangularSelectionSurface.set_colorkey(backgroundColor)
+    def drawSelectionRectangleInterface(self, targetSurface:pygame.Surface, secondPoint:tuple[int, int]) -> pygame.Surface:
+        def resetRectangularSelectionSurface() -> pygame.Surface:
+            backgroundColor = self.colorsDict['background']
+            self.rectangularSelectionSurface = self._getEmptySurfce()
+            self.rectangularSelectionSurface.set_colorkey(backgroundColor)
+            return self.rectangularSelectionSurface
+        
+        def calculateSelectionRectangle(secondPoint:tuple[int, int]) -> tuple[int, int, int, int]:
+            x0, y0 = self.rectangularAreaXYList[0]
+            x1, y1 = secondPoint
+            width = x1 - x0
+            height = y1 - y0
+            xBL = x0 if width > 0 else x1
+            yBL = y0 if height > 0 else y1
+            return xBL, yBL, abs(width), abs(height)
 
-        x0, y0 = self.rectangularAreaXYList[0]
-        x1, y1 = secondPoint
-        width = x1 - x0
-        height = y1 - y0
+        def drawRectangleOnCopiedTargetSurface(rectangularSelectionSurface:pygame.Surface, xBL:int, yBL:int, width:int, height:int):
+            color = self.colorsDict['selection rectangle']
+            targetSurfaceCopied = self.targetSurfaceCopy.copy()
+            pygame.draw.rect(rectangularSelectionSurface, color, (xBL, yBL, width, height), width=2)
+            targetSurfaceCopied.blit(rectangularSelectionSurface, [0, 0])
+            targetSurface.blit(targetSurfaceCopied, [0, 0])
 
-        xBL = x0 if width > 0 else x1
-        yBL = y0 if height > 0 else y1
-
-        color = self.colorsDict['selection rectangle']
-        pygame.draw.rect(self.rectangularSelectionSurface, color, (xBL, yBL, abs(width), abs(height)), width=2)
-        targetSurface.blit(self.rectangularSelectionSurface, [0, 0])
-    
+        rectangularSelectionSurface = resetRectangularSelectionSurface()
+        xBL, yBL, width, height = calculateSelectionRectangle(secondPoint)
+        drawRectangleOnCopiedTargetSurface(rectangularSelectionSurface, xBL, yBL, width, height)       
         return targetSurface
 
     def drawAndBlitInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
@@ -708,6 +721,9 @@ if __name__ == '__main__':
                     elif isSelectAreaActive:
                         pointXY = pygame.mouse.get_pos()
                         engine.appendXYToRectangularAreaXYList(pointXY)
+                        if engine.getRectangularAreaXYListLength() == 2:
+                            ## recalculate board and reset
+                            engine.drawAndBlitInterface(WIN, side)
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 isMousePressed = False
@@ -723,10 +739,7 @@ if __name__ == '__main__':
                     isSelectAreaActive = engine.getRectangularAreaXYListLength() < 2
                     if engine.getRectangularAreaXYListLength() == 1:
                         posXY = pygame.mouse.get_pos()
-                        engine.drawSelectionRectangleInterface(WIN, posXY, side)
-                    elif engine.getRectangularAreaXYListLength() == 2:
-                        ## recalculate board and reset
-                        engine.drawAndBlitInterface(WIN, side)
+                        engine.drawSelectionRectangleInterface(WIN, posXY)
             
             elif event.type == pygame.MOUSEWHEEL:
                 pointXY = pygame.mouse.get_pos()
@@ -804,6 +817,7 @@ if __name__ == '__main__':
                 
                 elif event.key == pygame.K_k and not isSelectAreaActive:
                     print('Rectangular area selection activated')
+                    engine.copyTargetSurface(WIN)
                     isSelectAreaActive = True
 
         
