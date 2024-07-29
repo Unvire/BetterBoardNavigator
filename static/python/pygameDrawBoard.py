@@ -85,12 +85,12 @@ class DrawBoardEngine:
         if self.selectedNetComponentSet:
             return list(self.selectedNetComponentSet)[0]
         return ''
-    
+
     def checkIfPrefixExists(self, prefix:str) -> bool:
         return prefix in self.boardData.getCommonTypeGroupedComponents()['T'] or prefix in self.boardData.getCommonTypeGroupedComponents()['B']
 
-    def getRectangularAreaXYList(self) -> list[tuple[int, int]]:
-        return self.rectangularAreaXYList
+    def getRectangularAreaXYListLength(self) -> int:
+        return len(self.rectangularAreaXYList)
 
     def changeColor(self, key:str, RGB:tuple[int, int, int]):
         if key in self.colorsDict:
@@ -113,10 +113,8 @@ class DrawBoardEngine:
     
     def appendXYToRectangularAreaXYList(self, coords:tuple[int, int]):
         self.rectangularAreaXYList.append(coords)
-        if len(self.rectangularAreaXYList) > 3:
-            self.clearRectangularAreaXYList()
     
-    def clearRectangularAreaXYList(self):
+    def _diableAreaRectangularSelection(self):
         self.rectangularAreaXYList = []
     
     def _resetSelectionCollections(self):
@@ -223,11 +221,11 @@ class DrawBoardEngine:
         self.setBoardData(boardDataNormalized, isMakeBackup=True)
         return self.drawAndBlitInterface(targetSurface, side)
     
-    def areaRectangularSelectionInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
-        
-        return self.drawAndBlitInterface(targetSurface, side)
+    def areaRectangularSelectionInterface(self, targetSurface:pygame.Surface, pointXY:tuple[int, int], side:str) -> bool:
+        pass
 
     def drawAndBlitInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
+        self._diableAreaRectangularSelection()
         self._drawBoard(side)
         return self._blitBoardSurfacesIntoTarget(targetSurface)
 
@@ -693,16 +691,6 @@ if __name__ == '__main__':
                         pointXY = pygame.mouse.get_pos()
                         engine.appendXYToRectangularAreaXYList(pointXY)
 
-                        areaPointsList = engine.getRectangularAreaXYList()
-                        print('rectangular points', areaPointsList)
-                        if len(areaPointsList) < 2:
-                            print('select first point')
-                        else:
-                            print('select second point')
-                            engine.areaRectangularSelectionInterface(WIN, side)
-                            engine.clearRectangularAreaXYList()
-                            isSelectAreaActive = False
-
             elif event.type == pygame.MOUSEBUTTONUP:
                 isMousePressed = False
 
@@ -713,6 +701,15 @@ if __name__ == '__main__':
                         engine.moveBoardInterface(WIN, [dx, dy])
                     else:
                         isMovingCalledFirstTime = False
+                elif isSelectAreaActive:
+                    isSelectAreaActive = engine.getRectangularAreaXYListLength() < 2
+                    print(engine.rectangularAreaXYList)
+                    if engine.getRectangularAreaXYListLength() == 1:
+                        ## draw rectangle
+                        pass
+                    elif engine.getRectangularAreaXYListLength() == 2:
+                        ## recalculate board and reset
+                        engine.drawAndBlitInterface(WIN, side)
             
             elif event.type == pygame.MOUSEWHEEL:
                 pointXY = pygame.mouse.get_pos()
@@ -788,7 +785,7 @@ if __name__ == '__main__':
                     componentName = input('Net component name: ')
                     engine.selectNetComponentByNameInterface(WIN, componentName, side)
                 
-                elif event.key == pygame.K_k:
+                elif event.key == pygame.K_k and not isSelectAreaActive:
                     print('Rectangular area selection activated')
                     isSelectAreaActive = True
 
