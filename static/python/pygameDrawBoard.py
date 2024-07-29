@@ -23,7 +23,8 @@ class DrawBoardEngine:
             'TH pins': (21, 103, 235),
             'SMT pins': (240, 187, 12),
             'selected component marker': (255, 0, 0),
-            'selected net marker': (171, 24, 149)
+            'selected net marker': (171, 24, 149),
+            'selection rectangle': (158, 158, 158)
         }
         
         self.surfaceDimensions = [width, height]
@@ -33,6 +34,7 @@ class DrawBoardEngine:
         self.commonTypeComponentsSurface = self._getEmptySurfce()
         self.selectedComponentsSurface = self._getEmptySurfce()
         self.selectedNetSurface = self._getEmptySurfce()
+        self.rectangularSelectionSurface = self._getEmptySurfce()
 
         self.selectedComponentsSet = set()
         self.allSelectedNetComponentsSet = set()
@@ -221,8 +223,24 @@ class DrawBoardEngine:
         self.setBoardData(boardDataNormalized, isMakeBackup=True)
         return self.drawAndBlitInterface(targetSurface, side)
     
-    def areaRectangularSelectionInterface(self, targetSurface:pygame.Surface, pointXY:tuple[int, int], side:str) -> bool:
-        pass
+    def drawSelectionRectangleInterface(self, targetSurface:pygame.Surface, secondPoint:tuple[int, int], side:str) -> pygame.Surface:
+        backgroundColor = self.colorsDict['background']
+        self.rectangularSelectionSurface = self._getEmptySurfce()
+        self.rectangularSelectionSurface.set_colorkey(backgroundColor)
+
+        x0, y0 = self.rectangularAreaXYList[0]
+        x1, y1 = secondPoint
+        width = x1 - x0
+        height = y1 - y0
+
+        xBL = x0 if width > 0 else x1
+        yBL = y0 if height > 0 else y1
+
+        color = self.colorsDict['selection rectangle']
+        pygame.draw.rect(self.rectangularSelectionSurface, color, (xBL, yBL, abs(width), abs(height)), width=2)
+        targetSurface.blit(self.rectangularSelectionSurface, [0, 0])
+    
+        return targetSurface
 
     def drawAndBlitInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._diableAreaRectangularSelection()
@@ -703,10 +721,9 @@ if __name__ == '__main__':
                         isMovingCalledFirstTime = False
                 elif isSelectAreaActive:
                     isSelectAreaActive = engine.getRectangularAreaXYListLength() < 2
-                    print(engine.rectangularAreaXYList)
                     if engine.getRectangularAreaXYListLength() == 1:
-                        ## draw rectangle
-                        pass
+                        posXY = pygame.mouse.get_pos()
+                        engine.drawSelectionRectangleInterface(WIN, posXY, side)
                     elif engine.getRectangularAreaXYListLength() == 2:
                         ## recalculate board and reset
                         engine.drawAndBlitInterface(WIN, side)
