@@ -17,7 +17,11 @@ class BoardWrapper():
         self.baseMoveOffsetXY = [0.0, 0.0]
         self.sideComponents = {}
         self.commonTypeComponents = {}
+        self.isCheckForPositiveCoordsActive = True
         self._resetGroupsToDefault()
+
+    def setIsCheckForPositiveCoordsActive(self, state:bool):
+        self.isCheckForPositiveCoordsActive = state
 
     def loadAndSetBoardFromFilePath(self, filePath:str):
         boardInstance = self._loadBaseBoard(filePath)
@@ -106,7 +110,8 @@ class BoardWrapper():
     def _recalculateAndGroupComponents(self, componentsDict:dict):
         for _, componentInstance in componentsDict.items():
             self._recalculateComponent(componentInstance)
-            self._checkIfComponentCoordsArePositive(componentInstance)
+            if self.isCheckForPositiveCoordsActive:
+                self._checkIfComponentCoordsArePositive(componentInstance)
             self._addComponentToSideComponents(componentInstance)
             self._addComponentToCommonTypeComponents(componentInstance)
 
@@ -169,6 +174,10 @@ class BoardWrapper():
     @staticmethod
     def useAreaFromComponentsInPlace(board:board.Board):
         bottomLeftPoint, topRightPoint = board.calculateAreaFromComponents()
+        board.setArea(bottomLeftPoint, topRightPoint)
+    
+    @staticmethod
+    def setAreaManually(board:board.Board, bottomLeftPoint:gobj.Point, topRightPoint:gobj.Point):
         board.setArea(bottomLeftPoint, topRightPoint)
     
 

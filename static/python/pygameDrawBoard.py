@@ -254,16 +254,31 @@ class DrawBoardEngine:
         xBL, yBL, width, height = calculateSelectionRectangle(secondPoint)
         drawRectangleOnCopiedTargetSurface(rectangularSelectionSurface, xBL, yBL, width, height)       
         return targetSurface
+    
+    def setAreaManuallyInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
+        def getBottomLeftAndTopRightPoints() -> tuple[gobj.Point, gobj.Point]:
+            x0, y0 = self.rectangularAreaXYList[0]
+            x1, y1 = self.rectangularAreaXYList[1]
+            bottomLeftPoint = gobj.Point(min(x0, x1), min(y0, y1))
+            topRightPoint = gobj.Point(max(x0, x1), max(y0, y1))
+            return bottomLeftPoint, topRightPoint
+        
+        bottomLeftPoint, topRightPoint = getBottomLeftAndTopRightPoints()
+        BoardWrapper.setAreaManually(self.boardData, bottomLeftPoint, topRightPoint)
+        boardDataNormalized = self._getNormalizedBoard(self.screenDimensions, self.boardData, isCheckingForPositiveCoordsActive=False)
+        self.setBoardData(boardDataNormalized, isMakeBackup=False)  
+        return self.drawAndBlitInterface(targetSurface, side)
 
     def drawAndBlitInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         self._diableAreaRectangularSelection()
         self._drawBoard(side)
         return self._blitBoardSurfacesIntoTarget(targetSurface)
 
-    def _getNormalizedBoard(self, surfaceDimensions:tuple[int, int], boardInstance:board.Board) -> board.Board:
+    def _getNormalizedBoard(self, surfaceDimensions:tuple[int, int], boardInstance:board.Board, isCheckingForPositiveCoordsActive:bool=True) -> board.Board:
         width, height = surfaceDimensions
         wrapper = BoardWrapper(width, height)
         wrapper.setBoard(boardInstance)
+        wrapper.setIsCheckForPositiveCoordsActive(isCheckingForPositiveCoordsActive)
         return wrapper.normalizeBoard()
 
     def _adjustBoardDimensionsForRotating(self):
@@ -722,8 +737,8 @@ if __name__ == '__main__':
                         pointXY = pygame.mouse.get_pos()
                         engine.appendXYToRectangularAreaXYList(pointXY)
                         if engine.getRectangularAreaXYListLength() == 2:
-                            ## recalculate board and reset
-                            engine.drawAndBlitInterface(WIN, side)
+                            engine.setAreaManuallyInterface(WIN, side)
+                            isSelectAreaActive = False
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 isMousePressed = False
