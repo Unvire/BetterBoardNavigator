@@ -206,7 +206,7 @@ class DrawBoardEngine:
         self._flipUnflipCurrentSide(side)
         return self.drawAndBlitInterface(targetSurface, side)
     
-    def changeAreaInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
+    def useComponentAreaInterface(self, targetSurface:pygame.Surface, side:str) -> pygame.Surface:
         BoardWrapper.useAreaFromComponentsInPlace(self.boardData)
         boardDataNormalized = self._getNormalizedBoard(self.screenDimensions, self.boardData)
         self.setBoardData(boardDataNormalized, isMakeBackup=False)
@@ -793,7 +793,7 @@ if __name__ == '__main__':
                     engine.flipUnflipCurrentSideInterface(WIN, side)
                 
                 elif event.key == pygame.K_d:
-                    engine.changeAreaInterface(WIN, side)
+                    engine.useComponentAreaInterface(WIN, side)
                 
                 elif event.key == pygame.K_r:
                     engine.resetToDefaultViewInterface(WIN, side)

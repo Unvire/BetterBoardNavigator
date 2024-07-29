@@ -86,7 +86,7 @@ class EngineAdapter{
     static areaFromComponents(){
         const side = sideHandler.currentSide();
         pyodide.runPython(`
-            engine.changeAreaInterface(SURFACE, '${side}')
+            engine.useComponentAreaInterface(SURFACE, '${side}')
             pygame.display.flip()
         `);
         WidgetAdapter.resetWidgets();
