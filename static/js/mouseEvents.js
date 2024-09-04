@@ -1,7 +1,7 @@
 let isMousePressed = false;
 let isMouseClickedFirstTime = false;
 let isRotateActive = false;
-let isFindComponentByClickActive = false;
+let isFindComponentByClickActive = true;
 let isSelectionModeSingle = true;
 
 function mouseUpEvent(){

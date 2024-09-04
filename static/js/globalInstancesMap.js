@@ -143,4 +143,12 @@ class GlobalInstancesMap{
     getShowDemoBoardButton(){
         return this.showDemoBoardButton;
     }
+
+    setToggleFindComponentByClickButton(instance){
+        this.toggleFindComponentByClickButton = instance;
+    }
+
+    getToggleFindComponentByClickButton(){
+        return this.toggleFindComponentByClickButton;
+    }
 }
