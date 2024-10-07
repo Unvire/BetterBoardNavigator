@@ -44,6 +44,10 @@ class ModalSubmit extends ModalBox{
             this.close();
         });
     }
+    show() {
+        super.show();
+        this.textInput.focus();
+    }
 
     close(){
         this.textInput.value = "";
