@@ -113,11 +113,11 @@ body{
 }
 
 #item-left-middle{
-    grid-area: 2 / 1 / 8 / 1;
+    grid-area: 2 / 1 / 7 / 1;
 }
 
 #item-left-bottom{
-    grid-area: 8 / 1 / 11 / 1;
+    grid-area: 7 / 1 / 11 / 1;
 }
 
 #item-center{
@@ -132,11 +132,11 @@ body{
 }
 
 #item-right-middle{
-    grid-area: 2 / 10 / 4 / 10;
+    grid-area: 2 / 10 / 5 / 10;
 }
 
 #item-right-bottom{
-    grid-area: 4 / 10 / 11 / 10;
+    grid-area: 5 / 10 / 11 / 10;
 }
 
 p{
