@@ -27,15 +27,15 @@ let pyodide: PyodideInstance | null = null;
 let lastUploadedFiles: string[] = []; 
 
 
-async function initPyodide(): Promise<PyodideInstance> {
+async function initPyodide(baseUrl: string = '/'): Promise<PyodideInstance> {
   if (pyodide) return pyodide;
   
-  const pyodideUrl = `${location.origin}/pyodide/pyodide.mjs`;
+  const pyodideUrl = `${location.origin}${baseUrl}pyodide/pyodide.mjs`;
   const pyodideModule = await import(/* @vite-ignore */ pyodideUrl);
   
   pyodide = await pyodideModule.loadPyodide({
-    indexURL: '/pyodide/', 
-  }) as PyodideInstance; 
+    indexURL: `${baseUrl}pyodide/`, 
+  }) as PyodideInstance;
   
   const encoder = new TextEncoder();
   const coreModules = [
@@ -61,12 +61,12 @@ async function initPyodide(): Promise<PyodideInstance> {
 
 
 self.addEventListener('message', async (event: MessageEvent) => {
-  const { type, files } = event.data;
+  const { type, files, baseUrl = '/' } = event.data;
 
   if (type === 'PROCESS_FILES') {
     try {      
       self.postMessage({ type: 'STATUS', status: 'loading_pyodide' });
-      const py = await initPyodide();
+      const py = await initPyodide(baseUrl);
       self.postMessage({ type: 'STATUS', status: 'processing' });
 
       if (lastUploadedFiles.length > 0) {

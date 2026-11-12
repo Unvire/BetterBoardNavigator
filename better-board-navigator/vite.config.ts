@@ -1,7 +1,10 @@
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-})
+export default defineConfig(({ command, mode }) => {
+  return {
+    plugins: [react()],
+    // ZMIANA: Dodanie base path tylko dla wersji produkcyjnej (build)
+    base: mode === 'production' ? '/BetterBoardNavigator/' : '/',
+  };
+});
