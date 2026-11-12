@@ -1,0 +1,85 @@
+{
+  "main_screen": {
+    "init_message": "Wczytaj plik schematu (Ctrl + O)",
+    "init_pyodide": "Inicjalizacja Pyodide...",
+    "parsing_cad_files": "Parsowanie schematów...",
+    "waiting": "Proszę czekać",
+    "parsing error": "Błąd przetwarzania"
+  },
+  "topbar": {
+    "toggle_sidebar": "Pokaż/ukryj panel",
+    "switch_side": "Zmień stronę",
+    "flip": "Odbicie lustrzane",
+    "rotate_left": "Obróć w lewo",
+    "rotate_right": "Obróć w prawo",
+    "toggle_labels": "Etykiety komponentów",
+    "load_file": "Wczytaj schemat",
+    "language": "Język",
+    "theme": "Zmień motyw",
+    "help": "Pomoc",
+    "toggle_outlines": "Pokaż/Ukryj obrys płytki",
+    "load_bom": "Wczytaj listę Part Number (plik .json)",
+    "hide_comps_no_bom": "Ukryj komponenty bez przypisanego Part Number"
+  },
+  "leftpanel": {
+    "tab_components": "Komp.",
+    "tab_nets": "Siatki",
+    "tab_groups": "Typy",
+    "search": "Szukaj",
+    "group": "Grupa:",
+    "bom": "PN",
+    "bom_load_file": "Wczytaj plik BOM (.json) z paska narzędzi.",
+    "no_data": "Brak wyników",
+    "hidden_label": "Ukryte",
+    "bom_quantity": "Ilość:",
+    "expand": "Rozwiń",
+    "hide_comp": "Ukryj komponent",
+    "show_comp": "Pokaż komponent",
+    "no_pads": "Brak zdefiniowanych padów",
+    "deselect_group": "Odznacz grupę",
+    "pin": "Pin",
+    "tab_bom": "BOM"
+  },
+  "rightpanel": {
+    "selected_count": "Zaznaczono: {{count}}",
+    "click_to_view_pins": "Wybierz komponent z listy poniżej, aby przejrzeć jego piny bez utraty zaznaczenia.",
+    "show_pins_tooltip": "Pokaż piny i szczegóły",
+    "side": "Strona: {{side}}",
+    "deselect_component": "Odznacz komponent",
+    "back_to_list": "Wróć do listy",
+    "type": "Typ: {{type}}",
+    "pn_waiting": "PN: [Oczekuje na moduł PDF...]",
+    "pin": "Pin",
+    "net": "Siatka",
+    "not_connected": "N/C",
+    "no_pins": "Brak zdefiniowanych pinów",    
+    "multiple_components": "Wiele elementów",
+    "multiple_components_label": "Wykryto nakładające się na siebie komponenty. Wybierz jeden, aby zobaczyć piny:",
+    "highlight_pn": "Podświetl wszystkie komponenty o tym kodzie",
+    "pn_prefix": "PN:"
+  },
+  "help": {
+    "title": "Pomoc i Skróty Klawiszowe",
+    "mouse_controls": "Sterowanie Myszką",
+    "keyboard_shortcuts": "Skróty Klawiszowe",
+    "keys": {
+      "left_click": "Lewy Klik",
+      "drag": "Kliknij i przeciągnij (LPM)",
+      "scroll": "Rolka myszy (Scroll)"
+    },
+    "desc": {
+      "inspect": "Zaznacz / Zbadaj komponent",
+      "multiselect": "Zaznaczanie wielu elementów",
+      "pan": "Przesuwanie widoku (Pan)",
+      "zoom": "Przybliżanie / Oddalanie (Zoom)",
+      "load_cad": "Wczytaj plik CAD",
+      "load_bom": "Wczytaj listę BOM",
+      "switch_side": "Zmień stronę (Top/Bottom)",
+      "flip": "Odbicie lustrzane",
+      "rotate_cw": "Obróć w prawo",
+      "rotate_ccw": "Obróć w lewo",
+      "labels": "Pokaż/ukryj etykiety",
+      "clear_selection": "Wyczyść zaznaczenie / Zamknij panele"
+    }
+  }
+}

@@ -1,1 +1,4 @@
 *.pyc
+.vscode/
+config/traceabilityIP.txt
+mockBoard.json

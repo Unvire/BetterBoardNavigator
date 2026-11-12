@@ -1,0 +1,87 @@
+{
+  "main_screen": {
+    "init_message": "Load schematic file (Ctrl + O)",
+    "init_pyodide": "Initializing Pyodide...",
+    "parsing_cad_files": "Processing schematic file...",
+    "waiting": "Please wait",
+    "parsing error": "Processing files error"
+  },
+  "init_screen": {
+    "init_message": "Initializing 2D environment..."
+  },
+  "topbar": {
+    "toggle_sidebar": "Toggle Sidebar",
+    "switch_side": "Switch Side",
+    "flip": "Flip Horizontally",
+    "rotate_left": "Rotate Left",
+    "rotate_right": "Rotate Right",
+    "toggle_labels": "Toggle Labels",
+    "load_file": "Load File",
+    "language": "Language",
+    "theme": "Toggle Theme",
+    "help": "Help",
+    "toggle_outlines": "Show/Hide board outlines",
+    "load_bom": "Load Part Number file (.json)",
+    "hide_comps_no_bom": "Hide components without assigned Part Number"
+  },
+  "leftpanel": {
+    "tab_components": "Comp.",
+    "tab_nets": "Nets",
+    "tab_groups": "Types",
+    "search": "Search",
+    "group": "Group:",
+    "bom_load_file": "Load BOM  file (.json) with the button in TopBar.",
+    "no_data": "No data",
+    "hidden_label": "Hidden",
+    "expand": "Expand",
+    "bom_quantity": "Quantity:",
+    "hide_comp": "Hide component",
+    "show_comp": "Show component",
+    "no_pads": "No defined pads",
+    "deselect_group": "Deselect group",
+    "pin": "Pin",
+    "tab_bom": "BOM"
+  },
+  "rightpanel": {
+    "selected_count": "Selected: {{count}}",
+    "click_to_view_pins": "Click a component below to view its pins without losing the Canvas selection.",
+    "show_pins_tooltip": "Show pins and details",
+    "side": "Side: {{side}}",
+    "deselect_component": "Deselect component",
+    "back_to_list": "Back to list",
+    "type": "Type: {{type}}",
+    "pn_waiting": "PN: [Waiting for PDF module...]",
+    "pin": "Pin",
+    "net": "Net",
+    "not_connected": "N/C",
+    "no_pins": "No defined pins",
+    "multiple_components": "Multiple components",
+    "multiple_components_label": "Overlaping components detected. Select one to check its pinout:",
+    "highlight_pn": "Highlight all components with this Part Number",
+    "pn_prefix": "PN:"
+  },
+  "help": {
+    "title": "Help & Shortcuts",
+    "mouse_controls": "Mouse Controls",
+    "keyboard_shortcuts": "Keyboard Shortcuts",
+    "keys": {
+      "left_click": "Left Click",
+      "drag": "Left Click & Drag",
+      "scroll": "Mouse Wheel"
+    },
+    "desc": {
+      "inspect": "Inspect component",
+      "multiselect": "Select multiple components",
+      "pan": "Pan view",
+      "zoom": "Zoom In / Out",
+      "load_cad": "Load CAD file",
+      "load_bom": "Load BOM list",
+      "switch_side": "Switch side (Top/Bottom)",
+      "flip": "Mirror view",
+      "rotate_cw": "Rotate Clockwise",
+      "rotate_ccw": "Rotate Counter-Clockwise",
+      "labels": "Toggle component labels",
+      "clear_selection": "Clear selection / Close panels"
+    }
+  }
+}

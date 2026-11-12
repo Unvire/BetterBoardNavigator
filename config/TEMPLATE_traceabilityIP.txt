@@ -1,0 +1,4 @@
+create a file: "traceabilityIP.txt" in config folder and paste there root IP for tracebility api in first line. For example:
+
+Assume that below is first line of traceabilityIP.txt file
+http://10.140.13.11:5556/api/
