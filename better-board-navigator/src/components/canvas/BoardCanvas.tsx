@@ -138,7 +138,7 @@ function BoardCanvas() {
     }
 
     const firstComp = store.boardData.components[clickedNames[0]];
-    if (firstComp && firstComp.side !== store.currentSide) {
+    if (firstComp && firstComp.side !== store.currentSide && firstComp.mountingType !== 'TH') {
       store.setCurrentSide(firstComp.side);
     }
 
@@ -147,7 +147,7 @@ function BoardCanvas() {
       if (store.highlightedPrefix) store.setHighlightedPrefix(null);
       store.selectComponents(clickedNames, true);
     } else {
-      store.setInspectedComponents(clickedNames); // Przekazujemy wszystkie naraz!
+      store.setInspectedComponents(clickedNames);
     }
   }, [store, boardCenterX, componentHitboxes, getHitboxCoords]);
 
