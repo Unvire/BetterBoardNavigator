@@ -60,7 +60,7 @@ export function useBoardGeometry(boardData: BoardData | null, currentSide: 'T' |
     
     Object.entries(boardData.components).forEach(([name, comp]) => {
       if (hiddenComponents.has(name)) return;
-      if (hideUnassignedPNs && (!partNumbers || !partNumbers[name])) return;
+      if (hideUnassignedPNs && (!partNumbers || !partNumbers[name]?.partNumber)) return;
 
       if (comp.side !== currentSide && comp.mountingType !== 'TH') return;
 

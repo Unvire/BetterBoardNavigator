@@ -106,7 +106,7 @@ export default function NetList({ items }: { items: string[] }) {
                           </span>
                           {partNumbers?.[comp] && (
                             <span className="text-[9px] opacity-60 font-mono mt-0.5 truncate">
-                              {partNumbers[comp]}
+                              {partNumbers[comp]?.partNumber}
                             </span>
                           )}
                         </div>

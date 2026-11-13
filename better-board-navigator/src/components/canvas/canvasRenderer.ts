@@ -1,5 +1,6 @@
 import type { BoardData, ShapeData } from '../../types/board';
 import type { Hitbox } from '../../hooks/useBoardGeometry';
+import type { BOMItem } from '../../store/boardStore';
 
 export interface RenderOptions {
   ctx: CanvasRenderingContext2D;
@@ -19,7 +20,7 @@ export interface RenderOptions {
   highlightedPrefix: string | null;
   showLabels: boolean;
   componentHitboxes: Hitbox[];
-  partNumbers: Record<string, string> | null;
+  partNumbers: Record<string, BOMItem> | null;
   highlightedPartNumber: string | null;
   hideUnassignedPNs: boolean;
   hiddenComponents: Set<string>;
@@ -109,7 +110,7 @@ const drawLabels = (ctx: CanvasRenderingContext2D, options: RenderOptions) => {
     const isPNHighlighted = 
       highlightedPartNumber !== null && 
       partNumbers !== null && 
-      partNumbers[compName] === highlightedPartNumber;
+      partNumbers[compName]?.partNumber === highlightedPartNumber;
 
     const isHighlighted = isSelected || isInspected || isPrefixHighlighted || isPNHighlighted;
 
@@ -241,7 +242,7 @@ export const renderBoard = (options: RenderOptions) => {
     const isPNHighlighted = 
       highlightedPartNumber !== null && 
       partNumbers !== null && 
-      partNumbers[compName] === highlightedPartNumber;
+      partNumbers[compName]?.partNumber === highlightedPartNumber;
       
     const isCyanHighlighted = isInspected || isPrefixHighlighted || isPNHighlighted;
     

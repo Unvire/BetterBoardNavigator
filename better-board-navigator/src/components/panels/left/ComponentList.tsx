@@ -73,7 +73,7 @@ export default function ComponentList({ visibleItems, hiddenItems }: ComponentLi
           </span>
           {partNumbers?.[compName] && (
             <span className="text-[11px] opacity-50 font-mono shrink-0">
-              {partNumbers[compName]}
+              {partNumbers[compName]?.partNumber}
             </span>
           )}
         </div>

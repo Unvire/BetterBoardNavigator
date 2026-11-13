@@ -3,7 +3,7 @@
     "init_message": "Load schematic file (Ctrl + O)",
     "init_pyodide": "Initializing Pyodide...",
     "parsing_cad_files": "Processing schematic file...",
-    "waiting": "Please wait",
+    "waiting": "Please wait...",
     "parsing error": "Processing files error"
   },
   "init_screen": {
@@ -22,7 +22,9 @@
     "help": "Help",
     "toggle_outlines": "Show/Hide board outlines",
     "load_bom": "Load Part Number file (.json)",
-    "hide_comps_no_bom": "Hide components without assigned Part Number"
+    "hide_comps_no_bom": "Hide components without assigned Part Number",
+    "hide_comp": "Hide component",
+    "show_comp": "Show component"
   },
   "leftpanel": {
     "tab_components": "Comp.",

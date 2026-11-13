@@ -1,13 +1,18 @@
 import { useBoardStore } from '../../../store/boardStore';
-import { X, ArrowLeft, Cpu } from 'lucide-react';
+import { X, ArrowLeft, Cpu, Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function InspectorView({ compName, isMultiSelected }: { compName: string, isMultiSelected: boolean }) {
   const { t } = useTranslation();
-  const { boardData, isDarkMode, clearSelection, setInspectedComponents, selectedNet, selectNet, inspectedComponents, partNumbers, setHighlightedPartNumber } = useBoardStore();
+  const { 
+    boardData, isDarkMode, clearSelection, setInspectedComponents, 
+    selectedNet, selectNet, inspectedComponents, partNumbers, setHighlightedPartNumber, 
+    hiddenComponents, toggleComponentVisibility 
+  } = useBoardStore();
   const component = boardData?.components[compName];
 
   if (!component) return null;
+  const isHidden = hiddenComponents?.has(compName);
 
   return (
     <div className="flex flex-col h-full">
@@ -25,9 +30,24 @@ export default function InspectorView({ compName, isMultiSelected }: { compName:
             ) : (
               <Cpu size={24} className={inspectedComponents ? "text-cyan-500 dark:text-cyan-400" : "text-rose-500 dark:text-rose-400"}/>
             )}
-            <h2 className={`text-lg font-bold ${inspectedComponents ? "text-cyan-500 dark:text-cyan-400" : "text-rose-500 dark:text-rose-400"}`}>
+            <h2 className={`text-lg font-bold ${isHidden ? 'line-through opacity-70' : ''} ${inspectedComponents ? "text-cyan-500 dark:text-cyan-400" : "text-rose-500 dark:text-rose-400"}`}>
               {compName}
             </h2>
+
+            <button
+              onClick={(e) => {
+                 e.stopPropagation(); 
+                 toggleComponentVisibility(compName); 
+                }}
+              className={`ml-2 p-1 rounded-md transition-colors opacity-40 hover:opacity-100 ${
+                isHidden 
+                  ? 'text-slate-500 bg-slate-200 dark:bg-slate-700 dark:text-slate-400 opacity-80' 
+                  : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400'
+              }`}
+              title={isHidden ? t('rightpanel.show_comp') : t('rightpanel.hide_comp')}
+            >
+              {isHidden ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
           <button onClick={clearSelection} className="opacity-60 hover:opacity-100 transition-opacity"><X size={18}/></button>
         </div>
@@ -35,13 +55,20 @@ export default function InspectorView({ compName, isMultiSelected }: { compName:
           <span>{t('rightpanel.type', { type: component.mountingType })} | {t('rightpanel.side', { side: component.side })}</span>
           
           {partNumbers?.[compName] && (
-            <button 
-              onClick={() => setHighlightedPartNumber(partNumbers[compName])}
-              className="font-mono mt-1.5 px-2 py-1 rounded bg-slate-200/70 dark:bg-slate-800 text-left text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors cursor-pointer w-fit"
-              title={t('rightpanel.highlight_pn')}
-            >
-              {t('rightpanel.pn_prefix')} {partNumbers[compName]}
-            </button>
+            <div className="flex flex-col gap-1.5 mt-2">
+              {partNumbers[compName].description && (
+                <span className="text-sm font-semibold opacity-90 leading-tight">
+                  {partNumbers[compName].description}
+                </span>
+              )}
+              <button 
+                onClick={() => setHighlightedPartNumber(partNumbers[compName].partNumber)}
+                className="font-mono px-2 py-1 rounded bg-slate-200/70 dark:bg-slate-800 text-left text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors cursor-pointer w-fit"
+                title={t('rightpanel.highlight_pn')}
+              >
+                {t('rightpanel.pn_prefix')} {partNumbers[compName].partNumber}
+              </button>
+            </div>
           )}
         </div>
       </div>

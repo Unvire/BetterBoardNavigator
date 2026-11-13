@@ -18,11 +18,18 @@ export default function LeftPanel() {
     isDarkMode ? 'bg-slate-900/85 border-slate-700 text-slate-300' : 'bg-white/95 border-slate-200 text-slate-700'
   }`;
 
+
+  const handleTabChange = (tab: typeof activeTab) => {
+    setActiveTab(tab);
+    setSearchQuery('');
+  };
+
+
   const availableNets = useMemo(() => {
     if (!boardData) return [];
     const nets = new Set<string>();
     Object.entries(boardData.components).forEach(([compName, comp]) => {
-      if (hideUnassignedPNs && (!partNumbers || !partNumbers[compName])) return;
+      if (hideUnassignedPNs && (!partNumbers || !partNumbers[compName]?.partNumber)) return;
       
       if (comp.pins) {
         Object.values(comp.pins).forEach(pin => {
@@ -44,7 +51,7 @@ export default function LeftPanel() {
     Object.keys(boardData.components).forEach(name => {
       if (!name.toLowerCase().includes(q)) return;
       
-      if (hideUnassignedPNs && (!partNumbers || !partNumbers[name])) return;
+      if (hideUnassignedPNs && (!partNumbers || !partNumbers[name]?.partNumber)) return;
       
       if (hiddenComponents.has(name)) hidden.push(name);
       else visible.push(name);
@@ -71,7 +78,7 @@ export default function LeftPanel() {
       {/* Panels */}
       <div className="flex border-b border-inherit shrink-0">
         <button 
-          onClick={() => setActiveTab('components')} 
+          onClick={() => handleTabChange('components')} 
           className={`flex-1 py-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors 
             ${activeTab === 'components' 
             ? 'text-blue-500 border-b-2 border-blue-500' 
@@ -80,7 +87,7 @@ export default function LeftPanel() {
           <Cpu size={16}/> {t('leftpanel.tab_components')}
         </button>
         <button 
-          onClick={() => setActiveTab('nets')} 
+          onClick={() => handleTabChange('nets')} 
           className={`flex-1 py-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors 
             ${activeTab === 'nets' 
               ? 'text-blue-500 border-b-2 border-blue-500' 
@@ -89,7 +96,7 @@ export default function LeftPanel() {
           <Layers size={16}/> {t('leftpanel.tab_nets')}
         </button>
         <button 
-          onClick={() => setActiveTab('groups')} 
+          onClick={() => handleTabChange('groups')} 
           className={`flex-1 py-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors 
             ${activeTab === 'groups' 
               ? 'text-blue-500 border-b-2 border-blue-500' 
@@ -98,7 +105,7 @@ export default function LeftPanel() {
           <Shapes size={16}/> {t('leftpanel.tab_groups')}
         </button>
         <button 
-          onClick={() => setActiveTab('bom')} 
+          onClick={() => handleTabChange('bom')} 
           className={`flex-1 py-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors 
             ${activeTab === 'bom' 
               ? 'text-cyan-500 border-b-2 border-cyan-500' 

@@ -3,7 +3,7 @@
     "init_message": "Wczytaj plik schematu (Ctrl + O)",
     "init_pyodide": "Inicjalizacja Pyodide...",
     "parsing_cad_files": "Parsowanie schematów...",
-    "waiting": "Proszę czekać",
+    "waiting": "Proszę czekać...",
     "parsing error": "Błąd przetwarzania"
   },
   "topbar": {
@@ -56,7 +56,9 @@
     "multiple_components": "Wiele elementów",
     "multiple_components_label": "Wykryto nakładające się na siebie komponenty. Wybierz jeden, aby zobaczyć piny:",
     "highlight_pn": "Podświetl wszystkie komponenty o tym kodzie",
-    "pn_prefix": "PN:"
+    "pn_prefix": "PN:",
+    "hide_comp": "Ukryj komponent",
+    "show_comp": "Pokaż komponent"
   },
   "help": {
     "title": "Pomoc i Skróty Klawiszowe",

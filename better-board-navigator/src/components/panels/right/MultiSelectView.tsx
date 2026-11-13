@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 export default function MultiSelectView({ selectedNames }: { selectedNames: string[] }) {
   const { t } = useTranslation();
-  const { clearSelection, setInspectedComponents, triggerFocus, selectComponents, boardData, isDarkMode, partNumbers } = useBoardStore();
+  const { 
+    clearSelection, setInspectedComponents, triggerFocus, selectComponents, 
+    boardData, isDarkMode, partNumbers
+  } = useBoardStore();
 
   return (
     <div className="flex flex-col h-full">
@@ -16,6 +19,7 @@ export default function MultiSelectView({ selectedNames }: { selectedNames: stri
         {t('rightpanel.click_to_view_pins')}
       </div>
       <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
+        
         {selectedNames.map(name => (
           <div key={name} className={`group flex items-stretch w-full rounded-md border transition-all ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200 shadow-sm'}`}>
             <button 
@@ -30,7 +34,7 @@ export default function MultiSelectView({ selectedNames }: { selectedNames: stri
                   
                   {partNumbers?.[name] && (
                     <span className="text-[10px] font-mono px-1.5 bg-slate-200 dark:bg-slate-700 rounded opacity-75">
-                      {partNumbers[name]}
+                      {partNumbers[name]?.partNumber}
                     </span>
                   )}
                   

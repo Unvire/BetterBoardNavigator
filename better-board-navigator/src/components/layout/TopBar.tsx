@@ -2,17 +2,17 @@ import { useRef } from 'react';
 import { useBoardStore } from '../../store/boardStore';
 import { 
   Upload, FlipHorizontal, RotateCw, RotateCcw, HelpCircle, Database,
-  Layers, PanelLeftClose, PanelLeftOpen, Sun, Moon, Type, Globe, Loader2, SquareDashed,
+  Layers, PanelLeftClose, PanelLeftOpen, Sun, Moon, Type, Loader2, SquareDashed,
   EyeOff, Eye
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useBoardWorker } from '../../hooks/useBoardWorker';
+import LanguageSelector from './LanguageSelector';
 
-const SUPPORTED_LANGUAGES = ['pl', 'en'];
 
 
 export default function TopBar() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { 
     currentSide, setCurrentSide, 
@@ -21,18 +21,14 @@ export default function TopBar() {
     showLabels, toggleLabels,
     isDarkMode, toggleDarkMode,
     isLeftPanelOpen, toggleLeftPanel,
-    toggleOutlines
+    toggleOutlines,
+    boardData,
+    partNumbers,
+    hideUnassignedPNs,
+    toggleHideUnassignedPNs,
+    isHelpOpen,
+    toggleHelp
   } = useBoardStore();
-
-
-  const toggleLanguage = () => {
-    const currentLang = i18n.language.substring(0, 2).toLowerCase();
-    const currentIndex = SUPPORTED_LANGUAGES.indexOf(currentLang);
-    const safeIndex = currentIndex === -1 ? 0 : currentIndex;
-    const nextIndex = (safeIndex + 1) % SUPPORTED_LANGUAGES.length;
-    
-    i18n.changeLanguage(SUPPORTED_LANGUAGES[nextIndex]);
-  };
 
 
   const { status, processFiles } = useBoardWorker(); 
@@ -54,7 +50,20 @@ export default function TopBar() {
     reader.onload = (event) => {
       try {
         const json = JSON.parse(event.target?.result as string);
-        useBoardStore.getState().setPartNumbers(json);
+        const normalizedBom: Record<string, { partNumber: string; description?: string }> = {};
+
+        Object.entries(json).forEach(([comp, data]: [string, any]) => {
+          if (typeof data === 'string') {
+            normalizedBom[comp] = { partNumber: data };
+
+          } else {
+            normalizedBom[comp] = { 
+              partNumber: data.partNumber || '', 
+              description: data.description || '' 
+            };
+          }
+        });
+        useBoardStore.getState().setPartNumbers(normalizedBom);
       } catch (err) {
         console.error("Eror with parsing BOM JSON:", err);
       }
@@ -148,19 +157,20 @@ export default function TopBar() {
 
         <button 
           onClick={() => bomInputRef.current?.click()}
-          className={actionBtnClass} 
+          disabled={!boardData}
+          className={`${actionBtnClass} ${!boardData ? 'opacity-50 cursor-not-allowed' : ''}`} 
           title={`${t('topbar.load_bom')} [Ctrl+P]`}
         >
-          <Database size={20} className={useBoardStore(s => s.partNumbers) ? "text-cyan-500" : ""} />
+          <Database size={20} className={partNumbers ? "text-cyan-500" : ""} />
         </button>
 
         <button 
-          onClick={useBoardStore(s => s.toggleHideUnassignedPNs)}
-          disabled={!useBoardStore(s => s.partNumbers)}
-          className={`${actionBtnClass} ${!useBoardStore(s => s.partNumbers) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          onClick={toggleHideUnassignedPNs}
+          disabled={!boardData || !partNumbers}
+          className={`${actionBtnClass} ${(!boardData || !partNumbers) ? 'opacity-50 cursor-not-allowed' : ''}`}
           title={`${t('topbar.hide_comps_no_bom')}`}
         >
-          {useBoardStore(s => s.hideUnassignedPNs) 
+          {hideUnassignedPNs 
             ? <EyeOff size={20} className="text-cyan-500" /> 
             : <Eye size={20} />
           }
@@ -168,16 +178,13 @@ export default function TopBar() {
         
         <div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-2"></div>
         
-        <button onClick={toggleLanguage} className={actionBtnClass} title={`${t('topbar.language')}`}>
-          <Globe size={18} className="opacity-70" />
-          <span className="font-bold text-xs">{i18n.language.substring(0, 2).toUpperCase()}</span>
-        </button>
+        <LanguageSelector actionBtnClass={actionBtnClass} />
         
         <button onClick={toggleDarkMode} className={actionBtnClass} title={`${t('topbar.theme')} [T]`}>
           {isDarkMode ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} />}
         </button>
-        <button onClick={useBoardStore(s => s.toggleHelp)} className={actionBtnClass} title={`${t('topbar.help')}`}>
-          <HelpCircle size={20} className={useBoardStore(s => s.isHelpOpen) ? "text-cyan-500" : ""} />
+        <button onClick={toggleHelp} className={actionBtnClass} title={`${t('topbar.help')}`}>
+          <HelpCircle size={20} className={isHelpOpen ? "text-cyan-500" : ""} />
         </button>
       </div>
 

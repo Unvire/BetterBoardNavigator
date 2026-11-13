@@ -19,18 +19,20 @@ export default function PartNumberList({ searchQuery }: PartNumberListProps) {
   const groupedBom = useMemo(() => {
     if (!partNumbers) return [];
 
-    const map = new Map<string, string[]>();
-    Object.entries(partNumbers).forEach(([comp, pn]) => {
-      if (!map.has(pn)) map.set(pn, []);
-      map.get(pn)!.push(comp);
+    const map = new Map<string, { comps: string[], desc: string }>();
+    Object.entries(partNumbers).forEach(([comp, data]) => {
+      const pn = data.partNumber;
+      if (!pn) return;
+      if (!map.has(pn)) map.set(pn, { comps: [], desc: data.description || '' });
+      map.get(pn)!.comps.push(comp);
     });
 
     const q = searchQuery.toLowerCase();
     
     return Array.from(map.entries())
-      .map(([pn, comps]) => ({ pn, comps: comps.sort((a, b) => a.localeCompare(b, undefined, { numeric: true })) }))
-      .filter(({ pn, comps }) => 
-        pn.toLowerCase().includes(q) || comps.some(c => c.toLowerCase().includes(q))
+      .map(([pn, info]) => ({ pn, desc: info.desc, comps: info.comps.sort((a, b) => a.localeCompare(b, undefined, { numeric: true })) }))
+      .filter(({ pn, desc, comps }) => 
+        pn.toLowerCase().includes(q) || desc.toLowerCase().includes(q) || comps.some(c => c.toLowerCase().includes(q))
       )
       .sort((a, b) => a.pn.localeCompare(b.pn));
       
@@ -46,7 +48,7 @@ export default function PartNumberList({ searchQuery }: PartNumberListProps) {
 
   return (
     <ul className="text-sm space-y-1">
-      {groupedBom.map(({ pn, comps }) => {
+      {groupedBom.map(({ pn, comps, desc }) => {
         const isSelected = highlightedPartNumber === pn;
 
         return (
@@ -60,8 +62,9 @@ export default function PartNumberList({ searchQuery }: PartNumberListProps) {
               }`}
             >
               <div className="flex flex-col">
-                <span className="font-mono">{pn}</span>
-                <span className="text-[10px] opacity-60 mt-0.5 font-sans font-normal">
+                <span className="font-mono font-bold">{pn}</span>
+                {desc && <span className="text-[11px] opacity-75 mt-0.5 leading-tight pr-2">{desc}</span>}
+                <span className="text-[10px] opacity-50 mt-1 font-sans font-normal">
                   {t('leftpanel.bom_quantity')} {comps.length}
                 </span>
               </div>

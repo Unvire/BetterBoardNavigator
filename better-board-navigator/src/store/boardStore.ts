@@ -3,6 +3,12 @@ import type { BoardData } from '../types/board';
 
 export type WorkerStatus = 'idle' | 'loading_pyodide' | 'processing' | 'error';
 
+export interface BOMItem {
+  partNumber: string;
+  description?: string;
+}
+
+
 interface BoardState {
   workerStatus: WorkerStatus;
   setWorkerStatus: (status: WorkerStatus) => void;
@@ -56,8 +62,8 @@ interface BoardState {
   toggleLabels: () => void;
 
   // --- PART NUMBERS ---
-  partNumbers: Record<string, string> | null;
-  setPartNumbers: (data: Record<string, string>) => void;
+  partNumbers: Record<string, BOMItem> | null;
+  setPartNumbers: (data: Record<string, BOMItem> | null) => void;
   highlightedPartNumber: string | null;
   setHighlightedPartNumber: (pn: string | null) => void;
   hideUnassignedPNs: boolean;
@@ -104,7 +110,16 @@ export const useBoardStore = create<BoardState>((set) => ({
   setWorkerStatus: (status) => set({ workerStatus: status }), 
   setWorkerError: (error) => set({ workerError: error }),
 
-  setBoardData: (data) => set({ boardData: data }),
+  setBoardData: (data) => set({ 
+    boardData: data,
+    selectedComponents: new Set(),
+    inspectedComponents: [],
+    hiddenComponents: new Set(),
+    selectedNet: null,
+    highlightedPrefix: null,
+    componentToFocus: null,
+    currentSide: 'T'
+  }),
 
   toggleLeftPanel: () => set((state) => ({ isLeftPanelOpen: !state.isLeftPanelOpen })),
   
@@ -167,9 +182,9 @@ export const useBoardStore = create<BoardState>((set) => ({
 
   toggleLabels: () => set((state) => ({ showLabels: !state.showLabels })),
 
-  setPartNumbers: (data) => set((state) => ({ 
+  setPartNumbers: (data) => set(() => ({ 
     partNumbers: data,
-    hideUnassignedPNs: data !== null ? true : state.hideUnassignedPNs
+    hideUnassignedPNs: data !== null ? true : false
   })),
 
   setHighlightedPartNumber: (pn) => set({ 
