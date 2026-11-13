@@ -63,7 +63,8 @@ export function useBoardWorker() {
       
       workerRef.current.postMessage({ 
         type: 'PROCESS_FILES', 
-        files: Array.from(files)
+        files: Array.from(files),
+        baseUrl: import.meta.env.BASE_URL
       });
     }
   }, [status, setStatus, setError]);
