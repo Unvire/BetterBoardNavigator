@@ -71,7 +71,7 @@ export default function HelpModal() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-90">
               <ul className="space-y-2.5">
                 <li><kbd className={kbdClass}>Ctrl</kbd> + <kbd className={kbdClass}>O</kbd> - {t('help.desc.load_cad')}</li>
-                <li><kbd className={kbdClass}>Ctrl</kbd> + <kbd className={kbdClass}>P</kbd> - {t('help.desc.load_bom')}</li>
+                <li><kbd className={kbdClass}>P</kbd> - {t('help.desc.load_bom')}</li>
                 <li><kbd className={kbdClass}>Space</kbd> - {t('help.desc.switch_side')}</li>
                 <li><kbd className={kbdClass}>F</kbd> - {t('help.desc.flip')}</li>
               </ul>
