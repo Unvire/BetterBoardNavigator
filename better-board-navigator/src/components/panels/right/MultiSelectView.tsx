@@ -6,7 +6,7 @@ export default function MultiSelectView({ selectedNames }: { selectedNames: stri
   const { t } = useTranslation();
   const { 
     clearSelection, setInspectedComponents, triggerFocus, selectComponents, 
-    boardData, isDarkMode, partNumbers
+    boardData, isDarkMode, partNumbers, currentSide, setCurrentSide
   } = useBoardStore();
 
   return (
@@ -23,7 +23,13 @@ export default function MultiSelectView({ selectedNames }: { selectedNames: stri
         {selectedNames.map(name => (
           <div key={name} className={`group flex items-stretch w-full rounded-md border transition-all ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200 shadow-sm'}`}>
             <button 
-              onClick={() => { setInspectedComponents([name]); triggerFocus(name); }}
+              onClick={() => { 
+                const comp = boardData?.components[name];
+                if (comp && comp.side !== currentSide) setCurrentSide(comp.side);
+                
+                setInspectedComponents([name]); 
+                triggerFocus(name); 
+              }}
               className="flex-1 flex justify-between items-center text-left p-2.5 pl-3 transition-colors rounded-l-md hover:bg-blue-500/10"
               title={t('rightpanel.show_pins_tooltip')}
             >
