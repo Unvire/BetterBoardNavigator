@@ -30,6 +30,7 @@ export default function TopBar() {
     toggleHelp
   } = useBoardStore();
 
+  const currentRotation = rotation[currentSide];
 
   const { status, processFiles } = useBoardWorker(); 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -116,11 +117,11 @@ export default function TopBar() {
         </div>
 
         <div className={toolGroupClass}>
-          <button onClick={() => setRotation(rotation === 0 ? 270 : rotation - 90)} className={actionBtnClass} title={`${t('topbar.rotate_left')} [Shift+R]`}>
+          <button onClick={() => setRotation(currentRotation === 0 ? 270 : currentRotation - 90)} className={actionBtnClass} title={`${t('topbar.rotate_left')} [Shift+R]`}>
             <RotateCcw size={20} className="opacity-70" />
           </button>
 
-          <button onClick={() => setRotation(rotation + 90)} className={actionBtnClass} title={`${t('topbar.rotate_right')} [R]`}>
+          <button onClick={() => setRotation(currentRotation + 90)} className={actionBtnClass} title={`${t('topbar.rotate_right')} [R]`}>
             <RotateCw size={20} className="opacity-70" />
           </button>
         </div>

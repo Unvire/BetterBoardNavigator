@@ -27,10 +27,12 @@ export function useKeyboardShortcuts() {
 
         case 'r':
           e.preventDefault();
+          const currentRotation = store.rotation[store.currentSide];
+
           if (e.shiftKey) {
-            store.setRotation(store.rotation === 0 ? 270 : store.rotation - 90);
+            store.setRotation(currentRotation === 0 ? 270 : currentRotation - 90);
           } else {
-            store.setRotation(store.rotation + 90);
+            store.setRotation(currentRotation + 90);
           }
           break;
 

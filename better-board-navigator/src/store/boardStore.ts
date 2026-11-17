@@ -41,7 +41,7 @@ interface BoardState {
   toggleMirror: () => void;
   
   // --- ROTATION ---
-  rotation: number;
+  rotation: { T: number, B: number };
   setRotation: (rotation: number) => void;
 
   // --- SELECTION ---
@@ -96,7 +96,7 @@ export const useBoardStore = create<BoardState>((set) => ({
   
   currentSide: 'T',
   mirrorState: { T: false, B: true },
-  rotation: 0,
+  rotation: { T: 0, B: 0 },
   
   selectedComponents: new Set<string>(),
   selectedNet: null,
@@ -126,7 +126,8 @@ export const useBoardStore = create<BoardState>((set) => ({
     selectedNet: null,
     highlightedPrefix: null,
     componentToFocus: null,
-    currentSide: 'T'
+    currentSide: 'T',
+    rotation: { T: 0, B: 0 }
   }),
 
   toggleLeftPanel: () => set((state) => ({ isLeftPanelOpen: !state.isLeftPanelOpen })),
@@ -149,7 +150,12 @@ export const useBoardStore = create<BoardState>((set) => ({
     }
   })),
 
-  setRotation: (rot) => set({ rotation: rot % 360 }),
+  setRotation: (rot) => set((state) => ({ 
+    rotation: {
+      ...state.rotation,
+      [state.currentSide]: rot % 360
+    }
+  })),
 
   selectComponents: (names, isMultiSelect = false) => set((state) => {
     if (isMultiSelect) {

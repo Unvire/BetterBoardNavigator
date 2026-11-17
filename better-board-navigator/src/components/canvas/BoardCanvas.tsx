@@ -98,6 +98,7 @@ function BoardCanvas() {
 
   const store = useBoardStore();
   const isMirrored = store.mirrorState[store.currentSide];
+  const currentRotation = store.rotation[store.currentSide];
   const { boardCenterX, boardCenterY, componentHitboxes } = useBoardGeometry(store.boardData, store.currentSide);
 
 
@@ -109,8 +110,8 @@ function BoardCanvas() {
       wx = boardCenterX * 2 - wx;
     }
 
-    if (store.rotation !== 0) {
-      const rad = (-store.rotation * Math.PI) / 180;
+    if (currentRotation !== 0) {
+      const rad = (-currentRotation * Math.PI) / 180;
       const dx = wx - boardCenterX;
       const dy = wy - boardCenterY;
 
@@ -119,7 +120,7 @@ function BoardCanvas() {
     }
 
     return { wx, wy };
-  }, [isMirrored, store.rotation, boardCenterX, boardCenterY]);
+  }, [isMirrored, currentRotation, boardCenterX, boardCenterY]);
 
 
   // Click logic
@@ -167,7 +168,7 @@ function BoardCanvas() {
       if (bounds) {
         const { tMinX, tMaxX, tMinY, tMaxY } = transformBounds(
           bounds, 
-          store.rotation, 
+          currentRotation, 
           isMirrored, 
           boardCenterX, 
           boardCenterY
@@ -178,7 +179,7 @@ function BoardCanvas() {
 
     store.clearFocus();
     
-  }, [store.componentToFocus, store.boardData, focusOnBoundingBox, isMirrored, boardCenterX, boardCenterY, store.rotation]);
+  }, [store.componentToFocus, store.boardData, focusOnBoundingBox, isMirrored, boardCenterX, boardCenterY, currentRotation]);
   
 
   // Reset View
@@ -207,7 +208,7 @@ function BoardCanvas() {
       offset,
       boardCenterX,
       boardCenterY,
-      rotation: store.rotation,
+      rotation: currentRotation,
       isMirrored: isMirrored,
       isDarkMode: store.isDarkMode,
       showOutlines: store.showOutlines,
