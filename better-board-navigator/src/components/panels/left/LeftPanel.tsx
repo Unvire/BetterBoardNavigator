@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useBoardStore } from '../../../store/boardStore';
+import type { LeftPanelTab } from '../../../store/boardStore';
 import { Search, Cpu, Layers, Shapes, Database } from 'lucide-react';
 import ComponentList from './ComponentList';
 import NetList from './NetList';
@@ -9,9 +10,16 @@ import PartNumberList from './PartNumberList';
 
 export default function LeftPanel() {
   const { t } = useTranslation();
-  const { boardData, isDarkMode, isLeftPanelOpen, hideUnassignedPNs, hiddenComponents, partNumbers } = useBoardStore();
-  const [activeTab, setActiveTab] = useState<'components' | 'nets' | 'groups' | 'bom'>('components');
+  const { 
+    boardData, isDarkMode, isLeftPanelOpen, hideUnassignedPNs, 
+    hiddenComponents, partNumbers, activeLeftTab, setActiveLeftTab 
+  } = useBoardStore();
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    setSearchQuery('');
+  }, [activeLeftTab]);
+
 
 
   const glassPanelClass = `absolute top-16 bottom-4 left-4 w-80 rounded-xl border shadow-lg flex flex-col transition-transform duration-300 z-10 backdrop-blur-xl overflow-hidden ${
@@ -19,9 +27,8 @@ export default function LeftPanel() {
   }`;
 
 
-  const handleTabChange = (tab: typeof activeTab) => {
-    setActiveTab(tab);
-    setSearchQuery('');
+  const handleTabChange = (tab: LeftPanelTab) => {
+    setActiveLeftTab(tab);
   };
 
 
@@ -80,7 +87,7 @@ export default function LeftPanel() {
         <button 
           onClick={() => handleTabChange('components')} 
           className={`flex-1 py-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors 
-            ${activeTab === 'components' 
+            ${activeLeftTab === 'components' 
             ? 'text-blue-500 border-b-2 border-blue-500' 
             : 'opacity-60 hover:opacity-100'}`}
         >
@@ -89,7 +96,7 @@ export default function LeftPanel() {
         <button 
           onClick={() => handleTabChange('nets')} 
           className={`flex-1 py-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors 
-            ${activeTab === 'nets' 
+            ${activeLeftTab === 'nets' 
               ? 'text-blue-500 border-b-2 border-blue-500' 
               : 'opacity-60 hover:opacity-100'}`}
         >
@@ -98,7 +105,7 @@ export default function LeftPanel() {
         <button 
           onClick={() => handleTabChange('groups')} 
           className={`flex-1 py-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors 
-            ${activeTab === 'groups' 
+            ${activeLeftTab === 'groups' 
               ? 'text-blue-500 border-b-2 border-blue-500' 
               : 'opacity-60 hover:opacity-100'}`}
           >
@@ -107,7 +114,7 @@ export default function LeftPanel() {
         <button 
           onClick={() => handleTabChange('bom')} 
           className={`flex-1 py-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors 
-            ${activeTab === 'bom' 
+            ${activeLeftTab === 'bom' 
               ? 'text-cyan-500 border-b-2 border-cyan-500' 
               : 'opacity-60 hover:opacity-100'}`}
           >
@@ -135,10 +142,10 @@ export default function LeftPanel() {
 
       {/* Lists (components) */}
       <div className="flex-1 overflow-y-auto p-2">
-        {activeTab === 'components' && <ComponentList visibleItems={visibleComponents} hiddenItems={manuallyHiddenComponents} />}
-        {activeTab === 'nets' && <NetList items={filteredNets} />}
-        {activeTab === 'groups' && <GroupList searchQuery={searchQuery} />}
-        {activeTab === 'bom' && <PartNumberList searchQuery={searchQuery} />}
+        {activeLeftTab === 'components' && <ComponentList visibleItems={visibleComponents} hiddenItems={manuallyHiddenComponents} />}
+        {activeLeftTab === 'nets' && <NetList items={filteredNets} />}
+        {activeLeftTab === 'groups' && <GroupList searchQuery={searchQuery} />}
+        {activeLeftTab === 'bom' && <PartNumberList searchQuery={searchQuery} />}
       </div>
     </aside>
   );

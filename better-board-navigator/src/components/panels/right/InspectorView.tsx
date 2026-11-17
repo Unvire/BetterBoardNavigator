@@ -7,7 +7,8 @@ export default function InspectorView({ compName, isMultiSelected }: { compName:
   const { 
     boardData, isDarkMode, clearSelection, setInspectedComponents, 
     selectedNet, selectNet, inspectedComponents, partNumbers, setHighlightedPartNumber, 
-    hiddenComponents, toggleComponentVisibility 
+    hiddenComponents, toggleComponentVisibility, 
+    setActiveLeftTab, setLeftPanelOpen
   } = useBoardStore();
   const component = boardData?.components[compName];
 
@@ -84,7 +85,17 @@ export default function InspectorView({ compName, isMultiSelected }: { compName:
               return (
                 <tr 
                   key={pinName} 
-                  onClick={() => pin.net && selectNet(isNetSelected ? null : pin.net)}
+                  onClick={() => {
+                    if (pin.net) {
+                      if (!isNetSelected) {
+                        selectNet(pin.net);
+                        setActiveLeftTab('nets');
+                        setLeftPanelOpen(true);
+                      } else {
+                        selectNet(null);
+                      }
+                    }
+                  }}
                   className={`border-b border-inherit transition-colors ${pin.net ? 'cursor-pointer' : ''} ${isNetSelected ? (isDarkMode ? 'bg-fuchsia-900/30' : 'bg-fuchsia-50') : (isDarkMode ? 'hover:bg-slate-800' : 'hover:bg-slate-50')}`}
                 >
                   <td className={`px-4 py-2 font-mono ${isNetSelected ? 'font-bold text-fuchsia-400' : 'font-medium'}`}>{pinName}</td>

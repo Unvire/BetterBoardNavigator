@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { BoardData } from '../types/board';
 
 export type WorkerStatus = 'idle' | 'loading_pyodide' | 'processing' | 'error';
+export type LeftPanelTab = 'components' | 'nets' | 'groups' | 'bom';
 
 export interface BOMItem {
   partNumber: string;
@@ -26,8 +27,12 @@ interface BoardState {
   boardData: BoardData | null;
   setBoardData: (data: BoardData) => void;
 
+  // --- PANELS ---
   isLeftPanelOpen: boolean;
   toggleLeftPanel: () => void;
+  setLeftPanelOpen: (isOpen: boolean) => void;
+  activeLeftTab: LeftPanelTab;
+  setActiveLeftTab: (tab: LeftPanelTab) => void;
 
   isDarkMode: boolean;
   toggleDarkMode: () => void;
@@ -89,7 +94,9 @@ export const useBoardStore = create<BoardState>((set) => ({
   workerError: null,
 
   boardData: null,
+
   isLeftPanelOpen: true,
+  activeLeftTab: 'components',
 
   isDarkMode: isUseDarkMode(),
   showOutlines: true,
@@ -130,6 +137,8 @@ export const useBoardStore = create<BoardState>((set) => ({
   }),
 
   toggleLeftPanel: () => set((state) => ({ isLeftPanelOpen: !state.isLeftPanelOpen })),
+  setLeftPanelOpen: (isOpen) => set({ isLeftPanelOpen: isOpen }),
+  setActiveLeftTab: (tab) => set({ activeLeftTab: tab }),
   
   toggleDarkMode: () => set((state) => {
     const newTheme = !state.isDarkMode;
